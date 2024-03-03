@@ -11,6 +11,14 @@
     collapseShow = classes;
   }
 
+  let showNestedMenu = false;
+  let isActive = false;
+
+  function toggleNestedMenu() {
+    showNestedMenu = !showNestedMenu;
+    isActive = !isActive;
+  }
+
   export let location;
 </script>
 
@@ -30,12 +38,13 @@
     </button>
     <!-- Brand -->
     <a
-      use:link
-      class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
-      href="/"
-    >
-      Notus Svelte
-    </a>
+  use:link
+  class="md:block text-center md:pb-2 text-blueGray-800 mr-0 inline-block whitespace-nowrap text-5xl uppercase font-bold p-4 px-0"
+  href="/admin/dashboard"
+>
+  TAACS
+</a>
+
     <!-- User -->
     <ul class="md:hidden items-center flex flex-wrap list-none">
       <li class="inline-block relative">
@@ -87,27 +96,10 @@
 
       <!-- Divider -->
       <hr class="my-4 md:min-w-full" />
-      <!-- Heading -->
-      <h6
-        class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
-      >
-        Admin Layout Pages
-      </h6>
+      
       <!-- Navigation -->
 
       <ul class="md:flex-col md:min-w-full flex flex-col list-none">
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/dashboard"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/dashboard') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-tv mr-2 text-sm {location.href.indexOf('/admin/dashboard') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
-            ></i>
-            Dashboard
-          </a>
-        </li>
 
         <li class="items-center">
           <a
@@ -118,20 +110,7 @@
             <i
               class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/settings') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
-            Settings
-          </a>
-        </li>
-
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
-            <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
-            ></i>
-            Tables
+            Access Control
           </a>
         </li>
 
@@ -144,7 +123,121 @@
             <i
               class="fas fa-map-marked mr-2 text-sm {location.href.indexOf('/admin/maps') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
-            Maps
+            Room Bookings
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/tables"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Employee
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/tables"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Payroll
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/tables"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Leave Requests
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/tables"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Shift Timings
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/tables"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Parking
+          </a>
+        </li>
+
+        <li class="items-center">
+          <div
+            class="text-xs uppercase py-3 font-bold block {isActive ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={toggleNestedMenu}
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Visitors
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
+          </div>
+          <!-- Nested Menu -->
+          {#if showNestedMenu}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/visitors"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/visitors"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+              <!-- Add more nested options as needed -->
+            </ul>
+          {/if}
+        </li>
+        
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/tables"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Emergency
           </a>
         </li>
       </ul>
@@ -284,34 +377,12 @@
 
         <li class="inline-flex">
           <a
-            href="https://www.creative-tim.com/learning-lab/tailwind/react/overview/notus"
-            target="_blank"
-            class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold"
-          >
-            <i class="fab fa-react mr-2 text-blueGray-300 text-base"></i>
-            React
-          </a>
-        </li>
-
-        <li class="inline-flex">
-          <a
             href="https://www.creative-tim.com/learning-lab/tailwind/svelte/overview/notus"
             target="_blank"
             class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold"
           >
             <i class="fas fa-link mr-2 text-blueGray-300 text-base"></i>
             Svelte
-          </a>
-        </li>
-
-        <li class="inline-flex">
-          <a
-            href="https://www.creative-tim.com/learning-lab/tailwind/vue/overview/notus"
-            target="_blank"
-            class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold"
-          >
-            <i class="fab fa-vuejs mr-2 text-blueGray-300 text-base"></i>
-            VueJS
           </a>
         </li>
 
