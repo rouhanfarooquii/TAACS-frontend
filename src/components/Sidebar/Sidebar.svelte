@@ -11,12 +11,36 @@
     collapseShow = classes;
   }
 
-  let showNestedMenu = false;
-  let isActive = false;
+  let showNestedMenuAccessControl = false;
+  let showNestedMenuRoomBooking = false;
+  let showNestedMenuPayroll = false;
+  let showNestedMenuEmployee = false;
+  let showNestedMenuLeaveRequest = false;
+  let showNestedMenuShiftTiming  = false;
+  let showNestedMenuParking  = false;
+  let showNestedMenuVisitors  = false;
+  let showNestedMenuEmergency  = false;
 
-  function toggleNestedMenu() {
-    showNestedMenu = !showNestedMenu;
-    isActive = !isActive;
+  function toggleNestedMenu(menuItem) {
+    if (menuItem === 'accesscontrol') {
+        showNestedMenuAccessControl = !showNestedMenuAccessControl;
+    } else if (menuItem === 'roombooking') {
+        showNestedMenuRoomBooking = !showNestedMenuRoomBooking;
+      } else if (menuItem === 'payroll') {
+        showNestedMenuPayroll = !showNestedMenuPayroll;
+      } else if (menuItem === 'employee') {
+        showNestedMenuEmployee = !showNestedMenuEmployee;
+      } else if (menuItem === 'leaverequest') {
+        showNestedMenuLeaveRequest = !showNestedMenuLeaveRequest;
+      } else if (menuItem === 'shifttiming') {
+        showNestedMenuShiftTiming = !showNestedMenuShiftTiming;
+      } else if (menuItem === 'parking') {
+        showNestedMenuParking = !showNestedMenuParking;
+      } else if (menuItem === 'visitors') {
+        showNestedMenuVisitors = !showNestedMenuVisitors;
+      } else if (menuItem === 'emergency') {
+        showNestedMenuEmergency = !showNestedMenuEmergency;
+    }
   }
 
   export let location;
@@ -104,112 +128,269 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/settings"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/settings') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/accesscontrol"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('accesscontrol')}
+            >
             <i
-              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/settings') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Access Control
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          <!-- Nested Menu -->
+          {#if showNestedMenuAccessControl}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/accesscontrol"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/accesscontrol"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="/admin/maps"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/maps') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/roombooking"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('roombooking')}
+            >
             <i
-              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf('/admin/maps') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/roombooking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Room Bookings
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuRoomBooking}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/roombooking"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/roombooking"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/employee"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('employee')}
+            >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf('/admin/employee') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Employee
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuEmployee}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/employee"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/employee"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/payroll"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('payroll')}
+            >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/payroll') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Payroll
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuPayroll}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/payroll"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/payroll"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/leaverequest"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
+            >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Leave Requests
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuLeaveRequest}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/leaverequest"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/leaverequest"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/shifttiming"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('shifttiming')}
+            >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/shifttiming') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Shift Timings
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuShiftTiming}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/shifttiming"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/shifttiming"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/parking"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('parking')}
+            >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Parking
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuParking}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/parking"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/parking"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
 
         <li class="items-center">
-          <div
-            class="text-xs uppercase py-3 font-bold block {isActive ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-            on:click|preventDefault={toggleNestedMenu}
+          <a
+          use:link
+          href="/admin/visitors"
+          class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          on:click|preventDefault={() => toggleNestedMenu('visitors')}
           >
-            <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
-            ></i>
-            Visitors
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
-          </div>
+          <i
+            class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+          ></i>
+          Visitors
+          <i class="fas fa-angle-down ml-2 text-xs"></i>
+          </a>
           <!-- Nested Menu -->
-          {#if showNestedMenu}
+          {#if showNestedMenuVisitors}
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a
                   href="/admin/visitors"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -217,12 +398,11 @@
               <li>
                 <a
                   href="/admin/visitors"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
               </li>
-              <!-- Add more nested options as needed -->
             </ul>
           {/if}
         </li>
@@ -231,14 +411,36 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/tables"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/tables') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
-          >
+            href="/admin/emergency"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('emergency')}
+            >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/tables') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/emergency') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Emergency
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
+          {#if showNestedMenuEmergency}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/emergency"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 1
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/emergency"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Option 2
+                </a>
+              </li>
+            </ul>
+          {/if}
         </li>
       </ul>
 
@@ -310,15 +512,12 @@
         </li>
       </ul>
 
-      <!-- Divider -->
-      <hr class="my-4 md:min-w-full" />
-      <!-- Heading -->
+      <!-- <hr class="my-4 md:min-w-full" />
       <h6
         class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
       >
         Documentation
       </h6>
-      <!-- Navigation -->
       <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
         <li class="inline-flex">
           <a
@@ -377,6 +576,17 @@
 
         <li class="inline-flex">
           <a
+            href="https://www.creative-tim.com/learning-lab/tailwind/react/overview/notus"
+            target="_blank"
+            class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold"
+          >
+            <i class="fab fa-react mr-2 text-blueGray-300 text-base"></i>
+            React
+          </a>
+        </li>
+
+        <li class="inline-flex">
+          <a
             href="https://www.creative-tim.com/learning-lab/tailwind/svelte/overview/notus"
             target="_blank"
             class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold"
@@ -386,7 +596,18 @@
           </a>
         </li>
 
-      </ul>
+        <li class="inline-flex">
+          <a
+            href="https://www.creative-tim.com/learning-lab/tailwind/vue/overview/notus"
+            target="_blank"
+            class="text-blueGray-700 hover:text-blueGray-500 text-sm block mb-4 no-underline font-semibold"
+          >
+            <i class="fab fa-vuejs mr-2 text-blueGray-300 text-base"></i>
+            VueJS
+          </a>
+        </li>
+
+      </ul> -->
     </div>
   </div>
 </nav>
