@@ -128,7 +128,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/accesscontrol"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('accesscontrol')}
             >
@@ -164,7 +164,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/roombooking"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('roombooking')}
             >
@@ -199,7 +199,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/employee"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('employee')}
             >
@@ -234,7 +234,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/payroll"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('payroll')}
             >
@@ -269,7 +269,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/leaverequest"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
             >
@@ -304,7 +304,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/shifttiming"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('shifttiming')}
             >
@@ -339,7 +339,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/parking"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('parking')}
             >
@@ -374,7 +374,7 @@
         <li class="items-center">
           <a
           use:link
-          href="/admin/visitors"
+          href="#"
           class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
           on:click|preventDefault={() => toggleNestedMenu('visitors')}
           >
@@ -411,7 +411,7 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/emergency"
+            href="#"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('emergency')}
             >
