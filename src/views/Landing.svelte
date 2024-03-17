@@ -173,7 +173,7 @@
                 >
                   <polygon
                     points="-30,95 583,95 583,65"
-                    class="text-red-400 fill-current"
+                    class="custom-text fill-current"
                   ></polygon>
                 </svg>
                 <h4 class="text-xl font-bold text-white">
@@ -224,7 +224,7 @@
           <div class="w-full md:w-5/12 ml-auto mr-auto px-4">
             <div class="md:pr-12">
               <div
-                class="text-red-600 p-3 text-center inline-flex items-center justify-center w-16 h-16 mb-6 shadow-lg rounded-full bg-red-300"
+                class="custom-text p-3 text-center inline-flex items-center justify-center w-16 h-16 mb-6 shadow-lg rounded-full bg-red-300"
               >
                 <i class="fas fa-rocket text-xl"></i>
               </div>
@@ -239,7 +239,7 @@
                   <div class="flex items-center">
                     <div>
                       <span
-                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200 mr-3"
+                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full custom-text bg-red-200 mr-3"
                       >
                         <i class="fas fa-fingerprint"></i>
                       </span>
@@ -255,7 +255,7 @@
                   <div class="flex items-center">
                     <div>
                       <span
-                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200 mr-3"
+                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full custom-text bg-red-200 mr-3"
                       >
                         <i class="fab fa-html5"></i>
                       </span>
@@ -271,7 +271,7 @@
                   <div class="flex items-center">
                     <div>
                       <span
-                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200 mr-3"
+                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full custom-text bg-red-200 mr-3"
                       >
                         <i class="far fa-paper-plane"></i>
                       </span>

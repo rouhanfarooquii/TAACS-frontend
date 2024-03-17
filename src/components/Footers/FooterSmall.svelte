@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   // make dynamic date to be added to footer
   let date = new Date().getFullYear();
 
@@ -62,4 +62,4 @@
       </div>
     </div>
   </div>
-</footer>
+</footer> -->

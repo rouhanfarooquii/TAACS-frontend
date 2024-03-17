@@ -129,7 +129,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('accesscontrol')}
             >
             <i
@@ -144,7 +144,7 @@
               <li>
                 <a
                   href="/admin/accesscontrol"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -152,7 +152,7 @@
               <li>
                 <a
                   href="/admin/accesscontrol"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -165,7 +165,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('roombooking')}
             >
             <i
@@ -179,7 +179,7 @@
               <li>
                 <a
                   href="/admin/roombooking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -187,7 +187,7 @@
               <li>
                 <a
                   href="/admin/roombooking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -200,7 +200,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('employee')}
             >
             <i
@@ -214,7 +214,7 @@
               <li>
                 <a
                   href="/admin/employee"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -222,7 +222,7 @@
               <li>
                 <a
                   href="/admin/employee"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -235,7 +235,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('payroll')}
             >
             <i
@@ -249,7 +249,7 @@
               <li>
                 <a
                   href="/admin/payroll"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -257,7 +257,7 @@
               <li>
                 <a
                   href="/admin/payroll"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -270,7 +270,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
             >
             <i
@@ -284,7 +284,7 @@
               <li>
                 <a
                   href="/admin/leaverequest"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -292,7 +292,7 @@
               <li>
                 <a
                   href="/admin/leaverequest"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -305,7 +305,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('shifttiming')}
             >
             <i
@@ -319,7 +319,7 @@
               <li>
                 <a
                   href="/admin/shifttiming"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -327,7 +327,7 @@
               <li>
                 <a
                   href="/admin/shifttiming"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -340,7 +340,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('parking')}
             >
             <i
@@ -354,7 +354,7 @@
               <li>
                 <a
                   href="/admin/parking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -362,7 +362,7 @@
               <li>
                 <a
                   href="/admin/parking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -375,7 +375,7 @@
           <a
           use:link
           href="#"
-          class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+          class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
           on:click|preventDefault={() => toggleNestedMenu('visitors')}
           >
           <i
@@ -390,7 +390,7 @@
               <li>
                 <a
                   href="/admin/visitors"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -398,7 +398,7 @@
               <li>
                 <a
                   href="/admin/visitors"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>
@@ -412,7 +412,7 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/emergency') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('emergency')}
             >
             <i
@@ -426,7 +426,7 @@
               <li>
                 <a
                   href="/admin/emergency"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 1
                 </a>
@@ -434,7 +434,7 @@
               <li>
                 <a
                   href="/admin/emergency"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'text-red-500 hover:text-red-600':'text-blueGray-700 hover:text-blueGray-500'}"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
                   Option 2
                 </a>

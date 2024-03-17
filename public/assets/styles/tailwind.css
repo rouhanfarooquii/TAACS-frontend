@@ -4070,3 +4070,12 @@ select {
 
 @media (min-width: 1536px) {
 }
+
+:root {
+  --custom-t: rgb(0, 143, 204);
+}
+
+.custom-text {
+  --tw-text-opacity: 1;
+  color: var(--custom-t);
+}

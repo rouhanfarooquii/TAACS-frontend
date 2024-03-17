@@ -157,7 +157,7 @@
           <td
             class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"
           >
-            <i class="fas fa-arrow-down text-red-500 mr-4"></i>
+            <i class="fas fa-arrow-down custom-text mr-4"></i>
             46,53%
           </td>
         </tr>

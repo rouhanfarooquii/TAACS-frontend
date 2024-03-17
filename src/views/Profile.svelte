@@ -133,7 +133,7 @@
                   <a
                     href="#pablo"
                     on:click={(e) => e.preventDefault()}
-                    class="font-normal text-red-500"
+                    class="font-normal custom-text"
                   >
                     Show more
                   </a>

@@ -108,7 +108,7 @@
             >
               <polygon
                 points="-30,95 583,95 583,65"
-                class="text-red-400 fill-current"
+                class="custom-text fill-current"
               ></polygon>
             </svg>
             <h4 class="text-xl font-bold text-white">
