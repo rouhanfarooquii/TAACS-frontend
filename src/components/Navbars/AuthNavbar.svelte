@@ -39,7 +39,7 @@
       class="lg:flex flex-grow items-center bg-white lg:bg-opacity-0 lg:shadow-none rounded shadow-lg {navbarOpen ? 'block':'hidden'}"
       id="example-navbar-warning"
     >
-      <ul class="flex flex-col lg:flex-row list-none mr-auto">
+      <!-- <ul class="flex flex-col lg:flex-row list-none mr-auto">
         <li class="flex items-center">
           <a
             class="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
@@ -51,12 +51,12 @@
             Docs
           </a>
         </li>
-      </ul>
+      </ul> -->
       <ul class="flex flex-col lg:flex-row list-none lg:ml-auto">
         <li class="flex items-center">
           <PagesDropdown />
         </li>
-        <li class="flex items-center">
+        <!-- <li class="flex items-center">
           <a
             class="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
             href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdemos.creative-tim.com%2Fnotus-svelte%2F%23%2F"
@@ -101,8 +101,8 @@
             type="button"
           >
             <i class="fas fa-arrow-alt-circle-down"></i> Download
-          </button>
-        </li>
+          </button> 
+        </li> -->
       </ul>
     </div>
   </div>

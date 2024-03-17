@@ -216,7 +216,7 @@
                   href="/admin/employee"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 1
+                  Retreive Employee Info
                 </a>
               </li>
               <li>
