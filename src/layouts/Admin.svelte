@@ -18,6 +18,7 @@
   import Parking from "../views/admin/Parking.svelte";
   import Visitors from "../views/admin/Visitors.svelte";
   import Emergency from "../views/admin/Emergency.svelte";
+  import DeviceManagement from "../views/admin/DeviceManagement.svelte";
 
   export let location;
   export let admin = "";
@@ -37,6 +38,7 @@
         <Route path="employee" component="{Employee}" />
         <Route path="leaverequest" component="{LeaveRequest}" />
         <Route path="shifttiming" component="{ShiftTiming}" />
+        <Route path="devicemanagement" component="{DeviceManagement}" />
         <Route path="parking" component="{Parking}" />
         <Route path="visitors" component="{Visitors}" />
         <Route path="emergency" component="{Emergency}" />
