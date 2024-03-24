@@ -4079,3 +4079,13 @@ select {
   --tw-text-opacity: 1;
   color: var(--custom-t);
 }
+
+.bg-green-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(16, 185, 129, var(--tw-bg-opacity)); /* Change the color values to represent green */
+}
+
+.bg-green-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(4, 120, 87, var(--tw-bg-opacity)); /* Adjust the color values to represent green */
+}
