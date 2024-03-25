@@ -352,7 +352,7 @@
             Device Management
             <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuShiftTiming}
+          {#if showNestedDeviceManagement}
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a

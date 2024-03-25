@@ -70,7 +70,7 @@
 
   let filters = {
     name: '',
-    role: '',
+    position: '',
     active: '',
     department: '',
     location: '',
@@ -79,7 +79,7 @@
     language: '',
     skill: '',
     gender: '',
-    nationality: '',
+    employeeID: '',
     maritalStatus: ''
   };
 
@@ -96,47 +96,43 @@
   }
 </script>
 
-<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16 px-4 py-20">
 
+<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16 px-4 py-10">
   <!-- Filters Row 1 -->
   <div class="flex justify-between mb-4">
+    <!-- Filter by EmployeeID -->
+    <div>
+      <label for="filterEmployeeID">Employee ID:</label>
+      <br>
+      <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="filter-input" placeholder="Employee ID" onchange="{() => applyFilters()}">
+    </div>
     <!-- Filter by Name -->
     <div>
       <label for="filterName">Name:</label>
-      <input type="text" id="filterName" name="filterName" placeholder="Filter by name" onchange="{() => applyFilters()}">
+      <br>
+      <input type="text" id="filterName" name="filterName" class="filter-input" placeholder="Name" onchange="{() => applyFilters()}">
     </div>
-    <!-- Filter by Role -->
-    <div>
-      <label for="filterRole">Role:</label>
-      <input type="text" id="filterRole" name="filterRole" placeholder="Filter by role" onchange="{() => applyFilters()}">
-    </div>
-    <!-- Filter by Active -->
-    <div>
-      <label for="filterActive">Active:</label>
-      <select id="filterActive" name="filterActive" onchange="{() => applyFilters()}">
-        <option value="">All</option>
-        <option value="true">Yes</option>
-        <option value="false">No</option>
-      </select>
-    </div>
+   <!-- Filter by Department -->
+   <div>
+    <label for="filterDepartment">Department:</label>
+    <br>
+    <input type="text" id="filterDepartment" name="filterDepartment" class="filter-input" placeholder="Department" onchange="{() => applyFilters()}">
+  </div>
   </div>
 
   <!-- Filters Row 2 -->
   <div class="flex justify-between mb-4">
-    <!-- Filter by Department -->
+    <!-- Filter by Position -->
     <div>
-      <label for="filterDepartment">Department:</label>
-      <input type="text" id="filterDepartment" name="filterDepartment" placeholder="Filter by department" onchange="{() => applyFilters()}">
-    </div>
-    <!-- Filter by Location -->
-    <div>
-      <label for="filterLocation">Location:</label>
-      <input type="text" id="filterLocation" name="filterLocation" placeholder="Filter by location" onchange="{() => applyFilters()}">
+      <label for="filterPosition">Position:</label>
+      <br>
+      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Position" onchange="{() => applyFilters()}">
     </div>
     <!-- Filter by Experience -->
     <div>
       <label for="filterExperience">Experience:</label>
-      <select id="filterExperience" name="filterExperience" onchange="{() => applyFilters()}">
+      <br>
+      <select id="filterExperience" name="filterExperience" class="filter-input" onchange="{() => applyFilters()}">
         <option value="">All</option>
         <option value="0-1">0-1 years</option>
         <option value="1-3">1-3 years</option>
@@ -144,69 +140,26 @@
         <option value="5+">5+ years</option>
       </select>
     </div>
-  </div>
-
-  <!-- Filters Row 3 -->
-  <div class="flex justify-between mb-4">
-    <!-- Filter by Education -->
+    <!-- Filter by Active -->
     <div>
-      <label for="filterEducation">Education:</label>
-      <select id="filterEducation" name="filterEducation" onchange="{() => applyFilters()}">
+      <label for="filterActive">Active:</label>
+      <br>
+      <select id="filterActive" name="filterActive" class="filter-input" onchange="{() => applyFilters()}">
         <option value="">All</option>
-        <option value="bachelor">Bachelor's</option>
-        <option value="master">Master's</option>
-        <option value="phd">PhD</option>
-      </select>
-    </div>
-    <!-- Filter by Language -->
-    <div>
-      <label for="filterLanguage">Language:</label>
-      <input type="text" id="filterLanguage" name="filterLanguage" placeholder="Filter by language" onchange="{() => applyFilters()}">
-    </div>
-    <!-- Filter by Skill -->
-    <div>
-      <label for="filterSkill">Skill:</label>
-      <input type="text" id="filterSkill" name="filterSkill" placeholder="Filter by skill" onchange="{() => applyFilters()}">
-    </div>
-  </div>
-
-  <!-- Filters Row 4 -->
-  <div class="flex justify-between mb-4">
-    <!-- Filter by Gender -->
-    <div>
-      <label for="filterGender">Gender:</label>
-      <select id="filterGender" name="filterGender" onchange="{() => applyFilters()}">
-        <option value="">All</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
-    <!-- Filter by Nationality -->
-    <div>
-      <label for="filterNationality">Nationality:</label>
-      <input type="text" id="filterNationality" name="filterNationality" placeholder="Filter by nationality" onchange="{() => applyFilters()}">
-    </div>
-    <!-- Filter by Marital Status -->
-    <div>
-      <label for="filterMaritalStatus">Marital Status:</label>
-      <select id="filterMaritalStatus" name="filterMaritalStatus" onchange="{() => applyFilters()}">
-        <option value="">All</option>
-        <option value="single">Single</option>
-        <option value="married">Married</option>
-        <option value="divorced">Divorced</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
       </select>
     </div>
   </div>
 
  <!-- Buttons -->
-<div class="flex justify-end mb-4">
-  <button onclick="applyFilters()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Apply</button>
-  <button onclick="clearFilters()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear</button>
+<div class="flex justify-end mb-1">
+  <button onclick="applyFilters()" class="bg-green-700 active:bg-green-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2">Apply</button>
+  <button onclick="clearFilters()" class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">Clear</button>
 </div>
 
   <!-- Divider -->
-  <hr class="my-4">
+  <hr class="my-2">
 
   <!-- Table -->
   <table class="min-w-full">
@@ -238,14 +191,15 @@
     </tbody>
   </table>
 
-  <!-- Show x Records -->
-  <div class="mt-4">
-    <label for="showRecords">Show Records:</label>
-    <select id="showRecords" onchange="{() => showRecords(this.value)}">
-      <option value="10">10</option>
-      <option value="20">20</option>
-      <option value="30">30</option>
-    </select>
-  </div>
+<!-- Show x Records -->
+<div class="mt-4">
+  <label for="showRecords">Show Records:</label>
+  <select id="showRecords" class="small-dropdown rounded" onchange="{() => showRecords(this.value)}">
+    <option value="10">10</option>
+    <option value="20">20</option>
+    <option value="30">30</option>
+  </select>
+</div>
+
 </div>
 
