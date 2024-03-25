@@ -97,7 +97,9 @@
 </script>
 
 
-<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16 px-4 py-10">
+<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+
+  
   <!-- Filters Row 1 -->
   <div class="flex justify-between mb-4">
     <!-- Filter by EmployeeID -->
@@ -154,7 +156,7 @@
 
  <!-- Buttons -->
 <div class="flex justify-end mb-1">
-  <button onclick="applyFilters()" class="bg-green-700 active:bg-green-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2">Apply</button>
+  <button onclick="applyFilters()" class="bg-green-500 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2">Apply</button>
   <button onclick="clearFilters()" class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">Clear</button>
 </div>
 

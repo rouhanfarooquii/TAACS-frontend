@@ -6,9 +6,9 @@ import TableDropdown from "../../components/Dropdowns/TableDropdown.svelte";
 export let color = "light";
 </script>
 
-<div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}"
+<div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}"
 >
-<div class="rounded-t mb-0 px-4 py-3 border-0">
+<div class="rounded-t mb-0 px-4 py-10 border-0">
 
 <div class="flex flex-wrap items-center">
   
