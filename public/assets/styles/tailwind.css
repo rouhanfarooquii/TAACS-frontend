@@ -4090,6 +4090,10 @@ select {
   background-color: rgba(4, 120, 87, var(--tw-bg-opacity)); /* Adjust the color values to represent green */
 }
 
+.text-green-500 { 
+  --tw-bg-opacity: 1;
+  color: #48bb78; }
+
 .filter-input {
   width: 200px; /* Adjust the width as needed */
 }
