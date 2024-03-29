@@ -1,7 +1,7 @@
 <script>
     // core components
-    import CardTable from "../../components/Cards/CardTable.svelte";
-    import TableDropdown from "../../components/Dropdowns/TableDropdown.svelte";
+    import CardTable from "../../../components/Cards/CardTable.svelte";
+    import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
   
     export let color = "light";
     

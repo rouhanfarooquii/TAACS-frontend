@@ -8,17 +8,18 @@
   import FooterAdmin from "components/Footers/FooterAdmin.svelte";
 
   // pages for this layout
-  import Dashboard from "views/admin/Dashboard.svelte";
-  import AccessControl from "views/admin/AccessControl.svelte";
-  import Payroll from "views/admin/Payroll.svelte";
-  import RoomBooking from "views/admin/RoomBooking.svelte";
-  import Employee from "views/admin/Employee.svelte";
-  import LeaveRequest from "../views/admin/LeaveRequest.svelte";
-  import ShiftTiming from "../views/admin/ShiftTiming.svelte";
-  import Parking from "../views/admin/Parking.svelte";
-  import Visitors from "../views/admin/Visitors.svelte";
-  import Emergency from "../views/admin/Emergency.svelte";
-  import DeviceManagement from "../views/admin/DeviceManagement.svelte";
+  import Dashboard from "views/admin/Dashboard/Dashboard.svelte";
+  import AccessControl from "views/admin//AccessControl/AccessControl.svelte";
+  import Payroll from "views/admin/Payroll/Payroll.svelte";
+  import RoomBooking from "views/admin/RoomBooking/RoomBooking.svelte";
+  import Employee from "views/admin/Employee/Employee.svelte";
+  import LeaveRequest from "../views/admin/LeaveRequest/LeaveRequest.svelte";
+  import ShiftTiming from "../views/admin/ShiftTiming/ShiftTiming.svelte";
+  import Parking from "../views/admin//Parking/Parking.svelte";
+  import Visitors from "../views/admin/Visitors/Visitors.svelte";
+  import Emergency from "../views/admin/Emergency/Emergency.svelte";
+  import DeviceManagement from "../views/admin/DeviceManagement/DeviceManagement.svelte";
+  import AddEmployee from "../views/admin/Employee/AddEmployee.svelte";
 
   export let location;
   export let admin = "";
@@ -42,6 +43,7 @@
         <Route path="parking" component="{Parking}" />
         <Route path="visitors" component="{Visitors}" />
         <Route path="emergency" component="{Emergency}" />
+        <Route path="addemployee" component="{AddEmployee}" />
       </Router>
       <FooterAdmin />
     </div>
