@@ -66,6 +66,7 @@
 </div> -->
 
 <script>
+  import { navigate } from 'svelte-routing';
   let employees = []; // Replace with actual employee data
 
   let filters = {
@@ -96,7 +97,7 @@
   }
 
   function navigateToAddEmployee() {
-    navigate('/addemployee');
+    navigate('/admin/Employee/addemployee');
   }
 </script>
 
