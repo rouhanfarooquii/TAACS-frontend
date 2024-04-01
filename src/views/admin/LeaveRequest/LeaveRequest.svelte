@@ -1,16 +1,51 @@
 <script>
   // core components
   import CardTable from "components/Cards/CardTable.svelte";
+  import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
+  // import PendingRequest from "views/admin/LeaveRequest/PendingRequest.svelte";
+  // import ApprovedRequest from "views/admin/LeaveRequest/ApprovedRequest.svelte";
+  // import RejectedRequest from "views/admin/LeaveRequest/RejectedRequest.svelte";
+  import { onMount } from 'svelte';
   export let location;
-  export let color = "light";
+  export let color = "light"
+  let selectedState = 'all'; // Initial state
 
-  // Define the leave requests data as an array of objects
+  const handleTabClick = (state) => {
+    selectedState = state;
+  };
+
   let leaveRequests = [
-    { name: "John Doe", role: "Software Engineer", startDate: "2024-03-26", endDate: "2024-03-29", reason: "Doctor's Appointment" },
-    { name: "Jane Smith", role: "Marketing Manager", startDate: "2024-04-09", endDate: "2024-04-12", reason: "Family Emergency" },
-    { name: "Doe Wigan", role: "Frontend Developer", startDate: "2024-03-06", endDate: "2024-03-09", reason: "Doctor's Appointment" },
-    { name: "Bill Gates", role: "CEO", startDate: "2024-03-20", endDate: "2024-03-21", reason: "Sick Leave" }
+      { name: "John Doe", role: "Software Engineer", from: "2024-03-26", to: "2024-03-29", reason: "Doctor's Appointment", status: "Pending" },
+      { name: "Jane Smith", role: "Marketing Manager", from: "2024-04-09", to: "2024-04-12", reason: "Family Emergency", status: "Approved" },
+      { name: "Doe Wigan", role: "Frontend Developer", from: "2024-03-06", to: "2024-03-09", reason: "Doctor's Appointment", status: "Rejected" },
+      { name: "Alice Johnson", role: "HR Manager", from: "2024-04-01", to: "2024-04-02", reason: "Personal Leave", status: "Approved" },
+      { name: "Bob Brown", role: "Sales Representative", from: "2024-03-15", to: "2024-03-16", reason: "Vacation", status: "Rejected" },
+      { name: "Eve Adams", role: "Product Manager", from: "2024-03-10", to: "2024-03-11", reason: "Work Conference", status: "Pending" },
+      { name: "Charlie Davis", role: "Finance Analyst", from: "2024-04-05", to: "2024-04-08", reason: "Family Vacation", status: "Pending" },
+      { name: "Grace Lee", role: "Operations Coordinator", from: "2024-03-25", to: "2024-03-26", reason: "Medical Appointment", status: "Approved" },
+      { name: "Frank Miller", role: "IT Support Specialist", from: "2024-04-12", to: "2024-04-13", reason: "Training Workshop", status: "Rejected" },
+      { name: "Bill Gates", role: "CEO", from: "2024-03-20", to: "2024-03-21", reason: "Sick Leave", status: "Pending" }
   ];
+
+  let selectedTab = ''; // Default selected tab
+
+  function selectTab(tab) {
+    selectedTab = tab;
+  }
+
+  // Example function to simulate fetching data from a database
+  function fetchData() {
+    // Simulate fetching data from a database
+    setTimeout(() => {
+      // Assume data is fetched successfully
+      selectTab('approve'); // Set 'approve' tab as selected
+    }, 1000);
+  }
+
+  // Simulate fetching data when the component mounts
+  onMount(() => {
+    fetchData();
+  });
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -21,28 +56,29 @@
     </h3>
   </div>
   <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-    <ul class="flex flex-wrap -mb-px pb-16">
+    <ul class="flex flex-wrap -mb-px pb-10">
       <li class="me-2">
-        <a href="#" class="inline-block p-4 text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg  hover:border-blueGray-800 dark:hover:text-blueGray-200">Pending</a>
+        <a href="#" class="inline-block p-4 {selectedTab === 'pending' ? 'text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('pending')}>Pending</a>
       </li>
       <li class="me-2">
-        <a href="#" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-blueGray-800 hover:border-blueGray-600 dark:hover:text-blueGray-200">Approve</a>
+        <a href="#" class="inline-block p-4 {selectedTab === 'approved' ? 'text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('approved')}>Approved</a>
       </li>
       <li class="me-2">
-        <a href="#" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-blueGray-800 hover:border-blueGray-800 dark:hover:text-blueGray-200">Rejected</a>
+        <a href="#" class="inline-block p-4 {selectedTab === 'rejected' ? 'text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('rejected')}>Rejected</a>
       </li>
     </ul>
   </div>
 
+  {#if selectedTab === 'pending'}
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-    {#each leaveRequests as request}
+    {#each leaveRequests.filter(request => request.status === 'Pending') as request}
       <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <h3 class="text-4xl font-bold text-blueGray-800">{request.name}</h3>
         <p class="text-blueGray-400 pb-6">{request.role}</p>
         <div class="flex items-center mb-4">
-          <span class="mr-1">{request.startDate}</span>
+          <span class="mr-1">{request.from}</span>
           <span>&rarr;</span>
-          <span class="ml-1">{request.endDate}</span>
+          <span class="ml-1">{request.to}</span>
         </div>
         <div class="bg-gray-100 p-4 rounded-lg shadow dark:bg-gray-700">
           <p>Leave Reason: {request.reason}</p>
@@ -54,4 +90,111 @@
       </div>
     {/each}
   </div>
+{/if}
+
+{#if selectedTab === 'approved'}
+<div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
+  <div class="block w-full overflow-x-auto">
+    <table class="items-center w-full bg-transparent border-collapse">
+      <thead>
+        <tr>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Employee Name
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Position
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            From 
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            To 
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Reason 
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+          {#each leaveRequests.filter(request => request.status === 'Approved') as request}
+          <tr>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+              <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
+            </td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.role}</td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.from}</td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.to}</td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.reason}</td>
+            <i class="fas fa-circle text-green-500 mr-2"></i>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+</div>
+{/if}
+
+{#if selectedTab === 'rejected'}
+<div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
+  <div class="block w-full overflow-x-auto">
+    <table class="items-center w-full bg-transparent border-collapse">
+      <thead>
+        <tr>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Employee Name
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Position
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            From 
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            To 
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Reason 
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+          {#each leaveRequests.filter(request => request.status === 'Rejected') as request}
+          <tr>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+              <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
+            </td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.role}</td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.from}</td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.to}</td>
+            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.reason}</td>
+            <i class="fas fa-circle text-red-500 mr-2"></i>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+</div>
+{/if}
+
+
 </div>
