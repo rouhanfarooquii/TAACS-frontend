@@ -4131,3 +4131,33 @@ button {
   cursor: pointer;
   float: right;
 }
+
+.divider {
+  border-right: 1px solid #ccc; /* Vertical divider */
+  height: auto; /* Adjust the height of the divider */
+  margin: 0 20px; /* Adjust the spacing around the divider */
+}
+
+.add-employee {
+  display: flex;
+  justify-content: flex-start; /* Align items to the start (left) */
+}
+
+.left-section {
+  margin-right: 20px; /* Adjust the spacing between image and button */
+}
+
+.filters {
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
+  margin-left: 20px; /* Adjust the spacing between the divider and filters */
+  margin-top: 10px; /* Add margin-top to separate rows */
+}
+
+.filter {
+  margin-right: 20px; /* Adjust the spacing between filters */
+}
+
+.filter label {
+  margin-right: 5px;
+}

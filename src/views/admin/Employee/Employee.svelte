@@ -97,7 +97,7 @@
   }
 
   function navigateToAddEmployee() {
-    navigate('/admin/Employee/addemployee');
+    navigate('/admin/addemployee');
   }
 </script>
 
