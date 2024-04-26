@@ -25,7 +25,13 @@
       employeeType: '',
       gender: '',
       email: '',
-      address: '' // Add the address field
+      address: '', 
+      dateOfBirth: '',
+      cardIdNumber: '',
+      personalPassword: '',
+      fingerIndex1: '',
+      fingerIndex2: '',
+      isFingerAdded: ''
   };
 
   const image = "../assets/img/10.jpg";
@@ -65,7 +71,7 @@
       <!-- svelte-ignore a11y-img-redundant-alt -->
       <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
       <input type="file" accept="image/*" id="profile-pic" style="display: none" />
-      <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 cursor-pointer">Upload</label>
+      <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
     </div>
 
     <div class="divider"></div>
@@ -124,42 +130,85 @@
     </div>
   </div>
 
-    <!-- Filters Row 3 -->
-    <div class="flex justify-between mb-4">
-      <!-- Filter by Position -->
-      <div>
-        <label for="filterPosition">Email:</label>
-        <br>
-        <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" onchange="{() => applyFilters()}">
-      </div>
-      <!-- Filter by Experience -->
-      <div>
-        <label for="filterExperience">Employee Types:</label>
-        <br>
-        <select id="filterExperience" name="filterExperience" class="filter-input" onchange="{() => applyFilters()}">
-          <option value="">All</option>
-          <option value="0-1">0-1 years</option>
-          <option value="1-3">1-3 years</option>
-          <option value="3-5">3-5 years</option>
-          <option value="5+">5+ years</option>
-        </select>
-      </div>
-      <!-- Filter by Active -->
-      <div>
-        <label for="filterActive">Gender:</label>
-        <br>
-        <select id="filterActive" name="filterActive" class="filter-input" onchange="{() => applyFilters()}">
-          <option value="">All</option>
-          <option value="true">Yes</option>
-          <option value="false">No</option>
-        </select>
-      </div>
+  <!-- Filters Row 3 -->
+  <div class="flex justify-between mb-4">
+    <!-- Filter by Position -->
+    <div>
+      <label for="filterPosition">Email:</label>
+      <br>
+      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" onchange="{() => applyFilters()}">
     </div>
+    <!-- Filter by Experience -->
+    <div>
+      <label for="filterExperience">Employee Types:</label>
+      <br>
+      <select id="filterExperience" name="filterExperience" class="filter-input" onchange="{() => applyFilters()}">
+        <option value="">All</option>
+        <option value="0-1">0-1 years</option>
+        <option value="1-3">1-3 years</option>
+        <option value="3-5">3-5 years</option>
+        <option value="5+">5+ years</option>
+      </select>
+    </div>
+    <!-- Filter by Active -->
+    <div>
+      <label for="filterActive">Gender:</label>
+      <br>
+      <select id="filterActive" name="filterActive" class="filter-input" onchange="{() => applyFilters()}">
+        <option value="">All</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
+    </div>
+  </div>
     
-    <!-- Additional field for address -->
-    <div class="mb-4">
+  <!-- Filters Row 4 -->
+  <div class="flex justify-between mb-4">
+    <div class="w-full">
       <label for="address">Address:</label>
       <br>
-      <input type="text" id="address" name="address" class="filter-input" placeholder="Address" bind:value="{employee.address}" onchange="{() => applyFilters()}">
+      <input type="text" id="address" name="address" class="w-full" placeholder="Address" bind:value="{employee.address}">
     </div>
+  </div>
+
+  <!-- Filters Row 5 -->
+<div class="flex justify-between mb-4">
+  <div>
+    <label for="dateOfBirth">Date of Birth:</label>
+    <br>
+    <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{employee.dateOfBirth}">
+  </div>
+  <!-- Filter by Card ID Number -->
+  <div>
+    <label for="cardIdNumber">Card ID Number:</label>
+    <br>
+    <input type="text" id="cardIdNumber" name="cardIdNumber" class="filter-input" placeholder="Card ID Number" bind:value="{employee.cardIdNumber}">
+  </div>
+  <!-- Filter by Personal Password -->
+  <div>
+    <label for="personalPassword">Personal Password:</label>
+    <br>
+    <input type="password" id="personalPassword" name="personalPassword" class="filter-input" placeholder="Personal Password" bind:value="{employee.personalPassword}">
+  </div>
+</div>
+
+<!-- Filters Row 6 -->
+<div class="flex justify-between mb-4">
+  <div>
+    <label for="fingerIndex1">Finger Index 1:</label>
+    <br>
+    <input type="text" id="fingerIndex1" name="fingerIndex1" class="filter-input1" placeholder="Finger Index 1" bind:value="{employee.fingerIndex1}">
+  </div>
+  <!-- Filter by Card ID Number -->
+  <div class="w-1/3 px-3">
+    <label for="fingerIndex2">Finger Index 2:</label>
+    <br>
+    <input type="text" id="fingerIndex2" name="fingerIndex2" class="filter-input1" placeholder="Finger Index 2" bind:value="{employee.fingerIndex2}">
+  </div>
+  <div class="w-1/3 pr-15 pt-6">
+    <input type="checkbox" id="isFingerAdded" name="isFingerAdded" class="filter-checkbox">
+    <label for="isFingerAdded">Is Finger Added</label>
+  </div>
+</div>
+
 </div>
