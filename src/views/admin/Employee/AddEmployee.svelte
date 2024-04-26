@@ -64,6 +64,40 @@
     const fileInput = document.getElementById('profile-pic');
     fileInput.addEventListener('change', handleFileInputChange);
   });
+
+  let listType = 'Permanent_List';
+  let showValidDateTimeFields = false;
+  let showValidDateAndTimeFields = false;
+  let showEffectTimesField = false;
+
+  function handleListTypeChange() {
+    switch (listType) {
+      case 'Temporary_List':
+        showValidDateTimeFields = true;
+        showValidDateAndTimeFields = false;
+        showEffectTimesField = false;
+        break;
+      case 'Temporary_List2':
+        showValidDateTimeFields = false;
+        showValidDateAndTimeFields = true;
+        showEffectTimesField = false;
+        break;
+      case 'Temporary_List3':
+        showValidDateTimeFields = false;
+        showValidDateAndTimeFields = false;
+        showEffectTimesField = true;
+        break;
+      default:
+        showValidDateTimeFields = false;
+        showValidDateAndTimeFields = false;
+        showEffectTimesField = false;
+    }
+  }
+
+  // Invoke handleListTypeChange initially in case the default is not 'Permanent_List'
+  handleListTypeChange();
+
+
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -210,5 +244,73 @@
     <label for="isFingerAdded">Is Finger Added</label>
   </div>
 </div>
+
+<!-- List Type Row -->
+<div class="flex justify-between mb-4">
+  <div>
+    <label for="listType">List Type:</label>
+    <br>
+    <select id="listType" class="filter-input" bind:value="{listType}" on:change="{handleListTypeChange}">
+      <option value="Permanent_List">Permanent_List</option>
+      <option value="Temporary_List">Temporary_List</option>
+      <option value="Temporary_List2">Temporary_List2</option>
+      <option value="Temporary_List3">Temporary_List3</option>
+    </select>
+  </div>
+</div>
+
+{#if showValidDateTimeFields}
+  <!-- Valid Begin and End DateTime Fields -->
+  <div class="flex mb-4">
+    <div>
+      <label for="validBeginDateTime">Valid Begin DateTime:</label>
+      <br>
+      <input type="date" id="validBeginDateTime" name="validBeginDateTime" class="filter-input">
+    </div>
+    <div class = "ml-9">
+      <label for="validEndDateTime">Valid End DateTime:</label>
+      <br>
+      <input type="date" id="validEndDateTime" name="validEndDateTime" class="filter-input">
+    </div>
+  </div>
+{/if}
+
+{#if showValidDateAndTimeFields}
+  <!-- Valid Begin Date and Time Fields -->
+  <div class="flex justify-between mb-4">
+    <div>
+      <label for="validBeginDate">Valid Begin Date:</label>
+      <br>
+      <input type="date" id="validBeginDate" name="validBeginDate" class="filter-input">
+    </div>
+    <div>
+      <label for="validBeginTime">Valid Begin Time:</label>
+      <br>
+      <input type="time" id="validBeginTime" name="validBeginTime" class="filter-input">
+    </div>
+    <!-- Valid End Date and Time Fields -->
+    <div>
+      <label for="validEndDate">Valid End Date:</label>
+      <br>
+      <input type="date" id="validEndDate" name="validEndDate" class="filter-input">
+    </div>
+    <div>
+      <label for="validEndTime">Valid End Time:</label>
+      <br>
+      <input type="time" id="validEndTime" name="validEndTime" class="filter-input">
+    </div>
+  </div>
+{/if}
+
+{#if showEffectTimesField}
+  <!-- Effect Times Field -->
+  <div class="flex justify-between mb-4">
+    <div>
+      <label for="effectTimes">Effect Times:</label>
+      <br>
+      <input type="text" id="effectTimes" name="effectTimes" class="filter-input">
+    </div>
+  </div>
+{/if}
 
 </div>
