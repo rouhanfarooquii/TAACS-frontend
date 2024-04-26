@@ -20,6 +20,7 @@
   import Emergency from "../views/admin/Emergency/Emergency.svelte";
   import DeviceManagement from "../views/admin/DeviceManagement/DeviceManagement.svelte";
   import AddEmployee from "../views/admin/Employee/AddEmployee.svelte";
+  import AddDevice from "../views/admin/DeviceManagement/AddDevice.svelte";
 
   export let location;
   export let admin = "";
@@ -44,6 +45,7 @@
         <Route path="visitors" component="{Visitors}" />
         <Route path="emergency" component="{Emergency}" />
         <Route path="addemployee" component="{AddEmployee}" />
+        <Route path="adddevice" component="{AddDevice}"/>
       </Router>
       <FooterAdmin />
     </div>

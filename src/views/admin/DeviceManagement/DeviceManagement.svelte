@@ -2,6 +2,11 @@
     // core components
     import CardTable from "../../../components/Cards/CardTable.svelte";
     import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
+
+    import { navigate } from 'svelte-routing';
+    function navigateToAddDevice() {
+    navigate('/admin/adddevice');
+  }
   
     export let color = "light";
     
@@ -11,6 +16,8 @@
       { name: "Device 3", id: 8741249, ip: "192.168.1.20", status: "Active" },
       { name: "Device 4", id: 524329, ip: "192.168.1.24", status: "Active" }
     ];
+
+    
   </script>
   
   <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -22,7 +29,7 @@
           </h3>
         </div>
         <button
-          class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+          class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToAddDevice}
           type="button"
         >
           Add Device
