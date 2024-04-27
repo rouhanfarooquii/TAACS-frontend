@@ -120,17 +120,17 @@ export async function handleReject(request) {
   </div>
   <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
     <ul class="flex flex-wrap -mb-px pb-10">
-      <li class="me-2">
-        <a href="#" class="inline-block p-4 {selectedTab === 'pending' ? 'text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('pending')}>Pending</a>
-      </li>
-      <li class="me-2">
-        <a href="#" class="inline-block p-4 {selectedTab === 'approved' ? 'text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('approved')}>Approved</a>
-      </li>
-      <li class="me-2">
-        <a href="#" class="inline-block p-4 {selectedTab === 'rejected' ? 'text-lightBlue-600 border-b-2 border-blue-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('rejected')}>Rejected</a>
-      </li>
+        <li class="me-2">
+            <a href="#" class="inline-block p-4 {selectedTab === 'pending' ? 'text-orange-500 border-b-2 border-orange-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('pending')}>Pending</a>
+        </li>
+        <li class="me-2">
+            <a href="#" class="inline-block p-4 {selectedTab === 'approved' ? 'text-green-500 border-b-2 border-green-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('approved')}>Approved</a>
+        </li>
+        <li class="me-2">
+            <a href="#" class="inline-block p-4 {selectedTab === 'rejected' ? 'text-red-500 border-b-2 border-red-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('rejected')}>Rejected</a>
+        </li>
     </ul>
-  </div>
+</div>
 
   {#if selectedTab === 'pending'}
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -202,7 +202,6 @@ export async function handleReject(request) {
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.from}</td>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.to}</td>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.reason}</td>
-            <i class="fas fa-circle text-green-500 mr-2"></i>
           </tr>
         {/each}
       </tbody>
@@ -254,7 +253,6 @@ export async function handleReject(request) {
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.from}</td>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.to}</td>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.reason}</td>
-            <i class="fas fa-circle text-red-500 mr-2"></i>
           </tr>
         {/each}
       </tbody>

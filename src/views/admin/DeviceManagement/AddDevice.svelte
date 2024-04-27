@@ -5,16 +5,48 @@
     let deviceId = '';
     let deviceIp = '';
   
-    function addDevice() {
-      // Perform validation if needed
-      // For simplicity, I'm assuming all fields are required
-      if (deviceName && deviceId && deviceIp) {
-        // Add the new device to your data source or perform any necessary action
+    // function addDevice() {
+    //   // Perform validation if needed
+    //   // For simplicity, I'm assuming all fields are required
+    //   if (deviceName && deviceId && deviceIp) {
+    //     // Add the new device to your data source or perform any necessary action
+    //     navigate('/admin/devicemanagement');
+    //   } else {
+    //     alert('Please fill in all fields.');
+    //   }
+    // }
+
+    async function addDevice() {
+  // Perform validation if needed
+  // For simplicity, I'm assuming all fields are required
+  if (deviceName && deviceId && deviceIp) {
+    try {
+      // Assuming you have an API endpoint to add a device
+      const response = await fetch('/api/addDevice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ deviceName, deviceId, deviceIp })
+      });
+
+      if (response.ok) {
+        // Device added successfully, navigate to the appropriate page
         navigate('/admin/devicemanagement');
       } else {
-        alert('Please fill in all fields.');
+        // Handle error response from the server
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
       }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error('Error:', error);
+      alert('An error occurred while adding the device. Please try again.');
     }
+  } else {
+    alert('Please fill in all fields.');
+  }
+}
   
     function cancel() {
       navigate('/admin/devicemanagement');

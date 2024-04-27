@@ -4173,3 +4173,13 @@ button {
 .ml-9 {
   margin-left: 3.7rem;
 }
+
+.border-green-600 {
+  --tw-border-opacity: 1;
+  border-color: rgba(72, 187, 120, var(--tw-border-opacity));
+}
+
+.border-orange-600 {
+  --tw-border-opacity: 1;
+  border-color: rgba(249, 115, 22, var(--tw-border-opacity));
+}
