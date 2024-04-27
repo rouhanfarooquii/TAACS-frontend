@@ -205,7 +205,7 @@
           </a>
         </div>
         <div class="w-1/2 text-right">
-          <a use:link href="/auth/register" class="text-blueGray-200 hover:text-blue-500">
+          <a use:link href="/auth/adminlogin" class="text-blueGray-200 hover:text-blue-500">
             <small>Login as Admin</small>
           </a>
         </div>
