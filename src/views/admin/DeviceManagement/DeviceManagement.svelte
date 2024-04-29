@@ -11,7 +11,7 @@
 
   let devices = [
       { name: "Device 1", id: 874329, ip: "192.168.1.14", status: "Active" },
-      { name: "Device 2", id: 543217, ip: "192.168.1.16", status: "Pending" },
+      { name: "Device 2", id: 543217, ip: "192.168.1.16", status: "Inactive" },
       { name: "Device 3", id: 8741249, ip: "192.168.1.20", status: "Active" },
       { name: "Device 4", id: 524329, ip: "192.168.1.24", status: "Inactive" }
   ];
@@ -93,10 +93,8 @@
                         <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                           {#if device.status === 'Active'}
                           <i class="fas fa-circle text-green-500 mr-2"></i> Active
-                          {:else if device.status === 'Inactive'}
-                          <i class="fas fa-circle text-red-500 mr-2"></i> Inactive
                           {:else}
-                          <i class="fas fa-circle text-orange-500 mr-2"></i> Pending
+                          <i class="fas fa-circle text-red-500 mr-2"></i> Inactive
                           {/if}
                         </td>
                         <td class="table-data">

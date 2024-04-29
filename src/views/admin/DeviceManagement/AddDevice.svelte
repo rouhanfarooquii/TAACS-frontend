@@ -21,6 +21,14 @@
   // For simplicity, I'm assuming all fields are required
   if (deviceName && deviceId && deviceIp) {
     try {
+      // Check if the device name is already present in the devices array
+      const isDuplicate = devices.some(device => device.name === deviceName);
+      
+      if (isDuplicate) {
+        alert('Device Name must be unique.');
+        return;
+      }
+
       // Assuming you have an API endpoint to add a device
       const response = await fetch('/api/addDevice', {
         method: 'POST',
@@ -102,4 +110,3 @@
       </div>
     </div>
   </div>
-  
