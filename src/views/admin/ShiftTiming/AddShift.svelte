@@ -2,7 +2,7 @@
     let shiftCode = '';
     let shiftDescription = '';
     let remarks = '';
-    let selectedShiftType = '';
+    let selectedShiftType = null;
     let allowArrivalTime = '';
     let arrivalFinishTime = '';
     let startTime = '';
@@ -29,6 +29,18 @@
     let textileMaxOutTime = '';
 
     export let color = "light";
+
+    function handleShiftSelection(event) {
+        const selectedShift = event.target.value;
+        
+        if (selectedShift === selectedShiftType) {
+            // If the same shift is clicked again, deselect it
+            selectedShiftType = null;
+        } else {
+            // If a different shift is clicked, select it and deselect the previous one
+            selectedShiftType = selectedShift;
+        }
+    }
 
     function saveShift() {
         const shiftData = {
@@ -64,6 +76,8 @@
         console.log("Shift data:", shiftData);
         // Here you would typically send this data to a backend server
     }
+
+    
     
 </script>
 
@@ -104,14 +118,14 @@
         <!-- Morning Shift and Night Shift -->
         <div class="ml-4 switch-label">
             <div class="switch">
-                <input type="checkbox" id="morning" value="Morning Shift" bind:group={selectedShiftType}>
+                <input type="checkbox" id="morning" value="Morning Shift" on:change={handleShiftSelection} checked={selectedShiftType === "Morning Shift"}>
                 <label class="slider" for="morning"></label>
             </div>
             <label for="morning" class="mt-2 text-sm">Morning Shift</label>
         </div>
         <div class="ml-4 switch-label">
             <div class="switch">
-                <input type="checkbox" id="night" value="Night Shift" bind:group={selectedShiftType}>
+                <input type="checkbox" id="night" value="Night Shift" on:change={handleShiftSelection} checked={selectedShiftType === "Night Shift"}>
                 <label class="slider" for="night"></label>
             </div>
             <label for="night" class="mt-2 text-sm">Night Shift</label>
@@ -119,14 +133,14 @@
         <!-- Evening Shift and Half Day Shift -->
         <div class="ml-4 switch-label">
             <div class="switch">
-                <input type="checkbox" id="evening" value="Evening Shift" bind:group={selectedShiftType}>
+                <input type="checkbox" id="evening" value="Evening Shift" on:change={handleShiftSelection} checked={selectedShiftType === "Evening Shift"}>
                 <label class="slider" for="evening"></label>
             </div>
             <label for="evening" class="mt-2 text-sm">Half Day Shift</label>
         </div>
         <div class="ml-4 switch-label">
             <div class="switch">
-                <input type="checkbox" id="halfDay" value="Half Day Shift" bind:group={selectedShiftType}>
+                <input type="checkbox" id="halfDay" value="Half Day Shift" on:change={handleShiftSelection} checked={selectedShiftType === "Half Day Shift"}>
                 <label class="slider" for="halfDay"></label>
             </div>
             <label for="halfDay" class="mt-2 text-sm">Evening Shift</label>
