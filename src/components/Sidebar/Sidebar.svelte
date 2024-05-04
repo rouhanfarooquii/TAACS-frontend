@@ -254,15 +254,15 @@
                   href="/admin/payroll"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 1
+                  Salary
                 </a>
               </li>
               <li>
                 <a
-                  href="/admin/payroll"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+                  href="/admin/bonus"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/bonus') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 2
+                  Bonus
                 </a>
               </li>
             </ul>
@@ -430,15 +430,15 @@
                   href="/admin/visitors"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 1
+                  Visitor Requests
                 </a>
               </li>
               <li>
                 <a
-                  href="/admin/visitors"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+                  href="/admin/visitorslist"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitorslist') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 2
+                  Visitor List
                 </a>
               </li>
             </ul>

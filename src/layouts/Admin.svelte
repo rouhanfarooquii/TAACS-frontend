@@ -22,6 +22,11 @@
   import AddEmployee from "../views/admin/Employee/AddEmployee.svelte";
   import AddDevice from "../views/admin/DeviceManagement/AddDevice.svelte";
   import AddShift from "../views/admin/ShiftTiming/AddShift.svelte";
+  import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
+  import Bonus from "../views/admin/Payroll/Bonus.svelte";
+
+
+    import { component } from "svelte-routing/src/Route.svelte";
 
   export let location;
   export let admin = "";
@@ -48,6 +53,8 @@
         <Route path="addemployee" component="{AddEmployee}" />
         <Route path="adddevice" component="{AddDevice}"/>
         <Route path="addshift" component="{AddShift}"/>
+        <Route path="visitorslist" component="{VisitorsList}"/>
+        <Route path="bonus" component="{Bonus}"/>
       </Router>
       <FooterAdmin />
     </div>
