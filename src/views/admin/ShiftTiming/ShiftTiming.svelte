@@ -1,21 +1,4 @@
-<!-- <script>
-    // core components
-    import CardTable from "components/Cards/CardTable.svelte";
-    export let location;
-  </script>
-  
-  <div class="w-full mb-12 px-4">
-    <CardTable color="dark" />
-  </div>
-  <div class="flex flex-wrap mt-4">
-    <div class="w-full mb-12 px-4">
-      <CardTable />
-    </div>
-    
-  </div>
-   -->
-
-   <script>
+<script>
     import { navigate } from 'svelte-routing';
     const edit1 = "../assets/img/icons8-edit-48.png"
     const view1 = "../assets/img/icons8-eye-24.png"
