@@ -1,6 +1,7 @@
 <script>
   import { reactive } from 'svelte';
   const edit1 = "../assets/img/icons8-edit-48.png"
+  const edit2 = "../assets/img/icons8-edit-48-green.png"
   export let color = "light";
 
   let users = [
@@ -21,9 +22,22 @@
     { id: '15', name: 'Olivia', department: 'Finance', designation: 'Financial Analyst', salary: 62000 },
 ];
 
-function editSalary()
-{
+// State variable to track editing mode for each user
+let editingModes = {};
 
+function toggleEditingMode(userId) {
+  editingModes[userId] = !editingModes[userId];
+}
+
+function saveSalaryChanges(user) {
+  // Logic to save the changes made to the salary
+  console.log("Saved changes for user:", user);
+  // Assuming you have backend logic here to update the salary
+}
+
+function editSalary(user) {
+  toggleEditingMode(user.id);
+  // You can perform additional actions here if needed
 }
 
   let selectedUsers = new Set();
@@ -49,6 +63,7 @@ function editSalary()
   function batchUpdate() {
     // Logic to handle batch update goes here
   }
+  
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -74,11 +89,20 @@ function editSalary()
           <td>{user.name}</td>
           <td>{user.designation}</td>
           <td>{user.department}</td>
-          <td>{user.salary}</td>
-          <td class="flex items-center">
-            <div class="mr-2">
-              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editSalary(user.id)} />
+          <td>
+            {#if editingModes[user.id]}
+              <input type="number" bind:value={user.salary}>
+              <!-- Save button -->
+              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => {saveSalaryChanges(user); toggleEditingMode(user.id);}}>
+                Save
+              </button>
+            {:else}
+              <!-- Edit button -->
+              <div class="flex items-center">
+                <span>{user.salary}</span>
+                <img src={edit1} alt="Edit" class="ml-4 h-6 w-6 cursor-pointer" on:click={() => editSalary(user)} />
             </div>
+            {/if}
           </td>
         </tr>
       {/each}
