@@ -19,12 +19,13 @@
       name: '',
       phoneNumber: '',
       location: '',
-      employeeType: '',
+      // employeeType: '',
       gender: '',
       email: '',
       address: '', 
       dateOfBirth: '',
       cardIdNumber: '',
+      reasonForVisiting: '',
       fingerIndex1: '',
       fingerIndex2: '',
       isFingerAdded: ''
@@ -87,16 +88,12 @@
     <br>
     <input type="text" id="filterDepartment" name="filterDepartment" class="filter-input" placeholder="Mobile Number" onchange="{() => applyFilters()}">
   </div>
+  <!-- Filter by Position -->
+  <div>
+    <label for="filterPosition">Location:</label>
+    <br>
+    <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Location" onchange="{() => applyFilters()}">
   </div>
-
-  <!-- Filters Row 2 -->
-  <div class="flex justify-between mb-4">
-    <!-- Filter by Position -->
-    <div>
-      <label for="filterPosition">Location:</label>
-      <br>
-      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Location" onchange="{() => applyFilters()}">
-    </div>
   </div>
 
   <!-- Filters Row 3 -->
@@ -107,8 +104,13 @@
       <br>
       <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" onchange="{() => applyFilters()}">
     </div>
-    <!-- Filter by Experience -->
     <div>
+      <label for="dateOfBirth">Date of Birth:</label>
+      <br>
+      <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{employee.dateOfBirth}">
+    </div>
+    <!-- Filter by Experience -->
+    <!-- <div>
       <label for="filterExperience">Employee Types:</label>
       <br>
       <select id="filterExperience" name="filterExperience" class="filter-input" onchange="{() => applyFilters()}">
@@ -118,7 +120,7 @@
         <option value="3-5">3-5 years</option>
         <option value="5+">5+ years</option>
       </select>
-    </div>
+    </div> -->
     <!-- Filter by Active -->
     <div>
       <label for="filterActive">Gender:</label>
@@ -141,17 +143,17 @@
   </div>
 
   <!-- Filters Row 5 -->
-<div class="flex justify-between mb-4">
-  <div>
-    <label for="dateOfBirth">Date of Birth:</label>
-    <br>
-    <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{employee.dateOfBirth}">
-  </div>
+<div class="flex mb-4">
   <!-- Filter by Card ID Number -->
   <div>
     <label for="cardIdNumber">Card ID Number:</label>
     <br>
     <input type="text" id="cardIdNumber" name="cardIdNumber" class="filter-input" placeholder="Card ID Number" bind:value="{employee.cardIdNumber}">
+  </div>
+  <div class="ml-12">
+    <label for="filterreasonForVisiting">Reason for visiting:</label>
+    <br>
+    <textarea id="filterreasonForVisiting" name="filterreasonForVisiting" class="filter-input" placeholder="Reason for visiting" onchange="{() => applyFilters()}"></textarea>
   </div>
 </div>
 
@@ -172,6 +174,11 @@
     <input type="checkbox" id="isFingerAdded" name="isFingerAdded" class="filter-checkbox">
     <label for="isFingerAdded">Is Finger Added</label>
   </div>
+</div>
+<div class="flex justify-end mb-4">
+  <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
+    Submit
+  </button>
 </div>
 
 </div>

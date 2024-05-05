@@ -4223,6 +4223,10 @@ button {
   margin-left: 5.2rem;
 }
 
+.ml-12 {
+  margin-left: 12rem;
+}
+
 .border-green-600 {
   --tw-border-opacity: 1;
   border-color: rgba(72, 187, 120, var(--tw-border-opacity));
