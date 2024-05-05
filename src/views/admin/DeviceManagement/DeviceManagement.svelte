@@ -2,10 +2,13 @@
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
   import { navigate } from 'svelte-routing';
+  import AddDeviceModal from './AddDeviceModal.svelte';
 
-  function navigateToAddDevice() {
-      navigate('/admin/adddevice');
-  }
+  let isAddDeviceModalOpen = false;
+
+  const openAddDeviceModal = () => {
+    isAddDeviceModalOpen = true;
+  };
 
   export let color = "light";
 
@@ -51,11 +54,13 @@
           </h3>
         </div>
         <button
-          class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToAddDevice}
+          class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
           type="button"
+          on:click={openAddDeviceModal}
         >
           Add Device
         </button>
+        <AddDeviceModal isOpen={isAddDeviceModalOpen} />
       </div>
     </div>
     <div class="block w-full overflow-x-auto">
