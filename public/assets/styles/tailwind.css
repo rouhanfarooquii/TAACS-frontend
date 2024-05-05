@@ -4314,3 +4314,15 @@ input:checked + .slider:before {
 .switch-label .switch {
   margin-right: 10px;
 }
+
+.salary-input {
+  /* Adjust these properties to customize the input box */
+  width: 80px; /* Set the width */
+  padding: 5px; /* Add padding */
+}
+
+.icon-button {
+  width: 1.5rem; /* Set the width of the icon */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 100%; /* Ensure the icon doesn't exceed its container's width */
+}

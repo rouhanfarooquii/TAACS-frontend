@@ -1,11 +1,18 @@
 <script>
     import { navigate } from 'svelte-routing';
-    const edit1 = "../assets/img/icons8-edit-48.png"
+    const edit1 = "../assets/img/icons8-edit-24.png"
     const view1 = "../assets/img/icons8-eye-24.png"
 export let color = "light";
-    let shifts = [
-        { id: 0, description: 'Off Day', startTime: '00:00', endTime: '00:00', morningShift: false, eveningShift: false, nightShift: false }
-    ];
+let shifts = [
+    { id: 0, description: 'Off Day', startTime: '00:00', endTime: '00:00', morningShift: false, eveningShift: false, nightShift: false },
+    { id: 1, description: 'Morning Shift', startTime: '08:00', endTime: '16:00', morningShift: true, eveningShift: false, nightShift: false },
+    { id: 2, description: 'Evening Shift', startTime: '16:00', endTime: '00:00', morningShift: false, eveningShift: true, nightShift: false },
+    { id: 3, description: 'Night Shift', startTime: '00:00', endTime: '08:00', morningShift: false, eveningShift: false, nightShift: true },
+    { id: 4, description: 'Full Day Shift', startTime: '08:00', endTime: '00:00', morningShift: true, eveningShift: true, nightShift: false },
+    { id: 5, description: 'Part-Time Morning Shift', startTime: '08:00', endTime: '12:00', morningShift: true, eveningShift: false, nightShift: false },
+    { id: 9, description: 'Weekend Night Shift', startTime: '00:00', endTime: '08:00', morningShift: false, eveningShift: false, nightShift: true }
+];
+
 
     function deleteShift(id) {
         shifts = shifts.filter(shift => shift.id !== id);
@@ -66,7 +73,6 @@ export let color = "light";
         <thead>
             <tr>
               <th><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
-                <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Shift Code</th>
                 <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Description</th>
                 <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Start Time</th>
                 <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">End Time</th>
@@ -80,13 +86,12 @@ export let color = "light";
             {#each shifts as shift (shift.id)}
             <tr>
               <td><input type="checkbox" checked={selectedShifts.has(shifts.id)} class="rounded" on:click={() => {console.log(selectedShifts.has(shifts.id)); toggleSelection(shifts.id)}}></td>
-                <td>{shift.id}</td>
                 <td>{shift.description}</td>
                 <td>{shift.startTime}</td>
                 <td>{shift.endTime}</td>
-                <td><input type="checkbox" bind:checked={shift.morningShift} /></td>
-                <td><input type="checkbox" bind:checked={shift.eveningShift} /></td>
-                <td><input type="checkbox" bind:checked={shift.nightShift} /></td>
+                <td><input type="checkbox" bind:checked={shift.morningShift} disabled /></td>
+                <td><input type="checkbox" bind:checked={shift.eveningShift} disabled /></td>
+                <td><input type="checkbox" bind:checked={shift.nightShift} disabled /></td>
                 <td class="flex items-center">
                   <div class="mr-2">
                     <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editShift(shift.id)} />

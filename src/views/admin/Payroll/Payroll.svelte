@@ -1,10 +1,10 @@
 <script>
   import { reactive } from 'svelte';
-  const edit1 = "../assets/img/icons8-edit-48.png"
-  const edit2 = "../assets/img/icons8-edit-48-green.png"
+  const edit1 = "../assets/img/icons8-edit-24.png"
+  const edit2 = "../assets/img/icons8-tick-24.png"
   export let color = "light";
 
-  let users = [
+  let salaries = [
     { id: '1', name: 'Alice', department: 'Sales', designation: 'Sales Manager', salary: 80000 },
     { id: '2', name: 'Bob', department: 'Engineering', designation: 'Software Engineer', salary: 70000 },
     { id: '3', name: 'Charlie', department: 'Marketing', designation: 'Marketing Specialist', salary: 60000 },
@@ -73,8 +73,6 @@ function editSalary(user) {
     <table>
       <thead>
         <tr>
-          <th><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">UserID</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Name</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designation</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department</th>
@@ -82,30 +80,35 @@ function editSalary(user) {
         </tr>
       </thead>
       <tbody>
-        {#each users as user (user.id)}
+        {#each salaries as user (user.id)}
         <tr>
-          <td><input type="checkbox" checked={selectedUsers.has(user.id)} class="rounded" on:click={() => {console.log(selectedUsers.has(user.id)); toggleSelection(user.id)}}></td>
-          <td>{user.id}</td>
           <td>{user.name}</td>
           <td>{user.designation}</td>
           <td>{user.department}</td>
           <td>
-            {#if editingModes[user.id]}
-              <input type="number" bind:value={user.salary}>
-              <!-- Save button -->
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => {saveSalaryChanges(user); toggleEditingMode(user.id);}}>
-                Save
-              </button>
-            {:else}
-              <!-- Edit button -->
-              <div class="flex items-center">
+            <!-- Salary -->
+            <div class="flex items-center">
+              {#if editingModes[user.id]}
+                <input type="number" class="salary-input" bind:value={user.salary}>
+              {:else}
                 <span>{user.salary}</span>
-                <img src={edit1} alt="Edit" class="ml-4 h-6 w-6 cursor-pointer" on:click={() => editSalary(user)} />
+              {/if}
             </div>
-            {/if}
+          </td>
+          <td>
+            <!-- Edit button -->
+            <div class="flex items-center">
+              {#if editingModes[user.id]}
+                <!-- Save button -->
+                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(user); toggleEditingMode(user.id);}}>
+              {:else}
+                <!-- Edit button -->
+                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(user)} />
+              {/if}
+            </div>
           </td>
         </tr>
-      {/each}
+        {/each}
       </tbody>
     </table>
   </div>

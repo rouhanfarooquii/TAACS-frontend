@@ -1,20 +1,9 @@
-<!-- <script>
-  // core components
-  import CardSettings from "components/Cards/CardSettings.svelte";
-  import CardProfile from "components/Cards/CardProfile.svelte";
-  export let location;
-</script> -->
-
-<!-- <div class="flex flex-wrap">
-  <div class="w-full lg:w-8/12 px-4">
-    <CardSettings />
-  </div>
-  <div class="w-full lg:w-4/12 px-4">
-    <CardProfile />
-  </div>
-</div> -->
-
 <script>
+  import { writable } from 'svelte';
+
+  // Replace with your backend API base URL
+  const API_URL = 'your_backend_api_url';
+
   let employee = {
       name: '',
       phoneNumber: '',
@@ -33,9 +22,23 @@
 
   const image = "../assets/img/10.jpg";
 
-  function handleSubmit() {
-      // Handle form submission logic here
-      console.log(employee);
+  async function handleSubmit() {
+    try {
+      const response = await fetch(`${API_URL}/visitors`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify($employee), // Use spread operator to access writable value
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Visitor submitted successfully:', data);
+      // Handle successful submission (e.g., clear form, show success message)
+    } catch (error) {
+      console.error('Error submitting visitor:', error);
+      // Handle errors appropriately (e.g., display error message to user)
+    }
   }
 
   function navigateToAddEmployee() {

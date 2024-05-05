@@ -90,7 +90,7 @@ export async function handleReject(request) {
   }
 }
 
-  let selectedTab = ''; // Default selected tab
+  let selectedTab = 'pending'; // Default selected tab
 
   function selectTab(tab) {
     selectedTab = tab;
