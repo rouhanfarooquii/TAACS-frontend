@@ -258,11 +258,7 @@
     </select>
   </div>
 </div>
-<div class="flex justify-end mb-4">
-  <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
-    Submit
-  </button>
-</div>
+
 
 {#if showValidDateTimeFields}
   <!-- Valid Begin and End DateTime Fields -->
@@ -317,5 +313,11 @@
     </div>
   </div>
 {/if}
+
+<div class="flex justify-end mb-4">
+  <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
+    Submit
+  </button>
+</div>
 
 </div>

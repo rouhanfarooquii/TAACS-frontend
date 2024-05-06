@@ -22,24 +22,24 @@
 
   const image = "../assets/img/10.jpg";
 
-  async function handleSubmit() {
-    try {
-      const response = await fetch(`${API_URL}/visitors`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify($employee), // Use spread operator to access writable value
-      });
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-      const data = await response.json();
-      console.log('Visitor submitted successfully:', data);
-      // Handle successful submission (e.g., clear form, show success message)
-    } catch (error) {
-      console.error('Error submitting visitor:', error);
-      // Handle errors appropriately (e.g., display error message to user)
-    }
-  }
+  // async function handleSubmit() {
+  //   try {
+  //     const response = await fetch(`${API_URL}/visitors`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify($employee), // Use spread operator to access writable value
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error(`Request failed with status ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     console.log('Visitor submitted successfully:', data);
+  //     // Handle successful submission (e.g., clear form, show success message)
+  //   } catch (error) {
+  //     console.error('Error submitting visitor:', error);
+  //     // Handle errors appropriately (e.g., display error message to user)
+  //   }
+  // }
 
   function navigateToAddEmployee() {
       // Handle navigation logic here
