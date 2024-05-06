@@ -1,5 +1,14 @@
 <script>
   import { reactive } from 'svelte';
+  import BatchUpdateModal from './BatchUpdateModal.svelte';
+
+  // Other existing code...
+
+  let showModal = false;
+
+  function openModal() {
+    showModal = true;
+  }
   const edit1 = "../assets/img/icons8-edit-24.png"
   const edit2 = "../assets/img/icons8-tick-24.png"
   export let color = "light";
@@ -60,15 +69,16 @@ function editSalary(user) {
     selectedUsers = new Set(selectedUsers); // Force rerender
   }
 
-  function batchUpdate() {
-    // Logic to handle batch update goes here
-  }
+  
   
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <div class="access-control">
-    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Batch Update</button>
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
+    {#if showModal}
+  <BatchUpdateModal on:closeModal={() => showModal = false} />
+{/if}
     <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search...">
     <table>
       <thead>
