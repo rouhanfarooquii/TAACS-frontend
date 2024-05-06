@@ -4,11 +4,11 @@
   import { navigate } from 'svelte-routing';
   import AddDeviceModal from './AddDeviceModal.svelte';
 
-  let isAddDeviceModalOpen = false;
+  let showModal = false;
 
-  const openAddDeviceModal = () => {
-    isAddDeviceModalOpen = true;
-  };
+  function openModal() {
+    showModal = true;
+  }
 
   export let color = "light";
 
@@ -55,12 +55,13 @@
         </div>
         <button
           class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-          type="button"
-          on:click={openAddDeviceModal}
+          type="button" on:click={openModal}
         >
           Add Device
         </button>
-        <AddDeviceModal isOpen={isAddDeviceModalOpen} />
+        {#if showModal}
+  <AddDeviceModal on:closeModal={() => showModal = false} />
+{/if}
       </div>
     </div>
     <div class="block w-full overflow-x-auto">

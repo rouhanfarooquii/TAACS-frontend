@@ -20,7 +20,6 @@
   import Emergency from "../views/admin/Emergency/Emergency.svelte";
   import DeviceManagement from "../views/admin/DeviceManagement/DeviceManagement.svelte";
   import AddEmployee from "../views/admin/Employee/AddEmployee.svelte";
-  import AddDevice from "../views/admin/DeviceManagement/AddDevice.svelte";
   import AddShift from "../views/admin/ShiftTiming/AddShift.svelte";
   import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
   import Bonus from "../views/admin/Payroll/Bonus.svelte";
@@ -51,7 +50,6 @@
         <Route path="visitors" component="{Visitors}" />
         <Route path="emergency" component="{Emergency}" />
         <Route path="addemployee" component="{AddEmployee}" />
-        <Route path="adddevice" component="{AddDevice}"/>
         <Route path="addshift" component="{AddShift}"/>
         <Route path="visitorslist" component="{VisitorsList}"/>
         <Route path="bonus" component="{Bonus}"/>
