@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     // core components
     import CardLineChart from "components/Cards/CardLineChart.svelte";
     import CardBarChart from "components/Cards/CardBarChart.svelte";
@@ -14,4 +14,6 @@
       </div>
     </div>
   </div>
-  
+   -->
+
+   <!-- YourModule.svelte -->

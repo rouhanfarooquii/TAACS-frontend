@@ -76,10 +76,10 @@ let shifts = [
                 <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Description</th>
                 <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Start Time</th>
                 <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">End Time</th>
-                <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Morning Shift</th>
-                <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Evening Shift</th>
-                <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Night Shift</th>
-                <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Actions</th>
+                <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Morning Shift</th>
+                <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Evening Shift</th>
+                <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Night Shift</th>
+                <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -89,15 +89,13 @@ let shifts = [
                 <td class='table-data font-bold text-blueGray-600'>{shift.description}</td>
                 <td class='table-data'>{shift.startTime}</td>
                 <td class='table-data'>{shift.endTime}</td>
-                <td class='table-data'><input type="checkbox" bind:checked={shift.morningShift} disabled /></td>
-                <td class='table-data'><input type="checkbox" bind:checked={shift.eveningShift} disabled /></td>
-                <td class='table-data'><input type="checkbox" bind:checked={shift.nightShift} disabled /></td>
-                <td class="flex items-center">
-                  <div class="mr-2">
+                <td class='table-data text-center'><input type="checkbox" bind:checked={shift.morningShift} disabled /></td>
+                <td class='table-data text-center'><input type="checkbox" bind:checked={shift.eveningShift} disabled /></td>
+                <td class='table-data text-center'><input type="checkbox" bind:checked={shift.nightShift} disabled /></td>
+                <td class='table-data'>
+                  <div class="flex">
                     <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editShift(shift.id)} />
-                  </div>
-                  <div>
-                    <img src={view1} alt="View" class="h-6 w-6 cursor-pointer" onclick={() => viewShift(shift.id)} />
+                    <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" onclick={() => viewShift(shift.id)} />
                   </div>
                 </td>
             </tr>

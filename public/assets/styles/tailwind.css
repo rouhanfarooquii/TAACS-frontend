@@ -4380,3 +4380,24 @@ input:checked + .slider:before {
   padding-bottom: 1rem;
   padding-top: 1rem;
 }
+
+.selected {
+  font-weight: bold;
+}
+
+/* Pagination Sizes */
+.page-link {
+  padding: 0.375rem 0.75rem; /* Default padding */
+}
+
+/* Pagination Colors */
+.page-link {
+  color: rgba(0, 72, 180, 0.733); /* Default link color */
+  border-width: 1px; /* Set border width to 1px */
+  border-color: rgb(126, 181, 212);
+}
+
+/* Add border to the right side of each page link except the last one */
+.page-link:not(:last-child) {
+  border-right: 1px solid lightblue; /* Add border to the right side */
+}
