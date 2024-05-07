@@ -13,7 +13,7 @@
   export let color = "light";
 
   let devices = [
-      { name: "Device 1", id: 874329, ip: "192.168.1.14", status: "Active" },
+      { name: "SIAdw aIDasduiaduwihhkokokJsd", id: 874329, ip: "192.168.1.14", status: "Active" },
       { name: "Device 2", id: 543217, ip: "192.168.1.16", status: "Inactive" },
       { name: "Device 3", id: 8741249, ip: "192.168.1.20", status: "Active" },
       { name: "Device 4", id: 524329, ip: "192.168.1.24", status: "Inactive" }
@@ -60,8 +60,8 @@
           Add Device
         </button>
         {#if showModal}
-  <AddDeviceModal on:closeModal={() => showModal = false} />
-{/if}
+         <AddDeviceModal on:closeModal={() => showModal = false} />
+        {/if}
       </div>
     </div>
     <div class="block w-full overflow-x-auto">
@@ -93,9 +93,9 @@
         <tbody>
           {#each devices as device, rowIndex}
                     <tr>
-                        <td class="table-data">{device.name}</td>
-                        <td class="table-data">{device.id}</td>
-                        <td class="table-data">{device.ip}</td>
+                        <td class="table-data font-bold text-blueGray-600" title={device.name}>{device.name}</td>
+                        <td class="table-data" title={device.id}>{device.id}</td>
+                        <td class="table-data"title={device.ip}>{device.ip}</td>
                         <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                           {#if device.status === 'Active'}
                           <i class="fas fa-circle text-green-500 mr-2"></i> Active

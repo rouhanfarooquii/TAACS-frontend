@@ -68,10 +68,10 @@
         {#each users as user (user.id)}
           <tr>
             <td><input type="checkbox" checked={selectedUsers.has(user.id)} class="rounded" on:click={() => {console.log(selectedUsers.has(user.id)); toggleSelection(user.id)}}></td>
-            <td>{user.id}</td>
-            <td>{user.department}</td>
-            <td>{user.designation}</td>
-            <td>{user.accessibleRooms.join(', ')}</td>
+            <td class="table-data" title={user.id}>{user.id}</td>
+            <td class="table-data" title={user.department}>{user.department}</td>
+            <td class="table-data" title={user.designation}>{user.designation}</td>
+            <td class="table-data" title={user.accessibleRooms}>{user.accessibleRooms.join(', ')}</td>
           </tr>
         {/each}
       </tbody>

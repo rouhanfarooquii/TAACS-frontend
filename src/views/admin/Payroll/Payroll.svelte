@@ -14,7 +14,7 @@
   export let color = "light";
 
   let salaries = [
-    { id: '1', name: 'Alice', department: 'Sales', designation: 'Sales Manager', salary: 80000 },
+    { id: '1', name: 'Alice Budgies', department: 'Sales', designation: 'Sales Manager', salary: 80000 },
     { id: '2', name: 'Bob', department: 'Engineering', designation: 'Software Engineer', salary: 70000 },
     { id: '3', name: 'Charlie', department: 'Marketing', designation: 'Marketing Specialist', salary: 60000 },
     { id: '4', name: 'David', department: 'HR', designation: 'HR Manager', salary: 75000 },
@@ -92,10 +92,10 @@ function editSalary(user) {
       <tbody>
         {#each salaries as user (user.id)}
         <tr>
-          <td>{user.name}</td>
-          <td>{user.designation}</td>
-          <td>{user.department}</td>
-          <td>
+          <td class="table-data font-bold text-blueGray-600" title={user.name}>{user.name}</td>
+          <td class="table-data" title={user.designation}>{user.designation}</td>
+          <td class="table-data" title={user.department}>{user.department}</td>
+          <td class="table-data" title={user.salary}>
             <!-- Salary -->
             <div class="flex items-center">
               {#if editingModes[user.id]}

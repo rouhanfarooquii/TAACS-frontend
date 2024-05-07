@@ -4363,3 +4363,20 @@ input:checked + .slider:before {
   font-size: 20px;
   color: #888;
 }
+
+.table-data {
+  max-width: 20px; /* Set a maximum width for the table cells */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 1.5rem;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  vertical-align: middle;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}

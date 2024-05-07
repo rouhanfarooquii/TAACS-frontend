@@ -86,12 +86,12 @@ let shifts = [
             {#each shifts as shift (shift.id)}
             <tr>
               <td><input type="checkbox" checked={selectedShifts.has(shifts.id)} class="rounded" on:click={() => {console.log(selectedShifts.has(shifts.id)); toggleSelection(shifts.id)}}></td>
-                <td>{shift.description}</td>
-                <td>{shift.startTime}</td>
-                <td>{shift.endTime}</td>
-                <td><input type="checkbox" bind:checked={shift.morningShift} disabled /></td>
-                <td><input type="checkbox" bind:checked={shift.eveningShift} disabled /></td>
-                <td><input type="checkbox" bind:checked={shift.nightShift} disabled /></td>
+                <td class='table-data font-bold text-blueGray-600'>{shift.description}</td>
+                <td class='table-data'>{shift.startTime}</td>
+                <td class='table-data'>{shift.endTime}</td>
+                <td class='table-data'><input type="checkbox" bind:checked={shift.morningShift} disabled /></td>
+                <td class='table-data'><input type="checkbox" bind:checked={shift.eveningShift} disabled /></td>
+                <td class='table-data'><input type="checkbox" bind:checked={shift.nightShift} disabled /></td>
                 <td class="flex items-center">
                   <div class="mr-2">
                     <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editShift(shift.id)} />

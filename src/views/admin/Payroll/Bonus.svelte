@@ -80,7 +80,7 @@ function editSalary(user) {
       <tbody>
         {#each users as user (user.id)}
         <tr>
-          <td>
+          <td class="table-data font-bold text-blueGray-600" title={user.name}>
             <!-- Name -->
             <div class="flex items-center">
               {#if editingModes[user.id]}
@@ -90,7 +90,7 @@ function editSalary(user) {
               {/if}
             </div>
           </td>
-          <td>
+          <td class="table-data" title={user.designation}>
             <!-- Designatiom -->
             <div class="flex items-center">
               {#if editingModes[user.id]}
@@ -100,7 +100,7 @@ function editSalary(user) {
               {/if}
             </div>
           </td>
-          <td>
+          <td class="table-data" title={user.department}>
             <!-- Department -->
             <div class="flex items-center">
               {#if editingModes[user.id]}
@@ -117,7 +117,7 @@ function editSalary(user) {
               {/if}
             </div>
           </td>
-          <td>
+          <td class="table-data" title={user.percentage}>
             <!-- Percentage -->
             <div class="flex items-center">
               {#if editingModes[user.id]}
@@ -127,7 +127,7 @@ function editSalary(user) {
               {/if}
             </div>
           </td>
-          <td>
+          <td class="table-data" title={user.activeFrom}>
             <!-- Active From -->
             <div class="flex items-center">
               {#if editingModes[user.id]}
