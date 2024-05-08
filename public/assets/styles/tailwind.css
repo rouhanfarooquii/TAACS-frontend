@@ -4224,7 +4224,7 @@ button {
 }
 
 .ml-12 {
-  margin-left: 11.75rem;
+  margin-left: 17rem;
 }
 
 .border-green-600 {
@@ -4401,4 +4401,3 @@ input:checked + .slider:before {
 .page-link:not(:last-child) {
   border-right: 1px solid lightblue; /* Add border to the right side */
 }
-
