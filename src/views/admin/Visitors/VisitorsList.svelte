@@ -259,11 +259,13 @@ function handlePageChange(event) {
         <tbody>
           {#each upcomingdisplayedleaveRequests as request}
             <tr>
-              <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
-              <td class="table-data" title={request.email}>{request.email}</td>
-              <td class="table-data" title={request.mobileNumber}>{request.mobileNumber}</td>
-              <td class="table-data" title={request.date}>{request.date}</td>
-              <td class="table-data" title={request.reasonToVisit}>{request.reasonToVisit}</td>
+              <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+                <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
+              </td>
+              <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.email}</td>
+              <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.mobileNumber}</td>
+              <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.date}</td>
+              <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.reasonToVisit}</td>
             </tr>
           {/each}
         </tbody>
