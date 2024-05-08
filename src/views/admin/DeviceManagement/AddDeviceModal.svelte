@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   let deviceName = '';
   let deviceId = '';
   let deviceIp = '';
@@ -116,4 +116,4 @@ function cancel() {
     </div>
   </div>
 </div>
-  </div>
+  </div> -->
