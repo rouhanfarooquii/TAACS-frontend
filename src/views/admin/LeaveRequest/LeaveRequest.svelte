@@ -185,7 +185,7 @@ export async function handleReject(request) {
     // Simulate fetching data from a database
     setTimeout(() => {
       // Assume data is fetched successfully
-      selectTab('approve'); // Set 'approve' tab as selected
+      selectTab('pending'); // Set 'approve' tab as selected
     }, 1000);
   }
 
@@ -195,18 +195,33 @@ export async function handleReject(request) {
   });
 
   // Define pagination logic
-  const leaveRequestsPerPage = 5; // Adjust as needed
-  let currentPage = 1;
+const leaveRequestsPerPage = 5; // Adjust as needed
+let currentPage = 1;
 
- // Reactive statements to ensure proper updates
-$: startIndex = (currentPage - 1) * leaveRequestsPerPage;
-$: endIndex = Math.min(startIndex + leaveRequestsPerPage, leaveRequests.length);
-$: displayedleaveRequests = leaveRequests.slice(startIndex, endIndex);
-$: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
+// Reactive statements to ensure proper updates
+$: pendingLeaveRequests = leaveRequests.filter(request => request.status === 'Pending');
+$: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
+$: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
+$: pendingtotalPages = Math.ceil(pendingLeaveRequests.length / leaveRequestsPerPage);
 
-  function handlePageChange(event) {
-    console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
-    currentPage = event.detail.pageNumber;
+// Reactive statements to ensure proper updates
+$: approvedLeaveRequests = leaveRequests.filter(request => request.status === 'Approved');
+$: approvedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: approvedendIndex = Math.min(approvedstartIndex + leaveRequestsPerPage, approvedLeaveRequests.length);
+$: approveddisplayedleaveRequests = approvedLeaveRequests.slice(approvedstartIndex, approvedendIndex);
+$: approvedtotalPages = Math.ceil(approvedLeaveRequests.length / leaveRequestsPerPage);
+
+// Reactive statements to ensure proper updates
+$: rejectedLeaveRequests = leaveRequests.filter(request => request.status === 'Rejected');
+$: rejectedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: rejectedendIndex = Math.min(rejectedstartIndex + leaveRequestsPerPage, rejectedLeaveRequests.length);
+$: rejecteddisplayedleaveRequests = rejectedLeaveRequests.slice(rejectedstartIndex, rejectedendIndex);
+$: rejectedtotalPages = Math.ceil(rejectedLeaveRequests.length / leaveRequestsPerPage);
+
+function handlePageChange(event) {
+  console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
+  currentPage = event.detail.pageNumber;
 }
 </script>
 
@@ -233,7 +248,7 @@ $: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
 
   {#if selectedTab === 'pending'}
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-    {#each leaveRequests.filter(request => request.status === 'Pending') as request}
+    {#each pendingdisplayedleaveRequests as request}
       <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <h3 class="text-4xl font-bold text-blueGray-800">{request.name}</h3>
         <p class="text-blueGray-400 pb-6">{request.role}</p>
@@ -255,6 +270,7 @@ $: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
         </div>
       </div>
     {/each}
+    <Pagination currentPage={currentPage} totalPages={pendingtotalPages} on:pageChange={handlePageChange} />
   </div>
 {/if}
 
@@ -292,7 +308,7 @@ $: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
         </tr>
       </thead>
       <tbody>
-          {#each leaveRequests.filter(request => request.status === 'Approved') as request}
+        {#each approveddisplayedleaveRequests as request}
           <tr>
             <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
             <td class="table-data" title={request.role}>{request.role}</td>
@@ -303,6 +319,7 @@ $: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
         {/each}
       </tbody>
     </table>
+    <Pagination currentPage={currentPage} totalPages={approvedtotalPages} on:pageChange={handlePageChange} />
   </div>
 </div>
 {/if}
@@ -341,7 +358,7 @@ $: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
         </tr>
       </thead>
       <tbody>
-          {#each leaveRequests.filter(request => request.status === 'Rejected') as request}
+        {#each rejecteddisplayedleaveRequests as request}
           <tr>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
               <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
@@ -354,6 +371,7 @@ $: totalPages = Math.ceil(leaveRequests.length / leaveRequestsPerPage);
         {/each}
       </tbody>
     </table>
+    <Pagination currentPage={currentPage} totalPages={rejectedtotalPages} on:pageChange={handlePageChange} />
   </div>
 </div>
 {/if}

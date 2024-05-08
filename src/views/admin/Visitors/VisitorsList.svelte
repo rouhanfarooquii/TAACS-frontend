@@ -23,11 +23,12 @@
     // core components
     import CardTable from "components/Cards/CardTable.svelte";
     import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
+    import Pagination from "../../../components/Pagination/Pagination.svelte";
     import { onMount } from 'svelte';
     export let location;
     export let color = "light"
     let selectedState = 'all'; // Initial state
-    let selectedTab = ''; // Default selected tab
+    let selectedTab = 'pending'; // Default selected tab
   
     function selectTab(tab) {
       selectedTab = tab;
@@ -50,8 +51,20 @@
     { id: 1348, name: "Bill Gates", email: "bill.gates@example.com", mobileNumber: "4567890123", date: "2024/03/20", reasonToVisit: "Sick Leave", status: "Pending" },
     { id: 2345, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "6543210987", date: "2024/05/01", reasonToVisit: "Business Meeting", status: "Upcoming" },
     { id: 3456, name: "Mark Zuckerberg", email: "mark.zuckerberg@example.com", mobileNumber: "7890123456", date: "2024/05/10", reasonToVisit: "Company Event", status: "Pending" },
-    { id: 4567, name: "Jeff Bezos", email: "jeff.bezos@example.com", mobileNumber: "8901234567", date: "2024/05/15", reasonToVisit: "Strategy Planning", status: "Pending" }
+    { id: 4567, name: "Jeff Bezos", email: "jeff.bezos@example.com", mobileNumber: "8901234567", date: "2024/05/15", reasonToVisit: "Strategy Planning", status: "Pending" },
+    // Ten new rows
+    { id: 5678, name: "Tim Cook", email: "tim.cook@example.com", mobileNumber: "9012345678", date: "2024/05/20", reasonToVisit: "Product Launch", status: "Upcoming" },
+    { id: 6789, name: "Satya Nadella", email: "satya.nadella@example.com", mobileNumber: "1234567890", date: "2024/05/25", reasonToVisit: "Business Negotiation", status: "Pending" },
+    { id: 7890, name: "Sundar Pichai", email: "sundar.pichai@example.com", mobileNumber: "2345678901", date: "2024/05/30", reasonToVisit: "Tech Conference", status: "Pending" },
+    { id: 8901, name: "Sheryl Sandberg", email: "sheryl.sandberg@example.com", mobileNumber: "3456789012", date: "2024/06/05", reasonToVisit: "Team Retreat", status: "Upcoming" },
+    { id: 9012, name: "Susan Wojcicki", email: "susan.wojcicki@example.com", mobileNumber: "4567890123", date: "2024/06/10", reasonToVisit: "Marketing Campaign", status: "Pending" },
+    { id: 1239, name: "Larry Page", email: "larry.page@example.com", mobileNumber: "5678901234", date: "2024/06/15", reasonToVisit: "Project Review", status: "Pending" },
+    { id: 2340, name: "Sergey Brin", email: "sergey.brin@example.com", mobileNumber: "6789012345", date: "2024/06/20", reasonToVisit: "Investor Meeting", status: "Upcoming" },
+    { id: 3451, name: "Jack Dorsey", email: "jack.dorsey@example.com", mobileNumber: "7890123456", date: "2024/06/25", reasonToVisit: "Annual General Meeting", status: "Pending" },
+    { id: 4562, name: "Reed Hastings", email: "reed.hastings@example.com", mobileNumber: "8901234567", date: "2024/07/01", reasonToVisit: "Content Strategy Discussion", status: "Pending" },
+    { id: 5673, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "9012345678", date: "2024/07/06", reasonToVisit: "Space Exploration Update", status: "Upcoming" }
 ];
+
   
   // Simulated fetch function
   async function fetchData() {
@@ -131,6 +144,36 @@ function updateTabs() {
     onMount(() => {
       fetchData();
     });
+
+    // Define pagination logic
+const leaveRequestsPerPage = 5; // Adjust as needed
+let currentPage = 1;
+
+// Reactive statements to ensure proper updates
+$: pendingLeaveRequests = visitorsList.filter(request => request.status === 'Pending');
+$: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
+$: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
+$: pendingtotalPages = Math.ceil(pendingLeaveRequests.length / leaveRequestsPerPage);
+
+// Reactive statements to ensure proper updates
+$: upcomingLeaveRequests = visitorsList.filter(request => request.status === 'Upcoming');
+$: upcomingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: upcomingendIndex = Math.min(upcomingstartIndex + leaveRequestsPerPage, upcomingLeaveRequests.length);
+$: upcomingdisplayedleaveRequests = upcomingLeaveRequests.slice(upcomingstartIndex, upcomingendIndex);
+$: upcomingtotalPages = Math.ceil(upcomingLeaveRequests.length / leaveRequestsPerPage);
+
+// Reactive statements to ensure proper updates
+$: historyLeaveRequests = visitorsList.filter(request => request.status === 'History');
+$: historystartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: historyendIndex = Math.min(historystartIndex + leaveRequestsPerPage, historyLeaveRequests.length);
+$: historydisplayedleaveRequests = historyLeaveRequests.slice(historystartIndex, historyendIndex);
+$: historytotalPages = Math.ceil(historyLeaveRequests.length / leaveRequestsPerPage);
+
+function handlePageChange(event) {
+  console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
+  currentPage = event.detail.pageNumber;
+}
   </script>
   
   <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -156,7 +199,7 @@ function updateTabs() {
   
     {#if selectedTab === 'pending'}
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      {#each visitorsList.filter(request => request.status === 'Pending') as request}
+      {#each pendingdisplayedleaveRequests as request}
         <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
           <h3 class="text-4xl font-bold text-blueGray-800">{request.name}</h3>
           <p class="text-blueGray-400 pb-6">{request.email} <br/> {request.mobileNumber}</p>
@@ -176,6 +219,7 @@ function updateTabs() {
           </div>
         </div>
       {/each}
+      <Pagination currentPage={currentPage} totalPages={pendingtotalPages} on:pageChange={handlePageChange} />
     </div>
   {/if}
   
@@ -213,7 +257,7 @@ function updateTabs() {
           </tr>
         </thead>
         <tbody>
-            {#each visitorsList.filter(request => request.status === 'Upcoming') as request}
+          {#each upcomingdisplayedleaveRequests as request}
             <tr>
               <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                 <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
@@ -226,6 +270,7 @@ function updateTabs() {
           {/each}
         </tbody>
       </table>
+      <Pagination currentPage={currentPage} totalPages={upcomingtotalPages} on:pageChange={handlePageChange} />
     </div>
   </div>
   {/if}
@@ -264,7 +309,7 @@ function updateTabs() {
           </tr>
         </thead>
         <tbody>
-            {#each visitorsList.filter(request => request.status === 'History') as request}
+          {#each historydisplayedleaveRequests as request}
             <tr>
               <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                 <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
@@ -277,6 +322,7 @@ function updateTabs() {
           {/each}
         </tbody>
       </table>
+      <Pagination currentPage={currentPage} totalPages={historytotalPages} on:pageChange={handlePageChange} />
     </div>
   </div>
   {/if}
