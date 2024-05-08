@@ -17,7 +17,7 @@ function goToPage(pageNumber) {
     <ul class="flex">
       {#if currentPage > 1}
         <li>
-          <a class="page-link" href="#" on:click|preventDefault={() => goToPage(currentPage - 1)}><span aria-hidden="true">&laquo;</span></a>
+          <a class="page-link rounded-l" href="#" on:click|preventDefault={() => goToPage(currentPage - 1)}><span aria-hidden="true">&laquo;</span></a>
         </li>
       {/if}
   
@@ -29,7 +29,7 @@ function goToPage(pageNumber) {
   
       {#if currentPage < totalPages}
         <li>
-          <a class="page-link" href="#" on:click|preventDefault={() => goToPage(currentPage + 1)}>&raquo;</a>
+          <a class="page-link rounded-r" href="#" on:click|preventDefault={() => goToPage(currentPage + 1)}>&raquo;</a>
         </li>
       {/if}
     </ul>

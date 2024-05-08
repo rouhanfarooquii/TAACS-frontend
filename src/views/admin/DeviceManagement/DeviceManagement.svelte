@@ -91,7 +91,7 @@
           Add Device
         </button>
         {#if showModal}
-         <AddDeviceModal on:closeModal={() => showModal = false} />
+          <AddDeviceModal on:close={() => showModal = false} />
         {/if}
       </div>
     </div>

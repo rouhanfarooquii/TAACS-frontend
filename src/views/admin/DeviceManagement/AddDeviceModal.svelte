@@ -55,10 +55,15 @@ if (deviceName && deviceId && deviceIp) {
 }
 
 function cancel() {
-  // Hide or remove the modal from the DOM
-  const modal = document.querySelector('.modal');
-  modal.classList.toggle('hidden'); // Or remove the modal from the DOM: modal.remove();
+  const closeEvent = new CustomEvent('close');
+  dispatchEvent(closeEvent);
 }
+
+  // Listen for the custom 'close' event and close the modal
+  document.addEventListener('close', () => {
+    showModal = false;
+  });
+
 </script>
 
 <div class="modal">
