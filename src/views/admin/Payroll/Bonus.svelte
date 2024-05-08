@@ -1,6 +1,7 @@
 <script>
   import { reactive } from 'svelte';
     import AddNewBonusModal from './AddNewBonusModal.svelte';
+    import Pagination from '../../../components/Pagination/Pagination.svelte';
   const edit1 = "../assets/img/icons8-edit-24.png"
   const edit2 = "../assets/img/icons8-tick-24.png"
   export let color = "light";
@@ -57,10 +58,32 @@ function editSalary(user) {
   function openModal() {
     showModal = true;
   }
+
+  // Define pagination logic
+  const usersPerPage = 5; // Adjust as needed
+  let currentPage = 1;
+
+ // Reactive statements to ensure proper updates
+$: startIndex = (currentPage - 1) * usersPerPage;
+$: endIndex = Math.min(startIndex + usersPerPage, users.length);
+$: displayedUsers = users.slice(startIndex, endIndex);
+$: totalPages = Math.ceil(users.length / usersPerPage);
+
+  function handlePageChange(event) {
+    console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
+    currentPage = event.detail.pageNumber;
+}
   
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
+    >
+    Bonus Information
+    </h3>
+    <br/>
+  </div>
   <div class="access-control">
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Add New Bonus</button>
     {#if showModal}
@@ -78,7 +101,7 @@ function editSalary(user) {
         </tr>
       </thead>
       <tbody>
-        {#each users as user (user.id)}
+        {#each displayedUsers as user (user.id)}
         <tr>
           <td class="table-data font-bold text-blueGray-600" title={user.name}>
             <!-- Name -->
@@ -153,5 +176,6 @@ function editSalary(user) {
         {/each}
       </tbody>
     </table>
+    <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
 </div>

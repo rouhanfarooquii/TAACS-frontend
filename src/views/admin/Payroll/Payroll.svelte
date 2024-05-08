@@ -1,6 +1,7 @@
 <script>
   import { reactive } from 'svelte';
   import BatchUpdateModal from './BatchUpdateModal.svelte';
+  import Pagination from '../../../components/Pagination/Pagination.svelte';
 
   // Other existing code...
 
@@ -38,14 +39,14 @@ function toggleEditingMode(userId) {
   editingModes[userId] = !editingModes[userId];
 }
 
-function saveSalaryChanges(user) {
+function saveSalaryChanges(salaries) {
   // Logic to save the changes made to the salary
-  console.log("Saved changes for user:", user);
+  console.log("Saved changes for user:", salaries);
   // Assuming you have backend logic here to update the salary
 }
 
-function editSalary(user) {
-  toggleEditingMode(user.id);
+function editSalary(salaries) {
+  toggleEditingMode(salaries.id);
   // You can perform additional actions here if needed
 }
 
@@ -61,19 +62,39 @@ function editSalary(user) {
   }
 
   function toggleSelectAll() {
-    if (selectedUsers.size === users.length) {
+    if (selectedUsers.size === salaries.length) {
       selectedUsers.clear();
     } else {
-      users.forEach(user => selectedUsers.add(user.id));
+      salaries.forEach(salaries => selectedUsers.add(salaries.id));
     }
     selectedUsers = new Set(selectedUsers); // Force rerender
   }
 
-  
+  // Define pagination logic
+  const salariesPerPage = 5; // Adjust as needed
+  let currentPage = 1;
+
+ // Reactive statements to ensure proper updates
+$: startIndex = (currentPage - 1) * salariesPerPage;
+$: endIndex = Math.min(startIndex + salariesPerPage, salaries.length);
+$: displayedSalaries = salaries.slice(startIndex, endIndex);
+$: totalPages = Math.ceil(salaries.length / salariesPerPage);
+
+  function handlePageChange(event) {
+    console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
+    currentPage = event.detail.pageNumber;
+}
   
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
+    >
+    Salary Information
+    </h3>
+    <br/>
+  </div>
   <div class="access-control">
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
     {#if showModal}
@@ -90,30 +111,30 @@ function editSalary(user) {
         </tr>
       </thead>
       <tbody>
-        {#each salaries as user (user.id)}
+        {#each displayedSalaries as salaries (salaries.id)}
         <tr>
-          <td class="table-data font-bold text-blueGray-600" title={user.name}>{user.name}</td>
-          <td class="table-data" title={user.designation}>{user.designation}</td>
-          <td class="table-data" title={user.department}>{user.department}</td>
-          <td class="table-data" title={user.salary}>
+          <td class="table-data font-bold text-blueGray-600" title={salaries.name}>{salaries.name}</td>
+          <td class="table-data" title={salaries.designation}>{salaries.designation}</td>
+          <td class="table-data" title={salaries.department}>{salaries.department}</td>
+          <td class="table-data" title={salaries.salary}>
             <!-- Salary -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
-                <input type="number" class="salary-input" bind:value={user.salary}>
+              {#if editingModes[salaries.id]}
+                <input type="number" class="salary-input" bind:value={salaries.salary}>
               {:else}
-                <span>{user.salary}</span>
+                <span>{salaries.salary}</span>
               {/if}
             </div>
           </td>
           <td>
             <!-- Edit button -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
+              {#if editingModes[salaries.id]}
                 <!-- Save button -->
-                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(user); toggleEditingMode(user.id);}}>
+                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(salaries); toggleEditingMode(salaries.id);}}>
               {:else}
                 <!-- Edit button -->
-                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(user)} />
+                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(salaries)} />
               {/if}
             </div>
           </td>
@@ -121,5 +142,6 @@ function editSalary(user) {
         {/each}
       </tbody>
     </table>
+    <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
 </div>

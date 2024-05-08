@@ -3,6 +3,7 @@
 
   // Replace with your backend API base URL
   const API_URL = 'your_backend_api_url';
+  export let color = "light";
 
   let employee = {
       name: '',
@@ -68,6 +69,12 @@
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
+    >
+    Visitor Request
+    </h3>
+  </div>
     <div class="left-section flex flex-col items-center"> <!-- Adjust this value according to your needs -->
       <!-- svelte-ignore a11y-img-redundant-alt -->
       <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />

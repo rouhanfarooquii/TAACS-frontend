@@ -96,7 +96,7 @@
               class="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
               href="/"
             >
-              Notus Svelte
+              TAACS
             </a>
           </div>
           <div class="w-6/12 flex justify-end">
@@ -131,7 +131,7 @@
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/accesscontrol"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('accesscontrol')}
             >
@@ -139,29 +139,7 @@
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Access Control
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          <!-- Nested Menu -->
-          {#if showNestedMenuAccessControl}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                  href="/admin/accesscontrol"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 1
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/admin/accesscontrol"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 2
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
 
         <li class="items-center">
@@ -202,7 +180,7 @@
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/employee"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('employee')}
             >
@@ -210,28 +188,7 @@
               class="fas fa-map-marked mr-2 text-sm {location.href.indexOf('/admin/employee') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Employee
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuEmployee}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                  href="/admin/employee"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Retreive Employee Info
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/admin/employee"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/employee') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 2
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
 
         <li class="items-center">
@@ -272,7 +229,7 @@
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/leaverequest"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
             >
@@ -280,34 +237,13 @@
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Leave Requests
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuLeaveRequest}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                  href="/admin/leaverequest"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 1
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/admin/leaverequest"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 2
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/shifttiming"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('shifttiming')}
             >
@@ -315,34 +251,13 @@
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/shifttiming') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Shift Timings
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuShiftTiming}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                  href="/admin/shifttiming"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 1
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/admin/shifttiming"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/shifttiming') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 2
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
 
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/devicemanagement"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('devicemanagement')}
             >
@@ -350,28 +265,7 @@
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Device Management
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedDeviceManagement}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                  href="/admin/devicemanagement"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 1
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/admin/devicemanagement"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 2
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
 
         <li class="items-center">
@@ -448,7 +342,7 @@
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/emergency"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/emergency') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('emergency')}
             >
@@ -456,28 +350,7 @@
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/emergency') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Emergency
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuEmergency}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                  href="/admin/emergency"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 1
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/admin/emergency"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/emergency') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Option 2
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
       </ul>
 

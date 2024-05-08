@@ -1,8 +1,10 @@
 <script>
     import { navigate } from 'svelte-routing';
+    import Pagination from '../../../components/Pagination/Pagination.svelte';
     const edit1 = "../assets/img/icons8-edit-24.png"
     const view1 = "../assets/img/icons8-eye-24.png"
 export let color = "light";
+
 let shifts = [
     { id: 0, description: 'Off Day', startTime: '00:00', endTime: '00:00', morningShift: false, eveningShift: false, nightShift: false },
     { id: 1, description: 'Morning Shift', startTime: '08:00', endTime: '16:00', morningShift: true, eveningShift: false, nightShift: false },
@@ -10,9 +12,22 @@ let shifts = [
     { id: 3, description: 'Night Shift', startTime: '00:00', endTime: '08:00', morningShift: false, eveningShift: false, nightShift: true },
     { id: 4, description: 'Full Day Shift', startTime: '08:00', endTime: '00:00', morningShift: true, eveningShift: true, nightShift: false },
     { id: 5, description: 'Part-Time Morning Shift', startTime: '08:00', endTime: '12:00', morningShift: true, eveningShift: false, nightShift: false },
-    { id: 9, description: 'Weekend Night Shift', startTime: '00:00', endTime: '08:00', morningShift: false, eveningShift: false, nightShift: true }
+    { id: 9, description: 'Weekend Night Shift', startTime: '00:00', endTime: '08:00', morningShift: false, eveningShift: false, nightShift: true },
+    { id: 6, description: 'Part-Time Evening Shift', startTime: '16:00', endTime: '20:00', morningShift: false, eveningShift: true, nightShift: false },
+    { id: 7, description: 'Late Night Shift', startTime: '00:00', endTime: '04:00', morningShift: false, eveningShift: false, nightShift: true },
+    { id: 8, description: 'Weekend Morning Shift', startTime: '08:00', endTime: '12:00', morningShift: true, eveningShift: false, nightShift: false },
+    { id: 10, description: 'Weekend Evening Shift', startTime: '16:00', endTime: '00:00', morningShift: false, eveningShift: true, nightShift: false },
+    { id: 11, description: 'Weekend Full Day Shift', startTime: '08:00', endTime: '00:00', morningShift: true, eveningShift: true, nightShift: false },
+    { id: 12, description: 'Late Morning Shift', startTime: '10:00', endTime: '14:00', morningShift: true, eveningShift: false, nightShift: false },
+    { id: 13, description: 'Early Evening Shift', startTime: '14:00', endTime: '18:00', morningShift: false, eveningShift: true, nightShift: false },
+    { id: 14, description: 'Overnight Shift', startTime: '20:00', endTime: '04:00', morningShift: false, eveningShift: false, nightShift: true },
+    { id: 15, description: 'Extended Morning Shift', startTime: '06:00', endTime: '14:00', morningShift: true, eveningShift: false, nightShift: false },
+    { id: 16, description: 'Extended Evening Shift', startTime: '12:00', endTime: '20:00', morningShift: false, eveningShift: true, nightShift: false },
+    { id: 17, description: 'Weekend Overnight Shift', startTime: '20:00', endTime: '08:00', morningShift: false, eveningShift: false, nightShift: true },
+    { id: 18, description: 'Holiday Morning Shift', startTime: '08:00', endTime: '12:00', morningShift: true, eveningShift: false, nightShift: false },
+    { id: 19, description: 'Holiday Evening Shift', startTime: '16:00', endTime: '00:00', morningShift: false, eveningShift: true, nightShift: false },
+    { id: 20, description: 'Holiday Full Day Shift', startTime: '08:00', endTime: '00:00', morningShift: true, eveningShift: true, nightShift: false }
 ];
-
 
     function deleteShift(id) {
         shifts = shifts.filter(shift => shift.id !== id);
@@ -52,9 +67,31 @@ let shifts = [
     }
     selectedShifts = new Set(selectedShifts); // Force rerender
   }
+
+  // Define pagination logic
+  const shiftsPerPage = 5; // Adjust as needed
+  let currentPage = 1;
+
+ // Reactive statements to ensure proper updates
+$: startIndex = (currentPage - 1) * shiftsPerPage;
+$: endIndex = Math.min(startIndex + shiftsPerPage, shifts.length);
+$: displayedShifts = shifts.slice(startIndex, endIndex);
+$: totalPages = Math.ceil(shifts.length / shiftsPerPage);
+
+  function handlePageChange(event) {
+    console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
+    currentPage = event.detail.pageNumber;
+}
 </script>
 
    <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+      <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
+      >
+      Shift Timings
+      </h3>
+      <br/>
+    </div>
     <button class="flex justify-end mb-4 bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToAddShift}>
       Add Shift
     </button>
@@ -62,12 +99,6 @@ let shifts = [
       Delete
   </button>
     <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search...">
-    <label class="ml-3" for="showRecords">Show Records:</label>
-  <select id="showRecords" class="small-dropdown rounded " onchange="{() => showRecords(this.value)}">
-    <option value="10">10</option>
-    <option value="20">20</option>
-    <option value="30">30</option>
-  </select>
     <div class="block w-full overflow-x-auto">
       <table>
         <thead>
@@ -83,7 +114,7 @@ let shifts = [
             </tr>
         </thead>
         <tbody>
-            {#each shifts as shift (shift.id)}
+            {#each displayedShifts as shift (shift.id)}
             <tr>
               <td><input type="checkbox" checked={selectedShifts.has(shifts.id)} class="rounded" on:click={() => {console.log(selectedShifts.has(shifts.id)); toggleSelection(shifts.id)}}></td>
                 <td class='table-data font-bold text-blueGray-600'>{shift.description}</td>
@@ -102,5 +133,6 @@ let shifts = [
             {/each}
         </tbody>
     </table>
+    <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
     </div>
    </div>
