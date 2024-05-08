@@ -15,7 +15,7 @@
   import Employee from "views/admin/Employee/Employee.svelte";
   import LeaveRequest from "../views/admin/LeaveRequest/LeaveRequest.svelte";
   import ShiftTiming from "../views/admin/ShiftTiming/ShiftTiming.svelte";
-  import Parking from "../views/admin//Parking/Parking.svelte";
+  import Parking from "../views/admin/Parking/Parking.svelte";
   import Visitors from "../views/admin/Visitors/Visitors.svelte";
   import Emergency from "../views/admin/Emergency/Emergency.svelte";
   import DeviceManagement from "../views/admin/DeviceManagement/DeviceManagement.svelte";
@@ -23,7 +23,8 @@
   import AddShift from "../views/admin/ShiftTiming/AddShift.svelte";
   import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
   import Bonus from "../views/admin/Payroll/Bonus.svelte";
-
+  import ManageCars from "../views/admin/Parking/ManageCars.svelte";
+  import Rooms from "../views/admin/RoomBooking/Rooms.svelte";
 
     import { component } from "svelte-routing/src/Route.svelte";
 
@@ -46,13 +47,15 @@
         <Route path="leaverequest" component="{LeaveRequest}" />
         <Route path="shifttiming" component="{ShiftTiming}" />
         <Route path="devicemanagement" component="{DeviceManagement}" />
-        <Route path="parking" component="{Parking}" />
+        <Route path="parking" component="{Parking}"/>
         <Route path="visitors" component="{Visitors}" />
         <Route path="emergency" component="{Emergency}" />
         <Route path="addemployee" component="{AddEmployee}" />
         <Route path="addshift" component="{AddShift}"/>
         <Route path="visitorslist" component="{VisitorsList}"/>
         <Route path="bonus" component="{Bonus}"/>
+        <Route path="managecars" component="{ManageCars}"/>
+        <Route path="rooms" component="{Rooms}"/>
       </Router>
       <FooterAdmin />
     </div>

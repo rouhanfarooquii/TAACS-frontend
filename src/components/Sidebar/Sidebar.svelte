@@ -184,15 +184,15 @@
                   href="/admin/roombooking"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 1
+                  Bookings
                 </a>
               </li>
               <li>
                 <a
-                  href="/admin/roombooking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+                  href="/admin/rooms"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/rooms') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 2
+                  Rooms
                 </a>
               </li>
             </ul>
@@ -394,15 +394,15 @@
                   href="/admin/parking"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 1
+                Assign Parking
                 </a>
               </li>
               <li>
                 <a
-                  href="/admin/parking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+                  href="/admin/managecars"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/managecars') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Option 2
+                Manage Cars                  
                 </a>
               </li>
             </ul>
@@ -411,18 +411,17 @@
 
         <li class="items-center">
           <a
-          use:link
-          href="#"
-          class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-          on:click|preventDefault={() => toggleNestedMenu('visitors')}
-          >
-          <i
-            class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
-          ></i>
-          Visitors
-          <i class="fas fa-angle-down ml-2 text-xs"></i>
+            use:link
+            href="#"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('visitors')}
+            >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Visitor
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          <!-- Nested Menu -->
           {#if showNestedMenuVisitors}
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
@@ -430,7 +429,7 @@
                   href="/admin/visitors"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Visitor Requests
+                Visitor Request
                 </a>
               </li>
               <li>
@@ -438,7 +437,7 @@
                   href="/admin/visitorslist"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitorslist') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
-                  Visitor List
+                Visitor List                  
                 </a>
               </li>
             </ul>
