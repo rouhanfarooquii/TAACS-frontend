@@ -264,12 +264,12 @@
   <!-- Valid Begin and End DateTime Fields -->
   <div class="flex mb-4">
     <div>
-      <label for="validBeginDateTime">Valid Begin DateTime:</label>
+      <label for="validBeginDateTime">Valid Begin Date:</label>
       <br>
       <input type="date" id="validBeginDateTime" name="validBeginDateTime" class="filter-input">
     </div>
     <div class = "ml-9">
-      <label for="validEndDateTime">Valid End DateTime:</label>
+      <label for="validEndDateTime">Valid End Date:</label>
       <br>
       <input type="date" id="validEndDateTime" name="validEndDateTime" class="filter-input">
     </div>

@@ -68,7 +68,7 @@
   }
 
   // Define pagination logic
-  const usersPerPage = 5; // Adjust as needed
+  const usersPerPage = 10; // Adjust as needed
   let currentPage = 1;
 
  // Reactive statements to ensure proper updates
@@ -93,12 +93,13 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
   </div>
   <div class="access-control">
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Batch Update</button>
-    <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search...">
+    <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2 {color === 'light' ? 'text-blueGray-700' : 'text-white'}" placeholder="Search...">
     <table>
       <thead>
         <tr>
           <th><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">UserID</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee Name</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designation</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Accessible Rooms</th>
@@ -109,6 +110,7 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
           <tr>
             <td><input type="checkbox" checked={selectedUsers.has(user.id)} class="rounded" on:click={() => {console.log(selectedUsers.has(user.id)); toggleSelection(user.id)}}></td>
             <td class="table-data" title={user.id}>{user.id}</td>
+            <td class="table-data" title={user.name}>{user.name}</td>
             <td class="table-data" title={user.department}>{user.department}</td>
             <td class="table-data" title={user.designation}>{user.designation}</td>
             <td class="table-data" title={user.accessibleRooms}>{user.accessibleRooms.join(', ')}</td>
