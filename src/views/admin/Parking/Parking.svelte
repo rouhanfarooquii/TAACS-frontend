@@ -23,6 +23,7 @@
     import { reactive } from 'svelte';
     import AssignNewSpaceModal from './AssignNewSpaceModal.svelte';
     import Pagination from '../../../components/Pagination/Pagination.svelte';
+    import QrCode from './QRCode.svelte';
     const edit1 = "../assets/img/icons8-edit-24.png"
     const edit2 = "../assets/img/icons8-tick-24.png"
     const delete1 = "../assets/img/icons8-delete-24.png"
@@ -276,7 +277,7 @@ let parkingSlot = '';
             <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car ID</th>
             <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee Name</th>
             <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car Make</th>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car RFID No.</th>
+            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">QR Code</th>
           </tr>
         </thead>
         <tbody>
@@ -332,8 +333,7 @@ let parkingSlot = '';
                 {/if}
               </div>
             </td>
-            <td class="table-data" title={space.cardRfidNo}>
-                <!-- Active From -->
+            <!-- <td class="table-data" title={space.cardRfidNo}>
                 <div class="flex items-center">
                   {#if editingModes[space.id]}
                     <input type="Number" bind:value={space.cardRfidNo}>
@@ -341,7 +341,10 @@ let parkingSlot = '';
                     <span>{space.cardRfidNo}</span>
                   {/if}
                 </div>
-              </td>
+              </td> -->
+                <td>
+                  <QrCode data={space.cardRfidNo.toString()} />
+                </td>
             <td>
               <!-- Edit button -->
               <div class="flex items-center">

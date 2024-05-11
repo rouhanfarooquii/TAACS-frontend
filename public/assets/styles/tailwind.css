@@ -4408,3 +4408,10 @@ input:checked + .slider:before {
 .page-link:not(:last-child) {
   border-right: 1px solid lightblue; /* Add border to the right side */
 }
+
+canvas{
+  width: 100%;
+  max-width: 80px;
+  height: auto;
+  display: block;
+}
