@@ -12,6 +12,7 @@
   import AccessControl from "views/admin//AccessControl/AccessControl.svelte";
   import Payroll from "views/admin/Payroll/Payroll.svelte";
   import RoomBooking from "views/admin/RoomBooking/RoomBooking.svelte";
+  import Rooms from "../views/admin/RoomBooking/Rooms.svelte";
   import Employee from "views/admin/Employee/Employee.svelte";
   import LeaveRequest from "../views/admin/LeaveRequest/LeaveRequest.svelte";
   import ShiftTiming from "../views/admin/ShiftTiming/ShiftTiming.svelte";
@@ -24,9 +25,8 @@
   import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
   import Bonus from "../views/admin/Payroll/Bonus.svelte";
   import ManageCars from "../views/admin/Parking/ManageCars.svelte";
-  import Rooms from "../views/admin/RoomBooking/Rooms.svelte";
 
-    import { component } from "svelte-routing/src/Route.svelte";
+  import { component } from "svelte-routing/src/Route.svelte";
 
   export let location;
   export let admin = "";

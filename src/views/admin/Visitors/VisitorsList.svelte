@@ -1,24 +1,3 @@
-<!-- <script>
-    // core components
-    import CardLineChart from "components/Cards/CardLineChart.svelte";
-    import CardBarChart from "components/Cards/CardBarChart.svelte";
-    import CardPageVisits from "components/Cards/CardPageVisits.svelte";
-    import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
-    export let location;
-  </script>
-  
-  <div>
-    <div class="flex flex-wrap mt-4">
-      <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <CardPageVisits />
-      </div>
-      <div class="w-full xl:w-4/12 px-4">
-        <CardSocialTraffic />
-      </div>
-    </div>
-  </div>
-   -->
-
    <script>
     // core components
     import CardTable from "components/Cards/CardTable.svelte";
@@ -189,7 +168,7 @@ function handlePageChange(event) {
               <a href="#" class="inline-block p-4 {selectedTab === 'pending' ? 'text-orange-500 border-b-2 border-orange-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('pending')}>Pending</a>
           </li>
           <li class="me-2">
-              <a href="#" class="inline-block p-4 {selectedTab === 'upcoming' ? 'text-green-500 border-b-2 border-green-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('upcoming')}>Upcoming</a>
+              <a href="#" class="inline-block p-4 {selectedTab === 'upcoming' ? 'text-green-500 border-b-2 border-green-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('upcoming')}>Approved</a>
           </li>
           <li class="me-2">
               <a href="#" class="inline-block p-4 {selectedTab === 'history' ? 'text-red-500 border-b-2 border-red-600 rounded-t-lg hover:border-blueGray-800 dark:hover:text-blueGray-200' : ''}" on:click={() => selectTab('history')}>History</a>

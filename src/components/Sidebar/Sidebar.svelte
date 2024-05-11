@@ -152,7 +152,7 @@
             <i
               class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/roombooking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
-            Room Bookings
+            Room Booking
             <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
           {#if showNestedMenuRoomBooking}
