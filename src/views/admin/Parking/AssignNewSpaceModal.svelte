@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     let parkingSlot = '';
     let location = '';
     let carId = '';
@@ -57,11 +57,11 @@
   }
   }
   
-  function cancel() {
-    // Hide or remove the modal from the DOM
-    const modal = document.querySelector('.modal');
-    modal.classList.toggle('hidden'); // Or remove the modal from the DOM: modal.remove();
-  }
+  let showModal = true;
+  
+    function closeModal() {
+      showModal = false;
+    }
   </script>
   
   <div class="modal">
@@ -131,11 +131,11 @@
           <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addSpace}>
             Add
           </button>
-          <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={cancel}>
+          <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
             Cancel
           </button>
         </div>
       </div>
     </div>
   </div>
-    </div>
+    </div> -->

@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     // Define variables and functions needed for batch update
     let departments = ['Sales', 'Engineering', 'Marketing', 'HR', 'Finance'];
     let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
@@ -26,7 +26,6 @@
 }
   </script>
   
-  <!-- Modal structure -->
   <div class="modal">
     <div class="modal-content">
       <div class="rounded-t mb-0 px-4 py-10 border-0">
@@ -96,4 +95,4 @@
       </div>      
     </div>
   </div>
-  
+   -->

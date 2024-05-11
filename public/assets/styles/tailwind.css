@@ -4127,6 +4127,13 @@ select {
   width: 300px; /* Adjust the width as needed */
 }
 
+.filter-input2 {
+  width: 100px; /* Adjust the width as needed */
+  height: 25px;
+  font-size:small;
+  padding: 10px;
+}
+
 .small-dropdown {
   width: 71px; /* Adjust the width as needed */
   height: 40px;

@@ -55,11 +55,11 @@
   function closeModal() {
       showModal = false;
       // Reset input fields
-        let availability = '';
-        let capacity = '';
-        let roomName = '';
-        let location = '';
-        let features = '';
+        availability = '';
+        capacity = '';
+        roomName = '';
+        location = '';
+        features = '';
     }
   
     export let color = "light";
@@ -258,7 +258,7 @@
                             </div>
                         </div>
                         <div class="flex justify-end">
-                            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={bookRoom}>
+                            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addRoom}>
                                 Add
                             </button>
                             <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>

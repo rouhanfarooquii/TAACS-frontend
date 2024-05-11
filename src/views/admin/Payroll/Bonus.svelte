@@ -86,9 +86,9 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
   </div>
   <div class="access-control">
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Add New Bonus</button>
-    {#if showModal}
+    <!-- {#if showModal}
   <AddNewBonusModal on:closeModal={() => showModal = false} />
-{/if}
+{/if} -->
     <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search...">
     <table>
       <thead>
