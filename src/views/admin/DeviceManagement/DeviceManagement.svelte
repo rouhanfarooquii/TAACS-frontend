@@ -7,6 +7,9 @@
   let deviceId = '';
   let deviceIp = '';
   let showModal = false;
+  let editModal = false;
+  let currentDevice = null;
+
 
   // function addDevice() {
   //   // Perform validation if needed
@@ -64,13 +67,14 @@ function openModal() {
     showModal = true;
   }
 
-function closeModal() {
+  function closeModal() {
     showModal = false;
-    // Reset input fields
+    editModal = false;
     deviceName = '';
     deviceId = '';
     deviceIp = '';
-  }
+    currentDevice = null;
+}
 
   export let color = "light";
 
@@ -107,19 +111,22 @@ function closeModal() {
 
   const toggleDropdown = (event, rowIndex) => {
     event.preventDefault();
-    // Toggle visibility for the clicked dropdown only
-    dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
+    const isOpen = dropdownPopoverShow[rowIndex];
+    // Close all dropdowns first
+    dropdownPopoverShow.fill(false);
 
-    // Hide all other dropdowns
-    dropdownPopoverShow.fill(false, 0, rowIndex);
-    dropdownPopoverShow.fill(false, rowIndex + 1);
+    // Then open the clicked one if it was previously closed
+    dropdownPopoverShow[rowIndex] = !isOpen;
 
     if (dropdownPopoverShow[rowIndex]) {
-      createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
-        placement: "bottom-start",
-      });
+        createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
+            placement: "bottom-start",
+        });
+        window.addEventListener('click', handleClickOutside, { capture: true });
+    } else {
+        window.removeEventListener('click', handleClickOutside, { capture: true });
     }
-  };
+};
 
   // Define pagination logic
   const devicesPerPage = 5; // Adjust as needed
@@ -136,6 +143,30 @@ function closeModal() {
     currentPage = event.detail.pageNumber;
 }
 
+function openEditModal(device) {
+    currentDevice = device;
+    deviceName = device.name;
+    deviceId = device.id;
+    deviceIp = device.ip;
+    editModal = true;
+}
+
+async function updateDevice() {
+    // Assume similar validation and fetch logic as addDevice
+    // Update the device in your backend
+    closeModal();
+    // Refresh or mutate the devices array to reflect the changes
+}
+
+function handleClickOutside(event) {
+    let isDropdownClick = btnDropdownRef.some(ref => ref && ref.contains(event.target));
+    let isPopoverClick = popoverDropdownRef.some(ref => ref && ref.contains(event.target));
+
+    if (!isDropdownClick && !isPopoverClick) {
+        // Close all dropdowns if the click is neither on a button nor on a popover
+        dropdownPopoverShow.fill(false);
+    }
+}
 </script>
   
   <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -152,14 +183,14 @@ function closeModal() {
         >
           Add Device
         </button>
-        {#if showModal}
+        {#if showModal || editModal}
         <div class="modal">
           <div class="modal-content">
           <div class="rounded-t mb-0 px-4 py-10 border-0">
             <div class="flex flex-wrap items-center">
               <div class="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 class="font-semibold text-lg text-blueGray-700">
-                  Add Device
+                  {editModal ? 'Edit Device' : 'Add Device'}
                 </h3>
               </div>
             </div>
@@ -193,8 +224,8 @@ function closeModal() {
                 </div>
               </div>
               <div class="flex justify-end">
-                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addDevice}>
-                  Add
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"  on:click={editModal ? updateDevice : addDevice}>
+                  {editModal ? 'Update' : 'Add'}
                 </button>
                 <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                   Cancel
@@ -256,12 +287,12 @@ function closeModal() {
                                 >
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
-                                <div
-                                bind:this="{popoverDropdownRef[rowIndex]}"
-                                class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}"
-                                >
+                                <div bind:this="{popoverDropdownRef[rowIndex]}"
+                     class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}"
+                     on:click|self={(e) => e.stopPropagation()}>
+
                                     <a
-                                        href="#pablo" on:click={(e) => e.preventDefault()}
+                                    href="#pablo" on:click={(e) => { e.preventDefault(); openEditModal(device); }}
                                         class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
                                     >
                                         Edit
