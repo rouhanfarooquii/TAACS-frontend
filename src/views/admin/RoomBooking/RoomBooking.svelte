@@ -293,7 +293,7 @@ function closeModal() {
                         <td class="table-data"title={bookingList.dateTimeFrom}>{bookingList.dateTimeFrom}</td>
                         <td class="table-data"title={bookingList.dateTimeTo}>{bookingList.dateTimeTo}</td>
                         <td class="table-data"title={bookingList.noOfPeople}>{bookingList.noOfPeople}</td>
-                        <td class="table-data">
+                        <td class="text-xs">
                             <div>
                                 <a
                                     class="text-blueGray-500 py-1 px-3"

@@ -6,6 +6,7 @@
   let deviceName = '';
   let deviceId = '';
   let deviceIp = '';
+  let status = '';
   let showModal = false;
   let editModal = false;
   let currentDevice = null;
@@ -60,6 +61,31 @@ if (deviceName && deviceId && deviceIp) {
 } else {
   alert('Please fill in all fields.');
 }
+}
+
+async function updateDeviceStatus() {
+    if (currentDevice) {
+        try {
+            const response = await fetch('/api/updateDeviceStatus/${currentDevice.id}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: currentDevice.status })
+            });
+
+            if (response.ok) {
+                closeModal(); // Close modal on success
+                // Refresh the device list or mutate the state as needed
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while updating the device status. Please try again.');
+      }
+    }
 }
 
 // Function to open the modal
@@ -148,7 +174,7 @@ function openEditModal(device) {
     deviceName = device.name;
     deviceId = device.id;
     deviceIp = device.ip;
-    editModal = true;
+    editModal = true;
 }
 
 async function updateDevice() {
@@ -165,7 +191,7 @@ function handleClickOutside(event) {
     if (!isDropdownClick && !isPopoverClick) {
         // Close all dropdowns if the click is neither on a button nor on a popover
         dropdownPopoverShow.fill(false);
-    }
+  }
 }
 </script>
   
@@ -222,6 +248,19 @@ function handleClickOutside(event) {
                     <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceIp}>
                   </div>
                 </div>
+                {#if editModal}
+                    <div class="w-full lg:w-6/12 px-4">
+                        <div class="relative mb-3">
+                            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
+                                Status
+                            </label>
+                            <label class="switch">
+                                <input type="checkbox" id="status" class="hidden" bind:checked={status}>
+                                <span class="slider round"></span> 
+                            </label>
+                        </div>
+                    </div>
+                    {/if}
               </div>
               <div class="flex justify-end">
                 <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"  on:click={editModal ? updateDevice : addDevice}>
@@ -287,9 +326,9 @@ function handleClickOutside(event) {
                                 >
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
-                                <div bind:this="{popoverDropdownRef[rowIndex]}"
-                     class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}"
-                     on:click|self={(e) => e.stopPropagation()}>
+                                <div bind:this="{popoverDropdownRef[rowIndex]}" 
+                                class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}"
+                                on:click|self={(e) => e.stopPropagation()}>
 
                                     <a
                                     href="#pablo" on:click={(e) => { e.preventDefault(); openEditModal(device); }}
