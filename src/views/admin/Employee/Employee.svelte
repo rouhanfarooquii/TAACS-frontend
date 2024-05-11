@@ -72,7 +72,7 @@
 
   let filters = {
     name: '',
-    position: '',
+    designation: '',
     active: '',
     department: '',
     location: '',
@@ -142,9 +142,9 @@
   <div class="flex justify-between mb-4">
     <!-- Filter by Position -->
     <div>
-      <label for="filterPosition">Position:</label>
+      <label for="filterDesignation">Designation:</label>
       <br>
-      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Position" onchange="{() => applyFilters()}">
+      <input type="text" id="filterDesignation" name="filterDesignation" class="filter-input" placeholder="Designation" onchange="{() => applyFilters()}">
     </div>
     <!-- Filter by Experience -->
     <div>
@@ -185,11 +185,10 @@
       <tr>
         <th class="px-4 py-2">#</th>
         <th class="px-4 py-2">Employee</th>
+        <th class="px-4 py-2">Department</th>
+        <th class="px-4 py-2">Designation</th>
         <th class="px-4 py-2">Details</th>
-        <th class="px-4 py-2">Role</th>
         <th class="px-4 py-2">Active</th>
-        <th class="px-4 py-2">Added On</th>
-        <th class="px-4 py-2">Modified On</th>
         <th class="px-4 py-2">Action</th>
       </tr>
     </thead>
@@ -198,11 +197,10 @@
       <tr>
         <td class="border px-4 py-2">{index + 1}</td>
         <td class="border px-4 py-2">{employee.name}</td>
+        <td class="border px-4 py-2">{employee.department}</td>
+        <td class="border px-4 py-2">{employee.designation}</td>
         <td class="border px-4 py-2">{employee.details}</td>
-        <td class="border px-4 py-2">{employee.role}</td>
         <td class="border px-4 py-2">{employee.active ? 'Yes' : 'No'}</td>
-        <td class="border px-4 py-2">{employee.addedOn}</td>
-        <td class="border px-4 py-2">{employee.modifiedOn}</td>
         <td class="border px-4 py-2">Action</td>
       </tr>
       {/each}
