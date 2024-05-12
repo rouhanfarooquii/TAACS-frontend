@@ -3,8 +3,6 @@
   import BatchUpdateModal from './BatchUpdateModal.svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
 
-  // Other existing code...
-
   let showModal = false;
 
   function openModal() {
@@ -13,6 +11,30 @@
   const edit1 = "../assets/img/icons8-edit-24.png"
   const edit2 = "../assets/img/icons8-tick-24.png"
   export let color = "light";
+
+  let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
+  let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
+  let valueTypes = ['Percentage', 'Absolute', 'Change'];
+  let selectedDepartment = '';
+  let selectedDesignation = '';
+  let selectedValueType = '';
+  let value = '';
+
+  let departmentDesignations = {
+    "Marketing": ["Marketing Manager", "Marketing Coordinator", "Brand Manager", "Digital Marketing Specialist"],
+    "Finance": ["Chief Financial Officer (CFO)", "Financial Analyst", "Accountant", "Finance Manager"],
+    "Human Resources": ["Human Resources Manager", "Recruitment Specialist", "Training Coordinator", "HR Assistant"],
+    "Information Technology": ["Chief Information Officer (CIO)", "IT Manager", "Systems Administrator", "Software Developer"],
+    "Sales": ["Sales Manager", "Sales Representative", "Account Executive", "Business Development Manager"],
+    "Operations": ["Operations Manager", "Operations Coordinator", "Supply Chain Manager", "Logistics Specialist"],
+    "Customer Service": ["Customer Service Manager", "Customer Support Representative", "Client Relations Specialist"],
+    "Legal": ["General Counsel", "Legal Assistant", "Paralegal", "Legal Counsel"],
+    "Administration": ["Office Manager", "Executive Assistant", "Administrative Assistant", "Office Coordinator"]
+  };
+  let designation = [];
+
+  // Disable designation field initially
+  let isDesignationDisabled = true;
 
   let salaries = [
     { id: '1', name: 'Alice Budgies', department: 'Sales', designation: 'Sales Manager', salary: 80000 },
@@ -52,24 +74,6 @@ function editSalary(salaries) {
 
   let selectedUsers = new Set();
 
-  function toggleSelection(userId) {
-    if (selectedUsers.has(userId)) {
-      selectedUsers.delete(userId);
-    } else {
-      selectedUsers.add(userId);
-    }
-    selectedUsers = new Set(selectedUsers); // Force rerender
-  }
-
-  function toggleSelectAll() {
-    if (selectedUsers.size === salaries.length) {
-      selectedUsers.clear();
-    } else {
-      salaries.forEach(salaries => selectedUsers.add(salaries.id));
-    }
-    selectedUsers = new Set(selectedUsers); // Force rerender
-  }
-
   // Define pagination logic
   const salariesPerPage = 5; // Adjust as needed
   let currentPage = 1;
@@ -84,15 +88,6 @@ $: totalPages = Math.ceil(salaries.length / salariesPerPage);
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
     currentPage = event.detail.pageNumber;
 }
-
- // Define variables and functions needed for batch update
- let departments = ['Sales', 'Engineering', 'Marketing', 'HR', 'Finance'];
-    let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
-    let valueTypes = ['Percentage', 'Absolute', 'Change'];
-    let selectedDepartment = '';
-    let selectedDesignation = '';
-    let selectedValueType = '';
-    let value = '';
   
     function update() {
       // Logic to handle batch update
@@ -101,8 +96,12 @@ $: totalPages = Math.ceil(salaries.length / salariesPerPage);
       // Reset fields after update
       selectedDepartment = '';
       selectedDesignation = '';
-      selectedValueType = '';
+      selectedValueType = null;
       value = '';
+    }
+
+    function selectValueType(value) {
+        selectedValueType = value;
     }
 
     function closeModal() {
@@ -166,16 +165,19 @@ $: totalPages = Math.ceil(salaries.length / salariesPerPage);
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Value Type:
-                  </label>
-                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedValueType}>
-                    {#each valueTypes as type}
-                      <option value={type}>{type}</option>
-                    {/each}
-                  </select>
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value-type">
+                        Value Type:
+                    </label>
+                    <div id="value-type" class="flex">
+                        {#each valueTypes as type}
+                            <label class="inline-flex items-center mt-3 mr-3">
+                                <input type="radio" class="form-radio h-5 w-5 text-blueGray-600" value={type} on:click={() => selectValueType(type)} checked={selectedValueType === type}>
+                                <span class="ml-2 text-blueGray-600">{type}</span>
+                            </label>
+                        {/each}
+                    </div>
                 </div>
-              </div>
+              </div>  
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
@@ -216,7 +218,7 @@ $: totalPages = Math.ceil(salaries.length / salariesPerPage);
             <!-- Salary -->
             <div class="flex items-center">
               {#if editingModes[salaries.id]}
-                <input type="number" class="salary-input" bind:value={salaries.salary}>
+                <input type="number" class="salary-input width80px text-xs" style="" bind:value={salaries.salary}>
               {:else}
                 <span>{salaries.salary}</span>
               {/if}

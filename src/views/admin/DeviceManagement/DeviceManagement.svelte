@@ -12,17 +12,6 @@
   let currentDevice = null;
 
 
-  // function addDevice() {
-  //   // Perform validation if needed
-  //   // For simplicity, I'm assuming all fields are required
-  //   if (deviceName && deviceId && deviceIp) {
-  //     // Add the new device to your data source or perform any necessary action
-  //     navigate('/admin/devicemanagement');
-  //   } else {
-  //     alert('Please fill in all fields.');
-  //   }
-  // }
-
   async function addDevice() {
 // Perform validation if needed
 // For simplicity, I'm assuming all fields are required
@@ -99,7 +88,7 @@ function openModal() {
     deviceName = '';
     deviceId = '';
     deviceIp = '';
-    currentDevice = null;
+    currentDevice = null;
 }
 
   export let color = "light";

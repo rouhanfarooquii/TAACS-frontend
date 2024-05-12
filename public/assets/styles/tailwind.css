@@ -4326,6 +4326,16 @@ input:checked + .slider:before {
   /* Adjust these properties to customize the input box */
   width: 80px; /* Set the width */
   padding: 5px; /* Add padding */
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.salary-input1 {
+  /* Adjust these properties to customize the input box */
+  width: 120px; /* Set the width */
+  padding: 5px; /* Add padding */
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .icon-button {
@@ -4381,8 +4391,8 @@ input:checked + .slider:before {
   border-left-width: 0px;
   border-right-width: 0px;
   vertical-align: middle;
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   padding-right: 1rem;
   padding-bottom: 1rem;
   padding-top: 1rem;

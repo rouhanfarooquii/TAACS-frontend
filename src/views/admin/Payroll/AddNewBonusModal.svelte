@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   // Define variables and functions needed for batch update
   let bonusName = '';
   let activationDate = '';
@@ -25,8 +25,6 @@ const modal = document.querySelector('.modal');
 modal.classList.toggle('hidden'); // Or remove the modal from the DOM: modal.remove();
 }
 </script>
-
-<!-- Modal structure -->
 <div class="modal">
   <div class="modal-content">
     <div class="rounded-t mb-0 px-4 py-10 border-0">
@@ -95,4 +93,4 @@ modal.classList.toggle('hidden'); // Or remove the modal from the DOM: modal.rem
       </div>
     </div>      
   </div>
-</div>
+</div> -->
