@@ -14,10 +14,10 @@
   let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
   let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
   let valueTypes = ['Percentage', 'Absolute'];
+  let selectedValueType = '';
 
 
-
-  let users = [
+  let bonuses = [
     { id: '1', name: 'Year End Bonus', department: 'All', designation: 'All', percentage: 5, activeFrom: '2022-01-01' },
     { id: '2', name: 'Engineering Excellence Award', department: 'Engineering', designation: 'Senior Software Engineer', percentage: 3, activeFrom: '2022-01-15' },
     { id: '3', name: 'Marketing Performance Bonus', department: 'Marketing', designation: 'All', percentage: 4, activeFrom: '2022-02-01' },
@@ -26,21 +26,21 @@
 ];
 
 
-// State variable to track editing mode for each user
+// State variable to track editing mode for each bonus
 let editingModes = {};
 
-function toggleEditingMode(userId) {
-  editingModes[userId] = !editingModes[userId];
+function toggleEditingMode(idId) {
+  editingModes[idId] = !editingModes[idId];
 }
 
-function saveSalaryChanges(user) {
+function saveSalaryChanges(bonus) {
   // Logic to save the changes made to the salary
-  console.log("Saved changes for user:", user);
+  console.log("Saved changes for bonus:", bonus);
   // Assuming you have backend logic here to update the salary
 }
 
-function editSalary(user) {
-  toggleEditingMode(user.id);
+function editSalary(bonus) {
+  toggleEditingMode(bonus.id);
   // You can perform additional actions here if needed
 }
 
@@ -64,26 +64,26 @@ function openModal() {
 }
 
 function selectValueType(value) {
-      selectedValueType = value;
-  }
+        selectedValueType = value;
+    }
 
 function closeModal() {
   showModal = false;
   selectedDepartment = '';
-  selectedDesignation = '';
-  selectedValueType = '';
-  value = '';
+      selectedDesignation = '';
+      selectedValueType = '';
+      value = '';
 }
 
 // Define pagination logic
-const usersPerPage = 5; // Adjust as needed
+const bonusPerPage = 5; // Adjust as needed
 let currentPage = 1;
 
  // Reactive statements to ensure proper updates
-$: startIndex = (currentPage - 1) * usersPerPage;
-$: endIndex = Math.min(startIndex + usersPerPage, users.length);
-$: displayedUsers = users.slice(startIndex, endIndex);
-$: totalPages = Math.ceil(users.length / usersPerPage);
+$: startIndex = (currentPage - 1) * bonusPerPage;
+$: endIndex = Math.min(startIndex + bonusPerPage, bonuses.length);
+$: displayedbonus = bonuses.slice(startIndex, endIndex);
+$: totalPages = Math.ceil(bonuses.length / bonusPerPage);
 
   function handlePageChange(event) {
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
@@ -109,7 +109,7 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
           <div class="flex flex-wrap items-center">
             <div class="relative w-full px-4 max-w-full flex-grow flex-1">
               <h3 class="font-semibold text-lg text-blueGray-700">
-                Batch Update
+                Add New Bonus
               </h3>
             </div>
           </div>
@@ -204,71 +204,71 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
         </tr>
       </thead>
       <tbody>
-        {#each displayedUsers as user (user.id)}
+        {#each displayedbonus as bonus (bonus.id)}
         <tr>
-          <td class="table-data font-bold text-blueGray-600" title={user.name}>
+          <td class="table-data font-bold text-blueGray-600" title={bonus.name}>
             <!-- Name -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
-                <input type="text" class='salary-input1 truncate' bind:value={user.name}>
+              {#if editingModes[bonus.id]}
+                <input type="text" class='salary-input1 truncate' bind:value={bonus.name}>
               {:else}
-                <span>{user.name}</span>
+                <span>{bonus.name}</span>
               {/if}
             </div>
           </td>
-          <td class="table-data" title={user.designation}>
+          <td class="table-data" title={bonus.designation}>
             <!-- Designatiom -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
-                <input type="text" class='salary-input1 truncate' bind:value={user.designation}>
+              {#if editingModes[bonus.id]}
+                <input type="text" class='salary-input1 truncate' bind:value={bonus.designation}>
               {:else}
-                <span>{user.designation}</span>
+                <span>{bonus.designation}</span>
               {/if}
             </div>
           </td>
-          <td class="table-data" title={user.department}>
+          <td class="table-data" title={bonus.department}>
             <!-- Department -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
-                <select class='salary-input1 truncate' bind:value={user.department}>
+              {#if editingModes[bonus.id]}
+                <select class='salary-input1 truncate' bind:value={bonus.department}>
                   {#each departments as dept}
                   <option value={dept}>{dept}</option>
                   {/each}
                 </select>
               {:else}
-                <span>{user.department}</span>
+                <span>{bonus.department}</span>
               {/if}
             </div>
           </td>
-          <td class="table-data" title={user.percentage}>
+          <td class="table-data" title={bonus.percentage}>
             <!-- Percentage -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
-                <input type="number" class='salary-input' bind:value={user.percentage}>
+              {#if editingModes[bonus.id]}
+                <input type="number" class='salary-input' bind:value={bonus.percentage}>
               {:else}
-                <span>{user.percentage}%</span>
+                <span>{bonus.percentage}%</span>
               {/if}
             </div>
           </td>
-          <td class="table-data" title={user.activeFrom}>
+          <td class="table-data" title={bonus.activeFrom}>
             <!-- Active From -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
-                <input type="date" class='salary-input' bind:value={user.activeFrom}>
+              {#if editingModes[bonus.id]}
+                <input type="date" class='salary-input1' bind:value={bonus.activeFrom}>
               {:else}
-                <span>{user.activeFrom}</span>
+                <span>{bonus.activeFrom}</span>
               {/if}
             </div>
           </td>
           <td>
             <!-- Edit button -->
             <div class="flex items-center">
-              {#if editingModes[user.id]}
+              {#if editingModes[bonus.id]}
                 <!-- Save button -->
-                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(user); toggleEditingMode(user.id);}}>
+                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(bonus); toggleEditingMode(bonus.id);}}>
               {:else}
                 <!-- Edit button -->
-                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(user)} />
+                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(bonus)} />
               {/if}
             </div>
           </td>
