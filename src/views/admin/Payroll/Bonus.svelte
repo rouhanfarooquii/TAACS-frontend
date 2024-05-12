@@ -210,7 +210,7 @@ $: totalPages = Math.ceil(bonuses.length / bonusPerPage);
             <!-- Name -->
             <div class="flex items-center">
               {#if editingModes[bonus.id]}
-                <input type="text" class='salary-input1 truncate' bind:value={bonus.name}>
+                <input type="text" class='salary-input1' bind:value={bonus.name}>
               {:else}
                 <span>{bonus.name}</span>
               {/if}
@@ -220,7 +220,7 @@ $: totalPages = Math.ceil(bonuses.length / bonusPerPage);
             <!-- Designatiom -->
             <div class="flex items-center">
               {#if editingModes[bonus.id]}
-                <input type="text" class='salary-input1 truncate' bind:value={bonus.designation}>
+                <input type="text" class='salary-input1' bind:value={bonus.designation}>
               {:else}
                 <span>{bonus.designation}</span>
               {/if}
@@ -230,7 +230,7 @@ $: totalPages = Math.ceil(bonuses.length / bonusPerPage);
             <!-- Department -->
             <div class="flex items-center">
               {#if editingModes[bonus.id]}
-                <select class='salary-input1 truncate' bind:value={bonus.department}>
+                <select class='salary-input1' bind:value={bonus.department}>
                   {#each departments as dept}
                   <option value={dept}>{dept}</option>
                   {/each}

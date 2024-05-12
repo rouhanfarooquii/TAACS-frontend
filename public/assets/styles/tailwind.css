@@ -4332,6 +4332,9 @@ input:checked + .slider:before {
   padding: 5px; /* Add padding */
   font-size: 0.875rem;
   line-height: 1.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .salary-input1 {
@@ -4340,6 +4343,9 @@ input:checked + .slider:before {
   padding: 5px; /* Add padding */
   font-size: 0.875rem;
   line-height: 1.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .icon-button {

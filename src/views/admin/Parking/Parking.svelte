@@ -287,7 +287,7 @@ let parkingSlot = '';
               <!-- Name -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <input type="text" bind:value={space.parkingSlot}>
+                  <input type="text" class="salary-input" bind:value={space.parkingSlot}>
                 {:else}
                   <span>{space.parkingSlot}</span>
                 {/if}
@@ -297,7 +297,7 @@ let parkingSlot = '';
               <!-- Designatiom -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <input type="text" bind:value={space.location}>
+                  <input type="text" class="salary-input1" bind:value={space.location}>
                 {:else}
                   <span>{space.location}</span>
                 {/if}
@@ -307,7 +307,7 @@ let parkingSlot = '';
               <!-- Department -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <input type="text" bind:value={space.carId}>
+                  <input type="text" class="salary-input" bind:value={space.carId}>
                 {:else}
                   <span>{space.carId}</span>
                 {/if}
@@ -317,7 +317,7 @@ let parkingSlot = '';
               <!-- Percentage -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <input type="text" class="w-16" bind:value={space.empName}>
+                  <input type="text"  class="salary-input1" bind:value={space.empName}>
                 {:else}
                   <span>{space.empName}</span>
                 {/if}
@@ -327,7 +327,7 @@ let parkingSlot = '';
               <!-- Active From -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <input type="text" bind:value={space.carMake}>
+                  <input type="text" class="salary-input1" bind:value={space.carMake}>
                 {:else}
                   <span>{space.carMake}</span>
                 {/if}

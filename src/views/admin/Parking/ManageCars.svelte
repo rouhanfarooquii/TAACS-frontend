@@ -1,24 +1,4 @@
-<!-- <script>
-    // core components
-    import CardLineChart from "components/Cards/CardLineChart.svelte";
-    import CardBarChart from "components/Cards/CardBarChart.svelte";
-    import CardPageVisits from "components/Cards/CardPageVisits.svelte";
-    import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
-    export let location;
-  </script>
-  
-  <div>
-    <div class="flex flex-wrap">
-      <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <CardLineChart />
-      </div>
-      <div class="w-full xl:w-4/12 px-4">
-        <CardBarChart />
-      </div>
-    </div>
-  </div>
-   -->
-
+<!-- 
    <script>
     import { reactive } from 'svelte';
     import AddCarModal from './AddCarModal.svelte';
@@ -272,7 +252,7 @@ let carId = '';
           {#each displayedCars as car (car.id)}
           <tr>
             <td class="table-data font-bold text-blueGray-600" title={car.carId}>
-              <!-- Name -->
+
               <div class="flex items-center">
                 {#if editingModes[car.id]}
                   <input type="text" bind:value={car.carId}>
@@ -282,7 +262,6 @@ let carId = '';
               </div>
             </td>
             <td class="table-data" title={car.empId}>
-              <!-- Designatiom -->
               <div class="flex items-center">
                 {#if editingModes[car.id]}
                   <input type="text" bind:value={car.empId}>
@@ -292,7 +271,6 @@ let carId = '';
               </div>
             </td>
             <td class="table-data" title={car.carMake}>
-              <!-- Department -->
               <div class="flex items-center">
                 {#if editingModes[car.id]}
                   <input type="text" bind:value={car.carMake}>
@@ -302,7 +280,6 @@ let carId = '';
               </div>
             </td>
             <td class="table-data" title={car.carModel}>
-              <!-- Percentage -->
               <div class="flex items-center">
                 {#if editingModes[car.id]}
                   <input type="number" class="w-16" bind:value={car.carModel}>
@@ -312,7 +289,6 @@ let carId = '';
               </div>
             </td>
             <td class="table-data" title={car.type}>
-              <!-- Active From -->
               <div class="flex items-center">
                 {#if editingModes[car.id]}
                   <input type="text" bind:value={car.type}>
@@ -322,13 +298,10 @@ let carId = '';
               </div>
             </td>
             <td>
-              <!-- Edit button -->
               <div class="flex items-center">
                 {#if editingModes[car.id]}
-                  <!-- Save button -->
                   <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(car); toggleEditingMode(car.id);}}>
                 {:else}
-                  <!-- Edit button -->
                   <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(car)} />
                 {/if}
                 <div class="ml-4">
@@ -343,4 +316,4 @@ let carId = '';
       </table>
       <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
     </div>
-  </div>
+  </div> -->

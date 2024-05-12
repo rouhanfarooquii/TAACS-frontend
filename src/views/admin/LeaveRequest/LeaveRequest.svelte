@@ -361,13 +361,11 @@ function handlePageChange(event) {
       <tbody>
         {#each rejecteddisplayedleaveRequests as request}
           <tr>
-            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-              <span class="ml-3 font-bold {color === 'light' ? 'text-blueGray-600' : 'text-white'}">{request.name}</span>
-            </td>
-            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.role}</td>
-            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.from}</td>
-            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.to}</td>
-            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{request.reason}</td>
+            <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
+            <td class="table-data" title={request.role}>{request.role}</td>
+            <td class="table-data" title={request.from}>{request.from}</td>
+            <td class="table-data" title={request.to}>{request.to}</td>
+            <td class="table-data" title={request.reason}>{request.reason}</td>
           </tr>
         {/each}
       </tbody>
