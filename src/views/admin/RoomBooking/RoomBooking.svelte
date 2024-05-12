@@ -8,6 +8,8 @@
   let dateTimeFrom = '';
   let dateTimeTo = '';
   let showModal = false;
+  let editModal = false;
+  let currentBooking = null;
 
 async function bookRoom() {
 if (employeeName && roomName && dateTimeFrom) {
@@ -19,9 +21,6 @@ if (employeeName && roomName && dateTimeFrom) {
       alert('Booking already exists.');
       return;
     }
-
-
-    // Left
     const response = await fetch('/api/bookRoom', {
       method: 'POST',
       headers: {
@@ -43,15 +42,40 @@ if (employeeName && roomName && dateTimeFrom) {
     console.error('Error:', error);
     alert('An error occurred while adding the booking. Please try again.');
   }
-} else {
-  alert('Please fill in all fields.');
+  } else {
+    alert('Please fill in all fields.');
+  }
 }
+
+async function updateBooking() {
+    if (currentDevice) {
+        try {
+            const response = await fetch('/api/updateRoomBooking/${currentBooking.id}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: currentDevice.status })
+            });
+
+            if (response.ok) {
+                closeModal(); // Close modal on success
+                // Refresh the device list or mutate the state as needed
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while updating the device status. Please try again.');
+      }
+    }
 }
 
 // Function to open the modal
 function openModal() {
     showModal = true;
-  }
+}
 
 function closeModal() {
     showModal = false;

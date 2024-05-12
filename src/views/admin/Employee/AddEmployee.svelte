@@ -31,7 +31,8 @@
       personalPassword: '',
       fingerIndex1: '',
       fingerIndex2: '',
-      isFingerAdded: ''
+      isFingerAdded: '',
+      salary: ''
   };
 
   const image = "../assets/img/10.jpg";
@@ -246,7 +247,7 @@
 </div>
 
 <!-- List Type Row -->
-<div class="flex justify-between mb-4">
+<div class="flex justify-start mb-4">
   <div>
     <label for="listType">List Type:</label>
     <br>
@@ -257,6 +258,11 @@
       <option value="Temporary_List3">Temporary_List3</option>
     </select>
   </div>
+    <div class = "ml-12">
+      <label for="salary">Salary</label>
+      <br>
+      <input type="number" id="salary" name="salary" class="filter-input" placeholder="Salary" bind:value="{employee.salary}">
+    </div>
 </div>
 
 

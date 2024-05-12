@@ -153,7 +153,7 @@
   </div>
 
   <!-- Filters Row 5 -->
-<div class="flex mb-4">
+<div class="flex justify-start mb-4">
   <!-- Filter by Card ID Number -->
   <div>
     <label for="cardIdNumber">Card ID Number:</label>

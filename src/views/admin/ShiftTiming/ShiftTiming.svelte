@@ -120,9 +120,9 @@ $: totalPages = Math.ceil(shifts.length / shiftsPerPage);
                 <td class='table-data font-bold text-blueGray-600'>{shift.description}</td>
                 <td class='table-data'>{shift.startTime}</td>
                 <td class='table-data'>{shift.endTime}</td>
-                <td class='table-data text-center'><input type="checkbox" bind:checked={shift.morningShift} disabled /></td>
-                <td class='table-data text-center'><input type="checkbox" bind:checked={shift.eveningShift} disabled /></td>
-                <td class='table-data text-center'><input type="checkbox" bind:checked={shift.nightShift} disabled /></td>
+                <td class='table-data text-center'><input type="checkbox" disabled bind:checked={shift.morningShift}  /></td>
+                <td class='table-data text-center'><input type="checkbox" disabled bind:checked={shift.eveningShift}/></td>
+                <td class='table-data text-center'><input type="checkbox" disabled bind:checked={shift.nightShift}/></td>
                 <td class='table-data'>
                   <div class="flex">
                     <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editShift(shift.id)} />
