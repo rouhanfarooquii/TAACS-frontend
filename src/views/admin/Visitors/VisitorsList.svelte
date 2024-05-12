@@ -19,18 +19,18 @@
     };
 
     let visitorsList = [
-    { id: 1234, name: "John Doe", email: "john.doe@example.com", mobileNumber: "1234567890", date: "2024/03/26", reasonToVisit: "Doctor's Appointment", status: "Pending" },
-    { id: 3524, name: "Jane Smith", email: "jane.smith@example.com", mobileNumber: "9876543210", date: "2024/04/09", reasonToVisit: "Family Emergency", status: "Approved" },
+    { id: 1234, name: "John Doe", email: "john.doe@example.com", mobileNumber: "1234567890", date: "2024/06/26", reasonToVisit: "Doctor's Appointment", status: "Pending" },
+    { id: 3524, name: "Jane Smith", email: "jane.smith@example.com", mobileNumber: "9876543210", date: "2024/06/09", reasonToVisit: "Family Emergency", status: "Approved" },
     { id: 3453, name: "Doe Wigan", email: "doe.wigan@example.com", mobileNumber: "4567890123", date: "2024/03/06", reasonToVisit: "Doctor's Appointment", status: "Rejected" },
-    { id: 1523, name: "Alice Johnson", email: "alice.johnson@example.com", mobileNumber: "7890123456", date: "2024/04/01", reasonToVisit: "Personal Leave", status: "Approved" },
+    { id: 1523, name: "Alice Johnson", email: "alice.johnson@example.com", mobileNumber: "7890123456", date: "2024/07/01", reasonToVisit: "Personal Leave", status: "Approved" },
     { id: 6234, name: "Bob Brown", email: "bob.brown@example.com", mobileNumber: "5678901234", date: "2024/03/15", reasonToVisit: "Vacation", status: "Rejected" },
-    { id: 9565, name: "Eve Adams", email: "eve.adams@example.com", mobileNumber: "3456789012", date: "2024/03/10", reasonToVisit: "Work Conference", status: "Pending" },
-    { id: 1726, name: "Charlie Davis", email: "charlie.davis@example.com", mobileNumber: "6789012345", date: "2024/04/05", reasonToVisit: "Family Vacation", status: "Pending" },
+    { id: 9565, name: "Eve Adams", email: "eve.adams@example.com", mobileNumber: "3456789012", date: "2024/08/10", reasonToVisit: "Work Conference", status: "Pending" },
+    { id: 1726, name: "Charlie Davis", email: "charlie.davis@example.com", mobileNumber: "6789012345", date: "2024/07/05", reasonToVisit: "Family Vacation", status: "Pending" },
     { id: 8234, name: "Grace Lee", email: "grace.lee@example.com", mobileNumber: "9012345678", date: "2024/03/25", reasonToVisit: "Medical Appointment", status: "Approved" },
     { id: 1237, name: "Frank Miller", email: "frank.miller@example.com", mobileNumber: "2345678901", date: "2024/04/12", reasonToVisit: "Training Workshop", status: "Rejected" },
     { id: 1348, name: "Bill Gates", email: "bill.gates@example.com", mobileNumber: "4567890123", date: "2024/03/20", reasonToVisit: "Sick Leave", status: "Pending" },
     { id: 2345, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "6543210987", date: "2024/05/01", reasonToVisit: "Business Meeting", status: "Approved" },
-    { id: 3456, name: "Mark Zuckerberg", email: "mark.zuckerberg@example.com", mobileNumber: "7890123456", date: "2024/05/10", reasonToVisit: "Company Event", status: "Rejected" },
+    { id: 3456, name: "Mark Zuckerberg", email: "mark.zuckerberg@example.com", mobileNumber: "7890123456", date: "2024/06/10", reasonToVisit: "Company Event", status: "Rejected" },
     { id: 4567, name: "Jeff Bezos", email: "jeff.bezos@example.com", mobileNumber: "8901234567", date: "2024/05/15", reasonToVisit: "Strategy Planning", status: "Pending" },
     { id: 5678, name: "Tim Cook", email: "tim.cook@example.com", mobileNumber: "9012345678", date: "2024/05/20", reasonToVisit: "Product Launch", status: "Approved" },
     { id: 6789, name: "Satya Nadella", email: "satya.nadella@example.com", mobileNumber: "1234567890", date: "2024/05/25", reasonToVisit: "Business Negotiation", status: "Pending" },
@@ -293,6 +293,11 @@ function handlePageChange(event) {
             >
               Reason to visit 
             </th>
+            <th
+              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+            >
+              Status 
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -303,6 +308,7 @@ function handlePageChange(event) {
               <td class="table-data" title={request.mobileNumber}>{request.mobileNumber}</td>
               <td class="table-data" title={request.date}>{request.date}</td>
               <td class="table-data" title={request.reasonToVisit}>{request.reasonToVisit}</td>
+              <td class="table-data" title={request.status}>{request.status}</td>
             </tr>
           {/each}
         </tbody>
