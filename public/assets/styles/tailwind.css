@@ -4398,6 +4398,23 @@ input:checked + .slider:before {
   padding-top: 1rem;
 }
 
+.table-data1 {
+  max-width: 15px; /* Set a maximum width for the table cells */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 1.5rem;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  vertical-align: middle;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
 .selected {
   font-weight: bold;
 }

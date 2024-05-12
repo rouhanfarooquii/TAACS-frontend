@@ -8,6 +8,7 @@
     export let color = "light"
     let selectedState = 'all'; // Initial state
     let selectedTab = 'pending'; // Default selected tab
+    const currentDate = new Date();
   
     function selectTab(tab) {
       selectedTab = tab;
@@ -16,33 +17,32 @@
     const handleTabClick = (state) => {
       selectedState = state;
     };
-  
+
     let visitorsList = [
     { id: 1234, name: "John Doe", email: "john.doe@example.com", mobileNumber: "1234567890", date: "2024/03/26", reasonToVisit: "Doctor's Appointment", status: "Pending" },
-    { id: 3524, name: "Jane Smith", email: "jane.smith@example.com", mobileNumber: "9876543210", date: "2024/04/09", reasonToVisit: "Family Emergency", status: "Upcoming" },
-    { id: 3453, name: "Doe Wigan", email: "doe.wigan@example.com", mobileNumber: "4567890123", date: "2024/03/06", reasonToVisit: "Doctor's Appointment", status: "History" },
-    { id: 1523, name: "Alice Johnson", email: "alice.johnson@example.com", mobileNumber: "7890123456", date: "2024/04/01", reasonToVisit: "Personal Leave", status: "Upcoming" },
-    { id: 6234, name: "Bob Brown", email: "bob.brown@example.com", mobileNumber: "5678901234", date: "2024/03/15", reasonToVisit: "Vacation", status: "History" },
+    { id: 3524, name: "Jane Smith", email: "jane.smith@example.com", mobileNumber: "9876543210", date: "2024/04/09", reasonToVisit: "Family Emergency", status: "Approved" },
+    { id: 3453, name: "Doe Wigan", email: "doe.wigan@example.com", mobileNumber: "4567890123", date: "2024/03/06", reasonToVisit: "Doctor's Appointment", status: "Rejected" },
+    { id: 1523, name: "Alice Johnson", email: "alice.johnson@example.com", mobileNumber: "7890123456", date: "2024/04/01", reasonToVisit: "Personal Leave", status: "Approved" },
+    { id: 6234, name: "Bob Brown", email: "bob.brown@example.com", mobileNumber: "5678901234", date: "2024/03/15", reasonToVisit: "Vacation", status: "Rejected" },
     { id: 9565, name: "Eve Adams", email: "eve.adams@example.com", mobileNumber: "3456789012", date: "2024/03/10", reasonToVisit: "Work Conference", status: "Pending" },
     { id: 1726, name: "Charlie Davis", email: "charlie.davis@example.com", mobileNumber: "6789012345", date: "2024/04/05", reasonToVisit: "Family Vacation", status: "Pending" },
-    { id: 8234, name: "Grace Lee", email: "grace.lee@example.com", mobileNumber: "9012345678", date: "2024/03/25", reasonToVisit: "Medical Appointment", status: "Upcoming" },
-    { id: 1237, name: "Frank Miller", email: "frank.miller@example.com", mobileNumber: "2345678901", date: "2024/04/12", reasonToVisit: "Training Workshop", status: "History" },
+    { id: 8234, name: "Grace Lee", email: "grace.lee@example.com", mobileNumber: "9012345678", date: "2024/03/25", reasonToVisit: "Medical Appointment", status: "Approved" },
+    { id: 1237, name: "Frank Miller", email: "frank.miller@example.com", mobileNumber: "2345678901", date: "2024/04/12", reasonToVisit: "Training Workshop", status: "Rejected" },
     { id: 1348, name: "Bill Gates", email: "bill.gates@example.com", mobileNumber: "4567890123", date: "2024/03/20", reasonToVisit: "Sick Leave", status: "Pending" },
-    { id: 2345, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "6543210987", date: "2024/05/01", reasonToVisit: "Business Meeting", status: "Upcoming" },
-    { id: 3456, name: "Mark Zuckerberg", email: "mark.zuckerberg@example.com", mobileNumber: "7890123456", date: "2024/05/10", reasonToVisit: "Company Event", status: "Pending" },
+    { id: 2345, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "6543210987", date: "2024/05/01", reasonToVisit: "Business Meeting", status: "Approved" },
+    { id: 3456, name: "Mark Zuckerberg", email: "mark.zuckerberg@example.com", mobileNumber: "7890123456", date: "2024/05/10", reasonToVisit: "Company Event", status: "Rejected" },
     { id: 4567, name: "Jeff Bezos", email: "jeff.bezos@example.com", mobileNumber: "8901234567", date: "2024/05/15", reasonToVisit: "Strategy Planning", status: "Pending" },
-    // Ten new rows
-    { id: 5678, name: "Tim Cook", email: "tim.cook@example.com", mobileNumber: "9012345678", date: "2024/05/20", reasonToVisit: "Product Launch", status: "Upcoming" },
+    { id: 5678, name: "Tim Cook", email: "tim.cook@example.com", mobileNumber: "9012345678", date: "2024/05/20", reasonToVisit: "Product Launch", status: "Approved" },
     { id: 6789, name: "Satya Nadella", email: "satya.nadella@example.com", mobileNumber: "1234567890", date: "2024/05/25", reasonToVisit: "Business Negotiation", status: "Pending" },
     { id: 7890, name: "Sundar Pichai", email: "sundar.pichai@example.com", mobileNumber: "2345678901", date: "2024/05/30", reasonToVisit: "Tech Conference", status: "Pending" },
-    { id: 8901, name: "Sheryl Sandberg", email: "sheryl.sandberg@example.com", mobileNumber: "3456789012", date: "2024/06/05", reasonToVisit: "Team Retreat", status: "Upcoming" },
+    { id: 8901, name: "Sheryl Sandberg", email: "sheryl.sandberg@example.com", mobileNumber: "3456789012", date: "2024/06/05", reasonToVisit: "Team Retreat", status: "Approved" },
     { id: 9012, name: "Susan Wojcicki", email: "susan.wojcicki@example.com", mobileNumber: "4567890123", date: "2024/06/10", reasonToVisit: "Marketing Campaign", status: "Pending" },
     { id: 1239, name: "Larry Page", email: "larry.page@example.com", mobileNumber: "5678901234", date: "2024/06/15", reasonToVisit: "Project Review", status: "Pending" },
-    { id: 2340, name: "Sergey Brin", email: "sergey.brin@example.com", mobileNumber: "6789012345", date: "2024/06/20", reasonToVisit: "Investor Meeting", status: "Upcoming" },
+    { id: 2340, name: "Sergey Brin", email: "sergey.brin@example.com", mobileNumber: "6789012345", date: "2024/06/20", reasonToVisit: "Investor Meeting", status: "Approved" },
     { id: 3451, name: "Jack Dorsey", email: "jack.dorsey@example.com", mobileNumber: "7890123456", date: "2024/06/25", reasonToVisit: "Annual General Meeting", status: "Pending" },
     { id: 4562, name: "Reed Hastings", email: "reed.hastings@example.com", mobileNumber: "8901234567", date: "2024/07/01", reasonToVisit: "Content Strategy Discussion", status: "Pending" },
-    { id: 5673, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "9012345678", date: "2024/07/06", reasonToVisit: "Space Exploration Update", status: "Upcoming" }
-];
+    { id: 5673, name: "Elon Musk", email: "elon.musk@example.com", mobileNumber: "9012345678", date: "2024/07/06", reasonToVisit: "Space Exploration Update", status: "Approved" }
+  ];
 
   
   // Simulated fetch function
@@ -105,19 +105,29 @@
     }
 
     // Function to update tabs based on dates
-function updateTabs() {
+// function updateTabs() {
+//     const currentDate = new Date();
+//     visitorsList.forEach(request => {
+//         const requestDate = new Date(request.date);
+//         if (requestDate < currentDate || request.status === 'Rejected') {
+//             request.status = 'History';
+//         } else if (requestDate > currentDate && request.status === 'Approved') {
+//             // Move request to upcoming tab if it was approved
+//             request.status = 'Upcoming';
+//         } else { request.status = 'Pending' };
+//     });
+// }
+
+  function updateTabs() {
     const currentDate = new Date();
-    visitorsList.forEach(request => {
-        const requestDate = new Date(request.date);
-        if (requestDate < currentDate) {
-            // Move request to history tab if the date has passed
-            request.status = 'History';
-        } else if (request.status === 'Pending') {
-            // Move request to upcoming tab if it was approved
-            request.status = 'Upcoming';
-        }
-    });
-}
+      visitorsList.forEach(request => {
+          const requestDate = new Date(request.date);
+          if (requestDate < currentDate) {
+              // Move request to history tab if the date has passed
+            request.status = 'Expired';
+          }
+      });
+  }
   
     // Simulate fetching data when the component mounts
     onMount(() => {
@@ -136,15 +146,14 @@ $: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex,
 $: pendingtotalPages = Math.ceil(pendingLeaveRequests.length / leaveRequestsPerPage);
 
 // Reactive statements to ensure proper updates
-$: upcomingLeaveRequests = visitorsList.filter(request => request.status === 'Upcoming');
+$: upcomingLeaveRequests = visitorsList.filter(request => {return request.status === 'Approved' && new Date(request.date) > currentDate;});
 $: upcomingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
 $: upcomingendIndex = Math.min(upcomingstartIndex + leaveRequestsPerPage, upcomingLeaveRequests.length);
 $: upcomingdisplayedleaveRequests = upcomingLeaveRequests.slice(upcomingstartIndex, upcomingendIndex);
 $: upcomingtotalPages = Math.ceil(upcomingLeaveRequests.length / leaveRequestsPerPage);
 
 // Reactive statements to ensure proper updates
-$: historyLeaveRequests = visitorsList.filter(request => request.status === 'History');
-$: historystartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: historyLeaveRequests = visitorsList.filter(request => {return new Date(request.date) < new Date() || request.status === 'Rejected' || request.status === 'Expired';});$: historystartIndex = (currentPage - 1) * leaveRequestsPerPage;
 $: historyendIndex = Math.min(historystartIndex + leaveRequestsPerPage, historyLeaveRequests.length);
 $: historydisplayedleaveRequests = historyLeaveRequests.slice(historystartIndex, historyendIndex);
 $: historytotalPages = Math.ceil(historyLeaveRequests.length / leaveRequestsPerPage);
@@ -176,8 +185,8 @@ function handlePageChange(event) {
       </ul>
   </div>
   
-    {#if selectedTab === 'pending'}
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      {#if selectedTab === 'pending'}
+      <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {#each pendingdisplayedleaveRequests as request}
         <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
           <h3 class="text-4xl font-bold text-blueGray-800">{request.name}</h3>
@@ -197,10 +206,11 @@ function handlePageChange(event) {
             class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">Reject</button>
           </div>
         </div>
-      {/each}
-      <Pagination currentPage={currentPage} totalPages={pendingtotalPages} on:pageChange={handlePageChange} />
-    </div>
-  {/if}
+        {/each}
+        </div>
+        <br/>
+        <Pagination currentPage={currentPage} totalPages={pendingtotalPages} on:pageChange={handlePageChange} />
+      {/if}
   
   {#if selectedTab === 'upcoming'}
   <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -240,7 +250,7 @@ function handlePageChange(event) {
             <tr>
               <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
               <td class="table-data" title={request.email}>{request.email}</td>
-              <td class="table-data" title={request.mobileNumber}>{request.mobileNumber}</td>
+              <td class="table-data ml-12" title={request.mobileNumber}>{request.mobileNumber}</td>
               <td class="table-data" title={request.date}>{request.date}</td>
               <td class="table-data" title={request.reasonToVisit}>{request.reasonToVisit}</td>
             </tr>
