@@ -1,20 +1,8 @@
-<!-- <script>
-  // core components
-  import CardSettings from "components/Cards/CardSettings.svelte";
-  import CardProfile from "components/Cards/CardProfile.svelte";
-  export let location;
-</script> -->
 
-<!-- <div class="flex flex-wrap">
-  <div class="w-full lg:w-8/12 px-4">
-    <CardSettings />
-  </div>
-  <div class="w-full lg:w-4/12 px-4">
-    <CardProfile />
-  </div>
-</div> -->
 
 <script>
+import { navigate } from 'svelte-routing';
+
   let employee = {
       id: '',
       name: '',
@@ -42,10 +30,6 @@
       console.log(employee);
   }
 
-  function navigateToAddEmployee() {
-      // Handle navigation logic here
-      console.log("Navigate to add employee screen");
-  }
   
   function handleFileInputChange(event) {
     console.log("File input changed!"); // Check if this message appears in the console
@@ -98,10 +82,23 @@
   // Invoke handleListTypeChange initially in case the default is not 'Permanent_List'
   handleListTypeChange();
 
+  function navigateToEmployee() {
+      // Handle navigation logic here
+      navigate('/admin/employee');
+      console.log("Navigate to add employee screen");
+  }
+
 
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+
+  <div class="flex justify-start">
+    <button class="bg-blueGray-800 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToEmployee}>
+      Back
+    </button>
+  </div>
+
     <div class="left-section flex flex-col items-center"> <!-- Adjust this value according to your needs -->
       <!-- svelte-ignore a11y-img-redundant-alt -->
       <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
@@ -135,12 +132,6 @@
 
   <!-- Filters Row 2 -->
   <div class="flex justify-between mb-4">
-    <!-- Filter by Position -->
-    <div>
-      <label for="filterPosition">Location:</label>
-      <br>
-      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Location" onchange="{() => applyFilters()}">
-    </div>
     <!-- Filter by Experience -->
     <div>
       <label for="filterExperience">Department:</label>
@@ -153,7 +144,7 @@
         <option value="5+">5+ years</option>
       </select>
     </div>
-    <!-- Filter by Active -->
+
     <div>
       <label for="filterActive">Designation:</label>
       <br>
@@ -163,29 +154,17 @@
         <option value="false">No</option>
       </select>
     </div>
-  </div>
 
-  <!-- Filters Row 3 -->
-  <div class="flex justify-between mb-4">
-    <!-- Filter by Position -->
     <div>
       <label for="filterPosition">Email:</label>
       <br>
       <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" onchange="{() => applyFilters()}">
     </div>
-    <!-- Filter by Experience -->
-    <div>
-      <label for="filterExperience">Employee Types:</label>
-      <br>
-      <select id="filterExperience" name="filterExperience" class="filter-input" onchange="{() => applyFilters()}">
-        <option value="">All</option>
-        <option value="0-1">0-1 years</option>
-        <option value="1-3">1-3 years</option>
-        <option value="3-5">3-5 years</option>
-        <option value="5+">5+ years</option>
-      </select>
-    </div>
-    <!-- Filter by Active -->
+  </div>
+
+  <!-- Filters Row 3 -->
+  <div class="flex justify-between mb-4">
+
     <div>
       <label for="filterActive">Gender:</label>
       <br>
@@ -195,36 +174,39 @@
         <option value="false">No</option>
       </select>
     </div>
+
+    <div>
+      <label for="dateOfBirth">Date of Birth:</label>
+      <br>
+      <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{employee.dateOfBirth}">
+    </div>
+
+    <div>
+      <label for="cardIdNumber">Card ID Number:</label>
+      <br>
+      <input type="text" id="cardIdNumber" name="cardIdNumber" class="filter-input" placeholder="Card ID Number" bind:value="{employee.cardIdNumber}">
+    </div>
   </div>
     
   <!-- Filters Row 4 -->
   <div class="flex justify-between mb-4">
-    <div class="w-full">
+    <div class="w-9/12">
       <label for="address">Address:</label>
       <br>
-      <input type="text" id="address" name="address" class="w-full" placeholder="Address" bind:value="{employee.address}">
+      <textarea id="address" name="address" class="w-full resize-none" placeholder="Address" bind:value="{employee.address}"></textarea>
     </div>
+
+    <div>
+      <label for="personalPassword">Personal Password:</label>
+      <br>
+      <input type="password" id="personalPassword" name="personalPassword" class="filter-input" placeholder="Personal Password" bind:value="{employee.personalPassword}">
+    </div>
+
   </div>
 
   <!-- Filters Row 5 -->
 <div class="flex justify-between mb-4">
-  <div>
-    <label for="dateOfBirth">Date of Birth:</label>
-    <br>
-    <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{employee.dateOfBirth}">
-  </div>
-  <!-- Filter by Card ID Number -->
-  <div>
-    <label for="cardIdNumber">Card ID Number:</label>
-    <br>
-    <input type="text" id="cardIdNumber" name="cardIdNumber" class="filter-input" placeholder="Card ID Number" bind:value="{employee.cardIdNumber}">
-  </div>
-  <!-- Filter by Personal Password -->
-  <div>
-    <label for="personalPassword">Personal Password:</label>
-    <br>
-    <input type="password" id="personalPassword" name="personalPassword" class="filter-input" placeholder="Personal Password" bind:value="{employee.personalPassword}">
-  </div>
+  
 </div>
 
 <!-- Filters Row 6 -->
