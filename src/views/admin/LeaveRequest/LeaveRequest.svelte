@@ -195,7 +195,7 @@ export async function handleReject(request) {
   });
 
   // Define pagination logic
-const leaveRequestsPerPage = 5; // Adjust as needed
+const leaveRequestsPerPage = 6; // Adjust as needed
 let currentPage = 1;
 
 // Reactive statements to ensure proper updates
@@ -247,7 +247,7 @@ function handlePageChange(event) {
 </div>
 
   {#if selectedTab === 'pending'}
-  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+  <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     {#each pendingdisplayedleaveRequests as request}
       <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <h3 class="text-4xl font-bold text-blueGray-800">{request.name}</h3>
@@ -270,8 +270,9 @@ function handlePageChange(event) {
         </div>
       </div>
     {/each}
-    <Pagination currentPage={currentPage} totalPages={pendingtotalPages} on:pageChange={handlePageChange} />
   </div>
+  <br/>
+  <Pagination currentPage={currentPage} totalPages={pendingtotalPages} on:pageChange={handlePageChange} />
 {/if}
 
 {#if selectedTab === 'approved'}
