@@ -1,5 +1,7 @@
 <script>
   // library for creating dropdown menu appear on click
+  import { onMount } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { createPopper } from "@popperjs/core";
   import AddDeviceModal from './AddDeviceModal.svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
@@ -52,7 +54,7 @@ if (deviceName && deviceId && deviceIp) {
 }
 }
 
-async function updateDeviceStatus() {
+async function updateDevice() {
     if (currentDevice) {
         try {
             const response = await fetch('/api/updateDeviceStatus/${currentDevice.id}', {
@@ -81,6 +83,14 @@ async function updateDeviceStatus() {
 function openModal() {
     showModal = true;
   }
+
+  function openEditModal(device) {
+    currentDevice = device;
+    deviceName = device.name;
+    deviceId = device.id;
+    deviceIp = device.ip;
+    editModal = true;
+}
 
   function closeModal() {
     showModal = false;
@@ -116,33 +126,6 @@ function openModal() {
     { name: "Device 20", id: 414243, ip: "192.168.1.40", status: "Inactive" },
 ];
 
- 
-  // Array to store dropdown visibility for each device row
-  let dropdownPopoverShow = new Array(devices.length).fill(false); 
-
-  // Arrays to store references for dropdown buttons and popovers
-  let btnDropdownRef = new Array(devices.length);
-  let popoverDropdownRef = new Array(devices.length);
-
-  const toggleDropdown = (event, rowIndex) => {
-    event.preventDefault();
-    const isOpen = dropdownPopoverShow[rowIndex];
-    // Close all dropdowns first
-    dropdownPopoverShow.fill(false);
-
-    // Then open the clicked one if it was previously closed
-    dropdownPopoverShow[rowIndex] = !isOpen;
-
-    if (dropdownPopoverShow[rowIndex]) {
-        createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
-            placement: "bottom-start",
-        });
-        window.addEventListener('click', handleClickOutside, { capture: true });
-    } else {
-        window.removeEventListener('click', handleClickOutside, { capture: true });
-    }
-};
-
   // Define pagination logic
   const devicesPerPage = 5; // Adjust as needed
   let currentPage = 1;
@@ -158,30 +141,58 @@ function openModal() {
     currentPage = event.detail.pageNumber;
 }
 
-function openEditModal(device) {
-    currentDevice = device;
-    deviceName = device.name;
-    deviceId = device.id;
-    deviceIp = device.ip;
-    editModal = true;
-}
+// Array to store dropdown visibility for each device row
+let dropdownPopoverShow = new Array(devices.length).fill(false); 
 
-async function updateDevice() {
-    // Assume similar validation and fetch logic as addDevice
-    // Update the device in your backend
-    closeModal();
-    // Refresh or mutate the devices array to reflect the changes
+// Arrays to store references for dropdown buttons and popovers
+let btnDropdownRef = new Array(devices.length);
+let popoverDropdownRef = new Array(devices.length);
+
+function toggleDropdown(event, rowIndex) {
+  event.stopPropagation(); // Stop click event from propagating to window
+  dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
+
+  // Close all other dropdowns
+  dropdownPopoverShow.forEach((open, index) => {
+    if (index !== rowIndex) dropdownPopoverShow[index] = false;
+  });
+
+  if (dropdownPopoverShow[rowIndex]) {
+    createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
+      placement: "bottom-start",
+    });
+  }
+  }
+
+onDestroy(() => {
+  window.removeEventListener('click', handleClickOutside, true);
+});
+
+// Reactive statement to manage click outside logic
+$: {
+  if (dropdownPopoverShow.includes(true)) {
+    window.addEventListener('click', handleClickOutside, true);
+  } else {
+    window.removeEventListener('click', handleClickOutside, true);
+  }
 }
 
 function handleClickOutside(event) {
-    let isDropdownClick = btnDropdownRef.some(ref => ref && ref.contains(event.target));
-    let isPopoverClick = popoverDropdownRef.some(ref => ref && ref.contains(event.target));
+  for (let i = 0; i < btnDropdownRef.length; i++) {
+    const button = btnDropdownRef[i];
+    const popover = popoverDropdownRef[i];
 
-    if (!isDropdownClick && !isPopoverClick) {
-        // Close all dropdowns if the click is neither on a button nor on a popover
-        dropdownPopoverShow.fill(false);
+    if (button && !button.contains(event.target) && popover && !popover.contains(event.target)) {
+      dropdownPopoverShow[i] = false;
+    }
   }
 }
+
+  // Add event listener for clicks on window
+  onMount(() => {
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  });
 </script>
   
   <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -315,6 +326,7 @@ function handleClickOutside(event) {
                                 >
                                     <i class="fas fa-ellipsis-v"></i>
                                 </a>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
                                 <div bind:this="{popoverDropdownRef[rowIndex]}" 
                                 class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}"
                                 on:click|self={(e) => e.stopPropagation()}>

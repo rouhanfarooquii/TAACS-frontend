@@ -7,6 +7,8 @@
     let location = '';
     let features = '';
     let showModal = false;
+    let editModal = false;
+    let currentBooking = null;
   
   async function addRoom() {
   if (roomName && location) {
@@ -46,21 +48,72 @@
     alert('Please fill in all fields.');
   }
   }
+
+  async function updateRoom() {
+  if (roomName && location) {
+    try {
+      // Check if the room name is already present in the array (excluding the current room being edited)
+      const isDuplicate = roomList.some(room => room.roomName === roomName && room !== currentBooking);
+      
+      if (isDuplicate) {
+        alert('Room name already exists.');
+        return;
+      }
+  
+      // Assuming you have an API endpoint for updating a room, modify this accordingly
+      const response = await fetch('/api/updateRoom', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({availability, capacity, roomName, location, features})
+      });
+  
+      if (response.ok) {
+        // Room updated successfully, close modal and optionally update UI
+        closeModal();
+        // You might want to refresh the roomList array or update the specific room data
+      } else {
+        // Handle error response from the server
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error('Error:', error);
+      alert('An error occurred while updating the room. Please try again.');
+    }
+  } else {
+    alert('Please fill in all fields.');
+  }
+}
   
   // Function to open the modal
   function openModal() {
       showModal = true;
     }
   
-  function closeModal() {
-      showModal = false;
-      // Reset input fields
-        availability = '';
-        capacity = '';
-        roomName = '';
-        location = '';
-        features = '';
-    }
+    function openEditModal(roomList) {
+  currentBooking = roomList;
+  availability = roomList.availability;
+  roomName = roomList.roomName;
+  capacity = roomList.capacity;
+  location = roomList.location;
+  features = roomList.features;
+  editModal = true;
+}
+
+function closeModal() {
+    showModal = false;
+    editModal = false;
+    // Reset input fields
+    availability = '';
+    capacity = '';
+    roomName = '';
+    location = '';
+    features = '';
+    currentBooking = null;
+  }
   
     export let color = "light";
   
@@ -192,14 +245,14 @@
           >
             Add Room
           </button>
-          {#if showModal}
+          {#if showModal || editModal}
           <div class="modal">
             <div class="modal-content">
                 <div class="rounded-t mb-0 px-4 py-10 border-0">
                     <div class="flex flex-wrap items-center">
                         <div class="relative w-full px-4 max-w-full flex-grow flex-1">
                             <h3 class="font-semibold text-lg text-blueGray-700">
-                                Add Room
+                              {editModal ? 'Edit Room' : 'Add Room'}
                             </h3>
                         </div>
                     </div>
@@ -258,8 +311,8 @@
                             </div>
                         </div>
                         <div class="flex justify-end">
-                            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addRoom}>
-                                Add
+                            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={editModal ? updateRoom : addRoom}>
+                              {editModal ? 'Update' : 'Add'}
                             </button>
                             <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                                 Cancel
@@ -332,7 +385,7 @@
                                   class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}"
                                   >
                                       <a
-                                          href="#pablo" on:click={(e) => e.preventDefault()}
+                                          href="#pablo" on:click={(e) => { e.preventDefault(); openEditModal(roomList); }}
                                           class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
                                       >
                                           Edit
