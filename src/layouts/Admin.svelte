@@ -25,6 +25,7 @@
   import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
   import Bonus from "../views/admin/Payroll/Bonus.svelte";
   import ManageCars from "../views/admin/Parking/ManageCars.svelte";
+  import LeaveForm from "../views/admin/LeaveRequest/LeaveForm.svelte";
 
   import { component } from "svelte-routing/src/Route.svelte";
 
@@ -56,6 +57,7 @@
         <Route path="bonus" component="{Bonus}"/>
         <Route path="managecars" component="{ManageCars}"/>
         <Route path="rooms" component="{Rooms}"/>
+        <Route path="leaveform" component="{LeaveForm}"/>
       </Router>
       <FooterAdmin />
     </div>

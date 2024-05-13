@@ -1,5 +1,3 @@
-
-
 <script>
 import { navigate } from 'svelte-routing';
 
