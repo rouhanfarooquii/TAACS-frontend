@@ -18,6 +18,25 @@
   import { reactive } from 'svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   export let color = "light";
+  let showModal = false;
+  let selectedDepartment = '';
+  let selectedDesignation = '';
+  let selectedRooms = [];
+  let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
+  let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
+  let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
+
+
+function openModal() {
+  showModal = true;
+}
+
+function closeModal() {
+  showModal = false;
+  selectedDepartment = '';
+  selectedDesignation = '';
+  selectedRooms = [];
+}
 
   let users = [
     { id: '23006', name: 'Nawfal Ahmed', department: 'Marketing', designation: 'Manager', accessibleRooms: ['Conference Room', 'Building entrance'] },
@@ -92,7 +111,70 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
     <br/>
   </div>
   <div class="access-control">
-    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Batch Update</button>
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
+    {#if showModal}
+    <div class="modal">
+      <div class="modal-content">
+        <div class="rounded-t mb-0 px-4 py-10 border-0">
+          <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+              <h3 class="font-semibold text-lg text-blueGray-700">
+                Batch Update
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="block w-full overflow-x-auto">
+          <div class="px-4 py-5 flex-auto">
+            <div class="flex flex-wrap">
+              <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    Department:
+                  </label>
+                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                    {#each departments as department}
+                      <option value={department}>{department}</option>
+                    {/each}
+                  </select>
+                </div>
+              </div>
+              <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    Designation:
+                  </label>
+                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                    {#each designations as designation}
+                      <option value={designation}>{designation}</option>
+                    {/each}
+                  </select>
+                </div>
+              </div>
+              <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    Rooms:
+                  </label>
+                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" multiple bind:value={selectedRooms}>
+                    {#each accessibleRooms as room}
+                      <option value={room}>{room}</option>
+                    {/each}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={update}>Update</button>
+              <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+    {/if}
     <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2 {color === 'light' ? 'text-blueGray-700' : 'text-white'}" placeholder="Search...">
     <table>
       <thead>
