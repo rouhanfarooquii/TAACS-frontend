@@ -1,34 +1,35 @@
 <script>
-    import { read } from '@popperjs/core';
+import { read } from '@popperjs/core';
 import { navigate } from 'svelte-routing';
 export let color = "light"
-    
-      let request = {
-          id: '',
-          name: '',
-          email: '',
-          department: '',
-          designation: '',
-          dateFrom: '',
-          dateTo: '',
-          reason: '',
-          timeStamp: '',
-      };
-      
-    
-      function handleSubmit() {
-          // Handle form submission logic here
-          console.log(request);
-      }
+let currentTime = new Date();
 
-      function goBack() {
-          // Handle navigation logic here
-          navigate('/admin/leaverequest');
-          console.log("Navigate to Leave Request screen");
-      }
+    
+let request = {
+id: '',
+name: '',
+email: '',
+department: '',
+designation: '',
+dateFrom: '',
+dateTo: '',
+reason: '',
+timeStamp: '',
+};
+      
+function handleSubmit() {
+request.timeStamp = currentTime;
+console.log(request);
+}
+
+function goBack() {
+// Handle navigation logic here
+navigate('/admin/leaverequest');
+console.log("Navigate to Leave Request screen");
+}
     
     
-    </script>
+</script>
     
     <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
         <div class="relative w-full px-4 max-w-full flex-grow flex-1">
