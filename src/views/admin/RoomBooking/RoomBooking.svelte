@@ -1,7 +1,10 @@
 <script>
   import { createPopper } from "@popperjs/core";
+  import { onMount } from 'svelte';
+  import { onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-    import { list } from "postcss";
+  export let color = "light";
+  
   let employeeName = '';
   let roomName = '';
   let designation = '';
@@ -11,6 +14,49 @@
   let showModal = false;
   let editModal = false;
   let currentBooking = null;
+
+  let bookingList = [
+    {
+        employeeName: "John Doe",
+        designation: "Manager",
+        roomName: "Room 101",
+        dateTimeFrom: "2024-05-12 10:00 AM",
+        dateTimeTo: "2024-05-12 11:00 AM",
+        noOfPeople: 8
+    },
+    {
+        employeeName: "Jane Smith",
+        designation: "Team Lead",
+        roomName: "Room 102",
+        dateTimeFrom: "2024-05-13 09:00 AM",
+        dateTimeTo: "2024-05-13 10:30 AM",
+        noOfPeople: 6
+    },
+    {
+        employeeName: "Alice Johnson",
+        designation: "Developer",
+        roomName: "Room 103",
+        dateTimeFrom: "2024-05-14 11:30 AM",
+        dateTimeTo: "2024-05-14 01:00 PM",
+        noOfPeople: 4
+    },
+    {
+        employeeName: "Bob Brown",
+        designation: "Designer",
+        roomName: "Room 104",
+        dateTimeFrom: "2024-05-15 02:00 PM",
+        dateTimeTo: "2024-05-15 03:30 PM",
+        noOfPeople: 10
+    },
+    {
+        employeeName: "Eve White",
+        designation: "Analyst",
+        roomName: "Room 105",
+        dateTimeFrom: "2024-05-16 10:00 AM",
+        dateTimeTo: "2024-05-16 11:30 AM",
+        noOfPeople: 5
+    }
+];
 
 async function bookRoom() {
 if (employeeName && roomName && dateTimeFrom) {
@@ -102,75 +148,6 @@ function closeModal() {
     currentBooking = null;
   }
 
-  export let color = "light";
-
-  let bookingList = [
-    {
-        employeeName: "John Doe",
-        designation: "Manager",
-        roomName: "Room 101",
-        dateTimeFrom: "2024-05-12 10:00 AM",
-        dateTimeTo: "2024-05-12 11:00 AM",
-        noOfPeople: 8
-    },
-    {
-        employeeName: "Jane Smith",
-        designation: "Team Lead",
-        roomName: "Room 102",
-        dateTimeFrom: "2024-05-13 09:00 AM",
-        dateTimeTo: "2024-05-13 10:30 AM",
-        noOfPeople: 6
-    },
-    {
-        employeeName: "Alice Johnson",
-        designation: "Developer",
-        roomName: "Room 103",
-        dateTimeFrom: "2024-05-14 11:30 AM",
-        dateTimeTo: "2024-05-14 01:00 PM",
-        noOfPeople: 4
-    },
-    {
-        employeeName: "Bob Brown",
-        designation: "Designer",
-        roomName: "Room 104",
-        dateTimeFrom: "2024-05-15 02:00 PM",
-        dateTimeTo: "2024-05-15 03:30 PM",
-        noOfPeople: 10
-    },
-    {
-        employeeName: "Eve White",
-        designation: "Analyst",
-        roomName: "Room 105",
-        dateTimeFrom: "2024-05-16 10:00 AM",
-        dateTimeTo: "2024-05-16 11:30 AM",
-        noOfPeople: 5
-    }
-];
-
- 
-  // Array to store dropdown visibility for each device row
-  let dropdownPopoverShow = new Array(bookingList.length).fill(false); 
-
-  // Arrays to store references for dropdown buttons and popovers
-  let btnDropdownRef = new Array(bookingList.length);
-  let popoverDropdownRef = new Array(bookingList.length);
-
-  const toggleDropdown = (event, rowIndex) => {
-    event.preventDefault();
-    // Toggle visibility for the clicked dropdown only
-    dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
-
-    // Hide all other dropdowns
-    dropdownPopoverShow.fill(false, 0, rowIndex);
-    dropdownPopoverShow.fill(false, rowIndex + 1);
-
-    if (dropdownPopoverShow[rowIndex]) {
-      createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
-        placement: "bottom-start",
-      });
-    }
-  };
-
   // Define pagination logic
   const roomsPerPage = 5; // Adjust as needed
   let currentPage = 1;
@@ -225,8 +202,58 @@ function formatDateTime(dateTimeString) {
     return `${formattedDate}T${formattedTime}`;
 }
 
+// Array to store dropdown visibility for each device row
+let dropdownPopoverShow = new Array(bookingList.length).fill(false); 
 
+// Arrays to store references for dropdown buttons and popovers
+let btnDropdownRef = new Array(bookingList.length);
+let popoverDropdownRef = new Array(bookingList.length);
 
+function toggleDropdown(event, rowIndex) {
+  event.stopPropagation(); // Stop click event from propagating to window
+  dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
+
+  // Close all other dropdowns
+  dropdownPopoverShow.forEach((open, index) => {
+    if (index !== rowIndex) dropdownPopoverShow[index] = false;
+  });
+
+  if (dropdownPopoverShow[rowIndex]) {
+    createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
+      placement: "bottom-start",
+    });
+  }
+  }
+
+onDestroy(() => {
+  window.removeEventListener('click', handleClickOutside, true);
+});
+
+// Reactive statement to manage click outside logic
+$: {
+  if (dropdownPopoverShow.includes(true)) {
+    window.addEventListener('click', handleClickOutside, true);
+  } else {
+    window.removeEventListener('click', handleClickOutside, true);
+  }
+}
+
+function handleClickOutside(event) {
+  for (let i = 0; i < btnDropdownRef.length; i++) {
+    const button = btnDropdownRef[i];
+    const popover = popoverDropdownRef[i];
+
+    if (button && !button.contains(event.target) && popover && !popover.contains(event.target)) {
+      dropdownPopoverShow[i] = false;
+    }
+  }
+}
+
+  // Add event listener for clicks on window
+  onMount(() => {
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  });
 
 </script>
   

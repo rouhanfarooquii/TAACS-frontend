@@ -5,6 +5,8 @@
   import { createPopper } from "@popperjs/core";
   import AddDeviceModal from './AddDeviceModal.svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  export let color = "light";
+
   let deviceName = '';
   let deviceId = '';
   let deviceIp = '';
@@ -12,6 +14,29 @@
   let showModal = false;
   let editModal = false;
   let currentDevice = null;
+
+  let devices = [
+    { name: "SIAdw aIDasduiaduwihhkokokJsd", id: 874329, ip: "192.168.1.14", status: "Active" },
+    { name: "Device 2", id: 543217, ip: "192.168.1.16", status: "Inactive" },
+    { name: "Device 3", id: 8741249, ip: "192.168.1.20", status: "Active" },
+    { name: "Device 4", id: 524329, ip: "192.168.1.24", status: "Inactive" },
+    { name: "Device 5", id: 123456, ip: "192.168.1.25", status: "Active" },
+    { name: "Device 6", id: 654321, ip: "192.168.1.26", status: "Inactive" },
+    { name: "Device 7", id: 135792, ip: "192.168.1.27", status: "Active" },
+    { name: "Device 8", id: 987654, ip: "192.168.1.28", status: "Inactive" },
+    { name: "Device 9", id: 246810, ip: "192.168.1.29", status: "Active" },
+    { name: "Device 10", id: 111213, ip: "192.168.1.30", status: "Inactive" },
+    { name: "Device 11", id: 141516, ip: "192.168.1.31", status: "Active" },
+    { name: "Device 12", id: 171819, ip: "192.168.1.32", status: "Inactive" },
+    { name: "Device 13", id: 202122, ip: "192.168.1.33", status: "Active" },
+    { name: "Device 14", id: 232425, ip: "192.168.1.34", status: "Inactive" },
+    { name: "Device 15", id: 262728, ip: "192.168.1.35", status: "Active" },
+    { name: "Device 16", id: 293031, ip: "192.168.1.36", status: "Inactive" },
+    { name: "Device 17", id: 323334, ip: "192.168.1.37", status: "Active" },
+    { name: "Device 18", id: 353637, ip: "192.168.1.38", status: "Inactive" },
+    { name: "Device 19", id: 383940, ip: "192.168.1.39", status: "Active" },
+    { name: "Device 20", id: 414243, ip: "192.168.1.40", status: "Inactive" },
+];
 
 
   async function addDevice() {
@@ -100,31 +125,6 @@ function openModal() {
     deviceIp = '';
     currentDevice = null;
 }
-
-  export let color = "light";
-
-  let devices = [
-    { name: "SIAdw aIDasduiaduwihhkokokJsd", id: 874329, ip: "192.168.1.14", status: "Active" },
-    { name: "Device 2", id: 543217, ip: "192.168.1.16", status: "Inactive" },
-    { name: "Device 3", id: 8741249, ip: "192.168.1.20", status: "Active" },
-    { name: "Device 4", id: 524329, ip: "192.168.1.24", status: "Inactive" },
-    { name: "Device 5", id: 123456, ip: "192.168.1.25", status: "Active" },
-    { name: "Device 6", id: 654321, ip: "192.168.1.26", status: "Inactive" },
-    { name: "Device 7", id: 135792, ip: "192.168.1.27", status: "Active" },
-    { name: "Device 8", id: 987654, ip: "192.168.1.28", status: "Inactive" },
-    { name: "Device 9", id: 246810, ip: "192.168.1.29", status: "Active" },
-    { name: "Device 10", id: 111213, ip: "192.168.1.30", status: "Inactive" },
-    { name: "Device 11", id: 141516, ip: "192.168.1.31", status: "Active" },
-    { name: "Device 12", id: 171819, ip: "192.168.1.32", status: "Inactive" },
-    { name: "Device 13", id: 202122, ip: "192.168.1.33", status: "Active" },
-    { name: "Device 14", id: 232425, ip: "192.168.1.34", status: "Inactive" },
-    { name: "Device 15", id: 262728, ip: "192.168.1.35", status: "Active" },
-    { name: "Device 16", id: 293031, ip: "192.168.1.36", status: "Inactive" },
-    { name: "Device 17", id: 323334, ip: "192.168.1.37", status: "Active" },
-    { name: "Device 18", id: 353637, ip: "192.168.1.38", status: "Inactive" },
-    { name: "Device 19", id: 383940, ip: "192.168.1.39", status: "Active" },
-    { name: "Device 20", id: 414243, ip: "192.168.1.40", status: "Inactive" },
-];
 
   // Define pagination logic
   const devicesPerPage = 5; // Adjust as needed

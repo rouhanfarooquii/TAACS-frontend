@@ -1,6 +1,10 @@
 <script>
     import { createPopper } from "@popperjs/core";
+    import { onMount } from 'svelte';
+    import { onDestroy } from 'svelte';
     import Pagination from "../../../components/Pagination/Pagination.svelte";
+    export let color = "light";
+
     let availability = '';
     let capacity = '';
     let roomName = '';
@@ -9,6 +13,79 @@
     let showModal = false;
     let editModal = false;
     let currentBooking = null;
+
+    let roomList = [
+    {
+        status: "Available",
+        roomName: "Room 101",
+        capacity: 10,
+        location: "East Wing",
+        features: ["TV", "Projector", "Speaker"]
+    },
+    {
+        status: "Unavailable",
+        roomName: "Room 102",
+        capacity: 6,
+        location: "West Wing",
+        features: ["TV", "Whiteboard"]
+    },
+    {
+        status: "Available",
+        roomName: "Room 103",
+        capacity: 8,
+        location: "North Wing",
+        features: ["Projector", "Speaker"]
+    },
+    {
+        status: "Available",
+        roomName: "Room 104",
+        capacity: 12,
+        location: "South Wing",
+        features: ["TV", "Projector", "Whiteboard", "Speaker"]
+    },
+    {
+        status: "Unavailable",
+        roomName: "Room 105",
+        capacity: 4,
+        location: "Basement",
+        features: ["TV", "Projector"]
+    },
+    {
+        status: "Available",
+        roomName: "Room 106",
+        capacity: 20,
+        location: "Top Floor",
+        features: ["TV", "Projector", "Speaker"]
+    },
+    {
+        status: "Available",
+        roomName: "Room 107",
+        capacity: 15,
+        location: "Executive Floor",
+        features: ["TV", "Projector", "Whiteboard"]
+    },
+    {
+        status: "Unavailable",
+        roomName: "Room 108",
+        capacity: 8,
+        location: "Middle Floor",
+        features: ["TV", "Speaker"]
+    },
+    {
+        status: "Available",
+        roomName: "Room 109",
+        capacity: 10,
+        location: "Lobby Area",
+        features: ["TV", "Whiteboard"]
+    },
+    {
+        status: "Available",
+        roomName: "Room 110",
+        capacity: 18,
+        location: "Conference Center",
+        features: ["TV", "Projector", "Speaker"]
+    }
+];
   
   async function addRoom() {
   if (roomName && location) {
@@ -115,105 +192,6 @@ function closeModal() {
     currentBooking = null;
   }
   
-    export let color = "light";
-  
-    let roomList = [
-    {
-        status: "Available",
-        roomName: "Room 101",
-        capacity: 10,
-        location: "East Wing",
-        features: ["TV", "Projector", "Speaker"]
-    },
-    {
-        status: "Unavailable",
-        roomName: "Room 102",
-        capacity: 6,
-        location: "West Wing",
-        features: ["TV", "Whiteboard"]
-    },
-    {
-        status: "Available",
-        roomName: "Room 103",
-        capacity: 8,
-        location: "North Wing",
-        features: ["Projector", "Speaker"]
-    },
-    {
-        status: "Available",
-        roomName: "Room 104",
-        capacity: 12,
-        location: "South Wing",
-        features: ["TV", "Projector", "Whiteboard", "Speaker"]
-    },
-    {
-        status: "Unavailable",
-        roomName: "Room 105",
-        capacity: 4,
-        location: "Basement",
-        features: ["TV", "Projector"]
-    },
-    {
-        status: "Available",
-        roomName: "Room 106",
-        capacity: 20,
-        location: "Top Floor",
-        features: ["TV", "Projector", "Speaker"]
-    },
-    {
-        status: "Available",
-        roomName: "Room 107",
-        capacity: 15,
-        location: "Executive Floor",
-        features: ["TV", "Projector", "Whiteboard"]
-    },
-    {
-        status: "Unavailable",
-        roomName: "Room 108",
-        capacity: 8,
-        location: "Middle Floor",
-        features: ["TV", "Speaker"]
-    },
-    {
-        status: "Available",
-        roomName: "Room 109",
-        capacity: 10,
-        location: "Lobby Area",
-        features: ["TV", "Whiteboard"]
-    },
-    {
-        status: "Available",
-        roomName: "Room 110",
-        capacity: 18,
-        location: "Conference Center",
-        features: ["TV", "Projector", "Speaker"]
-    }
-];
-
-   
-    // Array to store dropdown visibility for each device row
-    let dropdownPopoverShow = new Array(roomList.length).fill(false); 
-  
-    // Arrays to store references for dropdown buttons and popovers
-    let btnDropdownRef = new Array(roomList.length);
-    let popoverDropdownRef = new Array(roomList.length);
-  
-    const toggleDropdown = (event, rowIndex) => {
-      event.preventDefault();
-      // Toggle visibility for the clicked dropdown only
-      dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
-  
-      // Hide all other dropdowns
-      dropdownPopoverShow.fill(false, 0, rowIndex);
-      dropdownPopoverShow.fill(false, rowIndex + 1);
-  
-      if (dropdownPopoverShow[rowIndex]) {
-        createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
-          placement: "bottom-start",
-        });
-      }
-    };
-  
     // Define pagination logic
     const roomsPerPage = 5; // Adjust as needed
     let currentPage = 1;
@@ -228,6 +206,60 @@ function closeModal() {
       console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
       currentPage = event.detail.pageNumber;
   }
+
+  // Array to store dropdown visibility for each device row
+let dropdownPopoverShow = new Array(roomList.length).fill(false); 
+
+// Arrays to store references for dropdown buttons and popovers
+let btnDropdownRef = new Array(roomList.length);
+let popoverDropdownRef = new Array(roomList.length);
+
+function toggleDropdown(event, rowIndex) {
+  event.stopPropagation(); // Stop click event from propagating to window
+  dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
+
+  // Close all other dropdowns
+  dropdownPopoverShow.forEach((open, index) => {
+    if (index !== rowIndex) dropdownPopoverShow[index] = false;
+  });
+
+  if (dropdownPopoverShow[rowIndex]) {
+    createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
+      placement: "bottom-start",
+    });
+  }
+  }
+
+onDestroy(() => {
+  window.removeEventListener('click', handleClickOutside, true);
+});
+
+// Reactive statement to manage click outside logic
+$: {
+  if (dropdownPopoverShow.includes(true)) {
+    window.addEventListener('click', handleClickOutside, true);
+  } else {
+    window.removeEventListener('click', handleClickOutside, true);
+  }
+}
+
+function handleClickOutside(event) {
+  for (let i = 0; i < btnDropdownRef.length; i++) {
+    const button = btnDropdownRef[i];
+    const popover = popoverDropdownRef[i];
+
+    if (button && !button.contains(event.target) && popover && !popover.contains(event.target)) {
+      dropdownPopoverShow[i] = false;
+    }
+  }
+}
+
+  // Add event listener for clicks on window
+  onMount(() => {
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  });
+
   
   </script>
     
