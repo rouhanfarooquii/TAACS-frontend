@@ -229,6 +229,41 @@
         <li class="items-center">
           <a
             use:link
+            href="#"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
+            >
+            <i
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Leave Requests
+            <i class="fas fa-angle-down ml-2 text-xs"></i>
+          </a>
+          {#if showNestedMenuLeaveRequest}
+            <ul class="mt-1 ml-4 border-t border-blueGray-200">
+              <li>
+                <a
+                  href="/admin/leaverequest"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Leave Request
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/admin/leaveform"
+                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+                >
+                  Leave Form
+                </a>
+              </li>
+            </ul>
+          {/if}
+        </li>
+
+        <!-- <li class="items-center">
+          <a
+            use:link
             href="/admin/leaverequest"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
@@ -238,7 +273,7 @@
             ></i>
             Leave Requests
           </a>
-        </li>
+        </li> -->
 
         <li class="items-center">
           <a
