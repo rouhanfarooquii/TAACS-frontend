@@ -42,6 +42,11 @@
   //   }
   // }
 
+  function handleSubmit()
+  {
+    
+  }
+
   function navigateToAddEmployee() {
       // Handle navigation logic here
       console.log("Navigate to add employee screen");

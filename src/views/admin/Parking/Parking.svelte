@@ -343,7 +343,7 @@ let parkingSlot = '';
                 </div>
               </td> -->
                 <td>
-                  <QrCode data={space.cardRfidNo.toString()} />
+                  <QrCode data={space.carId.toString()} />
                 </td>
             <td>
               <!-- Edit button -->

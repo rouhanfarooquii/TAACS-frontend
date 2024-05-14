@@ -133,7 +133,6 @@
             use:link
             href="/admin/accesscontrol"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-            on:click|preventDefault={() => toggleNestedMenu('accesscontrol')}
             >
             <i
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
@@ -146,11 +145,11 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/roombooking') !== -1 || location.href.indexOf('/admin/rooms') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('roombooking')}
             >
             <i
-              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/roombooking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/roombooking') !== -1 || location.href.indexOf('/admin/rooms') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Room Booking
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -159,6 +158,7 @@
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a
+                use:link
                   href="/admin/roombooking"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/roombooking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -167,6 +167,7 @@
               </li>
               <li>
                 <a
+                use:link
                   href="/admin/rooms"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/rooms') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -195,11 +196,11 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/payroll') !== -1 || location.href.indexOf('/admin/bonus') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('payroll')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/payroll') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/payroll') !== -1 || location.href.indexOf('/admin/bonus') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Payroll
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -208,6 +209,7 @@
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a
+                use:link
                   href="/admin/payroll"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/payroll') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -216,6 +218,7 @@
               </li>
               <li>
                 <a
+                use:link
                   href="/admin/bonus"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/bonus') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -230,11 +233,11 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 || location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 || location.href.indexOf('/admin/leaveform') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Leave Requests
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -243,6 +246,7 @@
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a
+                use:link
                   href="/admin/leaverequest"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -251,6 +255,7 @@
               </li>
               <li>
                 <a
+                use:link
                   href="/admin/leaveform"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -307,11 +312,11 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 || location.href.indexOf('/admin/managecars') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('parking')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 || location.href.indexOf('/admin/managecars') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Parking
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -320,6 +325,7 @@
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a
+                use:link
                   href="/admin/parking"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -328,6 +334,7 @@
               </li>
               <li>
                 <a
+                use:link
                   href="/admin/managecars"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/managecars') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -342,11 +349,11 @@
           <a
             use:link
             href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/visitors') !== -1 || location.href.indexOf('/admin/visitorslist') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('visitors')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 || location.href.indexOf('/admin/visitorslist') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Visitor
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -355,6 +362,7 @@
             <ul class="mt-1 ml-4 border-t border-blueGray-200">
               <li>
                 <a
+                use:link
                   href="/admin/visitors"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitors') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
@@ -363,6 +371,7 @@
               </li>
               <li>
                 <a
+                use:link
                   href="/admin/visitorslist"
                   class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/visitorslist') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
                 >
