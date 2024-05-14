@@ -116,7 +116,7 @@ $: totalPages = Math.ceil(shifts.length / shiftsPerPage);
         <tbody>
             {#each displayedShifts as shift (shift.id)}
             <tr>
-              <td><input type="checkbox" checked={selectedShifts.has(shifts.id)} class="rounded" on:click={() => {console.log(selectedShifts.has(shifts.id)); toggleSelection(shifts.id)}}></td>
+              <td><input type="checkbox" checked={selectedShifts.has(shift.id)} class="rounded" on:click={() => {console.log(selectedShifts.has(shift.id)); toggleSelection(shift.id)}}></td>
                 <td class='table-data font-bold text-blueGray-600'>{shift.description}</td>
                 <td class='table-data'>{shift.startTime}</td>
                 <td class='table-data'>{shift.endTime}</td>

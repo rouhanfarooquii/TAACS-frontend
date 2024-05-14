@@ -27,6 +27,11 @@
   let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
 
 
+function batchUpdate()
+{
+
+}
+
 function openModal() {
   showModal = true;
 }
@@ -80,10 +85,6 @@ function closeModal() {
       users.forEach(user => selectedUsers.add(user.id));
     }
     selectedUsers = new Set(selectedUsers); // Force rerender
-  }
-
-  function batchUpdate() {
-    // Logic to handle batch update goes here
   }
 
   // Define pagination logic
@@ -165,7 +166,7 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
               </div>
             </div>
             <div class="flex justify-end">
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={update}>Update</button>
+              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Update</button>
               <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                 Cancel
               </button>
