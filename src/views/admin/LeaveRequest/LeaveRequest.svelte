@@ -276,7 +276,7 @@ function handlePageChange(event) {
 {/if}
 
 {#if selectedTab === 'approved'}
-<div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
+<div class="relative flex flex-col min-w-0 break-words w-full mb-8 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
   <div class="block w-full overflow-x-auto">
     <table class="items-center w-full bg-transparent border-collapse">
       <thead>

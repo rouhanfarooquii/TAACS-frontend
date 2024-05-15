@@ -22,7 +22,7 @@
     { id: '23006007', name: 'Sarah Thompson', department: 'Public Relations', designation: 'PR Specialist', accessibleRooms: ['PR Office', 'Media Room'] },
     { id: '23006008', name: 'Daniel Garcia', department: 'Supply Chain', designation: 'Logistics Manager', accessibleRooms: ['Warehouse', 'Shipping Office'] },
     { id: '23006009', name: 'Jessica Rodriguez', department: 'Quality Assurance', designation: 'QA Analyst', accessibleRooms: ['Testing Lab', 'QA Office'] },
-    { id: '23006010', name: 'Matthew Thomas', department: 'Training', designation: 'Training Coordinator', accessibleRooms: ['Training Room', 'Training Office'] },
+    { id: '23006010', name: 'Matthew Thomas', department: 'Marketing', designation: 'Training Coordinator', accessibleRooms: ['Training Room', 'Training Office'] },
     { id: '23006011', name: 'Amanda White', department: 'Administration', designation: 'Administrative Assistant', accessibleRooms: ['Admin Office', 'Reception Area'] },
     { id: '23006012', name: 'Kevin Lee', department: 'Production', designation: 'Production Supervisor', accessibleRooms: ['Production Floor', 'Warehouse'] },
     { id: '23006013', name: 'Olivia Harris', department: 'Human Resources', designation: 'HR Coordinator', accessibleRooms: ['HR Office', 'Interview Room'] },
@@ -102,6 +102,8 @@
     : '';
   $: searchResultColor = filteredUsers.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 
+  // Reset currentPage to 1 whenever searchQuery changes
+  $: if (searchQuery) currentPage = 1;
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -131,6 +133,7 @@
                     Department:
                   </label>
                   <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                    <option value="">Select Department</option>
                     {#each departments as department}
                       <option value={department}>{department}</option>
                     {/each}
@@ -141,8 +144,9 @@
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                     Designation:
-                  </label>
+                  </label>                  
                   <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                    <option value="">Select Designation</option>
                     {#each designations as designation}
                       <option value={designation}>{designation}</option>
                     {/each}
@@ -151,57 +155,53 @@
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Rooms:
-                  </label>
-                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" multiple bind:value={selectedRooms}>
-                    {#each accessibleRooms as room}
-                      <option value={room}>{room}</option>
-                    {/each}
-                  </select>
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Rooms</label>
+                  {#each accessibleRooms as room}
+                  <div class="flex items-center">
+                    <input type="checkbox" value={room} bind:group={selectedRooms} />
+                    <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{room}</label>
+                  </div>
+                  {/each}
                 </div>
               </div>
             </div>
-            <div class="flex justify-end">
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Update</button>
-              <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
-                Cancel
-              </button>
-            </div>
           </div>
-        </div>      
+          <div class="px-6 pb-6">
+            <button class="bg-red-500 text-white active:bg-red-700 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={closeModal}>Close</button>
+            <button class="bg-green-500 text-white active:bg-green-700 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Update</button>
+          </div>
+        </div>
       </div>
     </div>
     {/if}
-    <div class="flex items-center mb-4">
-      <input type="search" class="bg-gray-800 text-white rounded-lg px-4 py-2 {color === 'light' ? 'text-blueGray-700' : 'text-white'}" placeholder="Search..." bind:value={searchQuery}>
-      {#if searchQuery}
-        <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
-      {/if}
-    </div>    
-    <table>
-      <thead>
-        <tr>
-          <th><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">UserID</th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee Name</th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department</th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designation</th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Accessible Rooms</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each displayedUsers as user (user.id)}
-          <tr>
-            <td><input type="checkbox" checked={selectedUsers.has(user.id)} class="rounded" on:click={() => toggleSelection(user.id)}></td>
-            <td class="table-data" title={user.id}>{user.id}</td>
-            <td class="table-data" title={user.name}>{user.name}</td>
-            <td class="table-data" title={user.department}>{user.department}</td>
-            <td class="table-data" title={user.designation}>{user.designation}</td>
-            <td class="table-data" title={user.accessibleRooms.join(', ')}>{user.accessibleRooms.join(', ')}</td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
   </div>
+  <div class="flex items-center mb-4">
+    <input type="text" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery} />
+    <p class="text-sm {searchResultColor}">{searchResultText}</p>
+  </div>
+  <table class="w-full bg-transparent border-collapse">
+    <thead>
+      <tr>
+        <th><input type="checkbox" on:click={toggleSelectAll} /></th>
+        <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">User ID</th>
+        <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Name</th>
+        <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Department</th>
+        <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Designation</th>
+        <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Accessible Rooms</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each displayedUsers as user}
+      <tr>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"><input type="checkbox" checked={selectedUsers.has(user.id)} on:click={() => toggleSelection(user.id)} /></td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.id}>{user.id}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.name}>{user.name}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.department}>{user.department}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.designation}>{user.designation}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.accessibleRooms.join(', ')}>{user.accessibleRooms.join(', ')}</td>
+      </tr>
+      {/each}
+    </tbody>
+  </table>
+  <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
 </div>

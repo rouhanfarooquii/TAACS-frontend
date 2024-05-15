@@ -20,6 +20,7 @@
   let showNestedMenuParking  = false;
   let showNestedMenuVisitors  = false;
   let showNestedMenuEmergency  = false;
+  let showNestedMenuAddEmergency  = false;
   let showNestedDeviceManagement = false;
 
   function toggleNestedMenu(menuItem) {
@@ -381,7 +382,6 @@
             </ul>
           {/if}
         </li>
-        
 
         <li class="items-center">
           <a
