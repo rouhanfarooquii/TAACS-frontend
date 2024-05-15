@@ -54,6 +54,26 @@
   }
 
   function batchUpdate() {
+    // Validation checks
+    let departmentDesignationError = !selectedDepartment && !selectedDesignation;
+    let accessibleRoomsError = selectedRooms.length === 0;
+
+    if (departmentDesignationError || accessibleRoomsError) {
+      if (departmentDesignationError) {
+        document.getElementById('department-designation-error').style.display = 'block';
+      } else {
+        document.getElementById('department-designation-error').style.display = 'none';
+      }
+
+      if (accessibleRoomsError) {
+        document.getElementById('accessible-rooms-error').style.display = 'block';
+      } else {
+        document.getElementById('accessible-rooms-error').style.display = 'none';
+      }
+
+      return;
+    }
+
     // Implement batch update logic here
   }
 
@@ -71,6 +91,8 @@
     selectedDepartment = '';
     selectedDesignation = '';
     selectedRooms = [];
+    document.getElementById('department-designation-error').style.display = 'none';
+    document.getElementById('accessible-rooms-error').style.display = 'none';
   }
 
   // Define pagination logic
@@ -111,74 +133,76 @@
     <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">Access Control</h3>
     <br/>
   </div>
-  <div class="access-control">
-    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
-    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
-    {#if showModal}
-    <div class="modal">
-      <div class="modal-content">
-        <div class="rounded-t mb-0 px-4 py-10 border-0">
-          <div class="flex flex-wrap items-center">
-            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-              <h3 class="font-semibold text-lg text-blueGray-700">Batch Update</h3>
-            </div>
-          </div>
-        </div>
-        <div class="block w-full overflow-x-auto">
-          <div class="px-4 py-5 flex-auto">
-            <div class="flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Department:
-                  </label>
-                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
-                    <option value="">Select Department</option>
-                    {#each departments as department}
-                      <option value={department}>{department}</option>
-                    {/each}
-                  </select>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Designation:
-                  </label>                  
-                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
-                    <option value="">Select Designation</option>
-                    {#each designations as designation}
-                      <option value={designation}>{designation}</option>
-                    {/each}
-                  </select>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Rooms</label>
-                  {#each accessibleRooms as room}
-                  <div class="flex items-center">
-                    <input type="checkbox" value={room} bind:group={selectedRooms} />
-                    <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{room}</label>
-                  </div>
-                  {/each}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="px-6 pb-6">
-            <button class="bg-red-500 text-white active:bg-red-700 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={closeModal}>Close</button>
-            <button class="bg-green-500 text-white active:bg-green-700 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Update</button>
+  <div class="flex items-center justify-between mb-4">
+    <input type="text" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery} />
+    <div class="flex space-x-2">
+      <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
+      <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
+    </div>
+  </div>
+  <p class="text-sm {searchResultColor}">{searchResultText}</p>
+  {#if showModal}
+  <div class="modal">
+    <div class="modal-content">
+      <div class="rounded-t mb-0 px-4 py-10 border-0">
+        <div class="flex flex-wrap items-center">
+          <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+            <h3 class="font-semibold text-lg text-blueGray-700">Batch Update</h3>
           </div>
         </div>
       </div>
+      <div class="block w-full overflow-x-auto">
+        <div class="px-4 py-5 flex-auto">
+          <div class="flex flex-wrap">
+            <div class="w-full lg:w-6/12 px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                  Department:
+                </label>
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                  <option value="">Select Department</option>
+                  {#each departments as department}
+                    <option value={department}>{department}</option>
+                  {/each}
+                </select>
+                <span id="department-designation-error" class="text-red-600 text-xs" style="display: none;">* Please select a department or designation</span>
+              </div>
+            </div>
+            <div class="w-full lg:w-6/12 px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                  Designation:
+                </label>                  
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                  <option value="">Select Designation</option>
+                  {#each designations as designation}
+                    <option value={designation}>{designation}</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+            <div class="w-full lg:w-6/12 px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Rooms</label>
+                {#each accessibleRooms as room}
+                <div class="flex items-center">
+                  <input type="checkbox" value={room} bind:group={selectedRooms} />
+                  <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{room}</label>
+                </div>
+                {/each}
+                <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select at least one accessible room</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="px-6 pb-6">
+          <button class="bg-red-500 text-white active:bg-red-700 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={closeModal}>Close</button>
+          <button class="bg-green-500 text-white active:bg-green-700 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={batchUpdate}>Update</button>
+        </div>
+      </div>
     </div>
-    {/if}
   </div>
-  <div class="flex items-center mb-4">
-    <input type="text" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery} />
-    <p class="text-sm {searchResultColor}">{searchResultText}</p>
-  </div>
+  {/if}
   <table class="w-full bg-transparent border-collapse">
     <thead>
       <tr>
