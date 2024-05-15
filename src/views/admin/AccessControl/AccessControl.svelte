@@ -1,21 +1,4 @@
-<!-- <script>
-  // core components
-  import CardSettings from "components/Cards/CardSettings.svelte";
-  import CardProfile from "components/Cards/CardProfile.svelte";
-  export let location;
-</script>
-
-<div class="flex flex-wrap">
-  <div class="w-full lg:w-8/12 px-4">
-    <CardSettings />
-  </div>
-  <div class="w-full lg:w-4/12 px-4">
-    <CardProfile />
-  </div>
-</div> -->
-
 <script>
-  import { reactive } from 'svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   export let color = "light";
   let showModal = false;
@@ -25,23 +8,6 @@
   let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
   let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
   let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
-
-
-function batchUpdate()
-{
-
-}
-
-function openModal() {
-  showModal = true;
-}
-
-function closeModal() {
-  showModal = false;
-  selectedDepartment = '';
-  selectedDesignation = '';
-  selectedRooms = [];
-}
 
   let users = [
     { id: '23006', name: 'Nawfal Ahmed', department: 'Marketing', designation: 'Manager', accessibleRooms: ['Conference Room', 'Building entrance'] },
@@ -64,10 +30,10 @@ function closeModal() {
     { id: '23006015', name: 'Ashley Clark', department: 'Purchasing', designation: 'Purchasing Manager', accessibleRooms: ['Purchasing Department', 'Inventory Room'] },
     { id: '23006016', name: 'Christopher Walker', department: 'Engineering', designation: 'Engineering Manager', accessibleRooms: ['Engineering Office', 'Prototype Lab'] },
     { id: '23006017', name: 'Stephanie Baker', department: 'Product Management', designation: 'Product Manager', accessibleRooms: ['Product Management Office', 'Boardroom'] }
-];
-
+  ];
 
   let selectedUsers = new Set();
+  let searchQuery = '';
 
   function toggleSelection(userId) {
     if (selectedUsers.has(userId)) {
@@ -87,31 +53,64 @@ function closeModal() {
     selectedUsers = new Set(selectedUsers); // Force rerender
   }
 
+  function batchUpdate() {
+    // Implement batch update logic here
+  }
+
+  function deleteSelectedUsers() {
+    users = users.filter(user => !selectedUsers.has(user.id));
+    selectedUsers.clear();
+  }
+
+  function openModal() {
+    showModal = true;
+  }
+
+  function closeModal() {
+    showModal = false;
+    selectedDepartment = '';
+    selectedDesignation = '';
+    selectedRooms = [];
+  }
+
   // Define pagination logic
   const usersPerPage = 10; // Adjust as needed
   let currentPage = 1;
 
- // Reactive statements to ensure proper updates
-$: startIndex = (currentPage - 1) * usersPerPage;
-$: endIndex = Math.min(startIndex + usersPerPage, users.length);
-$: displayedUsers = users.slice(startIndex, endIndex);
-$: totalPages = Math.ceil(users.length / usersPerPage);
+  // Reactive statements to ensure proper updates
+  $: startIndex = (currentPage - 1) * usersPerPage;
+  $: endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
+  $: filteredUsers = users.filter(user => 
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.id.includes(searchQuery) ||
+    user.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.accessibleRooms.some(room => room.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+  $: displayedUsers = filteredUsers.slice(startIndex, endIndex);
+  $: totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   function handlePageChange(event) {
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
     currentPage = event.detail.pageNumber;
-}
+  }
+
+  $: searchResultText = searchQuery
+    ? filteredUsers.length > 0
+      ? `Rows Found: ${filteredUsers.length}`
+      : "No Result Found"
+    : '';
+  $: searchResultColor = filteredUsers.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
+
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
-    >
-    Access Control
-    </h3>
+    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">Access Control</h3>
     <br/>
   </div>
   <div class="access-control">
+    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
     {#if showModal}
     <div class="modal">
@@ -119,9 +118,7 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
         <div class="rounded-t mb-0 px-4 py-10 border-0">
           <div class="flex flex-wrap items-center">
             <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-              <h3 class="font-semibold text-lg text-blueGray-700">
-                Batch Update
-              </h3>
+              <h3 class="font-semibold text-lg text-blueGray-700">Batch Update</h3>
             </div>
           </div>
         </div>
@@ -176,7 +173,12 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
       </div>
     </div>
     {/if}
-    <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2 {color === 'light' ? 'text-blueGray-700' : 'text-white'}" placeholder="Search...">
+    <div class="flex items-center mb-4">
+      <input type="search" class="bg-gray-800 text-white rounded-lg px-4 py-2 {color === 'light' ? 'text-blueGray-700' : 'text-white'}" placeholder="Search..." bind:value={searchQuery}>
+      {#if searchQuery}
+        <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
+      {/if}
+    </div>    
     <table>
       <thead>
         <tr>
@@ -191,16 +193,15 @@ $: totalPages = Math.ceil(users.length / usersPerPage);
       <tbody>
         {#each displayedUsers as user (user.id)}
           <tr>
-            <td><input type="checkbox" checked={selectedUsers.has(user.id)} class="rounded" on:click={() => {console.log(selectedUsers.has(user.id)); toggleSelection(user.id)}}></td>
+            <td><input type="checkbox" checked={selectedUsers.has(user.id)} class="rounded" on:click={() => toggleSelection(user.id)}></td>
             <td class="table-data" title={user.id}>{user.id}</td>
             <td class="table-data" title={user.name}>{user.name}</td>
             <td class="table-data" title={user.department}>{user.department}</td>
             <td class="table-data" title={user.designation}>{user.designation}</td>
-            <td class="table-data" title={user.accessibleRooms}>{user.accessibleRooms.join(', ')}</td>
+            <td class="table-data" title={user.accessibleRooms.join(', ')}>{user.accessibleRooms.join(', ')}</td>
           </tr>
         {/each}
       </tbody>
     </table>
-    <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
 </div>

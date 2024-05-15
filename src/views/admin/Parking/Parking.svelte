@@ -1,35 +1,14 @@
-<!-- <script>
-    // core components
-    import CardLineChart from "components/Cards/CardLineChart.svelte";
-    import CardBarChart from "components/Cards/CardBarChart.svelte";
-    import CardPageVisits from "components/Cards/CardPageVisits.svelte";
-    import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
-    export let location;
-  </script>
-  
-  <div>
-    <div class="flex flex-wrap">
-      <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-        <CardLineChart />
-      </div>
-      <div class="w-full xl:w-4/12 px-4">
-        <CardBarChart />
-      </div>
-    </div>
-  </div>
-   -->
+<script>
+  import { reactive } from 'svelte';
+  import AssignNewSpaceModal from './AssignNewSpaceModal.svelte';
+  import Pagination from '../../../components/Pagination/Pagination.svelte';
+  import QrCode from './QRCode.svelte';
+  const edit1 = "../assets/img/icons8-edit-24.png"
+  const edit2 = "../assets/img/icons8-tick-24.png"
+  const delete1 = "../assets/img/icons8-delete-24.png"
+  export let color = "light";
 
-   <script>
-    import { reactive } from 'svelte';
-    import AssignNewSpaceModal from './AssignNewSpaceModal.svelte';
-    import Pagination from '../../../components/Pagination/Pagination.svelte';
-    import QrCode from './QRCode.svelte';
-    const edit1 = "../assets/img/icons8-edit-24.png"
-    const edit2 = "../assets/img/icons8-tick-24.png"
-    const delete1 = "../assets/img/icons8-delete-24.png"
-    export let color = "light";
-  
-    let spaces = [
+  let spaces = [
     { id: '1', parkingSlot: 'FF-28', location: 'Aman Parking', carId: 'BJW-097', empName: 'Arsalan', carMake: 'Honda Civic', cardRfidNo: 829291829182 },
     { id: '2', parkingSlot: 'FF-29', location: 'Aman Parking', carId: 'JNW-134', empName: 'Emily', carMake: 'Toyota Corolla', cardRfidNo: 928347293874 },
     { id: '3', parkingSlot: 'FF-30', location: 'Aman Parking', carId: 'XJR-509', empName: 'Michael', carMake: 'Ford Fusion', cardRfidNo: 732894723489 },
@@ -51,240 +30,234 @@
     { id: '19', parkingSlot: 'FF-46', location: 'Aman Parking', carId: 'GYH-874', empName: 'Liam', carMake: 'Infiniti Q50', cardRfidNo: 328947239847 },
     { id: '20', parkingSlot: 'FF-47', location: 'Aman Parking', carId: 'HJK-203', empName: 'Charlotte', carMake: 'Lamborghini Huracan', cardRfidNo: 478329473284 }
 ];
-  
-  // State variable to track editing mode for each user
+
+  // State variable to track editing mode for each space
   let editingModes = {};
-  
+
   function toggleEditingMode(spaceId) {
     editingModes[spaceId] = !editingModes[spaceId];
   }
-  
+
   function saveSalaryChanges(space) {
-    // Logic to save the changes made to the salary
     console.log("Saved changes for space:", space);
-    // Assuming you have backend logic here to update the salary
   }
-  
+
   function editSalary(space) {
     toggleEditingMode(space.id);
-    // You can perform additional actions here if needed
   }
-  
-    let selectedSpaces = new Set();
-  
-    function toggleSelection(spaceId) {
-      if (selectedSpaces.has(spaceId)) {
-        selectedSpaces.delete(spaceId);
-      } else {
-        selectedSpaces.add(spaceId);
-      }
-      selectedSpaces = new Set(selectedSpaces); // Force rerender
-    }
-  
-    function toggleSelectAll() {
-      if (selectedSpaces.size === spaces.length) {
-        selectedSpaces.clear();
-      } else {
-        spaces.forEach(space => selectedSpaces.add(space.id));
-      }
-      selectedSpaces = new Set(selectedSpaces); // Force rerender
-    }
-  
-    let showModal = false;
-  
-    function openModal() {
-      showModal = true;
-    }
 
-    
-  // Define pagination logic
-  const spacesPerPage = 5; // Adjust as needed
-  let currentPage = 1;
+  let selectedSpaces = new Set();
 
- // Reactive statements to ensure proper updates
-$: startIndex = (currentPage - 1) * spacesPerPage;
-$: endIndex = Math.min(startIndex + spacesPerPage, spaces.length);
-$: displayedSpaces = spaces.slice(startIndex, endIndex);
-$: totalPages = Math.ceil(spaces.length / spacesPerPage);
-
-  function handlePageChange(event) {
-    console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
-    currentPage = event.detail.pageNumber;
-}
-
-let parkingSlot = '';
-    let location = '';
-    let carId = '';
-    let empName = '';
-    let carMake = '';
-    let cardRfidNo = '';
-  
-    // function addDevice() {
-    //   // Perform validation if needed
-    //   // For simplicity, I'm assuming all fields are required
-    //   if (deviceName && deviceId && deviceIp) {
-    //     // Add the new device to your data source or perform any necessary action
-    //     navigate('/admin/devicemanagement');
-    //   } else {
-    //     alert('Please fill in all fields.');
-    //   }
-    // }
-  
-    async function addSpace() {
-  // Perform validation if needed
-  // For simplicity, I'm assuming all fields are required
-  if (parkingSlot && location && carId && empName && carMake && cardRfidNo) {
-    try {
-      // Check if the device name is already present in the devices array
-      const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot);
-      
-      if (isDuplicate) {
-        alert('Parking slot must be unique.');
-        return;
-      }
-  
-      // Assuming you have an API endpoint to add a device
-      const response = await fetch('/api/addSpace', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ parkingSlot, location, carId, empName, carMake, cardRfidNo })
-      });
-  
-      if (response.ok) {
-        // Device added successfully, navigate to the appropriate page
-        navigate('/admin/parking');
-      } else {
-        // Handle error response from the server
-        const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
-      }
-    } catch (error) {
-      // Handle network errors or other exceptions
-      console.error('Error:', error);
-      alert('An error occurred while adding the space. Please try again.');
+  function toggleSelection(spaceId) {
+    if (selectedSpaces.has(spaceId)) {
+      selectedSpaces.delete(spaceId);
+    } else {
+      selectedSpaces.add(spaceId);
     }
-  } else {
-    alert('Please fill in all fields.');
+    selectedSpaces = new Set(selectedSpaces); // Force rerender
   }
+
+  function toggleSelectAll() {
+    if (selectedSpaces.size === spaces.length) {
+      selectedSpaces.clear();
+    } else {
+      spaces.forEach(space => selectedSpaces.add(space.id));
+    }
+    selectedSpaces = new Set(selectedSpaces); // Force rerender
   }
-  
-    function closeModal() {
-      showModal = false;
-      parkingSlot = '';
+
+  let showModal = false;
+
+  function openModal() {
+    showModal = true;
+  }
+
+  function closeModal() {
+    showModal = false;
+    parkingSlot = '';
     location = '';
     carId = '';
     empName = '';
     carMake = '';
     cardRfidNo = '';
+  }
+
+  const spacesPerPage = 5;
+  let currentPage = 1;
+
+  $: startIndex = (currentPage - 1) * spacesPerPage;
+  $: endIndex = Math.min(startIndex + spacesPerPage, filteredSpaces.length);
+  $: filteredSpaces = spaces.filter(space => 
+    space.parkingSlot.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    space.carId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    space.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    space.empName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    space.carMake.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  $: displayedSpaces = filteredSpaces.slice(startIndex, endIndex);
+  $: totalPages = Math.ceil(filteredSpaces.length / spacesPerPage);
+
+  function handlePageChange(event) {
+    currentPage = event.detail.pageNumber;
+  }
+
+  let searchQuery = '';
+
+  $: searchResultText = searchQuery
+    ? filteredSpaces.length > 0
+      ? `Rows Found: ${filteredSpaces.length}`
+      : "No Result Found"
+    : '';
+  $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
+
+  let parkingSlot = '';
+  let location = '';
+  let carId = '';
+  let empName = '';
+  let carMake = '';
+  let cardRfidNo = '';
+
+  async function addSpace() {
+    if (parkingSlot && location && carId && empName && carMake && cardRfidNo) {
+      try {
+        const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot);
+
+        if (isDuplicate) {
+          alert('Parking slot must be unique.');
+          return;
+        }
+
+        const response = await fetch('/api/addSpace', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ parkingSlot, location, carId, empName, carMake, cardRfidNo })
+        });
+
+        if (response.ok) {
+          navigate('/admin/parking');
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while adding the space. Please try again.');
+      }
+    } else {
+      alert('Please fill in all fields.');
     }
-  </script>
-  
-  <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-      <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
-      >
+  }
+</script>
+
+<div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
       Parking Information
-      </h3>
-      <br/>
-    </div>
-    <div class="access-control">
-      <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Assign New Space</button>
-      {#if showModal}
+    </h3>
+    <br/>
+  </div>
+  <div class="access-control">
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Assign New Space</button>
+    {#if showModal}
       <div class="modal">
         <div class="modal-content">
-        <div class="rounded-t mb-0 px-4 py-10 border-0">
-          <div class="flex flex-wrap items-center">
-            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-              <h3 class="font-semibold text-lg text-blueGray-700">
-                Assign New Space
-              </h3>
+          <div class="rounded-t mb-0 px-4 py-10 border-0">
+            <div class="flex flex-wrap items-center">
+              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                <h3 class="font-semibold text-lg text-blueGray-700">
+                  Assign New Space
+                </h3>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="block w-full overflow-x-auto">
-          <div class="px-4 py-5 flex-auto">
-            <div class="flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Parking Slot
-                  </label>
-                  <input type="text" id="parkingSlot" placeholder="Parking Slot" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={parkingSlot}>
+          <div class="block w-full overflow-x-auto">
+            <div class="px-4 py-5 flex-auto">
+              <div class="flex flex-wrap">
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Parking Slot
+                    </label>
+                    <input type="text" id="parkingSlot" placeholder="Parking Slot" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={parkingSlot}>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Location
+                    </label>
+                    <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Car ID
+                    </label>
+                    <input type="text" id="carId" placeholder="Car ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carId}>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Employee Name
+                    </label>
+                    <input type="text" id="empName" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={empName}>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Car Make
+                    </label>
+                    <input type="text" id="carMake" placeholder="Car Make" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carMake}>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Card RFID No
+                    </label>
+                    <input type="text" id="cardRfidNo" placeholder="Card RFID No" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardRfidNo}>
+                  </div>
                 </div>
               </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Location
-                  </label>
-                  <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
-                </div>
+              <div class="flex justify-end">
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addSpace}>
+                  Add
+                </button>
+                <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                  Cancel
+                </button>
               </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Car ID
-                  </label>
-                  <input type="text" id="carId" placeholder="Car ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carId}>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Employee Name
-                  </label>
-                  <input type="text" id="empName" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={empName}>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Car Make
-                  </label>
-                  <input type="text" id="carMake" placeholder="Car Make" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carMake}>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Card RFID No
-                  </label>
-                  <input type="text" id="cardRfidNo" placeholder="Card RFID No" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardRfidNo}>
-                </div>
-              </div>
-            </div>
-            <div class="flex justify-end">
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addSpace}>
-                Add
-              </button>
-              <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
-                Cancel
-              </button>
             </div>
           </div>
         </div>
       </div>
-        </div>
-        {/if}
-      <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search...">
-      <table>
-        <thead>
-          <tr>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Parking Slot</th>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location</th>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car ID</th>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee Name</th>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car Make</th>
-            <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">QR Code</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each displayedSpaces as space (space.id)}
+    {/if}
+    <div class="flex items-center mb-4">
+      <input type="search" class="bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
+      {#if searchQuery}
+        <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
+      {/if}
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Parking Slot</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car ID</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee Name</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Car Make</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">QR Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each displayedSpaces as space (space.id)}
           <tr>
             <td class="table-data font-bold text-blueGray-600" title={space.parkingSlot}>
-              <!-- Name -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
                   <input type="text" class="salary-input" bind:value={space.parkingSlot}>
@@ -294,7 +267,6 @@ let parkingSlot = '';
               </div>
             </td>
             <td class="table-data" title={space.location}>
-              <!-- Designatiom -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
                   <input type="text" class="salary-input1" bind:value={space.location}>
@@ -304,7 +276,6 @@ let parkingSlot = '';
               </div>
             </td>
             <td class="table-data" title={space.carId}>
-              <!-- Department -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
                   <input type="text" class="salary-input" bind:value={space.carId}>
@@ -314,7 +285,6 @@ let parkingSlot = '';
               </div>
             </td>
             <td class="table-data" title={space.empName}>
-              <!-- Percentage -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
                   <input type="text"  class="salary-input1" bind:value={space.empName}>
@@ -324,7 +294,6 @@ let parkingSlot = '';
               </div>
             </td>
             <td class="table-data" title={space.carMake}>
-              <!-- Active From -->
               <div class="flex items-center">
                 {#if editingModes[space.id]}
                   <input type="text" class="salary-input1" bind:value={space.carMake}>
@@ -333,38 +302,25 @@ let parkingSlot = '';
                 {/if}
               </div>
             </td>
-            <!-- <td class="table-data" title={space.cardRfidNo}>
-                <div class="flex items-center">
-                  {#if editingModes[space.id]}
-                    <input type="Number" bind:value={space.cardRfidNo}>
-                  {:else}
-                    <span>{space.cardRfidNo}</span>
-                  {/if}
-                </div>
-              </td> -->
-                <td>
-                  <QrCode data={space.carId.toString()} />
-                </td>
             <td>
-              <!-- Edit button -->
+              <QrCode data={space.carId.toString()} />
+            </td>
+            <td>
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <!-- Save button -->
                   <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(space); toggleEditingMode(space.id);}}>
                 {:else}
-                  <!-- Edit button -->
                   <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(space)} />
                 {/if}
                 <div class="ml-4">
                   <img src={delete1} alt="Delete" class="icon-button cursor-pointer">
-              </div>
+                </div>
               </div>
             </td>
-            
           </tr>
-          {/each}
-        </tbody>
-      </table>
-      <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
-    </div>
+        {/each}
+      </tbody>
+    </table>
+    <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
+</div>

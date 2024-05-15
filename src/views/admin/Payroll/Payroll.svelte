@@ -1,5 +1,5 @@
 <script>
-  import { reactive } from 'svelte';
+  import { navigate } from 'svelte-routing';
   import BatchUpdateModal from './BatchUpdateModal.svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
 
@@ -52,25 +52,25 @@
     { id: '13', name: 'Mia', department: 'Marketing', designation: 'Marketing Coordinator', salary: 55000 },
     { id: '14', name: 'Nick', department: 'HR', designation: 'HR Assistant', salary: 50000 },
     { id: '15', name: 'Olivia', department: 'Finance', designation: 'Financial Analyst', salary: 62000 },
-];
+  ];
 
-// State variable to track editing mode for each user
-let editingModes = {};
+  // State variable to track editing mode for each user
+  let editingModes = {};
 
-function toggleEditingMode(userId) {
-  editingModes[userId] = !editingModes[userId];
-}
+  function toggleEditingMode(userId) {
+    editingModes[userId] = !editingModes[userId];
+  }
 
-function saveSalaryChanges(salaries) {
-  // Logic to save the changes made to the salary
-  console.log("Saved changes for user:", salaries);
-  // Assuming you have backend logic here to update the salary
-}
+  function saveSalaryChanges(salaries) {
+    // Logic to save the changes made to the salary
+    console.log("Saved changes for user:", salaries);
+    // Assuming you have backend logic here to update the salary
+  }
 
-function editSalary(salaries) {
-  toggleEditingMode(salaries.id);
-  // You can perform additional actions here if needed
-}
+  function editSalary(salaries) {
+    toggleEditingMode(salaries.id);
+    // You can perform additional actions here if needed
+  }
 
   let selectedUsers = new Set();
 
@@ -78,127 +78,147 @@ function editSalary(salaries) {
   const salariesPerPage = 5; // Adjust as needed
   let currentPage = 1;
 
- // Reactive statements to ensure proper updates
-$: startIndex = (currentPage - 1) * salariesPerPage;
-$: endIndex = Math.min(startIndex + salariesPerPage, salaries.length);
-$: displayedSalaries = salaries.slice(startIndex, endIndex);
-$: totalPages = Math.ceil(salaries.length / salariesPerPage);
+  // Reactive statements to ensure proper updates
+  $: startIndex = (currentPage - 1) * salariesPerPage;
+  $: endIndex = Math.min(startIndex + salariesPerPage, filteredSalaries.length);
+  $: displayedSalaries = filteredSalaries.slice(startIndex, endIndex);
+  $: totalPages = Math.ceil(filteredSalaries.length / salariesPerPage);
 
   function handlePageChange(event) {
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
     currentPage = event.detail.pageNumber;
-}
-  
-    function update() {
-      // Logic to handle batch update
-      console.log("Batch update performed");
-      // You can add logic to perform batch update here
-      // Reset fields after update
-      selectedDepartment = '';
-      selectedDesignation = '';
-      selectedValueType = null;
-      value = '';
-    }
+  }
 
-    function selectValueType(value) {
-        selectedValueType = value;
-    }
+  function update() {
+    // Logic to handle batch update
+    console.log("Batch update performed");
+    // You can add logic to perform batch update here
+    // Reset fields after update
+    selectedDepartment = '';
+    selectedDesignation = '';
+    selectedValueType = null;
+    value = '';
+  }
 
-    function closeModal() {
+  function selectValueType(value) {
+    selectedValueType = value;
+  }
+
+  function closeModal() {
     showModal = false;
     selectedDepartment = '';
-      selectedDesignation = '';
-      selectedValueType = '';
-      value = '';
-    }
-  
+    selectedDesignation = '';
+    selectedValueType = '';
+    value = '';
+  }
+
+  // Search filter logic
+  let searchQuery = '';
+  $: filteredSalaries = salaries.filter(salary => {
+    return (
+      salary.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      salary.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      salary.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      salary.salary.toString().includes(searchQuery)
+    );
+  });
+
+  $: searchResultText = searchQuery
+    ? filteredSalaries.length > 0
+      ? `Rows Found: ${filteredSalaries.length}`
+      : "No Result Found"
+    : '';
+  $: searchResultColor = filteredSalaries.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
+
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
-    >
-    Salary Information
+    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
+      Salary Information
     </h3>
     <br/>
   </div>
   <div class="access-control">
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
     {#if showModal}
-    <div class="modal">
-      <div class="modal-content">
-        <div class="rounded-t mb-0 px-4 py-10 border-0">
-          <div class="flex flex-wrap items-center">
-            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-              <h3 class="font-semibold text-lg text-blueGray-700">
-                Batch Update
-              </h3>
+      <div class="modal">
+        <div class="modal-content">
+          <div class="rounded-t mb-0 px-4 py-10 border-0">
+            <div class="flex flex-wrap items-center">
+              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                <h3 class="font-semibold text-lg text-blueGray-700">
+                  Batch Update
+                </h3>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="block w-full overflow-x-auto">
-          <div class="px-4 py-5 flex-auto">
-            <div class="flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Department:
-                  </label>
-                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
-                    {#each departments as department}
-                      <option value={department}>{department}</option>
-                    {/each}
-                  </select>
+          <div class="block w-full overflow-x-auto">
+            <div class="px-4 py-5 flex-auto">
+              <div class="flex flex-wrap">
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Department:
+                    </label>
+                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                      {#each departments as department}
+                        <option value={department}>{department}</option>
+                      {/each}
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Designation:
-                  </label>
-                  <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
-                    {#each designations as designation}
-                      <option value={designation}>{designation}</option>
-                    {/each}
-                  </select>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Designation:
+                    </label>
+                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                      {#each designations as designation}
+                        <option value={designation}>{designation}</option>
+                      {/each}
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                    Enter Value/Percentage:
-                  </label>
-                  <input type="text" id="Enter Value/Percentage" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                      Enter Value/Percentage:
+                    </label>
+                    <input type="text" id="Enter Value/Percentage" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                  </div>
                 </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value-type">
-                        Value Type:
+                      Value Type:
                     </label>
                     <div id="value-type" class="flex">
-                        {#each valueTypes as type}
-                            <label class="inline-flex items-center mt-3 mr-3">
-                                <input type="radio" class="form-radio h-5 w-5 text-blueGray-600" value={type} on:click={() => selectValueType(type)} checked={selectedValueType === type}>
-                                <span class="ml-2 text-blueGray-600">{type}</span>
-                            </label>
-                        {/each}
+                      {#each valueTypes as type}
+                        <label class="inline-flex items-center mt-3 mr-3">
+                          <input type="radio" class="form-radio h-5 w-5 text-blueGray-600" value={type} on:click={() => selectValueType(type)} checked={selectedValueType === type}>
+                          <span class="ml-2 text-blueGray-600">{type}</span>
+                        </label>
+                      {/each}
                     </div>
-                </div>
-              </div>  
+                  </div>
+                </div>  
+              </div>
+              <div class="flex justify-end">
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={update}>Update</button>
+                <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                  Cancel
+                </button>
+              </div>
             </div>
-            <div class="flex justify-end">
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={update}>Update</button>
-              <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>      
+          </div>      
+        </div>
       </div>
-    </div>
-{/if}
-    <input type="search" class="mb-4 bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search...">
+    {/if}
+    <input type="search" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
+    {#if searchQuery}
+      <span class="{searchResultColor}">{searchResultText}</span>
+    {/if}
     <table>
       <thead>
         <tr>
