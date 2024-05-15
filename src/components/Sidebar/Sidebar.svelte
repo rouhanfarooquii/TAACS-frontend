@@ -135,7 +135,7 @@
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-lock-open mr-2 text-sm {location.href.indexOf('/admin/accesscontrol') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Access Control
           </a>
@@ -149,7 +149,7 @@
             on:click|preventDefault={() => toggleNestedMenu('roombooking')}
             >
             <i
-              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/roombooking') !== -1 || location.href.indexOf('/admin/rooms') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-calendar-alt mr-2 text-sm {location.href.indexOf('/admin/roombooking') !== -1 || location.href.indexOf('/admin/rooms') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Room Booking
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -186,7 +186,7 @@
             on:click|preventDefault={() => toggleNestedMenu('employee')}
             >
             <i
-              class="fas fa-map-marked mr-2 text-sm {location.href.indexOf('/admin/employee') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-users mr-2 text-sm {location.href.indexOf('/admin/employee') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Employee
           </a>
@@ -200,7 +200,7 @@
             on:click|preventDefault={() => toggleNestedMenu('payroll')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/payroll') !== -1 || location.href.indexOf('/admin/bonus') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-money-bill-alt mr-2 text-sm {location.href.indexOf('/admin/payroll') !== -1 || location.href.indexOf('/admin/bonus') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Payroll
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -288,7 +288,7 @@
             on:click|preventDefault={() => toggleNestedMenu('shifttiming')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/shifttiming') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-clock mr-2 text-sm {location.href.indexOf('/admin/shifttiming') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Shift Timings
           </a>
@@ -302,7 +302,7 @@
             on:click|preventDefault={() => toggleNestedMenu('devicemanagement')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Device Management
           </a>
@@ -316,7 +316,7 @@
             on:click|preventDefault={() => toggleNestedMenu('parking')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 || location.href.indexOf('/admin/managecars') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-parking mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 || location.href.indexOf('/admin/managecars') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Parking
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -353,7 +353,7 @@
             on:click|preventDefault={() => toggleNestedMenu('visitors')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 || location.href.indexOf('/admin/visitorslist') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-user-alt mr-2 text-sm {location.href.indexOf('/admin/visitors') !== -1 || location.href.indexOf('/admin/visitorslist') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Visitor
             <i class="fas fa-angle-down ml-2 text-xs"></i>
@@ -391,7 +391,7 @@
             on:click|preventDefault={() => toggleNestedMenu('emergency')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/emergency') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-ambulance mr-2 text-sm {location.href.indexOf('/admin/emergency') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Emergency
           </a>
