@@ -99,10 +99,15 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1 flex items-center justify-between">
         <h3 class="font-semibold text-lg text-blueGray-700">
             Emergency
         </h3>
+        <button
+            class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+        >
+            New Emergency
+        </button>
     </div>
 
     <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -120,7 +125,7 @@
                     <button
                         data-id="{emergency.id}" 
                         onclick={() => handleActivate(emergency)}
-                        class="bg-green-500 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2"
+                        class="bg-green-500 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-sm px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2"
                         disabled={emergency.isActive}
                     >
                         Activate
@@ -128,7 +133,7 @@
                     <button 
                         data-id="{emergency.id}" 
                         onclick={() => handleDeactivate(emergency)}
-                        class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                        class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-sm px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                         disabled={!emergency.isActive}
                     >
                         Deactivate

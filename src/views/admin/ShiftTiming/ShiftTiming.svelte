@@ -152,10 +152,3 @@
     <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
 </div>
-
-<style>
-  .wrap-text {
-    white-space: normal;
-    word-break: break-word;
-  }
-</style>

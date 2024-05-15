@@ -10,7 +10,7 @@
   let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
 
   let users = [
-    { id: '23006', name: 'Nawfal Ahmed', department: 'Marketing', designation: 'Manager', accessibleRooms: ['Conference Room', 'Building entrance'] },
+    { id: '23006', name: 'Nawfal Ahmed', department: 'Marketing', designation: 'Manager', accessibleRooms: ['Conference Room', 'Building entrance', 'Lobby', 'Lobby', 'Lobby', 'Lobby'] },
     { id: '230060', name: 'John Doe', department: 'HR', designation: 'Assistant Manager', accessibleRooms: ['Meeting Room', 'Lobby'] },
     { id: '2300600', name: 'Jane Smith', department: 'Finance', designation: 'Senior Accountant', accessibleRooms: ['Finance Office', 'Lounge'] },
     { id: '23006001', name: 'Emily Johnson', department: 'Operations', designation: 'Supervisor', accessibleRooms: ['Operations Room', 'Cafeteria'] },
@@ -198,7 +198,7 @@
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.name}>{user.name}</td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.department}>{user.department}</td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.designation}>{user.designation}</td>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.accessibleRooms.join(', ')}>{user.accessibleRooms.join(', ')}</td>
+        <td class="table-data2" title={user.accessibleRooms.join(', ')}>{user.accessibleRooms.join(', ')}</td>
       </tr>
       {/each}
     </tbody>
