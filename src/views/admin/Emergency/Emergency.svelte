@@ -1,113 +1,173 @@
 <script>
-    // core components
-    import CardLineChart from "components/Cards/CardLineChart.svelte";
-    import CardBarChart from "components/Cards/CardBarChart.svelte";
-    import CardPageVisits from "components/Cards/CardPageVisits.svelte";
-    import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
-    export let location;
+// core components
+import CardLineChart from "components/Cards/CardLineChart.svelte";
+import CardBarChart from "components/Cards/CardBarChart.svelte";
+import CardPageVisits from "components/Cards/CardPageVisits.svelte";
+import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
+export let location;
 
-    let emergencyProtocols = [
-        {
-            id: 'EP001',
-            name: 'Fire Drill',
-            description: 'Protocol activated during a fire drill to ensure safety and evacuation.',
-            devicesToDeactivate: ['Main Entrance Scanner', 'Elevator Control', 'Security Cameras'],
-            doors: 'Always Open',
-            isActive: false
-        },
-        {
-            id: 'EP002',
-            name: 'Intruder Alert',
-            description: 'Protocol activated when an unauthorized person is detected on the premises.',
-            devicesToDeactivate: ['All Door Locks', 'Security Alarms', 'Emergency Sirens'],
-            doors: 'Always Close',
-            isActive: false
-        },
-        {
-            id: 'EP003',
-            name: 'Medical Emergency',
-            description: 'Protocol activated during a medical emergency to allow easy access for emergency services.',
-            devicesToDeactivate: ['Lobby Scanner', 'Conference Room Door Lock', 'Internal Security Cameras'],
-            doors: 'Always Open',
-            isActive: false
-        },
-        {
-            id: 'EP004',
-            name: 'Power Outage',
-            description: 'Protocol activated during a power outage to secure all sensitive areas.',
-            devicesToDeactivate: ['Server Room Door Lock', 'Backup Generator Control', 'IT Department Access Control'],
-            doors: 'Always Close',
-            isActive: false
-        },
-        {
-            id: 'EP005',
-            name: 'Gas Leak',
-            description: 'Protocol activated during a gas leak to ensure safe evacuation and ventilation.',
-            devicesToDeactivate: ['Cafeteria Gas Valve Control', 'HVAC System', 'Main Entrance Door Lock'],
-            doors: 'Always Open',
-            isActive: false
-        },
-        {
-            id: 'EP006',
-            name: 'Earthquake',
-            description: 'Protocol activated during an earthquake to ensure structural safety and evacuation.',
-            devicesToDeactivate: ['Elevator Control', 'Parking Garage Door Lock', 'Security Alarms'],
-            doors: 'Always Open',
-            isActive: false
-        },
-        {
-            id: 'EP007',
-            name: 'Bomb Threat',
-            description: 'Protocol activated during a bomb threat to ensure immediate evacuation and safety.',
-            devicesToDeactivate: ['Main Entrance Scanner', 'Security Alarms', 'Internal Communication Systems'],
-            doors: 'Always Open',
-            isActive: false
-        },
-        {
-            id: 'EP008',
-            name: 'Active Shooter',
-            description: 'Protocol activated during an active shooter situation to secure all areas.',
-            devicesToDeactivate: ['All Door Locks', 'Security Cameras', 'Emergency Sirens'],
-            doors: 'Always Close',
-            isActive: false
-        },
-        {
-            id: 'EP009',
-            name: 'Flood',
-            description: 'Protocol activated during a flood to ensure safety and evacuation.',
-            devicesToDeactivate: ['Basement Door Lock', 'HVAC System', 'Main Entrance Door Lock'],
-            doors: 'Always Open',
-            isActive: false
-        },
-        {
-            id: 'EP010',
-            name: 'Tornado',
-            description: 'Protocol activated during a tornado to ensure safety and evacuation.',
-            devicesToDeactivate: ['All Door Locks', 'Security Cameras', 'Internal Communication Systems'],
-            doors: 'Always Open',
-            isActive: false
-        }
-    ];
+let id= '';
+let name= '';
+let description= '';
+let selectedDevices = [];
+let doors= '';
+let devicesToDeactivate = ['Main Entrance Scanner', 'Elevator Control', 'Security Cameras', 'Lobby Scanner', 'Conference Room Door Lock', 'Internal Security Cameras', 'Server Room Door Lock', 'Backup Generator Control', 'IT Department Access Control', 'Parking Garage Door Lock', 'Security Alarms', 'All Door Locks', 'Internal Communication Systems'];
+let showModal = false;
 
-    export async function handleActivate(emergency) {
-        emergency.isActive = true;
+let emergencyProtocols = [
+    {
+        id: 'EP001',
+        name: 'Fire Drill',
+        description: 'Protocol activated during a fire drill to ensure safety and evacuation.',
+        devicesToDeactivate: ['Main Entrance Scanner', 'Elevator Control', 'Security Cameras'],
+        doors: 'Always Open',
+        isActive: false
+    },
+    {
+        id: 'EP003',
+        name: 'Medical Emergency',
+        description: 'Protocol activated during a medical emergency to allow easy access for emergency services.',
+        devicesToDeactivate: ['Lobby Scanner', 'Conference Room Door Lock', 'Internal Security Cameras'],
+        doors: 'Always Open',
+        isActive: false
+    },
+    {
+        id: 'EP004',
+        name: 'Power Outage',
+        description: 'Protocol activated during a power outage to secure all sensitive areas.',
+        devicesToDeactivate: ['Server Room Door Lock', 'Backup Generator Control', 'IT Department Access Control'],
+        doors: 'Always Close',
+        isActive: false
+    },
+    {
+        id: 'EP006',
+        name: 'Earthquake',
+        description: 'Protocol activated during an earthquake to ensure structural safety and evacuation.',
+        devicesToDeactivate: ['Elevator Control', 'Parking Garage Door Lock', 'Security Alarms'],
+        doors: 'Always Open',
+        isActive: false
+    },
+    {
+        id: 'EP010',
+        name: 'Tornado',
+        description: 'Protocol activated during a tornado to ensure safety and evacuation.',
+        devicesToDeactivate: ['All Door Locks', 'Security Cameras', 'Internal Communication Systems'],
+        doors: 'Always Open',
+        isActive: false
     }
+];
 
-    export async function handleDeactivate(emergency) {
-        emergency.isActive = false;
-    }
+// Function to open the modal
+function openModal() {
+    showModal = true;
+}
+
+function closeModal() {
+    showModal = false;
+    let name= '';
+    let description= '';
+    let selectedDevices = [];
+    let doors= '';
+}
+
+export async function handleActivate(emergency) {
+    emergency.isActive = true;
+}
+
+export async function handleDeactivate(emergency) {
+    emergency.isActive = false;
+}
+
+export async function addProtocol() {
+    emergency.isActive = false;
+}
+
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-    <div class="relative w-full px-4 max-w-full flex-grow flex-1 flex items-center justify-between">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1 flex items-center justify-between pb-4">
         <h3 class="font-semibold text-lg text-blueGray-700">
             Emergency
         </h3>
         <button
             class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-        >
-            New Emergency
+            type="button" on:click={openModal}>
+            New Protocol
         </button>
+        {#if showModal}
+            <div class="modal">
+                <div class="modal-content">
+                    <div class="rounded-t mb-0 px-4 py-10 border-0">
+                        <div class="flex flex-wrap items-center">
+                            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                                <h3 class="font-semibold text-lg text-blueGray-700">
+                                    Define Protocol
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="block w-full overflow-x-auto">
+                        <div class="px-4 py-5 flex-auto">
+                            <div class="flex flex-wrap">
+                                <div class="w-full lg:w-6/12 px-4">
+                                    <div class="relative mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                                            Name
+                                        </label>
+                                        <input type="text" id="name" placeholder="Protocol Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={name}>
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-6/12 px-4">
+                                    <div class="relative mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                                            Description
+                                        </label>
+                                        <textarea id="description" placeholder="Enter Description" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={description}></textarea>
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-6/12 px-4">
+                                    <div class="relative mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Devices To Include</label>
+                                        {#each devicesToDeactivate as devices}
+                                        <div class="flex items-center">
+                                            <input type="checkbox" value={devices} bind:group={selectedDevices} />
+                                            <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{devices}</label>
+                                        </div>
+                                        {/each}
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-6/12 px-4">
+                                    <div class="relative mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                                            Doors:
+                                        </label>
+                                        <div class="flex items-center">
+                                            <label for="alwaysOpen" class="mr-2">
+                                                <input type="radio" id="alwaysOpen" name="doorStatus" value="Always Open" class="mr-1" bind:group={doors} />
+                                                Always Open
+                                            </label>
+                                            <label for="alwaysClosed">
+                                                <input type="radio" id="alwaysClosed" name="doorStatus" value="Always Closed" class="mr-1" bind:group={doors} />
+                                                Always Closed
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"  on:click={addProtocol}>
+                                    Add
+                                </button>
+                                <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/if}
+
     </div>
 
     <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

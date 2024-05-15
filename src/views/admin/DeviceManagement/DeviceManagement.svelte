@@ -39,7 +39,7 @@
 ];
 
 
-  async function addDevice() {
+async function addDevice() {
 // Perform validation if needed
 // For simplicity, I'm assuming all fields are required
 if (deviceName && deviceId && deviceIp) {
