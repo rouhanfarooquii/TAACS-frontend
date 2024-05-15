@@ -183,13 +183,26 @@
   <table class="min-w-full">
     <thead>
       <tr>
-        <th class="px-4 py-2">#</th>
-        <th class="px-4 py-2">Employee</th>
-        <th class="px-4 py-2">Department</th>
-        <th class="px-4 py-2">Designation</th>
-        <th class="px-4 py-2">Details</th>
-        <th class="px-4 py-2">Active</th>
-        <th class="px-4 py-2">Action</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        #
+        </th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        Employee
+        </th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        Department
+        </th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        Designation
+        </th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        Details</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        Active
+        </th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+        Action
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -208,9 +221,9 @@
   </table>
 
 <!-- Show x Records -->
-<div class="mt-4">
+<div class="text-sm mt-4">
   <label for="showRecords">Show Records:</label>
-  <select id="showRecords" class="small-dropdown rounded" onchange="{() => showRecords(this.value)}">
+  <select id="showRecords" class="salary-input small-dropdown rounded" onchange="{() => showRecords(this.value)}">
     <option value="10">10</option>
     <option value="20">20</option>
     <option value="30">30</option>
