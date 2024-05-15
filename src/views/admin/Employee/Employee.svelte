@@ -1,5 +1,7 @@
 <script>
   import { navigate } from 'svelte-routing';
+  const edit1 = "../assets/img/icons8-edit-24.png"
+    const view1 = "../assets/img/icons8-eye-24.png"
   let employees = [
     { id: 1, name: 'John Doe', department: 'HR', designation: 'Manager', details: 'Lorem ipsum', active: true },
     { id: 2, name: 'Jane Smith', department: 'Marketing', designation: 'Executive', details: 'Lorem ipsum', active: false },
@@ -67,6 +69,17 @@
   function navigateToAddEmployee() {
     navigate('/admin/addemployee');
   }
+
+  function editEmployee(employee)
+    {
+
+    }
+
+    function viewEmployee(employeesId)
+    {
+      navigate('/employee/${employeeId}');
+      
+    }
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -89,11 +102,6 @@
       <br>
       <input type="text" id="searchBar" name="searchBar" class="filter-input" placeholder="Search by ID, Name, Department, Designation" bind:value={filters.search} />
     </div>
-  </div>
-
-  <!-- Filters Row 2 -->
-  <div class="flex justify-between mb-4">
-    <!-- Filter by Experience -->
     <div>
       <label for="filterExperience">Experience:</label>
       <br>
@@ -105,7 +113,6 @@
         <option value="5+">5+ years</option>
       </select>
     </div>
-    <!-- Filter by Active -->
     <div>
       <label for="filterActive">Active:</label>
       <br>
@@ -130,25 +137,30 @@
   <table class="min-w-full">
     <thead>
       <tr>
-        <th class="px-4 py-2">#</th>
-        <th class="px-4 py-2">Employee</th>
-        <th class="px-4 py-2">Department</th>
-        <th class="px-4 py-2">Designation</th>
-        <th class="px-4 py-2">Details</th>
-        <th class="px-4 py-2">Active</th>
-        <th class="px-4 py-2">Action</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">#</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designation</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Details</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Active</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Action</th>
       </tr>
     </thead>
     <tbody>
       {#each filteredEmployees as employee, index}
         <tr>
-          <td class="border px-4 py-2">{index + 1}</td>
-          <td class="border px-4 py-2">{employee.name}</td>
-          <td class="border px-4 py-2">{employee.department}</td>
-          <td class="border px-4 py-2">{employee.designation}</td>
-          <td class="border px-4 py-2">{employee.details}</td>
-          <td class="border px-4 py-2">{employee.active ? 'Yes' : 'No'}</td>
-          <td class="border px-4 py-2">Action</td>
+          <td class="table-data">{index + 1}</td>
+          <td class="table-data">{employee.name}</td>
+          <td class="table-data">{employee.department}</td>
+          <td class="table-data">{employee.designation}</td>
+          <td class="table-data">{employee.details}</td>
+          <td class="table-data">{employee.active ? 'Yes' : 'No'}</td>
+          <td class='table-data'>
+            <div class="flex">
+              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editEmployee(employee.id)} />
+              <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" onclick={() => viewEmployee(employee.id)} />
+            </div>
+          </td>
         </tr>
       {/each}
     </tbody>

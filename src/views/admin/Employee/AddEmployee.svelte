@@ -85,6 +85,7 @@ import { navigate } from 'svelte-routing';
       navigate('/admin/employee');
       console.log("Navigate to add employee screen");
   }
+  
 
 
 </script>
