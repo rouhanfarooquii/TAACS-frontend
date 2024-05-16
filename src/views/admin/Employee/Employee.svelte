@@ -327,6 +327,7 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
             <div class="flex">
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" on:click={openEditModal(employee.id)}/>
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
               <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" on:click={viewEmployee(employee.id)} />
             </div>
           </td>
