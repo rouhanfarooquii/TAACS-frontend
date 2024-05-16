@@ -58,6 +58,22 @@ let emergencyProtocols = [
     }
 ];
 
+let dropdownOpen = false;
+
+
+function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
+}
+
+function handleCheckboxChange(event) {
+    const value = event.target.value;
+    if (event.target.checked) {
+        selectedDevices = [...selectedDevices, value];
+    } else {
+        selectedDevices = selectedDevices.filter(device => device !== value);
+    }
+}
+
 // Function to open the modal
 function openModal() {
     showModal = true;
@@ -81,6 +97,13 @@ export async function handleDeactivate(emergency) {
 
 export async function addProtocol() {
     emergency.isActive = false;
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
+        dropdownOpen = false;
+    }
 }
 
 </script>
@@ -147,12 +170,17 @@ export async function addProtocol() {
                                 <div class="w-full lg:w-6/12 px-4">
                                     <div class="relative mb-3">
                                         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Devices To Include</label>
-                                        {#each devicesToDeactivate as devices}
-                                        <div class="flex items-center">
-                                            <input type="checkbox" value={devices} bind:group={selectedDevices} />
-                                            <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{devices}</label>
+                                        <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                                            <button on:click={toggleDropdown} class="dropbtn">Select devices</button>
+                                            <div class={`dropdown-content ${dropdownOpen ? 'show' : ''}`}>
+                                                {#each devicesToDeactivate as device}
+                                                <div class="flex items-center">
+                                                    <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />
+                                                    <label class="ml-2 text-sm text-blueGray-600">{device}</label>
+                                                </div>
+                                                {/each}
+                                            </div>
                                         </div>
-                                        {/each}
                                     </div>
                                 </div>
                             </div>

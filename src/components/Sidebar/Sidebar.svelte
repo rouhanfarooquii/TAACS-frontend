@@ -233,7 +233,7 @@
         <li class="items-center">
           <a
             use:link
-            href="#"
+            href="/admin/leaverequest"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 || location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
             >
@@ -241,45 +241,8 @@
               class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 || location.href.indexOf('/admin/leaveform') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Leave Requests
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuLeaveRequest}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                use:link
-                  href="/admin/leaverequest"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Leave Request
-                </a>
-              </li>
-              <li>
-                <a
-                use:link
-                  href="/admin/leaveform"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                  Leave Form
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
-
-        <!-- <li class="items-center">
-          <a
-            use:link
-            href="/admin/leaverequest"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-            on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
-            >
-            <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
-            ></i>
-            Leave Requests
-          </a>
-        </li> -->
 
         <li class="items-center">
           <a
@@ -306,6 +269,20 @@
               class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/devicemanagement') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Device Management
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/location"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/location') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('location')}
+            >
+            <i
+              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/location') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Location
           </a>
         </li>
 
@@ -415,7 +392,7 @@
       <h6
         class="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
       >
-        No Layout Pages
+        User Pages
       </h6>
       <!-- Navigation -->
 
@@ -441,6 +418,21 @@
             Profile Page
           </a>
         </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/leaveform"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('leaveform')}
+            >
+            <i
+              class="fas fa-users mr-2 text-sm {location.href.indexOf('/admin/leaveform') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Leave Form
+          </a>
+        </li>
+
       </ul>
 
       <!-- <hr class="my-4 md:min-w-full" />

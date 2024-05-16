@@ -92,17 +92,17 @@ $: isDateValid = fromDate < toDate;
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterEmployeeID">
                     Employee ID:
                 </label>
-                <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="filter-input3" placeholder="Employee ID" bind:value={request.id}>
+                <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="filter-input" placeholder="Employee ID" bind:value={request.id}>
                 </div>
 
                 <div class="relative mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterName">Name:</label>
-                <input type="text" id="filterName" name="filterName" class="filter-input3" placeholder="Name" bind:value="{request.name}">
+                <input type="text" id="filterName" name="filterName" class="filter-input" placeholder="Name" bind:value="{request.name}">
                 </div>
 
                 <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterPosition">Email:</label>
-                    <input type="text" id="filterPosition" name="filterPosition" class="filter-input3" placeholder="Email" bind:value="{request.email}">
+                    <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" bind:value="{request.email}">
                 </div>
 
             </div>
@@ -113,14 +113,14 @@ $: isDateValid = fromDate < toDate;
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                         From:
                     </label>
-                    <input type="datetime-local" id="dateFrom" placeholder="Date & Time From" class="filter-input3" bind:value={request.dateFrom}>
+                    <input type="datetime-local" id="dateFrom" placeholder="Date & Time From" class="filter-input" bind:value={request.dateFrom}>
                 </div>
 
                 <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                         To:
                     </label>
-                    <input type="datetime-local" id="dateTo" placeholder="Date & Time To" class="filter-input3" bind:value={request.dateTo}>
+                    <input type="datetime-local" id="dateTo" placeholder="Date & Time To" class="filter-input" bind:value={request.dateTo}>
                 </div>
                 <div>
 
@@ -128,7 +128,7 @@ $: isDateValid = fromDate < toDate;
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="reason">
                         Reason:
                     </label>
-                    <textarea id="reason" name="reason" class="filter-input3 resize-none" placeholder="Reason:" bind:value="{request.reason}"></textarea>
+                    <textarea id="reason" name="reason" class="filter-input resize-none" placeholder="Reason:" bind:value="{request.reason}"></textarea>
                 </div>
             </div>
 
