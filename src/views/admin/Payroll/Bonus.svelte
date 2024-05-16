@@ -178,8 +178,6 @@
                     <input type="text" id="bonus-name" placeholder="Bonus Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={bonusName}>
                     <span id="bonus-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="activation-date">
                       Activation Date
@@ -187,8 +185,6 @@
                     <input type="date" id="activation-date" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={activeDate}>
                     <span id="activation-date-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
                       Department:
@@ -215,8 +211,6 @@
                     </select>
                     <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value-type">
                       Value Type:
@@ -231,8 +225,6 @@
                     </div>
                     <span id="value-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>  
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
                       Enter Value/Percentage:

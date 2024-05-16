@@ -236,8 +236,6 @@
                     <input type="text" id="parkingSlot" placeholder="Parking Slot" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={parkingSlot}>
                     <span id="parkingSlot-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
                       Location
@@ -245,8 +243,6 @@
                     <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
                     <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="carId">
                       Car ID
@@ -263,8 +259,6 @@
                     <input type="text" id="empName" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={empName}>
                     <span id="empName-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="carMake">
                       Car Make
@@ -272,8 +266,6 @@
                     <input type="text" id="carMake" placeholder="Car Make" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carMake}>
                     <span id="carMake-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="cardRfidNo">
                       Card RFID No

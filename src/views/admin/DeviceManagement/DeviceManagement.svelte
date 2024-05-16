@@ -246,8 +246,6 @@
                     <input type="text" id="device-name" placeholder="Device Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceName}>
                     <span id="device-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
                       Device ID

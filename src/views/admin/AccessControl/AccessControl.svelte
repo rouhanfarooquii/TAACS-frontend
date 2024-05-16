@@ -168,8 +168,6 @@
                 </select>
                 <span id="department-designation-error" class="text-red-600 text-xs" style="display: none;">* Please select a department or designation</span>
               </div>
-            </div>
-            <div class="w-full lg:w-6/12 px-4">
               <div class="relative mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Designation:

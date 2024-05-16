@@ -122,13 +122,26 @@ export async function addProtocol() {
                                         </label>
                                         <input type="text" id="name" placeholder="Protocol Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={name}>
                                     </div>
-                                </div>
-                                <div class="w-full lg:w-6/12 px-4">
                                     <div class="relative mb-3">
                                         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                                             Description
                                         </label>
                                         <textarea id="description" placeholder="Enter Description" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={description}></textarea>
+                                    </div>
+                                    <div class="relative mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                                            Doors:
+                                        </label>
+                                        <div class="flex items-center">
+                                            <label for="alwaysOpen" class="mr-2">
+                                                <input type="radio" id="alwaysOpen" name="doorStatus" value="Always Open" class="mr-1" bind:group={doors} />
+                                                Open
+                                            </label>
+                                            <label for="alwaysClosed">
+                                                <input type="radio" id="alwaysClosed" name="doorStatus" value="Always Closed" class="mr-1" bind:group={doors} />
+                                                Closed
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="w-full lg:w-6/12 px-4">
@@ -140,23 +153,6 @@ export async function addProtocol() {
                                             <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{devices}</label>
                                         </div>
                                         {/each}
-                                    </div>
-                                </div>
-                                <div class="w-full lg:w-6/12 px-4">
-                                    <div class="relative mb-3">
-                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                                            Doors:
-                                        </label>
-                                        <div class="flex items-center">
-                                            <label for="alwaysOpen" class="mr-2">
-                                                <input type="radio" id="alwaysOpen" name="doorStatus" value="Always Open" class="mr-1" bind:group={doors} />
-                                                Always Open
-                                            </label>
-                                            <label for="alwaysClosed">
-                                                <input type="radio" id="alwaysClosed" name="doorStatus" value="Always Closed" class="mr-1" bind:group={doors} />
-                                                Always Closed
-                                            </label>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
