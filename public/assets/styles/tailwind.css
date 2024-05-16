@@ -4266,6 +4266,10 @@ button {
   margin-left: 19.5rem;
 }
 
+.ml-14 {
+  margin-left: 9rem;
+}
+
 .border-green-600 {
   --tw-border-opacity: 1;
   border-color: rgba(72, 187, 120, var(--tw-border-opacity));
