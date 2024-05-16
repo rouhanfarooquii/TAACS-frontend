@@ -1,6 +1,5 @@
 <script>
   import { navigate } from 'svelte-routing';
-  import BatchUpdateModal from './BatchUpdateModal.svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
 
   let showModal = false;
@@ -8,8 +7,9 @@
   function openModal() {
     showModal = true;
   }
-  const edit1 = "../assets/img/icons8-edit-24.png"
-  const edit2 = "../assets/img/icons8-tick-24.png"
+
+  const edit1 = "../assets/img/icons8-edit-24.png";
+  const edit2 = "../assets/img/icons8-tick-24.png";
   export let color = "light";
 
   let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
@@ -90,6 +90,9 @@
   }
 
   function update() {
+    if (!validateBatchUpdateInputs()) {
+      return;
+    }
     // Logic to handle batch update
     console.log("Batch update performed");
     // You can add logic to perform batch update here
@@ -98,6 +101,41 @@
     selectedDesignation = '';
     selectedValueType = null;
     value = '';
+    closeModal();
+  }
+
+  function validateBatchUpdateInputs() {
+    let isValid = true;
+
+    if (!selectedDepartment) {
+      document.getElementById('department-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('department-error').style.display = 'none';
+    }
+
+    if (!selectedDesignation) {
+      document.getElementById('designation-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('designation-error').style.display = 'none';
+    }
+
+    if (!selectedValueType) {
+      document.getElementById('value-type-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('value-type-error').style.display = 'none';
+    }
+
+    if (!value || parseFloat(value) === 0) {
+      document.getElementById('value-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('value-error').style.display = 'none';
+    }
+
+    return isValid;
   }
 
   function selectValueType(value) {
@@ -110,6 +148,11 @@
     selectedDesignation = '';
     selectedValueType = '';
     value = '';
+
+    document.getElementById('department-error').style.display = 'none';
+    document.getElementById('designation-error').style.display = 'none';
+    document.getElementById('value-type-error').style.display = 'none';
+    document.getElementById('value-error').style.display = 'none';
   }
 
   // Search filter logic
@@ -162,10 +205,12 @@
                       Department:
                     </label>
                     <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                      <option value="" disabled selected>Select a department</option>
                       {#each departments as department}
                         <option value={department}>{department}</option>
                       {/each}
                     </select>
+                    <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
@@ -174,18 +219,21 @@
                       Designation:
                     </label>
                     <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                      <option value="" disabled selected>Select a designation</option>
                       {#each designations as designation}
                         <option value={designation}>{designation}</option>
                       {/each}
                     </select>
+                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
                       Enter Value/Percentage:
                     </label>
-                    <input type="text" id="Enter Value/Percentage" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                    <input type="text" id="value" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                    <span id="value-error" class="text-red-600 text-xs" style="display: none;">* Value should not be zero</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
@@ -201,6 +249,7 @@
                         </label>
                       {/each}
                     </div>
+                    <span id="value-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>  
               </div>
@@ -238,7 +287,7 @@
             <!-- Salary -->
             <div class="flex items-center">
               {#if editingModes[salaries.id]}
-                <input type="number" class="salary-input width80px text-xs" style="" bind:value={salaries.salary}>
+                <input type="number" class="salary-input width80px text-xs" bind:value={salaries.salary}>
               {:else}
                 <span>{salaries.salary}</span>
               {/if}

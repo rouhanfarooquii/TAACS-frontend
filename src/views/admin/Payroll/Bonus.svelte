@@ -28,11 +28,63 @@
   }
 
   function update() {
+    if (!validateInputs()) {
+      return;
+    }
     console.log("Batch update performed");
     selectedDepartment = '';
     selectedDesignation = '';
     selectedValueType = null;
     value = '';
+    closeModal();
+  }
+
+  function validateInputs() {
+    let isValid = true;
+
+    if (!bonusName) {
+      document.getElementById('bonus-name-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('bonus-name-error').style.display = 'none';
+    }
+
+    if (!activeDate) {
+      document.getElementById('activation-date-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('activation-date-error').style.display = 'none';
+    }
+
+    if (!selectedDepartment) {
+      document.getElementById('department-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('department-error').style.display = 'none';
+    }
+
+    if (!selectedDesignation) {
+      document.getElementById('designation-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('designation-error').style.display = 'none';
+    }
+
+    if (!selectedValueType) {
+      document.getElementById('value-type-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('value-type-error').style.display = 'none';
+    }
+
+    if (!value || parseFloat(value) === 0) {
+      document.getElementById('value-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('value-error').style.display = 'none';
+    }
+
+    return isValid;
   }
 
   let selectedUsers = new Set();
@@ -49,10 +101,19 @@
 
   function closeModal() {
     showModal = false;
+    bonusName = '';
+    activeDate = '';
     selectedDepartment = '';
     selectedDesignation = '';
     selectedValueType = '';
     value = '';
+
+    document.getElementById('bonus-name-error').style.display = 'none';
+    document.getElementById('activation-date-error').style.display = 'none';
+    document.getElementById('department-error').style.display = 'none';
+    document.getElementById('designation-error').style.display = 'none';
+    document.getElementById('value-type-error').style.display = 'none';
+    document.getElementById('value-error').style.display = 'none';
   }
 
   const bonusesPerPage = 5; // Adjust as needed
@@ -109,42 +170,48 @@
               <div class="flex flex-wrap">
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="bonus-name">
                       Bonus Name
                     </label>
                     <input type="text" id="bonus-name" placeholder="Bonus Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={bonusName}>
+                    <span id="bonus-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="activation-date">
                       Activation Date
                     </label>
-                    <input type="text" id="activation-date" placeholder="Activation Date" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={activeDate}>
+                    <input type="date" id="activation-date" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={activeDate}>
+                    <span id="activation-date-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
                       Department:
                     </label>
                     <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                      <option value="" disabled selected>Select a department</option>
                       {#each departments as department}
                         <option value={department}>{department}</option>
                       {/each}
                     </select>
+                    <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
                       Designation:
                     </label>
                     <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                      <option value="" disabled selected>Select a designation</option>
                       {#each designations as designation}
                         <option value={designation}>{designation}</option>
                       {/each}
                     </select>
+                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
@@ -160,14 +227,16 @@
                         </label>
                       {/each}
                     </div>
+                    <span id="value-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>  
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
                       Enter Value/Percentage:
                     </label>
-                    <input type="text" id="Enter Value/Percentage" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                    <input type="number" id="value" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                    <span id="value-error" class="text-red-600 text-xs" style="display: none;">* Value should not be zero</span>
                   </div>
                 </div>
               </div>

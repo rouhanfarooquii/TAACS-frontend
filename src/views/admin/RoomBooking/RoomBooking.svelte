@@ -76,7 +76,6 @@
     }
 
     try {
-      // Check if the booking already exists
       const isDuplicate = bookingList.some(
         booking =>
           booking.roomName === roomName &&
@@ -109,6 +108,10 @@
   }
 
   async function updateBooking() {
+    if (!validateInputs()) {
+      return;
+    }
+
     if (currentBooking) {
       try {
         const response = await fetch(`/api/updateRoomBooking/${currentBooking.id}`, {
@@ -130,6 +133,10 @@
         alert('An error occurred while updating the booking. Please try again.');
       }
     }
+  }
+
+  function deleteBooking(booking) {
+    bookingList = bookingList.filter(b => b !== booking);
   }
 
   function validateInputs() {
@@ -166,6 +173,7 @@
         document.getElementById('no-of-people-error').style.display = 'block';
         isValid = false;
       } else {
+        document.getElementById('no-of-people-error').innerText = '* Field Required';
         document.getElementById('no-of-people-error').style.display = 'none';
       }
     }
@@ -189,6 +197,7 @@
       document.getElementById('dateTime-to-error').style.display = 'block';
       isValid = false;
     } else {
+      document.getElementById('dateTime-to-error').innerText = '* Field Required';
       document.getElementById('dateTime-to-error').style.display = 'none';
     }
 
@@ -429,10 +438,10 @@
             <td class="table-data" title={booking.noOfPeople}>{booking.noOfPeople}</td>
             <td class="text-xs">
               <div>
-                <a class="text-blueGray-500 py-1 px-3" href="#pablo" bind:this="{btnDropdownRef[rowIndex]}" on:click={(event) => toggleDropdown(event, rowIndex)}>
+                <a class="text-blueGray-500 py-1 px-3" href="#pablo" bind:this={btnDropdownRef[rowIndex]} on:click={(event) => toggleDropdown(event, rowIndex)}>
                   <i class="fas fa-ellipsis-v"></i>
                 </a>
-                <div bind:this="{popoverDropdownRef[rowIndex]}" class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}">
+                <div bind:this={popoverDropdownRef[rowIndex]} class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}">
                   <a href="#pablo" on:click={(e) => { e.preventDefault(); openEditModal(booking); }} class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700">
                     Edit
                   </a>
