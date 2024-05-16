@@ -3,8 +3,13 @@
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
   import Footer from "components/Footers/Footer.svelte";
 
-  const team2 = "/assets/img/team-2-800x800.jpg";
+  const team2 = "/assets/img/10.jpg";
   export let location;
+
+  let gradientBackground = `
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  `;
+
 </script>
 
 <div>
@@ -13,9 +18,7 @@
     <section class="relative block h-500-px">
       <div
         class="absolute top-0 w-full h-full bg-center bg-cover"
-        style="
-          background-image: url(https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80);
-        "
+        style={gradientBackground}
       >
         <span
           id="blackOverlay"
@@ -63,10 +66,16 @@
               >
                 <div class="py-6 px-3 mt-32 sm:mt-0">
                   <button
-                    class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                     type="button"
                   >
-                    Connect
+                    View Attendance
+                  </button>
+                  <button
+                  class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                  type="button"
+                  >
+                    Request A Leave
                   </button>
                 </div>
               </div>
@@ -76,9 +85,9 @@
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      22
+                      82
                     </span>
-                    <span class="text-sm text-blueGray-400">Friends</span>
+                    <span class="text-sm text-blueGray-400">Attendance</span>
                   </div>
                   <div class="mr-4 p-3 text-center">
                     <span
@@ -86,15 +95,15 @@
                     >
                       10
                     </span>
-                    <span class="text-sm text-blueGray-400">Photos</span>
+                    <span class="text-sm text-blueGray-400">Absences</span>
                   </div>
                   <div class="lg:mr-4 p-3 text-center">
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      89
+                      4
                     </span>
-                    <span class="text-sm text-blueGray-400">Comments</span>
+                    <span class="text-sm text-blueGray-400">Late Arrivals</span>
                   </div>
                 </div>
               </div>

@@ -20,8 +20,8 @@
   let showNestedMenuParking  = false;
   let showNestedMenuVisitors  = false;
   let showNestedMenuEmergency  = false;
-  let showNestedMenuAddEmergency  = false;
   let showNestedDeviceManagement = false;
+  let showNestedHierarchy = false;
 
   function toggleNestedMenu(menuItem) {
     if (menuItem === 'accesscontrol') {
@@ -40,6 +40,8 @@
         showNestedDeviceManagement = !showNestedDeviceManagement;
       } else if (menuItem === 'parking') {
         showNestedMenuParking = !showNestedMenuParking;
+      } else if (menuItem === 'hierarchy') {
+        showNestedHierarchy = !showNestedHierarchy;
       } else if (menuItem === 'visitors') {
         showNestedMenuVisitors = !showNestedMenuVisitors;
       } else if (menuItem === 'emergency') {
@@ -280,7 +282,7 @@
             on:click|preventDefault={() => toggleNestedMenu('location')}
             >
             <i
-              class="fas fa-tools mr-2 text-sm {location.href.indexOf('/admin/location') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-map-pin mr-2 text-sm {location.href.indexOf('/admin/location') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Location
           </a>
@@ -297,6 +299,20 @@
               class="fas fa-parking mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Parking
+          </a>
+        </li>
+
+        <li class="items-center">
+          <a
+            use:link
+            href="/admin/hierarchy"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/hierarchy') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('hierarchy')}
+            >
+            <i
+              class="fas fa-sitemap mr-2 text-sm {location.href.indexOf('/admin/hierarchy') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+            ></i>
+            Organization Hierarchy
           </a>
         </li>
         

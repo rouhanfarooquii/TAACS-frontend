@@ -25,8 +25,8 @@
   import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
   import Bonus from "../views/admin/Payroll/Bonus.svelte";
   import LeaveForm from "../views/admin/LeaveRequest/LeaveForm.svelte";
-  import Location from "../views/admin/Location/location.svelte";
-
+  import Location from "../views/admin/Location/Location.svelte";
+  import Hierarchy from "../views/admin/Hierarchy/Hierarchy.svelte";
 
   import { component } from "svelte-routing/src/Route.svelte";
 
@@ -59,6 +59,7 @@
         <Route path="rooms" component="{Rooms}"/>
         <Route path="leaveform" component="{LeaveForm}"/>
         <Route path="location" component="{Location}"/>
+        <Route path="hierarchy" component="{Hierarchy}"/>
       </Router>
       <FooterAdmin />
     </div>
