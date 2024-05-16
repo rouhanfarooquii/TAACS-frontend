@@ -1,6 +1,45 @@
 <script>
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   export let color = "light";
+
+
+
+  // JB api demo start ----------------------------------------------------------  
+  import { onMount } from 'svelte';
+  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi } from '../../../services/api'
+
+  let object = {
+    _id: "663e770336b7ddbed14366cd",
+    title: "Chapri",
+    __v: 0
+  };
+  let id = "6646275d49cc34379b523dfc"
+
+  async function getAllLocations() {
+    let res = await getAllLocationsApi();
+    console.log(res);
+  }
+  // onMount(getAllLocations);
+
+  async function addLocation(obj) {
+    let res = await addLocationApi(obj);
+    console.log(res);
+  }
+  // onMount(addLocation(object));
+
+  async function updateLocation(obj) {
+    let res = await updateLocationApi(obj);
+    console.log(res);
+  }
+  // onMount(updateLocation(object));
+  async function deleteLocation(id) {
+    let res = await deleteLocationApi(id);
+    console.log(res);
+  }
+  // onMount(deleteLocation(id));
+
+  // Jb api demo end ----------------------------------------------------------
+
   let showModal = false;
   let selectedDepartment = '';
   let selectedDesignation = '';
