@@ -1333,6 +1333,11 @@ select {
   background-color: rgba(239, 68, 68, var(--tw-bg-opacity));
 }
 
+.bg-green-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(0, 150, 50, var(--tw-bg-opacity)); /* Darker shade of green */
+}
+
 .bg-red-600 {
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity));

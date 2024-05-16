@@ -174,7 +174,7 @@
         Access Control
       </h3>
     </div>
-    <button class="bg-red-400 active:bg-red-500 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow mr-1 hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
+    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow mr-1 hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
   <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
 </div>
   <div class="flex items-center mb-4">
