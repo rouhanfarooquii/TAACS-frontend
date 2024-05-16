@@ -2,29 +2,34 @@
   import { navigate } from 'svelte-routing';
   const edit1 = "../assets/img/icons8-edit-24.png"
     const view1 = "../assets/img/icons8-eye-24.png"
-  let employees = [
-    { id: 1, name: 'John Doe', department: 'HR', designation: 'Manager', details: 'Lorem ipsum', active: true },
-    { id: 2, name: 'Jane Smith', department: 'Marketing', designation: 'Executive', details: 'Lorem ipsum', active: false },
-    { id: 3, name: 'Bob Johnson', department: 'Sales', designation: 'Representative', details: 'Lorem ipsum', active: true },
-    { id: 4, name: 'Alice Brown', department: 'IT', designation: 'Developer', details: 'Lorem ipsum', active: true },
-    { id: 5, name: 'Mike Davis', department: 'Finance', designation: 'Analyst', details: 'Lorem ipsum', active: false },
-    { id: 6, name: 'Emily Chen', department: 'Operations', designation: 'Coordinator', details: 'Lorem ipsum', active: true },
-    { id: 7, name: 'Tom Harris', department: 'HR', designation: 'Generalist', details: 'Lorem ipsum', active: false },
-    { id: 8, name: 'Sarah Lee', department: 'Marketing', designation: 'Specialist', details: 'Lorem ipsum', active: true },
-    { id: 9, name: 'James Martin', department: 'Sales', designation: 'Manager', details: 'Lorem ipsum', active: true },
-    { id: 10, name: 'Katherine White', department: 'IT', designation: 'QA Engineer', details: 'Lorem ipsum', active: false },
-    { id: 11, name: 'Daniel Taylor', department: 'Finance', designation: 'Manager', details: 'Lorem ipsum', active: true },
-    { id: 12, name: 'Lisa Nguyen', department: 'Operations', designation: 'Supervisor', details: 'Lorem ipsum', active: false },
-    { id: 13, name: 'Brian Hall', department: 'HR', designation: 'Director', details: 'Lorem ipsum', active: true },
-    { id: 14, name: 'Melissa Thompson', department: 'Marketing', designation: 'Executive', details: 'Lorem ipsum', active: false },
-    { id: 15, name: 'Kevin Brooks', department: 'Sales', designation: 'Representative', details: 'Lorem ipsum', active: true },
-    { id: 16, name: 'Rebecca Garcia', department: 'IT', designation: 'Developer', details: 'Lorem ipsum', active: true },
-    { id: 17, name: 'Michael Rodriguez', department: 'Finance', designation: 'Analyst', details: 'Lorem ipsum', active: false },
-    { id: 18, name: 'Elizabeth Lewis', department: 'Operations', designation: 'Coordinator', details: 'Lorem ipsum', active: true },
-    { id: 19, name: 'William Jackson', department: 'HR', designation: 'Generalist', details: 'Lorem ipsum', active: false },
-    { id: 20, name: 'Amy Walker', department: 'Marketing', designation: 'Specialist', details: 'Lorem ipsum', active: true },
-  ]; // Replace with actual employee data
-  export let color = "light";
+    let selectedEmployee = null;
+    let showModal = false;
+    export let color = "light";
+    
+    let employees = [
+    { id: 1, name: 'John Doe', phoneNumber: '123-456-7890', location: 'New York', department: 'HR', designation: 'Manager', employeeType: 'Full-time', gender: 'Male', email: 'john@example.com', address: '123 Main St, New York', dateOfBirth: '1980-05-15', cardIdNumber: 'A123456', personalPassword: 'password123', fingerIndex1: '123456', fingerIndex2: '654321', isFingerAdded: true, salary: 70000, active: true },
+    { id: 2, name: 'Jane Smith', phoneNumber: '987-654-3210', location: 'Los Angeles', department: 'Marketing', designation: 'Executive', employeeType: 'Full-time', gender: 'Female', email: 'jane@example.com', address: '456 Elm St, Los Angeles', dateOfBirth: '1985-08-20', cardIdNumber: 'B654321', personalPassword: 'pass123word', fingerIndex1: '654321', fingerIndex2: '123456', isFingerAdded: true, salary: 60000, active: false },
+    { id: 3, name: 'Bob Johnson', phoneNumber: '555-123-4567', location: 'Chicago', department: 'Sales', designation: 'Representative', employeeType: 'Full-time', gender: 'Male', email: 'bob@example.com', address: '789 Oak St, Chicago', dateOfBirth: '1975-10-10', cardIdNumber: 'C789012', personalPassword: 'secret123', fingerIndex1: '789012', fingerIndex2: '', isFingerAdded: false, salary: 55000, active: true },
+    { id: 4, name: 'Alice Brown', phoneNumber: '333-555-9999', location: 'San Francisco', department: 'IT', designation: 'Developer', employeeType: 'Full-time', gender: 'Female', email: 'alice@example.com', address: '321 Pine St, San Francisco', dateOfBirth: '1990-12-25', cardIdNumber: 'D345678', personalPassword: 'securepwd', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 75000, active: true },
+    { id: 5, name: 'Mike Davis', phoneNumber: '444-777-2222', location: 'Seattle', department: 'Finance', designation: 'Analyst', employeeType: 'Full-time', gender: 'Male', email: 'mike@example.com', address: '567 Cedar St, Seattle', dateOfBirth: '1988-03-05', cardIdNumber: 'E901234', personalPassword: 'mysecretpass', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 65000, active: false },
+    { id: 6, name: 'Emily Chen', phoneNumber: '777-888-5555', location: 'Houston', department: 'Operations', designation: 'Coordinator', employeeType: 'Part-time', gender: 'Female', email: 'emily@example.com', address: '890 Maple St, Houston', dateOfBirth: '1982-07-12', cardIdNumber: 'F567890', personalPassword: 'mypassword123', fingerIndex1: '567890', fingerIndex2: '', isFingerAdded: true, salary: 40000, active: true },
+    { id: 7, name: 'Tom Harris', phoneNumber: '222-333-4444', location: 'Dallas', department: 'HR', designation: 'Generalist', employeeType: 'Full-time', gender: 'Male', email: 'tom@example.com', address: '234 Oak St, Dallas', dateOfBirth: '1977-09-30', cardIdNumber: 'G234567', personalPassword: 'password456', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 60000, active: false },
+    { id: 8, name: 'Sarah Lee', phoneNumber: '888-999-1111', location: 'Miami', department: 'Marketing', designation: 'Specialist', employeeType: 'Full-time', gender: 'Female', email: 'sarah@example.com', address: '456 Palm St, Miami', dateOfBirth: '1995-02-18', cardIdNumber: 'H345678', personalPassword: 'pass1234', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 55000, active: true },
+    { id: 9, name: 'James Martin', phoneNumber: '111-222-3333', location: 'Boston', department: 'Sales', designation: 'Manager', employeeType: 'Full-time', gender: 'Male', email: 'james@example.com', address: '678 Elm St, Boston', dateOfBirth: '1972-04-22', cardIdNumber: 'I456789', personalPassword: 'securepass123', fingerIndex1: '456789', fingerIndex2: '', isFingerAdded: true, salary: 80000, active: true },
+    { id: 10, name: 'Katherine White', phoneNumber: '666-777-8888', location: 'Austin', department: 'IT', designation: 'QA Engineer', employeeType: 'Full-time', gender: 'Female', email: 'katherine@example.com', address: '789 Pine St, Austin', dateOfBirth: '1983-11-28', cardIdNumber: 'J567890', personalPassword: 'password5678', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 70000, active: false },
+    { id: 11, name: 'Daniel Taylor', phoneNumber: '555-999-7777', location: 'Denver', department: 'Finance', designation: 'Manager', employeeType: 'Full-time', gender: 'Male', email: 'daniel@example.com', address: '890 Cedar St, Denver', dateOfBirth: '1978-06-15', cardIdNumber: 'K678901', personalPassword: 'securepass5678', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 85000, active: true },
+    { id: 12, name: 'Lisa Nguyen', phoneNumber: '777-222-3333', location: 'Phoenix', department: 'Operations', designation: 'Supervisor', employeeType: 'Full-time', gender: 'Female', email: 'lisa@example.com', address: '901 Maple St, Phoenix', dateOfBirth: '1986-09-10', cardIdNumber: 'L789012', personalPassword: 'mypassword5678', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 60000, active: false },
+    { id: 13, name: 'Brian Hall', phoneNumber: '333-888-4444', location: 'Philadelphia', department: 'HR', designation: 'Director', employeeType: 'Full-time', gender: 'Male', email: 'brian@example.com', address: '123 Elm St, Philadelphia', dateOfBirth: '1970-01-20', cardIdNumber: 'M890123', personalPassword: 'password789', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 90000, active: true },
+    { id: 14, name: 'Melissa Thompson', phoneNumber: '999-111-2222', location: 'San Diego', department: 'Marketing', designation: 'Executive', employeeType: 'Full-time', gender: 'Female', email: 'melissa@example.com', address: '345 Oak St, San Diego', dateOfBirth: '1976-12-05', cardIdNumber: 'N901234', personalPassword: 'pass5678', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 65000, active: false },
+    { id: 15, name: 'Kevin Brooks', phoneNumber: '111-777-8888', location: 'Portland', department: 'Sales', designation: 'Representative', employeeType: 'Full-time', gender: 'Male', email: 'kevin@example.com', address: '567 Pine St, Portland', dateOfBirth: '1984-03-30', cardIdNumber: 'O012345', personalPassword: 'secure123pass', fingerIndex1: '012345', fingerIndex2: '543210', isFingerAdded: true, salary: 55000, active: true },
+    { id: 16, name: 'Rebecca Garcia', phoneNumber: '222-444-6666', location: 'Atlanta', department: 'IT', designation: 'Developer', employeeType: 'Full-time', gender: 'Female', email: 'rebecca@example.com', address: '789 Cedar St, Atlanta', dateOfBirth: '1992-08-08', cardIdNumber: 'P123456', personalPassword: 'password890', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 75000, active: true },
+    { id: 17, name: 'Michael Rodriguez', phoneNumber: '777-555-2222', location: 'Chicago', department: 'Finance', designation: 'Analyst', employeeType: 'Full-time', gender: 'Male', email: 'michael@example.com', address: '901 Elm St, Chicago', dateOfBirth: '1981-05-25', cardIdNumber: 'Q234567', personalPassword: 'securepass890', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 65000, active: false },
+    { id: 18, name: 'Elizabeth Lewis', phoneNumber: '444-333-2222', location: 'Houston', department: 'Operations', designation: 'Coordinator', employeeType: 'Part-time', gender: 'Female', email: 'elizabeth@example.com', address: '234 Maple St, Houston', dateOfBirth: '1979-11-18', cardIdNumber: 'R345678', personalPassword: 'mypassword890', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 40000, active: true },
+    { id: 19, name: 'William Jackson', phoneNumber: '555-666-7777', location: 'Dallas', department: 'HR', designation: 'Generalist', employeeType: 'Full-time', gender: 'Male', email: 'william@example.com', address: '567 Oak St, Dallas', dateOfBirth: '1973-02-08', cardIdNumber: 'S456789', personalPassword: 'password1234', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 60000, active: false },
+    { id: 20, name: 'Amy Walker', phoneNumber: '888-777-6666', location: 'Miami', department: 'Marketing', designation: 'Specialist', employeeType: 'Full-time', gender: 'Female', email: 'amy@example.com', address: '890 Palm St, Miami', dateOfBirth: '1987-07-15', cardIdNumber: 'T567890', personalPassword: 'pass890', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 55000, active: true }
+];
+ // Replace with actual employee data
+  
 
   let filters = {
     search: '',
@@ -70,16 +75,21 @@
     navigate('/admin/addemployee');
   }
 
-  function editEmployee(employee)
+  function editEmployee()
     {
 
     }
 
-    function viewEmployee(employeesId)
-    {
-      navigate('/employee/${employeeId}');
-      
-    }
+    function viewEmployee(employeeId) {
+    selectedEmployee = employees.find(employee => employee.id === employeeId);
+    showModal = true;
+}
+
+function closeModal()
+{
+  showModal = false;
+}
+
 </script>
 
 
@@ -158,8 +168,9 @@
           <td class="table-data">{employee.active ? 'Yes' : 'No'}</td>
           <td class='table-data'>
             <div class="flex">
-              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" onclick={() => editEmployee(employee.id)} />
-              <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" onclick={() => viewEmployee(employee.id)} />
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" on:click={editEmployee}/>
+              <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" on:click={viewEmployee(employee.id)} />
             </div>
           </td>
         </tr>
@@ -176,4 +187,147 @@
       <option value="30">30</option>
     </select>
   </div>
+
+  {#if showModal}
+      <div class="modal">
+        <div class="modal-content">
+          <div class="rounded-t mb-0 px-4 py-10 border-0">
+            <div class="flex flex-wrap items-center">
+              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                <h3 class="font-semibold text-lg text-blueGray-700">
+                  Employee Details
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div class="block w-full overflow-x-auto">
+            <div class="px-4 py-5 flex-auto">
+              <div class="flex">
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
+                      Name:
+                    </label>
+                    <p>{selectedEmployee.name}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Phone Number:
+                    </label>
+                    <p>{selectedEmployee.phoneNumber}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Location:
+                    </label>
+                    <p>{selectedEmployee.location}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
+                      Department:
+                    </label>
+                    <p>{selectedEmployee.department}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Designation:
+                    </label>
+                    <p>{selectedEmployee.designation}</p>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Gender:
+                    </label>
+                    <p>{selectedEmployee.gender}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Email:
+                    </label>
+                    <p>{selectedEmployee.email}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Address:
+                    </label>
+                    <p>{selectedEmployee.address}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Date of birth:
+                    </label>
+                    <p>{selectedEmployee.dateOfBirth}</p>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Card ID:
+                    </label>
+                    <p>{selectedEmployee.cardIdNumber}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Personal Password:
+                    </label>
+                    <p>{selectedEmployee.personalPassword}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Finger Index 1:
+                    </label>
+                    <p>{selectedEmployee.fingerIndex1}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Finger Index 2:
+                    </label>
+                    <p>{selectedEmployee.fingerIndex2}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Finger Added:
+                    </label>
+                    <p>{selectedEmployee.isFingerAdded ? 'Yes' : 'No'}</p>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Salary:
+                    </label>
+                    <p>{selectedEmployee.salary}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Details:
+                    </label>
+                    <p>{selectedEmployee.details}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Active:
+                    </label>
+                    <p>{selectedEmployee.active ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Employee Type:
+                    </label>
+                    <p>{selectedEmployee.employeeType}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                  Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/if}
 </div>

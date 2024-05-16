@@ -318,7 +318,7 @@
         <div class="modal-content">
           <div class="rounded-t mb-0 px-4 py-10 border-0">
             <div class="flex flex-wrap items-center">
-              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+              <div class="relative w-full px-4 max-w-full flex-1">
                 <h3 class="font-semibold text-lg text-blueGray-700">
                   {editModal ? 'Edit Booking' : 'Book Room'}
                 </h3>
@@ -336,8 +336,6 @@
                     <input type="text" id="employee-name" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeName}>
                     <span id="employee-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="rooms">
                       Rooms
@@ -350,8 +348,6 @@
                     </select>
                     <span id="room-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
                       Designation
@@ -368,8 +364,6 @@
                     <input type="number" id="no-of-people" placeholder="# of People" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={noOfPeople}>
                     <span id="no-of-people-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-from">
                       Date & Time From
@@ -377,8 +371,6 @@
                     <input type="datetime-local" id="dateTime-from" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateTimeFrom}>
                     <span id="dateTime-from-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-to">
                       Date & Time To

@@ -244,7 +244,7 @@
           <div class="block w-full overflow-x-auto">
             <div class="px-4 py-5 flex-auto">
               <div class="flex flex-wrap">
-                <div class="w-full lg:w-6/12 px-4">
+                <div class="w-full lg:w-8/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="room-name">
                       Room Name
@@ -252,8 +252,6 @@
                     <input type="text" id="room-name" placeholder="Room Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roomName}>
                     <span id="room-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="capacity">
                       Capacity
@@ -261,8 +259,6 @@
                     <input type="number" id="capacity" placeholder="Capacity" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={capacity}>
                     <span id="capacity-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
                       Location
@@ -271,7 +267,7 @@
                     <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
-                <div class="w-full lg:w-6/12 px-4">
+                <div class="w-full lg:w-4/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="availability">
                       Availability
@@ -281,8 +277,6 @@
                       <span class="slider round"></span>
                     </label> Available
                   </div>
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="features">
                       Features
