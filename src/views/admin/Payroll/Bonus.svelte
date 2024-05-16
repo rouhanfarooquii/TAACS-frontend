@@ -144,15 +144,17 @@
   $: searchResultColor = filteredBonuses.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 </script>
 
+
+
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
-      Bonus Information
-    </h3>
-    <br/>
-  </div>
-  <div class="access-control">
+  <div class="flex justify-end mb-4">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+      <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
+        Bonus Information
+      </h3>
+    </div>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Add New Bonus</button>
+</div>
     {#if showModal}
       <div class="modal">
         <div class="modal-content">
@@ -306,5 +308,4 @@
       </tbody>
     </table>
     <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
-  </div>
 </div>

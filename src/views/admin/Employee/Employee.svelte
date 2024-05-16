@@ -82,6 +82,7 @@
     }
 </script>
 
+
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <!-- Add Employee Button -->
   <div class="flex justify-end mb-4">
@@ -93,7 +94,7 @@
     <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToAddEmployee}>
       Add Employee
     </button>
-  </div>
+</div>
 
   <!-- Search Bar -->
   <div class="flex justify-between mb-4">

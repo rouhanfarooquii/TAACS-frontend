@@ -129,16 +129,17 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">Access Control</h3>
-    <br/>
-  </div>
-  <div class="flex items-center justify-between mb-4">
-    <input type="text" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery} />
-    <div class="flex space-x-2">
-      <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
-      <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
+  <div class="flex justify-end mb-4">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+      <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
+        Access Control
+      </h3>
     </div>
+    <button class="bg-red-400 active:bg-red-500 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow mr-1 hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
+  <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
+</div>
+  <div class="flex items-center mb-4">
+    <input type="text" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery} />
   </div>
   <p class="text-sm {searchResultColor}">{searchResultText}</p>
   {#if showModal}

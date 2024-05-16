@@ -5,6 +5,7 @@ import CardBarChart from "components/Cards/CardBarChart.svelte";
 import CardPageVisits from "components/Cards/CardPageVisits.svelte";
 import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
 export let location;
+export let color = "light";
 
 let id= '';
 let name= '';
@@ -84,16 +85,21 @@ export async function addProtocol() {
 
 </script>
 
+
+
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-    <div class="relative w-full px-4 max-w-full flex-grow flex-1 flex items-center justify-between pb-4">
-        <h3 class="font-semibold text-lg text-blueGray-700">
+    <div class="flex justify-end mb-4">
+        <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+          <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
             Emergency
-        </h3>
+          </h3>
+        </div>
         <button
             class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
             type="button" on:click={openModal}>
             New Protocol
         </button>
+    </div>
         {#if showModal}
             <div class="modal">
                 <div class="modal-content">
@@ -167,9 +173,6 @@ export async function addProtocol() {
                 </div>
             </div>
             {/if}
-
-    </div>
-
     <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {#each emergencyProtocols as emergency}
             <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">

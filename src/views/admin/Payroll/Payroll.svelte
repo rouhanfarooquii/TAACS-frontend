@@ -175,15 +175,16 @@
 
 </script>
 
+
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-  <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
-      Salary Information
-    </h3>
-    <br/>
-  </div>
-  <div class="access-control">
+  <div class="flex justify-end mb-4">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+      <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
+        Salary Information
+      </h3>
+    </div>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
+</div>
     {#if showModal}
       <div class="modal">
         <div class="modal-content">
@@ -264,10 +265,12 @@
         </div>
       </div>
     {/if}
-    <input type="search" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
+    <div class="flex items-center mb-4">
+      <input type="search" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
     {#if searchQuery}
       <span class="{searchResultColor}">{searchResultText}</span>
     {/if}
+    </div>
     <table>
       <thead>
         <tr>
@@ -310,5 +313,4 @@
       </tbody>
     </table>
     <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
-  </div>
 </div>

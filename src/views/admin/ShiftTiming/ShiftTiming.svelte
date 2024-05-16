@@ -96,19 +96,19 @@
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-  <div class="relative w-full px-4 max-w-full flex-grow flex-1 flex justify-between items-center">
-    <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
-      Shift Timings
-    </h3>
-    <div class="flex space-x-4">
-      <button class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150" on:click={deleteSelectedShifts}>
-        Delete
-      </button>
-      <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={navigateToAddShift}>
-        Add Shift
-      </button>
+  <div class="flex justify-end mb-4">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+      <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
+        Shift Timings
+      </h3>
     </div>
-  </div>
+    <button class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={deleteSelectedShifts}>
+      Delete
+    </button>
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={navigateToAddShift}>
+      Add Shift
+    </button>
+</div>
   <div class="flex items-center mb-4">
     <input type="search" class="bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
     {#if searchQuery}

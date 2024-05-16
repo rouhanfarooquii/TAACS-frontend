@@ -91,13 +91,6 @@ import { navigate } from 'svelte-routing';
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-
-  <div class="flex justify-start">
-    <button class="bg-blueGray-800 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToEmployee}>
-      Back
-    </button>
-  </div>
-
     <div class="left-section flex flex-col items-center"> <!-- Adjust this value according to your needs -->
       <!-- svelte-ignore a11y-img-redundant-alt -->
       <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
@@ -302,6 +295,9 @@ import { navigate } from 'svelte-routing';
 {/if}
 
 <div class="flex justify-end mb-4">
+  <button class="bg-blueGray-800 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToEmployee}>
+    Back
+  </button>
   <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
     Submit
   </button>
