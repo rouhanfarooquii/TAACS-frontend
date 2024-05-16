@@ -262,20 +262,18 @@
                     <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceIp}>
                     <span id="device-ip-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                </div>
-                {#if editModal}
-                  <div class="w-full lg:w-6/12 px-4">
-                    <div class="relative mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
-                        Status
-                      </label>
-                      <label class="switch">
-                        <input type="checkbox" id="status" class="hidden" bind:checked={status}>
-                        <span class="slider round"></span> 
-                      </label>
-                    </div>
+                  {#if editModal}
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
+                      Status
+                    </label>
+                    <label class="switch">
+                      <input type="checkbox" id="status" class="hidden" bind:checked={status}>
+                      <span class="slider round"></span> 
+                    </label>
                   </div>
-                {/if}
+                  {/if}
+                </div>
               </div>
               <div class="flex justify-end">
                 <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"  on:click={editModal ? updateDevice : addDevice}>

@@ -4,7 +4,26 @@
     const view1 = "../assets/img/icons8-eye-24.png"
     let selectedEmployee = null;
     let showModal = false;
+    let editModal = false;
     export let color = "light";
+
+      // let id: '';
+      // let name: '';
+      // let phoneNumber: '';
+      // let location: '';
+      // let department: '';
+      // let designation: '';
+      // let employeeType: '';
+      // let gender: '';
+      // let email: '';
+      // let address: ''; 
+      // let dateOfBirth: '';
+      // let cardIdNumber: '';
+      // let personalPassword: '';
+      // let fingerIndex1: '';
+      // let fingerIndex2: '';
+      // let isFingerAdded: '';
+      // let salary: '';
     
     let employees = [
     { id: 1, name: 'John Doe', phoneNumber: '123-456-7890', location: 'New York', department: 'HR', designation: 'Manager', employeeType: 'Full-time', gender: 'Male', email: 'john@example.com', address: '123 Main St, New York', dateOfBirth: '1980-05-15', cardIdNumber: 'A123456', personalPassword: 'password123', fingerIndex1: '123456', fingerIndex2: '654321', isFingerAdded: true, salary: 70000, active: true },
@@ -75,9 +94,31 @@
     navigate('/admin/addemployee');
   }
 
-  function editEmployee()
+  async function editEmployee()
     {
+      if (validateInputs()) {
+      if (selectedEmployee) {
+        try {
+          const response = await fetch(`/api/updateEmployee/${selectedEmployee.id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ active: active ? 'Yes' : 'No' })
+          });
 
+          if (response.ok) {
+            closeModal();
+          } else {
+            const errorData = await response.json();
+            alert(`Error: ${errorData.message}`);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred while updating the employee. Please try again.');
+        }
+      }
+    }
     }
 
     function viewEmployee(employeeId) {
@@ -85,10 +126,177 @@
     showModal = true;
 }
 
+function openEditModal(employeeId) {
+  selectedEmployee = employees.find(employee => employee.id === employeeId);
+  editModal = true
+  }
+
 function closeModal()
 {
   showModal = false;
+  editModal = false;
 }
+
+function validateInputs() {
+  let isValid = true;
+
+  // Name
+  if (!selectedEmployee.name) {
+    document.getElementById('name-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('name-error').style.display = 'none';
+  }
+
+  // Phone Number
+  if (!selectedEmployee.phoneNumber) {
+    document.getElementById('phone-number-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('phone-number-error').style.display = 'none';
+  }
+  // Phone Number Format
+if (!/^\d{10}$/.test(selectedEmployee.phoneNumber)) {
+  document.getElementById('phone-number-format-error').style.display = 'block';
+  isValid = false;
+} else {
+  document.getElementById('phone-number-format-error').style.display = 'none';
+}
+
+  // Location
+  if (!selectedEmployee.location) {
+    document.getElementById('location-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('location-error').style.display = 'none';
+  }
+
+  // Department
+  if (!selectedEmployee.department) {
+    document.getElementById('department-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('department-error').style.display = 'none';
+  }
+
+  // Designation
+  if (!selectedEmployee.designation) {
+    document.getElementById('designation-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('designation-error').style.display = 'none';
+  }
+
+  // Gender
+  if (!selectedEmployee.gender) {
+    document.getElementById('gender-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('gender-error').style.display = 'none';
+  }
+
+  // Email
+  if (!selectedEmployee.email) {
+    document.getElementById('email-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('email-error').style.display = 'none';
+  }
+
+  // Email Format
+if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)) {
+  document.getElementById('email-format-error').style.display = 'block';
+  isValid = false;
+} else {
+  document.getElementById('email-format-error').style.display = 'none';
+}
+
+  // Address
+  if (!selectedEmployee.address) {
+    document.getElementById('address-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('address-error').style.display = 'none';
+  }
+
+  // Date of Birth
+  if (!selectedEmployee.dateOfBirth) {
+    document.getElementById('date-of-birth-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('date-of-birth-error').style.display = 'none';
+  }
+
+  // Card ID
+  if (!selectedEmployee.cardIdNumber) {
+    document.getElementById('card-id-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('card-id-error').style.display = 'none';
+  }
+
+  // Personal Password
+  if (!selectedEmployee.personalPassword) {
+    document.getElementById('personal-password-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('personal-password-error').style.display = 'none';
+  }
+
+  // Finger Index 1
+  if (!selectedEmployee.fingerIndex1) {
+    document.getElementById('finger-index-1-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('finger-index-1-error').style.display = 'none';
+  }
+
+  // Finger Index 2
+  if (!selectedEmployee.fingerIndex2) {
+    document.getElementById('finger-index-2-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('finger-index-2-error').style.display = 'none';
+  }
+
+  // Finger Added
+  // Assuming it's always required, as it's a checkbox
+
+  // Salary
+  if (!selectedEmployee.salary) {
+    document.getElementById('salary-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('salary-error').style.display = 'none';
+  }
+
+  // Details
+  if (!selectedEmployee.details) {
+    document.getElementById('details-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('details-error').style.display = 'none';
+  }
+
+  // Active
+  if (!selectedEmployee.active) {
+    document.getElementById('active-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('active-error').style.display = 'none';
+  }
+
+  // Employee Type
+  if (!selectedEmployee.employeeType) {
+    document.getElementById('employee-type-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('employee-type-error').style.display = 'none';
+  }
+
+  return isValid;
+}
+
 
 </script>
 
@@ -169,7 +377,7 @@ function closeModal()
           <td class='table-data'>
             <div class="flex">
               <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" on:click={editEmployee}/>
+              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" on:click={openEditModal(employee.id)}/>
               <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" on:click={viewEmployee(employee.id)} />
             </div>
           </td>
@@ -321,7 +529,176 @@ function closeModal()
                 </div>
               </div>
               <div class="flex justify-end">
-                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                  Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/if}
+
+      {#if editModal}
+      <div class="modal">
+        <div class="modal-content">
+          <div class="rounded-t mb-0 px-4 py-10 border-0">
+            <div class="flex flex-wrap items-center">
+              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                <h3 class="font-semibold text-lg text-blueGray-700">
+                  Edit Employee
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div class="block w-full overflow-x-auto">
+            <div class="px-4 py-5 flex-auto">
+              <div class="flex">
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
+                      Name:
+                    </label>
+                    <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.name}>
+                    <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Phone Number:
+                    </label>
+                    <input type="text" id="phone-number" placeholder="Phone Number" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
+                    <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 10 digits</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Location:
+                    </label>
+                    <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.location}>
+                    <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
+                      Department:
+                    </label>
+                    <input type="text" id="department" placeholder="Department" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.department}>
+                    <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Designation:
+                    </label>
+                    <input type="text" id="designation" placeholder="Designation" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.designation}>
+                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Gender:
+                    </label>
+                    <input type="text" id="gender" placeholder="Gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.gender}>
+                    <span id="gender-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Email:
+                    </label>
+                    <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.email}>
+                    <span id="email-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    <span id="email-format-error" class="text-red-600 text-xs" style="display: none;">Email format incorrect</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Address:
+                    </label>
+                    <input type="text" id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.address}>
+                    <span id="address-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Date of birth:
+                    </label>
+                    <input type="date" id="date-of-birth" placeholder="Date of birth" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.dateOfBirth}>
+                    <span id="date-of-birth-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Card ID:
+                    </label>
+                    <input type="text" id="card-id" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.cardIdNumber}>
+                    <span id="card-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Personal Password:
+                    </label>
+                    <input type="text" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.personalPassword}>
+                    <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>                  
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Finger Index 1:
+                    </label>
+                    <input type="number" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex1}>
+                    <span id="finger-index-1-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Finger Index 2:
+                    </label>
+                    <input type="number" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex2}>
+                    <span id="finger-index-2-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Finger Added:
+                    </label>
+                    <label class="switch">
+                      <input type="checkbox" id="status" class="hidden" bind:checked={selectedEmployee.isFingerAdded}>
+                      <span class="slider round"></span> 
+                    </label>
+                    <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                </div>
+                <div class="w-full lg:w-6/12 px-4">
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Salary:
+                    </label>
+                    <input type="number" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.salary}>
+                    <span id="salary-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Details:
+                    </label>
+                    <input type="text" id="details" placeholder="Details" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.details}>
+                    <span id="details-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Active:
+                    </label>
+                    <input type="text" id="active" placeholder="Active" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.active}>
+                    <span id="active-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                      Employee Type:
+                    </label>
+                    <input type="text" id="employee-type" placeholder="Employee Type" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.employeeType}>
+                    <span id="employee-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"  on:click={editEmployee}>
+                  Update
+                </button>
+                <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                   Back
                 </button>
               </div>
