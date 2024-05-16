@@ -1,11 +1,12 @@
 <script>
-  import { reactive } from 'svelte';
-  import AssignNewSpaceModal from './AssignNewSpaceModal.svelte';
-  import Pagination from '../../../components/Pagination/Pagination.svelte';
+  import { onMount } from 'svelte';
+  import { onDestroy } from 'svelte';
+  import Pagination from "../../../components/Pagination/Pagination.svelte";
   import QrCode from './QRCode.svelte';
-  const edit1 = "../assets/img/icons8-edit-24.png"
-  const edit2 = "../assets/img/icons8-tick-24.png"
-  const delete1 = "../assets/img/icons8-delete-24.png"
+
+  const edit1 = "../assets/img/icons8-edit-24.png";
+  const edit2 = "../assets/img/icons8-tick-24.png";
+  const delete1 = "../assets/img/icons8-delete-24.png";
   export let color = "light";
 
   let spaces = [
@@ -31,19 +32,30 @@
     { id: '20', parkingSlot: 'FF-47', location: 'Aman Parking', carId: 'HJK-203', empName: 'Charlotte', carMake: 'Lamborghini Huracan', cardRfidNo: 478329473284 }
 ];
 
-  // State variable to track editing mode for each space
   let editingModes = {};
 
   function toggleEditingMode(spaceId) {
     editingModes[spaceId] = !editingModes[spaceId];
   }
 
-  function saveSalaryChanges(space) {
+  function saveSpaceChanges(space) {
     console.log("Saved changes for space:", space);
   }
 
-  function editSalary(space) {
+  function editSpace(space) {
     toggleEditingMode(space.id);
+  }
+
+  function validateEditInputs(space) {
+    if (!space.parkingSlot || !space.location || !space.carId || !space.empName || !space.carMake || !space.cardRfidNo) {
+      alert("All fields are required.");
+      return false;
+    }
+    return true;
+  }
+
+  function deleteSpace(space) {
+    spaces = spaces.filter(s => s.id !== space.id);
   }
 
   let selectedSpaces = new Set();
@@ -54,7 +66,7 @@
     } else {
       selectedSpaces.add(spaceId);
     }
-    selectedSpaces = new Set(selectedSpaces); // Force rerender
+    selectedSpaces = new Set(selectedSpaces);
   }
 
   function toggleSelectAll() {
@@ -63,7 +75,7 @@
     } else {
       spaces.forEach(space => selectedSpaces.add(space.id));
     }
-    selectedSpaces = new Set(selectedSpaces); // Force rerender
+    selectedSpaces = new Set(selectedSpaces);
   }
 
   let showModal = false;
@@ -80,6 +92,80 @@
     empName = '';
     carMake = '';
     cardRfidNo = '';
+    resetValidationErrors();
+  }
+
+  function resetValidationErrors() {
+    document.getElementById('parkingSlot-error').style.display = 'none';
+    document.getElementById('location-error').style.display = 'none';
+    document.getElementById('carId-error').style.display = 'none';
+    document.getElementById('empName-error').style.display = 'none';
+    document.getElementById('carMake-error').style.display = 'none';
+    document.getElementById('cardRfidNo-error').style.display = 'none';
+  }
+
+  function validateAddInputs() {
+    let isValid = true;
+
+    if (!parkingSlot) {
+      document.getElementById('parkingSlot-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('parkingSlot-error').style.display = 'none';
+    }
+
+    if (!location) {
+      document.getElementById('location-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('location-error').style.display = 'none';
+    }
+
+    if (!carId) {
+      document.getElementById('carId-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('carId-error').style.display = 'none';
+    }
+
+    if (!empName) {
+      document.getElementById('empName-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('empName-error').style.display = 'none';
+    }
+
+    if (!carMake) {
+      document.getElementById('carMake-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('carMake-error').style.display = 'none';
+    }
+
+    if (!cardRfidNo) {
+      document.getElementById('cardRfidNo-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('cardRfidNo-error').style.display = 'none';
+    }
+
+    return isValid;
+  }
+
+  async function addSpace() {
+    if (validateAddInputs()) {
+      const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot || space.carId === carId || space.cardRfidNo === cardRfidNo);
+
+      if (isDuplicate) {
+        alert('Parking slot, Car ID, and Card RFID No must be unique.');
+        return;
+      }
+
+      spaces.push({ id: Date.now().toString(), parkingSlot, location, carId, empName, carMake, cardRfidNo });
+      closeModal();
+    } else {
+      alert('Please fill in all fields.');
+    }
   }
 
   const spacesPerPage = 5;
@@ -116,39 +202,6 @@
   let empName = '';
   let carMake = '';
   let cardRfidNo = '';
-
-  async function addSpace() {
-    if (parkingSlot && location && carId && empName && carMake && cardRfidNo) {
-      try {
-        const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot);
-
-        if (isDuplicate) {
-          alert('Parking slot must be unique.');
-          return;
-        }
-
-        const response = await fetch('/api/addSpace', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ parkingSlot, location, carId, empName, carMake, cardRfidNo })
-        });
-
-        if (response.ok) {
-          navigate('/admin/parking');
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while adding the space. Please try again.');
-      }
-    } else {
-      alert('Please fill in all fields.');
-    }
-  }
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -177,50 +230,56 @@
               <div class="flex flex-wrap">
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="parkingSlot">
                       Parking Slot
                     </label>
                     <input type="text" id="parkingSlot" placeholder="Parking Slot" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={parkingSlot}>
+                    <span id="parkingSlot-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
                       Location
                     </label>
                     <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
+                    <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="carId">
                       Car ID
                     </label>
                     <input type="text" id="carId" placeholder="Car ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carId}>
+                    <span id="carId-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="empName">
                       Employee Name
                     </label>
                     <input type="text" id="empName" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={empName}>
+                    <span id="empName-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="carMake">
                       Car Make
                     </label>
                     <input type="text" id="carMake" placeholder="Car Make" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carMake}>
+                    <span id="carMake-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="cardRfidNo">
                       Card RFID No
                     </label>
                     <input type="text" id="cardRfidNo" placeholder="Card RFID No" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardRfidNo}>
+                    <span id="cardRfidNo-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
               </div>
@@ -287,7 +346,7 @@
             <td class="table-data" title={space.empName}>
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <input type="text"  class="salary-input1" bind:value={space.empName}>
+                  <input type="text" class="salary-input1" bind:value={space.empName}>
                 {:else}
                   <span>{space.empName}</span>
                 {/if}
@@ -308,12 +367,12 @@
             <td>
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                  <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(space); toggleEditingMode(space.id);}}>
+                  <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}>
                 {:else}
-                  <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(space)} />
+                  <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSpace(space)} />
                 {/if}
                 <div class="ml-4">
-                  <img src={delete1} alt="Delete" class="icon-button cursor-pointer">
+                  <img src={delete1} alt="Delete" class="icon-button cursor-pointer" on:click={() => deleteSpace(space)}>
                 </div>
               </div>
             </td>
