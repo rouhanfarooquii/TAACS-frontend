@@ -1,6 +1,7 @@
 <script>
 import { read } from '@popperjs/core';
 import { navigate } from 'svelte-routing';
+    import { bind } from 'svelte/internal';
 export let color = "light"
 let currentTime = new Date();
 
@@ -16,6 +17,19 @@ dateTo: '',
 reason: '',
 timeStamp: '',
 };
+
+let departmentDesignations = {
+    "Marketing": ["Marketing Manager", "Marketing Coordinator", "Brand Manager", "Digital Marketing Specialist"],
+    "Finance": ["Chief Financial Officer (CFO)", "Financial Analyst", "Accountant", "Finance Manager"],
+    "Human Resources": ["Human Resources Manager", "Recruitment Specialist", "Training Coordinator", "HR Assistant"],
+    "Information Technology": ["Chief Information Officer (CIO)", "IT Manager", "Systems Administrator", "Software Developer"],
+    "Sales": ["Sales Manager", "Sales Representative", "Account Executive", "Business Development Manager"],
+    "Operations": ["Operations Manager", "Operations Coordinator", "Supply Chain Manager", "Logistics Specialist"],
+    "Customer Service": ["Customer Service Manager", "Customer Support Representative", "Client Relations Specialist"],
+    "Legal": ["General Counsel", "Legal Assistant", "Paralegal", "Legal Counsel"],
+    "Administration": ["Office Manager", "Executive Assistant", "Administrative Assistant", "Office Coordinator"]
+};
+
       
 function handleSubmit() {
 request.timeStamp = currentTime;
@@ -27,7 +41,10 @@ function goBack() {
 navigate('/admin/leaverequest');
 console.log("Navigate to Leave Request screen");
 }
-    
+
+$: fromDate = new Date(request.dateFrom);
+$: toDate = new Date(request.dateTo);
+$: isDateValid = fromDate < toDate;
     
 </script>
     
@@ -44,23 +61,27 @@ console.log("Navigate to Leave Request screen");
         <div class="flex mb-4  ml-4 mr-4">
 
             <div class="relative mb-3">
-            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterExperience">Department:</label>
-            <select id="filterExperience" name="filterExperience" class="filter-input3" onchange="{() => applyFilters()}">
-                <option value="">All</option>
-                <option value="0-1">0-1 years</option>
-                <option value="1-3">1-3 years</option>
-                <option value="3-5">3-5 years</option>
-                <option value="5+">5+ years</option>
-            </select>
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">Department:</label>
+                <select id="department" name="department" class="filter-input1" bind:value="{request.department}">
+                    <option value="">Select Department</option>
+                    {#each Object.keys(departmentDesignations) as department}
+                        <option value={department}>{department}</option>
+                    {/each}
+                </select>
             </div>
-        
-            <div  class="relative mb-3 ml-10">
-            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Designation:</label>
-            <select id="filterActive" name="filterActive" class="filter-input3" onchange="{() => applyFilters()}">
-                <option value="">All</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-            </select>
+
+            <div class="relative mb-3 ml-6">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">Designation:</label>
+                <select id="designation" name="designation" class="filter-input1" bind:value="{request.designation}">
+                    <option value="">Select Designation</option>
+                    {#if request.department && departmentDesignations[request.department]}
+                        {#each departmentDesignations[request.department] as designation}
+                            <option value={designation}>{designation}</option>
+                        {/each}
+                    {:else}
+                        <option value="" disabled>No Designations</option>
+                    {/if}
+                </select>
             </div>
         </div>
     
@@ -71,7 +92,7 @@ console.log("Navigate to Leave Request screen");
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterEmployeeID">
                     Employee ID:
                 </label>
-                <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="filter-input3" placeholder="Employee ID" onchange="{() => applyFilters()}">
+                <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="filter-input3" placeholder="Employee ID" bind:value={request.id}>
                 </div>
 
                 <div class="relative mb-3">
@@ -112,6 +133,8 @@ console.log("Navigate to Leave Request screen");
             </div>
 
             </div>
+
+            
     </div>
     
     <div class="flex justify-end mb-4">

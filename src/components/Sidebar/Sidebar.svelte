@@ -312,40 +312,17 @@
         <li class="items-center">
           <a
             use:link
-            href="#"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 || location.href.indexOf('/admin/managecars') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            href="/admin/parking"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('parking')}
             >
             <i
-              class="fas fa-parking mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 || location.href.indexOf('/admin/managecars') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-parking mr-2 text-sm {location.href.indexOf('/admin/parking') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Parking
-            <i class="fas fa-angle-down ml-2 text-xs"></i>
           </a>
-          {#if showNestedMenuParking}
-            <ul class="mt-1 ml-4 border-t border-blueGray-200">
-              <li>
-                <a
-                use:link
-                  href="/admin/parking"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/parking') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                Assign Parking
-                </a>
-              </li>
-              <li>
-                <a
-                use:link
-                  href="/admin/managecars"
-                  class="text-xs uppercase py-2 font-semibold block {location.href.indexOf('/admin/managecars') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-                >
-                Manage Cars                  
-                </a>
-              </li>
-            </ul>
-          {/if}
         </li>
-
+        
         <li class="items-center">
           <a
             use:link
