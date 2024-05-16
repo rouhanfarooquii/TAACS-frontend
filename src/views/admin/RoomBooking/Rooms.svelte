@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   import { createPopper } from "@popperjs/core";
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
@@ -364,4 +364,4 @@
     </table>
     <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
-</div>
+</div> -->
