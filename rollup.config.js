@@ -3,6 +3,10 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
+import replace from '@rollup/plugin-replace';
+import json from '@rollup/plugin-json';
+import dotenv from 'dotenv';
+dotenv.config();
 // library that helps you import in svelte with
 // absolute paths, instead of
 // import Component  from "../../../../components/Component.svelte";
@@ -162,6 +166,15 @@ export default {
         css.write("bundle.css");
       },
     }),
+
+    replace({
+      preventAssignment: true, // Prevent accidental reassignment
+      include: ['src/**/*.{js,svelte}'], // Replace in Svelte and JS files
+      values: {
+        'BACKEND': JSON.stringify(process.env.BACKEND),
+      },
+    }),
+    json(),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
