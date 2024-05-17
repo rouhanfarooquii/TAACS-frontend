@@ -1,147 +1,138 @@
 <script>
-import { read } from '@popperjs/core';
-import { navigate } from 'svelte-routing';
-    import { bind } from 'svelte/internal';
-export let color = "light"
-let currentTime = new Date();
+    import { navigate } from 'svelte-routing';
+    export let color = "light";
 
-    
-let request = {
-id: '',
-name: '',
-email: '',
-department: '',
-designation: '',
-dateFrom: '',
-dateTo: '',
-reason: '',
-timeStamp: '',
-};
+    let currentTime = new Date();
 
-let departmentDesignations = {
-    "Marketing": ["Marketing Manager", "Marketing Coordinator", "Brand Manager", "Digital Marketing Specialist"],
-    "Finance": ["Chief Financial Officer (CFO)", "Financial Analyst", "Accountant", "Finance Manager"],
-    "Human Resources": ["Human Resources Manager", "Recruitment Specialist", "Training Coordinator", "HR Assistant"],
-    "Information Technology": ["Chief Information Officer (CIO)", "IT Manager", "Systems Administrator", "Software Developer"],
-    "Sales": ["Sales Manager", "Sales Representative", "Account Executive", "Business Development Manager"],
-    "Operations": ["Operations Manager", "Operations Coordinator", "Supply Chain Manager", "Logistics Specialist"],
-    "Customer Service": ["Customer Service Manager", "Customer Support Representative", "Client Relations Specialist"],
-    "Legal": ["General Counsel", "Legal Assistant", "Paralegal", "Legal Counsel"],
-    "Administration": ["Office Manager", "Executive Assistant", "Administrative Assistant", "Office Coordinator"]
-};
+    let request = {
+        id: '',
+        name: '',
+        email: '',
+        dateFrom: '',
+        dateTo: '',
+        reason: '',
+        timeStamp: '',
+        attachment: null
+    };
 
-      
-function handleSubmit() {
-request.timeStamp = currentTime;
-console.log(request);
-}
+    let fromDate, toDate;
+    let errors = {
+        id: '',
+        name: '',
+        email: '',
+        dateFrom: '',
+        dateTo: '',
+        reason: ''
+    };
 
-function goBack() {
-// Handle navigation logic here
-navigate('/profile');
-console.log("Navigate to Profile screen");
-}
+    function validate() {
+        fromDate = new Date(request.dateFrom);
+        toDate = new Date(request.dateTo);
 
-$: fromDate = new Date(request.dateFrom);
-$: toDate = new Date(request.dateTo);
-$: isDateValid = fromDate < toDate;
-    
+        errors.id = request.id === '' ? 'Employee ID is required.' : '';
+        errors.name = request.name === '' ? 'Name is required.' : '';
+        errors.email = request.email === '' ? 'Email is required.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(request.email) ? 'Email format is wrong.' : '';
+        errors.dateFrom = request.dateFrom === '' ? 'Start date is required.' : '';
+        errors.dateTo = request.dateTo === '' ? 'End date is required.' : fromDate > toDate ? 'Date To is before Date From.' : '';
+        errors.reason = request.reason === '' ? 'Reason is required.' : '';
+
+        return !Object.values(errors).some(error => error !== '');
+    }
+
+    function handleSubmit() {
+        if (!validate()) {
+            return;
+        }
+
+        request.timeStamp = currentTime;
+        console.log(request);
+    }
+
+    function goBack() {
+        navigate('/profile');
+        console.log("Navigate to Profile screen");
+    }
+
+    function handleFileUpload(event) {
+        request.attachment = event.target.files[0];
+        console.log('File attached:', request.attachment);
+    }
 </script>
-    
-    <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-        <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-            <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}"
-            >
+
+<div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+    <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+        <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
             Leave Requests
-            </h3>
+        </h3>
+    </div>
+    <br>
+
+    <!-- Filters Row 1 -->
+    <div class="flex justify-between mb-4 ml-4 mr-4">
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.id ? 'label-required' : ''}" for="filterEmployeeID">
+                Employee ID:
+            </label>
+            <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="custom-filter-input {errors.id ? 'input-error' : ''}" placeholder="Employee ID" bind:value={request.id}>
+            {#if errors.id}<p class="text-red-500 text-xs italic">{errors.id}</p>{/if}
         </div>
-        <br>
 
-        <!-- Filters Row 2 -->
-        <div class="flex mb-4  ml-4 mr-4">
-
-            <div class="relative mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">Department:</label>
-                <select id="department" name="department" class="filter-input1" bind:value="{request.department}">
-                    <option value="">Select Department</option>
-                    {#each Object.keys(departmentDesignations) as department}
-                        <option value={department}>{department}</option>
-                    {/each}
-                </select>
-            </div>
-
-            <div class="relative mb-3 ml-6">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">Designation:</label>
-                <select id="designation" name="designation" class="filter-input1" bind:value="{request.designation}">
-                    <option value="">Select Designation</option>
-                    {#if request.department && departmentDesignations[request.department]}
-                        {#each departmentDesignations[request.department] as designation}
-                            <option value={designation}>{designation}</option>
-                        {/each}
-                    {:else}
-                        <option value="" disabled>No Designations</option>
-                    {/if}
-                </select>
-            </div>
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.name ? 'label-required' : ''}" for="filterName">Name:</label>
+            <input type="text" id="filterName" name="filterName" class="custom-filter-input {errors.name ? 'input-error' : ''}" placeholder="Name" bind:value={request.name}>
+            {#if errors.name}<p class="text-red-500 text-xs italic">{errors.name}</p>{/if}
         </div>
-    
-            <!-- Filters Row 1 -->
-            <div class="flex justify-between mb-4  ml-4 mr-4">
 
-                <div class="relative mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterEmployeeID">
-                    Employee ID:
-                </label>
-                <input type="text" id="filterEmployeeID" name="filterEmployeeID" class="filter-input" placeholder="Employee ID" bind:value={request.id}>
-                </div>
-
-                <div class="relative mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterName">Name:</label>
-                <input type="text" id="filterName" name="filterName" class="filter-input" placeholder="Name" bind:value="{request.name}">
-                </div>
-
-                <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterPosition">Email:</label>
-                    <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" bind:value="{request.email}">
-                </div>
-
-            </div>
-            
-            <!-- Filters Row 3 -->
-            <div class="flex justify-between mb-4  ml-4 mr-4">
-                <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                        From:
-                    </label>
-                    <input type="datetime-local" id="dateFrom" placeholder="Date & Time From" class="filter-input" bind:value={request.dateFrom}>
-                </div>
-
-                <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                        To:
-                    </label>
-                    <input type="datetime-local" id="dateTo" placeholder="Date & Time To" class="filter-input" bind:value={request.dateTo}>
-                </div>
-                <div>
-
-                <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="reason">
-                        Reason:
-                    </label>
-                    <textarea id="reason" name="reason" class="filter-input resize-none" placeholder="Reason:" bind:value="{request.reason}"></textarea>
-                </div>
-            </div>
-
-            </div>
-
-            
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.email ? 'label-required' : ''}" for="filterPosition">Email:</label>
+            <input type="text" id="filterPosition" name="filterPosition" class="custom-filter-input {errors.email ? 'input-error' : ''}" placeholder="Email" bind:value={request.email}>
+            {#if errors.email}<p class="text-red-500 text-xs italic">{errors.email}</p>{/if}
+        </div>
     </div>
     
-    <div class="flex justify-end mb-4">
-      <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
+    <!-- Filters Row 2 -->
+    <div class="flex justify-between mb-4 ml-4 mr-4">
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateFrom ? 'label-required' : ''}" for="dateFrom">
+                From:
+            </label>
+            <input type="datetime-local" id="dateFrom" placeholder="Date & Time From" class="custom-filter-input {errors.dateFrom ? 'input-error' : ''}" bind:value={request.dateFrom}>
+            {#if errors.dateFrom}<p class="text-red-500 text-xs italic">{errors.dateFrom}</p>{/if}
+        </div>
+
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateTo ? 'label-required' : ''}" for="dateTo">
+                To:
+            </label>
+            <input type="datetime-local" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
+            {#if errors.dateTo}<p class="text-red-500 text-xs italic">{errors.dateTo}</p>{/if}
+        </div>
+        
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.reason ? 'label-required' : ''}" for="reason">
+                Reason:
+            </label>
+            <textarea id="reason" name="reason" class="custom-filter-input resize-none {errors.reason ? 'input-error' : ''}" placeholder="Reason:" bind:value={request.reason}></textarea>
+            {#if errors.reason}<p class="text-red-500 text-xs italic">{errors.reason}</p>{/if}
+        </div>
+    </div>
+
+    <!-- File Attachment -->
+    <div class="flex justify-between mb-4 ml-4 mr-4">
+        <div class="relative mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="fileAttachment">
+                Attach File:
+            </label>
+            <input type="file" id="fileAttachment" name="fileAttachment" class="custom-filter-input" accept=".pdf, .jpg, .jpeg, .png" on:change={handleFileUpload}>
+        </div>
+    </div>
+</div>
+
+<div class="flex justify-end mb-4">
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
         Submit
-      </button>
-      <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={goBack}>
+    </button>
+    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={goBack}>
         Cancel
-      </button>
-    </div>
+    </button>
+</div>
