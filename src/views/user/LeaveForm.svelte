@@ -38,8 +38,8 @@ console.log(request);
 
 function goBack() {
 // Handle navigation logic here
-navigate('/admin/leaverequest');
-console.log("Navigate to Leave Request screen");
+navigate('/profile');
+console.log("Navigate to Profile screen");
 }
 
 $: fromDate = new Date(request.dateFrom);

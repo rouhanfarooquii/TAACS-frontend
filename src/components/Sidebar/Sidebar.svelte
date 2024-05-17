@@ -236,11 +236,11 @@
           <a
             use:link
             href="/admin/leaverequest"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 || location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaverequest') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
             on:click|preventDefault={() => toggleNestedMenu('leaverequest')}
             >
             <i
-              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 || location.href.indexOf('/admin/leaveform') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-table mr-2 text-sm {location.href.indexOf('/admin/leaverequest') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Leave Requests
           </a>
