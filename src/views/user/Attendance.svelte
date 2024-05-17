@@ -95,7 +95,7 @@
       const attendance = get(attendanceData).find(
         (att) => att.date === currentDate.toISOString().split('T')[0]
       );
-      days.push({ date: currentDate, currentMonth: true, attendance: dayOfWeek === 0 || dayOfWeek === 6 ? null : attendance });
+      days.push({ date: currentDate, currentMonth: true, attendance: attendance });
     }
 
     // Adding empty slots for days after the last day of the current month
@@ -193,24 +193,24 @@
                       Next
                     </button>
                   </div>
-                  <div class="calendar">
+                  <div class="attendance-calendar">
                     {#each daysOfWeek as day}
-                      <div class="header">{day}</div>
+                      <div class="attendance-header">{day}</div>
                     {/each}
                     {#each getDaysInMonth(currentMonthDate) as { date, currentMonth, attendance }}
                       {#if date}
-                        <div class="calendar-day rounded {date.getDay() === 6 || date.getDay() === 0 ? 'weekend' : ''} {currentMonth ? '' : 'not-current-month'} {attendance ? attendance.status.toLowerCase() : ''}">
+                        <div class="attendance-day rounded {date.getDay() === 6 || date.getDay() === 0 ? 'weekend' : ''} {currentMonth ? '' : 'not-current-month'} {attendance ? attendance.status.toLowerCase() : ''}">
                           {date.getDate()}
                         </div>
                       {:else}
-                        <div class="calendar-day empty"></div>
+                        <div class="attendance-day empty"></div>
                       {/if}
                     {/each}
                   </div>
-                  <div class="legend mt-4">
-                    <span class="legend-item present"></span> Present
-                    <span class="legend-item absent"></span> Absent
-                    <span class="legend-item weekend"></span> Weekend
+                  <div class="attendance-legend mt-4">
+                    <span class="attendance-legend-item present"></span> Present
+                    <span class="attendance-legend-item absent"></span> Absent
+                    <span class="attendance-legend-item weekend"></span> Weekend
                   </div>
                 </div>
               </div>
