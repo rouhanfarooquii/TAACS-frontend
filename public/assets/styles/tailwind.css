@@ -1333,6 +1333,11 @@ select {
   background-color: rgba(239, 68, 68, var(--tw-bg-opacity));
 }
 
+.bg-green-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(0, 150, 50, var(--tw-bg-opacity)); /* Darker shade of green */
+}
+
 .bg-red-600 {
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity));
@@ -4266,6 +4271,10 @@ button {
   margin-left: 19.5rem;
 }
 
+.ml-14 {
+  margin-left: 9rem;
+}
+
 .border-green-600 {
   --tw-border-opacity: 1;
   border-color: rgba(72, 187, 120, var(--tw-border-opacity));
@@ -4531,4 +4540,20 @@ canvas{
 .dropbtn:focus {
     outline: none;
 }
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+}
+.calendar-day {
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
+.present { background-color: #d4edda; }
+.late { background-color: #fff3cd; }
+.absent { background-color: #f8d7da; }
 

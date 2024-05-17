@@ -24,7 +24,6 @@
   import AddShift from "../views/admin/ShiftTiming/AddShift.svelte";
   import VisitorsList from "../views/admin/Visitors/VisitorsList.svelte";
   import Bonus from "../views/admin/Payroll/Bonus.svelte";
-  import LeaveForm from "../views/admin/LeaveRequest/LeaveForm.svelte";
   import Location from "../views/admin/Location/Location.svelte";
   import Hierarchy from "../views/admin/Hierarchy/Hierarchy.svelte";
 
@@ -57,7 +56,6 @@
         <Route path="visitorslist" component="{VisitorsList}"/>
         <Route path="bonus" component="{Bonus}"/>
         <Route path="rooms" component="{Rooms}"/>
-        <Route path="leaveform" component="{LeaveForm}"/>
         <Route path="location" component="{Location}"/>
         <Route path="hierarchy" component="{Hierarchy}"/>
       </Router>

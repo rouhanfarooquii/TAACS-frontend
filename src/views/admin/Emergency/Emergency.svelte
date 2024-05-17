@@ -151,21 +151,7 @@ window.onclick = function(event) {
                                         </label>
                                         <textarea id="description" placeholder="Enter Description" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={description}></textarea>
                                     </div>
-                                    <div class="relative mb-3">
-                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
-                                            Doors:
-                                        </label>
-                                        <div class="flex items-center">
-                                            <label for="alwaysOpen" class="mr-2">
-                                                <input type="radio" id="alwaysOpen" name="doorStatus" value="Always Open" class="mr-1" bind:group={doors} />
-                                                Open
-                                            </label>
-                                            <label for="alwaysClosed">
-                                                <input type="radio" id="alwaysClosed" name="doorStatus" value="Always Closed" class="mr-1" bind:group={doors} />
-                                                Closed
-                                            </label>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="w-full lg:w-6/12 px-4">
                                     <div class="relative mb-3">
@@ -180,6 +166,21 @@ window.onclick = function(event) {
                                                 </div>
                                                 {/each}
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
+                                            Doors:
+                                        </label>
+                                        <div class="flex items-center">
+                                            <label for="alwaysOpen" class="mr-2">
+                                                <input type="radio" id="alwaysOpen" name="doorStatus" value="Always Open" class="mr-1" bind:group={doors} />
+                                                Open
+                                            </label>
+                                            <label for="alwaysClosed">
+                                                <input type="radio" id="alwaysClosed" name="doorStatus" value="Always Closed" class="mr-1" bind:group={doors} />
+                                                Closed
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -212,7 +213,7 @@ window.onclick = function(event) {
                     <button
                         data-id="{emergency.id}" 
                         onclick={() => handleActivate(emergency)}
-                        class="bg-green-500 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-sm px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2"
+                        class="bg-green-600 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2"
                         disabled={emergency.isActive}
                     >
                         Activate
@@ -220,7 +221,7 @@ window.onclick = function(event) {
                     <button 
                         data-id="{emergency.id}" 
                         onclick={() => handleDeactivate(emergency)}
-                        class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-sm px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                        class="bg-red-600 text-white active:bg-red-800 uppercase font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                         disabled={!emergency.isActive}
                     >
                         Deactivate

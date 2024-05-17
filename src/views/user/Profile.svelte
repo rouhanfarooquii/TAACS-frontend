@@ -16,7 +16,7 @@
   `;
 
   function navigatetoLeave() {
-    navigate('/user/leaveform');
+    navigate('/admin/leaveform');
   }  
   function navigatetoAttendance() {
     navigate('/user/attendance');

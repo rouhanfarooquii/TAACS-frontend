@@ -6,24 +6,6 @@
     let showModal = false;
     let editModal = false;
     export let color = "light";
-
-      // let id: '';
-      // let name: '';
-      // let phoneNumber: '';
-      // let location: '';
-      // let department: '';
-      // let designation: '';
-      // let employeeType: '';
-      // let gender: '';
-      // let email: '';
-      // let address: ''; 
-      // let dateOfBirth: '';
-      // let cardIdNumber: '';
-      // let personalPassword: '';
-      // let fingerIndex1: '';
-      // let fingerIndex2: '';
-      // let isFingerAdded: '';
-      // let salary: '';
     
     let employees = [
     { id: 1, name: 'John Doe', phoneNumber: '123-456-7890', location: 'New York', department: 'HR', designation: 'Manager', employeeType: 'Full-time', gender: 'Male', email: 'john@example.com', address: '123 Main St, New York', dateOfBirth: '1980-05-15', cardIdNumber: 'A123456', personalPassword: 'password123', fingerIndex1: '123456', fingerIndex2: '654321', isFingerAdded: true, salary: 70000, active: true },
@@ -47,8 +29,6 @@
     { id: 19, name: 'William Jackson', phoneNumber: '555-666-7777', location: 'Dallas', department: 'HR', designation: 'Generalist', employeeType: 'Full-time', gender: 'Male', email: 'william@example.com', address: '567 Oak St, Dallas', dateOfBirth: '1973-02-08', cardIdNumber: 'S456789', personalPassword: 'password1234', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 60000, active: false },
     { id: 20, name: 'Amy Walker', phoneNumber: '888-777-6666', location: 'Miami', department: 'Marketing', designation: 'Specialist', employeeType: 'Full-time', gender: 'Female', email: 'amy@example.com', address: '890 Palm St, Miami', dateOfBirth: '1987-07-15', cardIdNumber: 'T567890', personalPassword: 'pass890', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 55000, active: true }
 ];
- // Replace with actual employee data
-  
 
   let filters = {
     search: '',
@@ -156,7 +136,7 @@ function validateInputs() {
     document.getElementById('phone-number-error').style.display = 'none';
   }
   // Phone Number Format
-if (!/^\d{10}$/.test(selectedEmployee.phoneNumber)) {
+if (!/^\d{11}$/.test(selectedEmployee.phoneNumber)) {
   document.getElementById('phone-number-format-error').style.display = 'block';
   isValid = false;
 } else {
@@ -243,39 +223,12 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
     document.getElementById('personal-password-error').style.display = 'none';
   }
 
-  // Finger Index 1
-  if (!selectedEmployee.fingerIndex1) {
-    document.getElementById('finger-index-1-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('finger-index-1-error').style.display = 'none';
-  }
-
-  // Finger Index 2
-  if (!selectedEmployee.fingerIndex2) {
-    document.getElementById('finger-index-2-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('finger-index-2-error').style.display = 'none';
-  }
-
-  // Finger Added
-  // Assuming it's always required, as it's a checkbox
-
   // Salary
   if (!selectedEmployee.salary) {
     document.getElementById('salary-error').style.display = 'block';
     isValid = false;
   } else {
     document.getElementById('salary-error').style.display = 'none';
-  }
-
-  // Details
-  if (!selectedEmployee.details) {
-    document.getElementById('details-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('details-error').style.display = 'none';
   }
 
   // Active
@@ -296,8 +249,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
 
   return isValid;
 }
-
-
 </script>
 
 
@@ -345,8 +296,8 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
 
   <!-- Buttons -->
   <div class="flex justify-end mb-1">
-    <button on:click={applyFilters} class="bg-green-500 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2">Apply</button>
-    <button on:click={clearFilters} class="bg-red-400 active:bg-red-500 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">Clear</button>
+    <button on:click={applyFilters} class="bg-green-600 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2">Apply</button>
+    <button on:click={clearFilters} class="bg-red-600 text-white active:bg-red-800 uppercase font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">Clear</button>
   </div>
 
   <!-- Divider -->
@@ -360,7 +311,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Employee</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designation</th>
-        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Details</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Active</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Action</th>
       </tr>
@@ -372,12 +322,12 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
           <td class="table-data">{employee.name}</td>
           <td class="table-data">{employee.department}</td>
           <td class="table-data">{employee.designation}</td>
-          <td class="table-data">{employee.details}</td>
           <td class="table-data">{employee.active ? 'Yes' : 'No'}</td>
           <td class='table-data'>
             <div class="flex">
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" on:click={openEditModal(employee.id)}/>
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
               <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" on:click={viewEmployee(employee.id)} />
             </div>
           </td>
@@ -510,12 +460,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                      Details:
-                    </label>
-                    <p>{selectedEmployee.details}</p>
-                  </div>
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                       Active:
                     </label>
                     <p>{selectedEmployee.active ? 'Yes' : 'No'}</p>
@@ -568,7 +512,7 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
                     </label>
                     <input type="text" id="phone-number" placeholder="Phone Number" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
                     <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                    <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 10 digits</span>
+                    <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
@@ -643,14 +587,12 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
                       Finger Index 1:
                     </label>
                     <input type="number" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex1}>
-                    <span id="finger-index-1-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                       Finger Index 2:
                     </label>
                     <input type="number" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex2}>
-                    <span id="finger-index-2-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
@@ -670,13 +612,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
                     </label>
                     <input type="number" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.salary}>
                     <span id="salary-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                  </div>
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                      Details:
-                    </label>
-                    <input type="text" id="details" placeholder="Details" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.details}>
-                    <span id="details-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">

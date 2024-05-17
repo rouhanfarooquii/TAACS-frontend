@@ -16,7 +16,7 @@
   `;
 
   function navigatetoLeave() {
-    navigate('/user/leaveform');
+    navigate('/admin/leaveform');
   }  
   function navigatetoAttendance() {
     navigate('/user/attendance');
@@ -71,22 +71,6 @@
                     src="{team2}"
                     class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                   />
-                </div>
-              </div>
-              <div
-                class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center"
-              >
-                <div class="py-6 px-3 mt-32 sm:mt-0">
-                  <button
-                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={navigatetoAttendance}>
-                    View Attendance
-                  </button>
-                  <button
-                  class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                  type="button" on:click={navigatetoLeave}>
-                    Request A Leave
-                  </button>
                 </div>
               </div>
               <div class="w-full lg:w-4/12 px-4 lg:order-1">

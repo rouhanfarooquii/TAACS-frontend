@@ -22,6 +22,10 @@
       });
     }
   };
+
+  function navigatetoProfile() {
+    navigate('/user/Profile');
+  }
 </script>
 
 <div>
