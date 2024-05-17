@@ -1,27 +1,64 @@
 <script>
-  // core components
+  // Core components
   import { navigate } from 'svelte-routing';
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
   import Footer from "components/Footers/Footer.svelte";
+  import { writable } from 'svelte/store';
 
   const team2 = "/assets/img/10.jpg";
-  export let location;
-
-  let employee= [    
-    { id: 12, name: 'Lisa Nguyen', phoneNumber: '777-222-3333', location: 'Phoenix', department: 'Operations', designation: 'Supervisor', employeeType: 'Full-time', gender: 'Female', email: 'lisa@example.com', address: '901 Maple St, Phoenix', dateOfBirth: '1986-09-10', cardIdNumber: 'L789012', personalPassword: 'mypassword5678', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 60000, active: false },
-  ]
 
   let gradientBackground = `
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   `;
 
-  function navigatetoLeave() {
-    navigate('/admin/leaveform');
-  }  
-  function navigatetoAttendance() {
-    navigate('/user/attendance');
+  let attendanceCount = 82;
+  let absenceCount = 10;
+  let lateArrivalCount = 4;
+
+  let currentMonthDate = new Date();
+  $: currentMonth = currentMonthDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  let attendanceData = writable([
+    { date: '2024-05-01', status: 'Present' },
+    { date: '2024-05-02', status: 'Late' },
+    { date: '2024-05-03', status: 'Absent' },
+    // Add more attendance data as needed
+  ]);
+
+  function changeMonth(offset) {
+    currentMonthDate.setMonth(currentMonthDate.getMonth() + offset);
+    currentMonthDate = new Date(currentMonthDate);  // Ensure reactivity
   }
 
+  function getDaysInMonth(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const numDays = new Date(year, month + 1, 0).getDate();
+    const days = [];
+
+    // Adjusting the first day of the week to start from Monday
+    const firstDayOfWeek = (new Date(year, month, 1).getDay() + 6) % 7;
+
+    // Adding empty slots for days before the first day of the current month
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      days.push({ date: null, currentMonth: false });
+    }
+
+    // Adding days of the current month
+    for (let i = 1; i <= numDays; i++) {
+      days.push({ date: new Date(year, month, i), currentMonth: true });
+    }
+
+    // Adding empty slots for days after the last day of the current month
+    const lastDayOfWeek = (new Date(year, month, numDays).getDay() + 6) % 7;
+    for (let i = lastDayOfWeek + 1; i < 7; i++) {
+      days.push({ date: null, currentMonth: false });
+    }
+
+    return days;
+  }
+
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 </script>
 
 <div>
@@ -68,7 +105,7 @@
                 <div class="relative">
                   <img
                     alt="..."
-                    src="{team2}"
+                    src={team2}
                     class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                   />
                 </div>
@@ -79,7 +116,7 @@
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      82
+                      {attendanceCount}
                     </span>
                     <span class="text-sm text-blueGray-400">Attendance</span>
                   </div>
@@ -87,7 +124,7 @@
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      10
+                      {absenceCount}
                     </span>
                     <span class="text-sm text-blueGray-400">Absences</span>
                   </div>
@@ -95,51 +132,40 @@
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      4
+                      {lateArrivalCount}
                     </span>
                     <span class="text-sm text-blueGray-400">Late Arrivals</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="text-center mt-12">
-              <h3
-                class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2"
-              >
-                Jenna Stones
-              </h3>
-              <div
-                class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase"
-              >
-                <i class="fas fa-id-card mr-2 text-lg text-blueGray-400"></i>
-                Los Angeles, California
-              </div>
-              <div class="mb-2 text-blueGray-600 mt-10">
-                <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                Solution Manager - Creative Tim Officer
-              </div>
-              <div class="mb-2 text-blueGray-600">
-                <i class="fas fa-university mr-2 text-lg text-blueGray-400"></i>
-                University of Computer Science
-              </div>
-            </div>
             <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
               <div class="flex flex-wrap justify-center">
                 <div class="w-full lg:w-9/12 px-4">
-                  <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                    An artist of considerable range, Jenna the name taken by
-                    Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                    performs and records all of his own music, giving it a warm,
-                    intimate feel with a solid groove structure. An artist of
-                    considerable range.
-                  </p>
-                  <a
-                    href="#pablo"
-                    on:click={(e) => e.preventDefault()}
-                    class="font-normal custom-text"
-                  >
-                    Show more
-                  </a>
+                  <h3 class="text-2xl font-semibold leading-normal mb-2 text-blueGray-700">View Attendance</h3>
+                  <div class="flex justify-between mb-4">
+                    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => changeMonth(-1)}>
+                      Previous
+                    </button>
+                    <span class="text-lg font-semibold leading-normal mb-2 text-blueGray-700">{currentMonth}</span>
+                    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => changeMonth(1)}>
+                      Next
+                    </button>
+                  </div>
+                  <div class="calendar">
+                    {#each daysOfWeek as day}
+                      <div class="header">{day}</div>
+                    {/each}
+                    {#each getDaysInMonth(currentMonthDate) as { date, currentMonth }}
+                      {#if date}
+                        <div class="calendar-day rounded {date.getDay() === 6 || date.getDay() === 0 ? 'weekend' : ''} {currentMonth ? '' : 'not-current-month'}">
+                          {date.getDate()}
+                        </div>
+                      {:else}
+                        <div class="calendar-day empty"></div>
+                      {/if}
+                    {/each}
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,3 +176,4 @@
   </main>
   <Footer />
 </div>
+

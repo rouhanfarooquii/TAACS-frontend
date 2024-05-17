@@ -4541,18 +4541,6 @@ canvas{
     outline: none;
 }
 
-.calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1rem;
-  padding: 1rem;
-}
-.calendar-day {
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  text-align: center;
-}
 .present { background-color: #d4edda; }
 .late { background-color: #fff3cd; }
 .absent { background-color: #f8d7da; }
@@ -4580,4 +4568,36 @@ canvas{
 
 .input-error {
   border-color: red;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.header {
+  font-weight: bold;
+  text-align: center;
+}
+
+.calendar-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  border: 1px solid #ccc;
+}
+
+.weekend {
+  background-color: #f0f0f0;
+}
+
+.not-current-month {
+  color: #ccc;
+}
+
+.empty {
+  background: none;
+  border: none;
 }
