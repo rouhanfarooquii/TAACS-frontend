@@ -3,7 +3,7 @@
   import { navigate } from 'svelte-routing';
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
   import Footer from "components/Footers/Footer.svelte";
-  import { writable } from 'svelte/store';
+  import { writable, get } from 'svelte/store';
 
   const team2 = "/assets/img/10.jpg";
 
@@ -11,23 +11,67 @@
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   `;
 
-  let attendanceCount = 82;
-  let absenceCount = 10;
-  let lateArrivalCount = 4;
-
   let currentMonthDate = new Date();
   $: currentMonth = currentMonthDate.toLocaleString('default', { month: 'long', year: 'numeric' });
 
   let attendanceData = writable([
     { date: '2024-05-01', status: 'Present' },
-    { date: '2024-05-02', status: 'Late' },
+    { date: '2024-05-02', status: 'Present' },
     { date: '2024-05-03', status: 'Absent' },
-    // Add more attendance data as needed
+    { date: '2024-05-06', status: 'Present' },
+    { date: '2024-05-07', status: 'Present' },
+    { date: '2024-05-08', status: 'Absent' },
+    { date: '2024-05-09', status: 'Present' },
+    { date: '2024-05-10', status: 'Present' },
+    { date: '2024-05-13', status: 'Absent' },
+    { date: '2024-05-14', status: 'Present' },
+    { date: '2024-05-15', status: 'Present' },
+    { date: '2024-05-16', status: 'Absent' },
+    { date: '2024-05-17', status: 'Present' },
+    { date: '2024-05-20', status: 'Present' },
+    { date: '2024-05-21', status: 'Absent' },
+    { date: '2024-05-22', status: 'Present' },
+    { date: '2024-05-23', status: 'Present' },
+    { date: '2024-05-24', status: 'Absent' },
+    { date: '2024-05-27', status: 'Present' },
+    { date: '2024-05-28', status: 'Present' },
+    { date: '2024-05-29', status: 'Absent' },
+    { date: '2024-05-30', status: 'Present' },
+    { date: '2024-05-31', status: 'Absent' }
   ]);
+
+  $: { 
+    const { presentCount, absentCount } = getAttendanceCounts(currentMonthDate);
+    attendanceCount = presentCount;
+    absenceCount = absentCount;
+  }
+
+  let attendanceCount = 0;
+  let absenceCount = 0;
 
   function changeMonth(offset) {
     currentMonthDate.setMonth(currentMonthDate.getMonth() + offset);
     currentMonthDate = new Date(currentMonthDate);  // Ensure reactivity
+  }
+
+  function getAttendanceCounts(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    let presentCount = 0;
+    let absentCount = 0;
+
+    get(attendanceData).forEach((attendance) => {
+      const attendanceDate = new Date(attendance.date);
+      if (attendanceDate.getFullYear() === year && attendanceDate.getMonth() === month) {
+        if (attendance.status === 'Present') {
+          presentCount++;
+        } else if (attendance.status === 'Absent') {
+          absentCount++;
+        }
+      }
+    });
+
+    return { presentCount, absentCount };
   }
 
   function getDaysInMonth(date) {
@@ -46,7 +90,12 @@
 
     // Adding days of the current month
     for (let i = 1; i <= numDays; i++) {
-      days.push({ date: new Date(year, month, i), currentMonth: true });
+      const currentDate = new Date(year, month, i);
+      const dayOfWeek = currentDate.getDay();
+      const attendance = get(attendanceData).find(
+        (att) => att.date === currentDate.toISOString().split('T')[0]
+      );
+      days.push({ date: currentDate, currentMonth: true, attendance: dayOfWeek === 0 || dayOfWeek === 6 ? null : attendance });
     }
 
     // Adding empty slots for days after the last day of the current month
@@ -128,14 +177,6 @@
                     </span>
                     <span class="text-sm text-blueGray-400">Absences</span>
                   </div>
-                  <div class="lg:mr-4 p-3 text-center">
-                    <span
-                      class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
-                    >
-                      {lateArrivalCount}
-                    </span>
-                    <span class="text-sm text-blueGray-400">Late Arrivals</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -156,15 +197,20 @@
                     {#each daysOfWeek as day}
                       <div class="header">{day}</div>
                     {/each}
-                    {#each getDaysInMonth(currentMonthDate) as { date, currentMonth }}
+                    {#each getDaysInMonth(currentMonthDate) as { date, currentMonth, attendance }}
                       {#if date}
-                        <div class="calendar-day rounded {date.getDay() === 6 || date.getDay() === 0 ? 'weekend' : ''} {currentMonth ? '' : 'not-current-month'}">
+                        <div class="calendar-day rounded {date.getDay() === 6 || date.getDay() === 0 ? 'weekend' : ''} {currentMonth ? '' : 'not-current-month'} {attendance ? attendance.status.toLowerCase() : ''}">
                           {date.getDate()}
                         </div>
                       {:else}
                         <div class="calendar-day empty"></div>
                       {/if}
                     {/each}
+                  </div>
+                  <div class="legend mt-4">
+                    <span class="legend-item present"></span> Present
+                    <span class="legend-item absent"></span> Absent
+                    <span class="legend-item weekend"></span> Weekend
                   </div>
                 </div>
               </div>
@@ -176,4 +222,3 @@
   </main>
   <Footer />
 </div>
-
