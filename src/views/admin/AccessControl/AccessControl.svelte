@@ -177,10 +177,12 @@
     <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow mr-1 hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
   <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
 </div>
-  <div class="flex items-center mb-4">
-    <input type="text" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery} />
+<div class="flex justify-between">
+  <div class="relative mb-3">
+    <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
   </div>
-  <p class="text-sm {searchResultColor}">{searchResultText}</p>
+</div>
+<p class="text-sm {searchResultColor}">{searchResultText}</p>  
   {#if showModal}
   <div class="modal">
     <div class="modal-content">

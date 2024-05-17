@@ -434,21 +434,6 @@
             Profile Page
           </a>
         </li>
-
-        <li class="items-center">
-          <a
-            use:link
-            href="/admin/leaveform"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/leaveform') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-            on:click|preventDefault={() => toggleNestedMenu('leaveform')}
-            >
-            <i
-              class="fas fa-users mr-2 text-sm {location.href.indexOf('/admin/leaveform') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
-            ></i>
-            Leave Form
-          </a>
-        </li>
-
       </ul>
 
       <!-- <hr class="my-4 md:min-w-full" />

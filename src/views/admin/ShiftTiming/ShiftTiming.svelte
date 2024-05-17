@@ -47,11 +47,13 @@
   function viewShift(id) {
     shiftSelected = shifts.find(shift => shift.id === id);
     showModal = true;
+    console.log('Shift selected for view:', shiftSelected);
   }
 
   function openEditModal(id) {
     shiftSelected = shifts.find(shift => shift.id === id);
     editModal = true;
+    console.log('Shift selected for edit:', shiftSelected);
   }
 
   function closeModal() {
@@ -119,6 +121,22 @@
       : "No Result Found"
     : '';
   $: searchResultColor = filteredShifts.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
+
+  function addBreak() {
+    console.log('Add Break function called');
+    if (shiftSelected) {
+      shiftSelected = { ...shiftSelected, breaks: [...shiftSelected.breaks, { start: '', end: '' }] };
+      console.log('Break added:', shiftSelected.breaks);
+    } else {
+      console.log('No shift selected');
+    }
+  }
+
+  function removeBreak(index) {
+    if (shiftSelected) {
+      shiftSelected = { ...shiftSelected, breaks: shiftSelected.breaks.filter((_, i) => i !== index) };
+    }
+  }
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -135,12 +153,18 @@
       Add Shift
     </button>
   </div>
-  <div class="flex items-center mb-4">
+  <div class="flex justify-between">
+    <div class="relative mb-3">
+      <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
+    </div>
+  </div>
+  <p class="text-sm {searchResultColor}">{searchResultText}</p>
+  <!-- <div class="flex items-center mb-4">
     <input type="search" class="bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
     {#if searchQuery}
       <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
     {/if}
-  </div>
+  </div> -->
   <div class="block w-full overflow-x-auto">
     <table class="items-center w-full bg-transparent border-collapse">
       <thead>
@@ -195,11 +219,8 @@
         </div>
         <div class="block w-full overflow-x-auto">
           <div class="px-4 py-5 flex-auto">
-            <div class="flex flex-wrap">
+            <div class="flex">
               <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  General Information
-                </h4>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shift-name">
                     Shift Name:
@@ -212,11 +233,14 @@
                   </label>
                   <p>{shiftSelected.shiftType === 'custom' ? shiftSelected.customShiftType : shiftSelected.shiftType}</p>
                 </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="notes">
+                    Notes:
+                  </label>
+                  <p>{shiftSelected.notes}</p>
+                </div>
               </div>
-              <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  Date Time Parameters
-                </h4>
+              <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-from">
                     Date From:
@@ -242,12 +266,7 @@
                   <p>{shiftSelected.endTime}</p>
                 </div>
               </div>
-            </div>
-            <div class="flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  Break Parameters
-                </h4>
+              <div class="w-full lg:w-6/12 px-4">
                 {#each shiftSelected.breaks as breakTime}
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
@@ -263,18 +282,7 @@
                   </div>
                 {/each}
               </div>
-              <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  Notes/Description
-                </h4>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="notes">
-                    Notes:
-                  </label>
-                  <p>{shiftSelected.notes}</p>
-                </div>
-              </div>
-            </div>
+            </div> 
             <div class="flex justify-end">
               <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                 Back
@@ -300,11 +308,8 @@
         </div>
         <div class="block w-full overflow-x-auto">
           <div class="px-4 py-5 flex-auto">
-            <div class="flex flex-wrap">
+            <div class="flex">
               <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  General Information
-                </h4>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shift-name">
                     Shift Name:
@@ -332,11 +337,14 @@
                     <input type="text" id="custom-shift-type" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.customShiftType}>
                   </div>
                 {/if}
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="notes">
+                    Notes:
+                  </label>
+                  <textarea id="notes" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.notes}></textarea>
+                </div>
               </div>
-              <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  Date Time Parameters
-                </h4>
+              <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-from">
                     Date From:
@@ -362,43 +370,23 @@
                   <input type="time" id="end-time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.endTime}>
                 </div>
               </div>
-            </div>
-            <div class="flex flex-wrap">
               <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  Break Parameters
-                </h4>
+                <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={addBreak}>Add Break</button>
                 {#each shiftSelected.breaks as breakTime, index}
-                  <div class="relative mb-3 flex items-center">
-                    <div class="mr-2">
+                    <div class="relative mb-3">
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
                         Break Start Time:
                       </label>
                       <input type="time" id="break-start" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={breakTime.start}>
                     </div>
-                    <div class="mr-2">
+                    <div class="relative mb-3">
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-end">
                         Break End Time:
                       </label>
                       <input type="time" id="break-end" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={breakTime.end}>
                     </div>
-                    <button class="text-red-600 text-xs" on:click={() => shiftSelected.breaks.splice(index, 1)}>Remove</button>
-                  </div>
+                      <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => removeBreak(index)}>Remove</button>                    
                 {/each}
-                <button class="bg-blue-600 text-white active:bg-blue-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={() => shiftSelected.breaks.push({ start: '', end: '' })}>
-                  Add Break
-                </button>
-              </div>
-              <div class="w-full lg:w-6/12 px-4 mb-6">
-                <h4 class="font-semibold text-lg text-blueGray-700">
-                  Notes/Description
-                </h4>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="notes">
-                    Notes:
-                  </label>
-                  <textarea id="notes" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.notes}></textarea>
-                </div>
               </div>
             </div>
             <div class="flex justify-end">

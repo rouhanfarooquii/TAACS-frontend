@@ -267,15 +267,13 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
 
   <!-- Search Bar -->
   <div class="flex justify-between mb-4">
-    <div>
-      <label for="searchBar">Search:</label>
-      <br>
-      <input type="text" id="searchBar" name="searchBar" class="filter-input" placeholder="Search by ID, Name, Department, Designation" bind:value={filters.search} />
+    <div class="relative mb-3 w-full mr-6">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="searchBar">Search:</label>
+      <input type="text" id="searchBar" name="searchBar" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search by ID, Name, Department, Designation" bind:value={filters.search} />
     </div>
-    <div>
-      <label for="filterExperience">Experience:</label>
-      <br>
-      <select id="filterExperience" name="filterExperience" class="filter-input" bind:value={filters.experience}>
+    <div class="relative mb-3 w-full mr-6">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"  for="filterExperience">Experience:</label>
+      <select id="filterExperience" name="filterExperience" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={filters.experience}>
         <option value="">All</option>
         <option value="0-1">0-1 years</option>
         <option value="1-3">1-3 years</option>
@@ -283,10 +281,9 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
         <option value="5+">5+ years</option>
       </select>
     </div>
-    <div>
-      <label for="filterActive">Active:</label>
-      <br>
-      <select id="filterActive" name="filterActive" class="filter-input" bind:value={filters.active}>
+    <div class="relative mb-3 w-full">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"  for="filterActive">Active:</label>
+      <select id="filterActive" name="filterActive" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={filters.active}>
         <option value="">All</option>
         <option value="true">Yes</option>
         <option value="false">No</option>
@@ -361,7 +358,7 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(selectedEmployee.email)
           <div class="block w-full overflow-x-auto">
             <div class="px-4 py-5 flex-auto">
               <div class="flex">
-                <div class="w-full lg:w-6/12 px-4">
+                <div class="w-full lg:w-6/12 px-4 mb-6">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
                       Name:

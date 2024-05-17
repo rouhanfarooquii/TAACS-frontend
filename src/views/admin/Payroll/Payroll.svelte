@@ -261,12 +261,18 @@
         </div>
       </div>
     {/if}
-    <div class="flex items-center mb-4">
+    <div class="flex justify-between">
+      <div class="relative mb-3">
+        <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
+      </div>
+    </div>
+    <p class="text-sm {searchResultColor}">{searchResultText}</p>
+    <!-- <div class="flex items-center mb-4">
       <input type="search" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
     {#if searchQuery}
       <span class="{searchResultColor}">{searchResultText}</span>
     {/if}
-    </div>
+    </div> -->
     <table>
       <thead>
         <tr>
