@@ -1,4 +1,4 @@
-<!-- MultiSelect.svelte -->
+<!-- MultiSelect.svelte
 <script>
   export let options = [];
   export let selectedOptions = [];
@@ -46,5 +46,54 @@
   {/if}
 </div>
 
-<!-- Ensure you have Font Awesome included in your project -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" /> -->
+
+
+<!-- MultiSelect.svelte -->
+<script>
+  export let options = [];
+  export let selectedOptions = [];
+  export let placeholder = "Select options";
+  let dropdownOpen = false;
+
+  function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
+  }
+
+  function toggleOption(option) {
+    if (selectedOptions.includes(option)) {
+      selectedOptions = selectedOptions.filter(o => o !== option);
+    } else {
+      selectedOptions = [...selectedOptions, option];
+    }
+  }
+
+  function isSelected(option) {
+    return selectedOptions.includes(option);
+  }
+
+  function handleCheckboxChange(event, option) {
+    toggleOption(option);
+  }
+</script>
+
+<div class="multiselect">
+  <div class="border px-3 py-2 rounded cursor-pointer" on:click={toggleDropdown}>
+    {#if selectedOptions.length > 0}
+      {selectedOptions.join(', ')}
+    {:else}
+      {placeholder}
+    {/if}
+  </div>
+  {#if dropdownOpen}
+    <div class="multiselect-dropdown">
+      {#each options as option}
+        <label class="checkbox-container">
+          <input type="checkbox" checked={isSelected(option)} on:change={(event) => handleCheckboxChange(event, option)}>
+          <span class="checkmark"></span>
+          {option}
+        </label>
+      {/each}
+    </div>
+  {/if}
+</div>
