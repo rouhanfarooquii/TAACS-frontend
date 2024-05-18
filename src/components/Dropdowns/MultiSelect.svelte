@@ -1,63 +1,18 @@
-<!-- MultiSelect.svelte
 <script>
+  import { onMount, onDestroy } from 'svelte';
+
   export let options = [];
   export let selectedOptions = [];
   export let placeholder = "Select options";
   let dropdownOpen = false;
+  let multiSelectRef;
 
   function toggleDropdown() {
     dropdownOpen = !dropdownOpen;
   }
 
-  function toggleOption(option) {
-    if (selectedOptions.includes(option)) {
-      selectedOptions = selectedOptions.filter(o => o !== option);
-    } else {
-      selectedOptions = [...selectedOptions, option];
-    }
-  }
-
-  function isSelected(option) {
-    return selectedOptions.includes(option);
-  }
-</script>
-
-<div class="multiselect">
-  <div class="border px-3 py-2 rounded cursor-pointer" on:click={toggleDropdown}>
-    {#if selectedOptions.length > 0}
-      {selectedOptions.join(', ')}
-    {:else}
-      {placeholder}
-    {/if}
-  </div>
-  {#if dropdownOpen}
-    <div class="multiselect-dropdown">
-      {#each options as option}
-        <div class:class="{isSelected(option) ? 'selected-option' : ''}" on:click={() => toggleOption(option)}>
-          {#if isSelected(option)}
-            <i class="fas fa-check-circle icon"></i>
-          {:else}
-            <i class="far fa-circle icon"></i>
-          {/if}
-          {option}
-        </div>
-      {/each}
-    </div>
-  {/if}
-</div>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" /> -->
-
-
-<!-- MultiSelect.svelte -->
-<script>
-  export let options = [];
-  export let selectedOptions = [];
-  export let placeholder = "Select options";
-  let dropdownOpen = false;
-
-  function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
+  function closeDropdown() {
+    dropdownOpen = false;
   }
 
   function toggleOption(option) {
@@ -83,9 +38,23 @@
       toggleOption(option);
     }
   }
+
+  function handleClickOutside(event) {
+    if (multiSelectRef && !multiSelectRef.contains(event.target)) {
+      closeDropdown();
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('click', handleClickOutside);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('click', handleClickOutside);
+  });
 </script>
 
-<div class="multiselect">
+<div class="multiselect" bind:this={multiSelectRef}>
   <div class="border px-3 py-2 rounded cursor-pointer" on:click={toggleDropdown}>
     {#if selectedOptions.length > 0}
       {selectedOptions.join(', ')}
@@ -102,7 +71,7 @@
       </label>
       {#each options as option}
         <label class="checkbox-container">
-          <input type="checkbox" checked={isSelected(option) || (selectedOptions.length === options.length)} on:change={(event) => handleCheckboxChange(event, option)}>
+          <input type="checkbox" checked={isSelected(option)} on:change={(event) => handleCheckboxChange(event, option)}>
           <span class="checkmark"></span>
           {option}
         </label>
