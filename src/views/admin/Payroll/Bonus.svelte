@@ -1,6 +1,5 @@
 <script>
   import { reactive } from 'svelte';
-  import AddNewBonusModal from './AddNewBonusModal.svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   const delete1 = "../assets/img/icons8-delete-24.png";
   export let color = "light";

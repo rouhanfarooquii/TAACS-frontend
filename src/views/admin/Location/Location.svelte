@@ -11,6 +11,8 @@
   let spaces = [];
   let editingModes = {};
 
+  let selectedDevices = [];
+  let selectedFeatures = [];
   let devicesList = ["Device1", "Device2", "Device3"];
   let featuresList = ["Feature1", "Feature2", "Feature3"];
 
@@ -112,6 +114,22 @@
     capacity = '';
     features = '';
     resetValidationErrors();
+  }
+
+  let dropdownOpen = false;
+
+
+  function toggleDropdown() {
+      dropdownOpen = !dropdownOpen;
+  }
+
+  function handleCheckboxChange(event) {
+      const value = event.target.value;
+      if (event.target.checked) {
+          selectedDevices = [...selectedDevices, value];
+      } else {
+          selectedDevices = selectedDevices.filter(device => device !== value);
+      }
   }
 
   function resetValidationErrors() {

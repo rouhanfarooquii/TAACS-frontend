@@ -12,7 +12,6 @@
   import AccessControl from "views/admin//AccessControl/AccessControl.svelte";
   import Payroll from "views/admin/Payroll/Payroll.svelte";
   import RoomBooking from "views/admin/RoomBooking/RoomBooking.svelte";
-  import Rooms from "../views/admin/RoomBooking/Rooms.svelte";
   import Employee from "views/admin/Employee/Employee.svelte";
   import LeaveRequest from "../views/admin/LeaveRequest/LeaveRequest.svelte";
   import ShiftTiming from "../views/admin/ShiftTiming/ShiftTiming.svelte";
@@ -55,7 +54,6 @@
         <Route path="addshift" component="{AddShift}"/>
         <Route path="visitorslist" component="{VisitorsList}"/>
         <Route path="bonus" component="{Bonus}"/>
-        <Route path="rooms" component="{Rooms}"/>
         <Route path="location" component="{Location}"/>
         <Route path="hierarchy" component="{Hierarchy}"/>
       </Router>
