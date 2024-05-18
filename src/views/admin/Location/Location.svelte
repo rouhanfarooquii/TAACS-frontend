@@ -125,6 +125,22 @@
     resetValidationErrors();
   }
 
+  let dropdownOpen = false;
+
+
+  function toggleDropdown() {
+      dropdownOpen = !dropdownOpen;
+  }
+
+  function handleCheckboxChange(event) {
+      const value = event.target.value;
+      if (event.target.checked) {
+          selectedDevices = [...selectedDevices, value];
+      } else {
+          selectedDevices = selectedDevices.filter(device => device !== value);
+      }
+  }
+
   function resetValidationErrors() {
     document.getElementById('locationName-error').style.display = 'none';
     document.getElementById('devices-error').style.display = 'none';
