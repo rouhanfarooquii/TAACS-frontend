@@ -42,7 +42,7 @@
   async function fetchDevices() {
     try {
       const devices = await getAllDevicesApi();
-      devicesList = devices.map(device => device.title);
+      devicesList = devices.map(device => device.deviceName);
       console.log(devices)
     } catch (error) {
       console.error("Error fetching devices:", error);

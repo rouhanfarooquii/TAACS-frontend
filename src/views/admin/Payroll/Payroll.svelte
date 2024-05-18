@@ -1,6 +1,7 @@
 <script>
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
+  import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
 
   let showModal = false;
 
@@ -205,24 +206,26 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                       Department:
                     </label>
-                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                    <MultiSelect bind:selectedOptions={selectedDepartment} options={departments} placeholder="Select Departments" />
+                    <!-- <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
                       <option value="" disabled selected>Select a department</option>
                       {#each departments as department}
                         <option value={department}>{department}</option>
                       {/each}
-                    </select>
+                    </select> -->
                     <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                       Designation:
                     </label>
-                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                    <MultiSelect bind:selectedOptions={selectedDesignation} options={designations} placeholder="Select Designations" />
+                    <!-- <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
                       <option value="" disabled selected>Select a designation</option>
                       {#each designations as designation}
                         <option value={designation}>{designation}</option>
                       {/each}
-                    </select>
+                    </select> -->
                     <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
