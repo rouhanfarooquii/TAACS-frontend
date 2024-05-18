@@ -31,7 +31,7 @@
         locationName: loc.title,
         devices: loc.devices.map(device => device.deviceName).join(', '),
         bookable: loc.bookable ? 'Yes' : 'No',
-        booked: loc.booked ? 'Yes' : 'No',
+        // booked: loc.booked ? 'Yes' : 'No',
         capacity: loc.capacity,
         features: loc.features.join(', ')
       }));
@@ -61,7 +61,7 @@
         title: space.locationName,
         devices: space.devices.split(', '),
         bookable: space.bookable === 'Yes',
-        booked: space.booked === 'Yes',
+        // booked: space.booked === 'Yes',
         capacity: space.capacity,
         features: space.features.split(', ')
       });
@@ -77,7 +77,7 @@
   }
 
   function validateEditInputs(space) {
-    if (!space.locationName || !space.devices || !space.bookable || !space.booked || !space.capacity || !space.features) {
+    if (!space.locationName || !space.devices || !space.bookable || !space.capacity || !space.features) {
       return false;
     }
     return true;
@@ -107,7 +107,7 @@
           title: locationName,
           devices: selectedDevices,
           bookable: bookable,
-          booked: booked,
+          // booked: booked,
           capacity: Number(capacity),
           features: selectedFeatures
         };
@@ -168,7 +168,7 @@
   let showModal = false;
   let locationName = '';
   let bookable = true;
-  let booked = false;
+  // let booked = false;
   let capacity = '';
 
   function openModal() {
@@ -181,7 +181,7 @@
     selectedDevices = [];
     selectedFeatures = [];
     bookable = true;
-    booked = false;
+    // booked = false;
     capacity = '';
     resetValidationErrors();
   }
@@ -190,7 +190,7 @@
     document.getElementById('locationName-error').style.display = 'none';
     document.getElementById('devices-error').style.display = 'none';
     document.getElementById('bookable-error').style.display = 'none';
-    document.getElementById('booked-error').style.display = 'none';
+    // document.getElementById('booked-error').style.display = 'none';
     document.getElementById('capacity-error').style.display = 'none';
     document.getElementById('features-error').style.display = 'none';
   }
@@ -212,19 +212,12 @@
       document.getElementById('devices-error').style.display = 'none';
     }
 
-    if (bookable === null) {
-      document.getElementById('bookable-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('bookable-error').style.display = 'none';
-    }
-
-    if (booked === null) {
-      document.getElementById('booked-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('booked-error').style.display = 'none';
-    }
+    // if (booked === null) {
+    //   document.getElementById('booked-error').style.display = 'block';
+    //   isValid = false;
+    // } else {
+    //   document.getElementById('booked-error').style.display = 'none';
+    // }
 
     if (!capacity) {
       document.getElementById('capacity-error').style.display = 'block';
@@ -253,7 +246,6 @@
     space.features.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.devices.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.bookable.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    space.booked.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.capacity.toLowerCase().includes(searchQuery.toLowerCase())
   );
   $: displayedSpaces = filteredSpaces.slice(startIndex, endIndex);
@@ -323,7 +315,7 @@
                   </div>
                   <span id="bookable-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
-                <div class="relative mb-3">
+                <!-- <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="booked">
                     Booked
                   </label>
@@ -332,7 +324,7 @@
                     <span class="ml-2 text-blueGray-600">{booked ? 'Yes' : 'No'}</span>
                   </div>
                   <span id="booked-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
+                </div> -->
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
@@ -376,7 +368,6 @@
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location Name</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Devices</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Bookable</th>
-        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Booked</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Capacity</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Features</th>
       </tr>
@@ -412,7 +403,7 @@
               {/if}
             </div>
           </td>
-          <td class="table-data" title={space.booked}>
+          <!-- <td class="table-data" title={space.booked}>
             <div class="flex items-center">
               {#if editingModes[space.id]}
                 <input type="checkbox" class="form-checkbox" bind:checked={space.booked}>
@@ -421,7 +412,7 @@
                 <span>{space.booked ? 'Yes' : 'No'}</span>
               {/if}
             </div>
-          </td>
+          </td> -->
           <td class="table-data" title={space.capacity}>
             <div class="flex items-center">
               {#if editingModes[space.id]}

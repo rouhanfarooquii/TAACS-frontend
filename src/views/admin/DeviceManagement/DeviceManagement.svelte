@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { createPopper } from "@popperjs/core";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api'; // Import the functions
+  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api';
 
   export let color = "light";
 
@@ -18,14 +18,8 @@
   async function fetchAllDevices() {
     try {
       const backendDevices = await getAllDevicesApi();
-      for (let i = 0; i < backendDevices.length ; i++) {
-        if(backendDevices[i].status == "Active"){
-          backendDevices[i].status = true
-        }
-        else{
-          backendDevices[i].status = false
-
-        }
+      for (let i = 0; i < backendDevices.length; i++) {
+        backendDevices[i].status = backendDevices[i].status === "Active";
       }
       devices = JSON.parse(JSON.stringify(backendDevices));
       console.log('Fetched Devices:', devices);
@@ -73,13 +67,11 @@
       let temp = JSON.parse(JSON.stringify(currentDevice));
       if (temp) {
         try {
-          console.log(temp);
-          if(temp.status){
-            temp.status = "Active"
-          }
-          else{
-            temp.status = "Inactive"
-          }
+          temp.deviceName = deviceName;
+          temp.deviceId = deviceId;
+          temp.ip = deviceIp;
+          temp.status = status ? "Active" : "Inactive";
+
           const response = await updateDeviceApi(temp);
           console.log('Update Response:', response);
           await fetchAllDevices();
@@ -139,7 +131,7 @@
     deviceName = device.deviceName;
     deviceId = device.deviceId;
     deviceIp = device.ip;
-    status = device.status === 'Active';
+    status = device.status;
     editModal = true;
   }
 
@@ -149,6 +141,7 @@
     deviceName = '';
     deviceId = '';
     deviceIp = '';
+    status = false;
     currentDevice = null;
 
     document.getElementById('device-name-error').style.display = 'none';
@@ -245,14 +238,14 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
                       Device Name
                     </label>
-                    <input type="text" id="device-name" placeholder="Device Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={currentDevice.deviceName}>
+                    <input type="text" id="device-name" placeholder="Device Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceName}>
                     <span id="device-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
                       Device ID
                     </label>
-                    <input type="text" id="device-id" placeholder="Device ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={currentDevice.deviceId}>
+                    <input type="text" id="device-id" placeholder="Device ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceId}>
                     <span id="device-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
@@ -261,7 +254,7 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                       Device IP
                     </label>
-                    <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={currentDevice.ip}>
+                    <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceIp}>
                     <span id="device-ip-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   {#if editModal}
@@ -270,7 +263,7 @@
                       Status
                     </label>
                     <label class="switch">
-                      <input type="checkbox" id="status" class="hidden" bind:checked={currentDevice.status}>
+                      <input type="checkbox" id="status" class="hidden" bind:checked={status}>
                       <span class="slider round"></span> 
                     </label>
                   </div>
