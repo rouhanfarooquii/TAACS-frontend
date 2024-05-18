@@ -73,7 +73,15 @@
   }
 
   function handleCheckboxChange(event, option) {
-    toggleOption(option);
+    if (option === 'Select All') {
+      if (selectedOptions.length === options.length) {
+        selectedOptions = [];
+      } else {
+        selectedOptions = [...options];
+      }
+    } else {
+      toggleOption(option);
+    }
   }
 </script>
 
@@ -87,9 +95,14 @@
   </div>
   {#if dropdownOpen}
     <div class="multiselect-dropdown">
+      <label class="checkbox-container">
+        <input type="checkbox" checked={selectedOptions.length === options.length} on:change={(event) => handleCheckboxChange(event, 'Select All')}>
+        <span class="checkmark"></span>
+        Select All
+      </label>
       {#each options as option}
         <label class="checkbox-container">
-          <input type="checkbox" checked={isSelected(option)} on:change={(event) => handleCheckboxChange(event, option)}>
+          <input type="checkbox" checked={isSelected(option) || (selectedOptions.length === options.length)} on:change={(event) => handleCheckboxChange(event, option)}>
           <span class="checkmark"></span>
           {option}
         </label>
