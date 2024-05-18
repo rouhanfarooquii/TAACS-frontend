@@ -152,11 +152,11 @@ window.onclick = function(event) {
                                     
                                 </div>
                                 <div class="w-full lg:w-6/12 px-4">
-                                    <div class="relative mb-3">
+                                    <div>
                                         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Devices To Include</label>
                                         <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                                            <button on:click={toggleDropdown} class="dropbtn">Select devices</button>
-                                            <div class={`dropdown-content ${dropdownOpen ? 'show' : ''}`}>
+                                            <button on:click={toggleDropdown}>Select Device</button>
+                                            <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
                                                 {#each devicesToDeactivate as device}
                                                 <div class="flex items-center">
                                                     <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />

@@ -59,7 +59,6 @@
 
   function validateEditInputs(space) {
     if (!space.locationName || !space.devices || !space.bookable || !space.capacity || !space.features) {
-      alert("All fields are required.");
       return false;
     }
     return true;
