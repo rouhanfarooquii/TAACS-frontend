@@ -1,5 +1,6 @@
 <script>
   import Pagination from '../../../components/Pagination/Pagination.svelte';
+  import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
   export let color = "light";
 
   import { onMount } from 'svelte';
@@ -213,17 +214,7 @@ window.onclick = function(event) {
             <div class="w-full lg:w-6/12 px-4">
               <div class="relative mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Rooms</label>
-                <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                    <button on:click={toggleDropdown} class="dropbtn">Select Rooms</button>
-                    <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
-                        {#each accessibleRooms as room}
-                        <div class="flex items-center">
-                            <input type="checkbox" value={room} on:change={handleCheckboxChange} checked={selectedRooms.includes(room)} />
-                            <label class="ml-2 text-sm text-blueGray-600">{room}</label>
-                        </div>
-                        {/each}
-                    </div>
-                </div>
+                <MultiSelect bind:selectedOptions={selectedRooms} options={accessibleRooms} placeholder="Select Rooms" />
                 <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
               </div>
             </div>

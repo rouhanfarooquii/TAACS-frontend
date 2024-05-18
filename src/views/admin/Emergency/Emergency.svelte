@@ -4,6 +4,7 @@ import CardLineChart from "components/Cards/CardLineChart.svelte";
 import CardBarChart from "components/Cards/CardBarChart.svelte";
 import CardPageVisits from "components/Cards/CardPageVisits.svelte";
 import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
+import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
 export let location;
 export let color = "light";
 
@@ -154,17 +155,7 @@ window.onclick = function(event) {
                                 <div class="w-full lg:w-6/12 px-4">
                                     <div class="relative mb-3">
                                         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Devices To Include</label>
-                                        <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                                            <button on:click={toggleDropdown} class="dropbtn">Select Device</button>
-                                            <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
-                                                {#each devicesToDeactivate as device}
-                                                <div class="flex items-center">
-                                                    <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />
-                                                    <label class="ml-2 text-sm text-blueGray-600">{device}</label>
-                                                </div>
-                                                {/each}
-                                            </div>
-                                        </div>
+                                        <MultiSelect bind:selectedOptions={selectedDevices} options={devicesToDeactivate} placeholder="Select Devices" />
                                     </div>
                                     <div class="relative mb-3">
                                         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">

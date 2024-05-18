@@ -202,8 +202,6 @@
         console.error("Error adding location:", error);
         alert('Error adding location. Please try again.');
       }
-    } else {
-      alert('Please fill in all fields.');
     }
   }
 
