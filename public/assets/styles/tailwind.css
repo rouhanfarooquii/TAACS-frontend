@@ -4771,6 +4771,8 @@ canvas{
 .multiselect-dropdown div {
   padding: 8px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .multiselect-dropdown div:hover {
@@ -4779,4 +4781,9 @@ canvas{
 
 .selected-option {
   background-color: #e2e2e2;
+}
+
+.icon {
+  margin-right: 8px;
+  color: green;
 }
