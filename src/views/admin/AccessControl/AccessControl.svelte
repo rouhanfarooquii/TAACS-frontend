@@ -2,44 +2,11 @@
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   export let color = "light";
 
-
-
-  // JB api demo start ----------------------------------------------------------  
   import { onMount } from 'svelte';
-  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi } from '../../../services/api'
+  import { getAllAccessControlsApi, addAccessControlsApi, updateAccessControlsApi, deleteAccessControlsApi } from '../../../services/api';
 
-  let object = {
-    _id: "663e770336b7ddbed14366cd",
-    title: "Chapri",
-    __v: 0
-  };
-  let id = "6646275d49cc34379b523dfc"
-
-  async function getAllLocations() {
-    let res = await getAllLocationsApi();
-    console.log(res);
-  }
-  // onMount(getAllLocations);
-
-  async function addLocation(obj) {
-    let res = await addLocationApi(obj);
-    console.log(res);
-  }
-  // onMount(addLocation(object));
-
-  async function updateLocation(obj) {
-    let res = await updateLocationApi(obj);
-    console.log(res);
-  }
-  // onMount(updateLocation(object));
-  async function deleteLocation(id) {
-    let res = await deleteLocationApi(id);
-    console.log(res);
-  }
-  // onMount(deleteLocation(id));
-
-  // Jb api demo end ----------------------------------------------------------
-
+  let accessControlObject = [];
+  let users = [];
   let showModal = false;
   let selectedDepartment = '';
   let selectedDesignation = '';
@@ -48,31 +15,28 @@
   let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
   let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
 
-  let users = [
-    { id: '23006', name: 'Nawfal Ahmed', department: 'Marketing', designation: 'Manager', accessibleRooms: ['Conference Room', 'Building entrance', 'Lobby', 'Lobby', 'Lobby', 'Lobby'] },
-    { id: '230060', name: 'John Doe', department: 'HR', designation: 'Assistant Manager', accessibleRooms: ['Meeting Room', 'Lobby'] },
-    { id: '2300600', name: 'Jane Smith', department: 'Finance', designation: 'Senior Accountant', accessibleRooms: ['Finance Office', 'Lounge'] },
-    { id: '23006001', name: 'Emily Johnson', department: 'Operations', designation: 'Supervisor', accessibleRooms: ['Operations Room', 'Cafeteria'] },
-    { id: '23006002', name: 'Michael Brown', department: 'IT', designation: 'System Administrator', accessibleRooms: ['Server Room', 'IT Office'] },
-    { id: '23006003', name: 'Samantha Taylor', department: 'Sales', designation: 'Sales Representative', accessibleRooms: ['Sales Floor', 'Break Room'] },
-    { id: '23006004', name: 'David Wilson', department: 'Customer Service', designation: 'Customer Support Specialist', accessibleRooms: ['Customer Service Desk', 'Break Room'] },
-    { id: '23006005', name: 'Jennifer Martinez', department: 'Research and Development', designation: 'Research Scientist', accessibleRooms: ['Lab', 'Research Office'] },
-    { id: '23006006', name: 'William Anderson', department: 'Legal', designation: 'Legal Counsel', accessibleRooms: ['Legal Department', 'Library'] },
-    { id: '23006007', name: 'Sarah Thompson', department: 'Public Relations', designation: 'PR Specialist', accessibleRooms: ['PR Office', 'Media Room'] },
-    { id: '23006008', name: 'Daniel Garcia', department: 'Supply Chain', designation: 'Logistics Manager', accessibleRooms: ['Warehouse', 'Shipping Office'] },
-    { id: '23006009', name: 'Jessica Rodriguez', department: 'Quality Assurance', designation: 'QA Analyst', accessibleRooms: ['Testing Lab', 'QA Office'] },
-    { id: '23006010', name: 'Matthew Thomas', department: 'Marketing', designation: 'Training Coordinator', accessibleRooms: ['Training Room', 'Training Office'] },
-    { id: '23006011', name: 'Amanda White', department: 'Administration', designation: 'Administrative Assistant', accessibleRooms: ['Admin Office', 'Reception Area'] },
-    { id: '23006012', name: 'Kevin Lee', department: 'Production', designation: 'Production Supervisor', accessibleRooms: ['Production Floor', 'Warehouse'] },
-    { id: '23006013', name: 'Olivia Harris', department: 'Human Resources', designation: 'HR Coordinator', accessibleRooms: ['HR Office', 'Interview Room'] },
-    { id: '23006014', name: 'Robert Moore', department: 'Facilities', designation: 'Facilities Manager', accessibleRooms: ['Facilities Office', 'Maintenance Room'] },
-    { id: '23006015', name: 'Ashley Clark', department: 'Purchasing', designation: 'Purchasing Manager', accessibleRooms: ['Purchasing Department', 'Inventory Room'] },
-    { id: '23006016', name: 'Christopher Walker', department: 'Engineering', designation: 'Engineering Manager', accessibleRooms: ['Engineering Office', 'Prototype Lab'] },
-    { id: '23006017', name: 'Stephanie Baker', department: 'Product Management', designation: 'Product Manager', accessibleRooms: ['Product Management Office', 'Boardroom'] }
-  ];
-
   let selectedUsers = new Set();
   let searchQuery = '';
+
+  onMount(async () => {
+    await getAllAccess();
+  });
+
+  async function getAllAccess() {
+    try {
+      accessControlObject = await getAllAccessControlsApi();
+      console.log('API Response:', JSON.stringify(accessControlObject, null, 2));
+      users = accessControlObject.map(ac => ({
+        id: ac.employee?.employeeID || 'N/A',
+        name: ac.employee?.name || 'N/A',
+        department: ac.employee?.department?.title || 'N/A',
+        designation: ac.employee?.designation?.title || 'N/A',
+        accessibleRooms: ac.locations ? ac.locations.map(location => location.title) : []
+      }));
+    } catch (error) {
+      console.error("Error fetching access control data:", error);
+    }
+  }
 
   function toggleSelection(userId) {
     if (selectedUsers.has(userId)) {
@@ -92,8 +56,7 @@
     selectedUsers = new Set(selectedUsers); // Force rerender
   }
 
-  function batchUpdate() {
-    // Validation checks
+  async function batchUpdate() {
     let departmentDesignationError = !selectedDepartment && !selectedDesignation;
     let accessibleRoomsError = selectedRooms.length === 0;
 
@@ -114,11 +77,17 @@
     }
 
     // Implement batch update logic here
+
+    // Close modal and refresh list
+    closeModal();
+    await getAllAccess();
   }
 
-  function deleteSelectedUsers() {
-    users = users.filter(user => !selectedUsers.has(user.id));
-    selectedUsers.clear();
+  async function deleteSelectedUsers() {
+    // Delete selected users logic
+
+    // Refresh list
+    await getAllAccess();
   }
 
   function openModal() {
@@ -134,11 +103,9 @@
     document.getElementById('accessible-rooms-error').style.display = 'none';
   }
 
-  // Define pagination logic
   const usersPerPage = 10; // Adjust as needed
   let currentPage = 1;
 
-  // Reactive statements to ensure proper updates
   $: startIndex = (currentPage - 1) * usersPerPage;
   $: endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
   $: filteredUsers = users.filter(user => 
@@ -152,7 +119,6 @@
   $: totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   function handlePageChange(event) {
-    console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
     currentPage = event.detail.pageNumber;
   }
 
@@ -163,7 +129,6 @@
     : '';
   $: searchResultColor = filteredUsers.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 
-  // Reset currentPage to 1 whenever searchQuery changes
   $: if (searchQuery) currentPage = 1;
 </script>
 
@@ -175,14 +140,14 @@
       </h3>
     </div>
     <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow mr-1 hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
-  <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
-</div>
-<div class="flex justify-between">
-  <div class="relative mb-3">
-    <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
   </div>
-</div>
-<p class="text-sm {searchResultColor}">{searchResultText}</p>  
+  <div class="flex justify-between">
+    <div class="relative mb-3">
+      <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
+    </div>
+  </div>
+  <p class="text-sm {searchResultColor}">{searchResultText}</p>  
   {#if showModal}
   <div class="modal">
     <div class="modal-content">

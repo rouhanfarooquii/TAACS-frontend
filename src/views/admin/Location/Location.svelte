@@ -1,28 +1,53 @@
 <script>
   import { onMount } from 'svelte';
-  import { onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const edit2 = "../assets/img/icons8-tick-24.png";
   const delete1 = "../assets/img/icons8-delete-24.png";
   export let color = "light";
 
-  let spaces = [
-    { id: '1', locationName: 'FF-28', devices: 'Aman Parking', bookable: 'Yes', capacity: '50', features: 'Projector' },
-    { id: '2', locationName: 'FF-29', devices: 'Aman Parking', bookable: 'No', capacity: '30', features: 'Whiteboard' },
-    { id: '3', locationName: 'FF-30', devices: 'Aman Parking', bookable: 'Yes', capacity: '20', features: 'Conference Call' },
-    // ... other spaces
-  ];
-
+  let spaces = [];
   let editingModes = {};
 
-  function toggleEditingMode(spaceId) {
-    editingModes[spaceId] = !editingModes[spaceId];
+  onMount(async () => {
+    await fetchLocations();
+  });
+
+  async function fetchLocations() {
+    try {
+      const locations = await getAllLocationsApi();
+      console.log('Fetched Locations:', locations);
+      spaces = locations.map(loc => ({
+        id: loc._id,
+        locationName: loc.title,
+        devices: loc.devices.map(device => device.title).join(', '),
+        bookable: loc.bookable ? 'Yes' : 'No',
+        capacity: loc.capacity,
+        features: loc.features.join(', ')
+      }));
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
   }
 
-  function saveSpaceChanges(space) {
+  async function saveSpaceChanges(space) {
     console.log("Saved changes for space:", space);
+    try {
+      const response = await updateLocationApi({
+        _id: space.id,
+        title: space.locationName,
+        devices: space.devices.split(', '),
+        bookable: space.bookable === 'Yes',
+        capacity: space.capacity,
+        features: space.features.split(', ')
+      });
+      console.log('Update Response:', response);
+      await fetchLocations();
+    } catch (error) {
+      console.error("Error updating location:", error);
+    }
   }
 
   function editSpace(space) {
@@ -37,8 +62,18 @@
     return true;
   }
 
-  function deleteSpace(space) {
-    spaces = spaces.filter(s => s.id !== space.id);
+  async function deleteSpace(space) {
+    try {
+      const response = await deleteLocationApi(space.id);
+      console.log('Delete Response:', response);
+      await fetchLocations();
+    } catch (error) {
+      console.error("Error deleting location:", error);
+    }
+  }
+
+  function toggleEditingMode(spaceId) {
+    editingModes[spaceId] = !editingModes[spaceId];
   }
 
   let selectedSpaces = new Set();
@@ -135,8 +170,28 @@
         return;
       }
 
-      spaces.push({ id: Date.now().toString(), locationName, devices, bookable, capacity, features });
-      closeModal();
+      console.log({
+        title: locationName,
+        devices: devices.split(', '),
+        bookable: bookable === 'Yes',
+        capacity,
+        features: features.split(', ')
+      })
+
+      // try {
+      //   const response = await addLocationApi({
+      //     title: locationName,
+      //     devices: devices.split(', '),
+      //     bookable: bookable === 'Yes',
+      //     capacity,
+      //     features: features.split(', ')
+      //   });
+      //   console.log('Add Response:', response);
+      //   closeModal();
+      //   await fetchLocations();
+      // } catch (error) {
+      //   console.error("Error adding location:", error);
+      // }
     } else {
       alert('Please fill in all fields.');
     }
