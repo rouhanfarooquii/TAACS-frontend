@@ -311,69 +311,69 @@
       </thead>
       <tbody>
         {#each displayedSpaces as space (space.id)}
-          <tr>
-            <td class="table-data font-bold text-blueGray-600" title={space.parkingSlot}>
-              <div class="flex items-center">
-                {#if editingModes[space.id]}
-                  <input type="text" class="salary-input" bind:value={space.parkingSlot}>
-                {:else}
-                  <span>{space.parkingSlot}</span>
-                {/if}
-              </div>
-            </td>
-            <td class="table-data" title={space.location}>
-              <div class="flex items-center">
-                {#if editingModes[space.id]}
-                  <input type="text" class="salary-input1" bind:value={space.location}>
-                {:else}
-                  <span>{space.location}</span>
-                {/if}
-              </div>
-            </td>
-            <td class="table-data" title={space.carId}>
-              <div class="flex items-center">
-                {#if editingModes[space.id]}
-                  <input type="text" class="salary-input" bind:value={space.carId}>
-                {:else}
-                  <span>{space.carId}</span>
-                {/if}
-              </div>
-            </td>
-            <td class="table-data" title={space.empName}>
-              <div class="flex items-center">
-                {#if editingModes[space.id]}
-                  <input type="text" class="salary-input1" bind:value={space.empName}>
-                {:else}
-                  <span>{space.empName}</span>
-                {/if}
-              </div>
-            </td>
-            <td class="table-data" title={space.carMake}>
-              <div class="flex items-center">
-                {#if editingModes[space.id]}
-                  <input type="text" class="salary-input1" bind:value={space.carMake}>
-                {:else}
-                  <span>{space.carMake}</span>
-                {/if}
-              </div>
-            </td>
-            <td>
-              <QrCode data={space.carId.toString()} />
-            </td>
-            <td>
-              <div class="flex items-center">
-                {#if editingModes[space.id]}
-                  <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}>
-                {:else}
-                  <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSpace(space)} />
-                {/if}
-                <div class="ml-4">
-                  <img src={delete1} alt="Delete" class="icon-button cursor-pointer" on:click={() => deleteSpace(space)}>
-                </div>
-              </div>
-            </td>
-          </tr>
-        {/each}
+  <tr>
+    <td class="table-data font-bold text-blueGray-600" title={space.parkingSlot}>
+      <div class="flex items-center">
+        {#if editingModes[space.id]}
+          <input type="text" class="salary-input" bind:value={space.parkingSlot}>
+        {:else}
+          <span>{space.parkingSlot}</span>
+        {/if}
+      </div>
+    </td>
+    <td class="table-data" title={space.location}>
+      <div class="flex items-center">
+        {#if editingModes[space.id]}
+          <input type="text" class="salary-input1" bind:value={space.location}>
+        {:else}
+          <span>{space.location}</span>
+        {/if}
+      </div>
+    </td>
+    <td class="table-data" title={space.carId}>
+      <div class="flex items-center">
+        {#if editingModes[space.id]}
+          <input type="text" class="salary-input" bind:value={space.carId}>
+        {:else}
+          <span>{space.carId}</span>
+        {/if}
+      </div>
+    </td>
+    <td class="table-data" title={space.empName}>
+      <div class="flex items-center">
+        {#if editingModes[space.id]}
+          <input type="text" class="salary-input1" bind:value={space.empName}>
+        {:else}
+          <span>{space.empName}</span>
+        {/if}
+      </div>
+    </td>
+    <td class="table-data" title={space.carMake}>
+      <div class="flex items-center">
+        {#if editingModes[space.id]}
+          <input type="text" class="salary-input1" bind:value={space.carMake}>
+        {:else}
+          <span>{space.carMake}</span>
+        {/if}
+      </div>
+    </td>
+    <td>
+      <QrCode data={space.carId.toString()} />
+    </td>
+    <td>
+      <div class="flex items-center">
+        {#if editingModes[space.id]}
+          <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}>
+        {:else}
+          <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSpace(space)} />
+        {/if}
+        <div class="ml-4">
+          <img src={delete1} alt="Delete" class="icon-button cursor-pointer" on:click={() => deleteSpace(space)}>
+        </div>
+      </div>
+    </td>
+  </tr>
+{/each}
       </tbody>
     </table>
     <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
