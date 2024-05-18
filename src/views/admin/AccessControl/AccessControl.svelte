@@ -225,7 +225,6 @@ window.onclick = function(event) {
                     </div>
                 </div>
                 <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
-
               </div>
             </div>
           </div>

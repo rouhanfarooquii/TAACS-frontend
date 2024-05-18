@@ -59,7 +59,6 @@
 
   function validateEditInputs(space) {
     if (!space.locationName || !space.devices || !space.bookable || !space.capacity || !space.features) {
-      alert("All fields are required.");
       return false;
     }
     return true;
@@ -195,8 +194,6 @@
       // } catch (error) {
       //   console.error("Error adding location:", error);
       // }
-    } else {
-      alert('Please fill in all fields.');
     }
   }
 

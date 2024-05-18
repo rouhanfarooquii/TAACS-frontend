@@ -271,6 +271,30 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
 
   return isValid;
 }
+
+let dropdownOpen = false;
+  let selectedDevices = [];
+  let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
+
+  function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
+  }
+
+  function handleCheckboxChange(event) {
+    const value = event.target.value;
+    if (event.target.checked) {
+      selectedDevices = [...selectedDevices, value];
+    } else {
+      selectedDevices = selectedDevices.filter(device => device !== value);
+    }
+  }
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
+        dropdownOpen = false;
+    }
+}
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -404,7 +428,7 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
   </div>
 
 <!-- Filters Row 6 -->
-<div class="flex mb-4">
+<div class="flex justify-between mb-4">
   <div class="relative mb-3">
     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="listType">List Type:</label>
     <select id="listType" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{listType}" on:change="{handleListTypeChange}">
@@ -414,7 +438,22 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
       <option value="Temporary_List3">Temporary_List3</option>
     </select>
   </div>
-  <div class="ml-14">
+  <div class="relative mb-3">
+    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Devices</label>
+    <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+      <button on:click={toggleDropdown} class="dropbtn">Select Device</button>
+      <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
+        {#each accessibleDevices as device}
+          <div class="flex items-center">
+            <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />
+            <label class="ml-2 text-sm text-blueGray-600">{device}</label>
+          </div>
+        {/each}
+      </div>
+    </div>
+    <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
+  </div>
+  <div class="relative mb-3">
     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
       Salary:
     </label>

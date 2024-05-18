@@ -163,8 +163,6 @@
 
       spaces.push({ id: Date.now().toString(), parkingSlot, location, carId, empName, carMake, cardRfidNo });
       closeModal();
-    } else {
-      alert('Please fill in all fields.');
     }
   }
 
