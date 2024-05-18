@@ -2,6 +2,8 @@
   import { onMount, onDestroy } from 'svelte';
   import { createPopper } from "@popperjs/core";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api'; // Import the functions
+
   export let color = "light";
 
   let deviceName = '';
@@ -11,54 +13,51 @@
   let showModal = false;
   let editModal = false;
   let currentDevice = null;
+  let devices = [];
 
-  let devices = [
-    { name: "Device 1", id: 874329, ip: "192.168.1.14", status: "Active" },
-    { name: "Device 2", id: 543217, ip: "192.168.1.16", status: "Inactive" },
-    { name: "Device 3", id: 8741249, ip: "192.168.1.20", status: "Active" },
-    { name: "Device 4", id: 524329, ip: "192.168.1.24", status: "Inactive" },
-    { name: "Device 5", id: 123456, ip: "192.168.1.25", status: "Active" },
-    { name: "Device 6", id: 654321, ip: "192.168.1.26", status: "Inactive" },
-    { name: "Device 7", id: 135792, ip: "192.168.1.27", status: "Active" },
-    { name: "Device 8", id: 987654, ip: "192.168.1.28", status: "Inactive" },
-    { name: "Device 9", id: 246810, ip: "192.168.1.29", status: "Active" },
-    { name: "Device 10", id: 111213, ip: "192.168.1.30", status: "Inactive" },
-    { name: "Device 11", id: 141516, ip: "192.168.1.31", status: "Active" },
-    { name: "Device 12", id: 171819, ip: "192.168.1.32", status: "Inactive" },
-    { name: "Device 13", id: 202122, ip: "192.168.1.33", status: "Active" },
-    { name: "Device 14", id: 232425, ip: "192.168.1.34", status: "Inactive" },
-    { name: "Device 15", id: 262728, ip: "192.168.1.35", status: "Active" },
-    { name: "Device 16", id: 293031, ip: "192.168.1.36", status: "Inactive" },
-    { name: "Device 17", id: 323334, ip: "192.168.1.37", status: "Active" },
-    { name: "Device 18", id: 353637, ip: "192.168.1.38", status: "Inactive" },
-    { name: "Device 19", id: 383940, ip: "192.168.1.39", status: "Active" },
-    { name: "Device 20", id: 414243, ip: "192.168.1.40", status: "Inactive" },
-  ];
+  async function fetchAllDevices() {
+    try {
+      const backendDevices = await getAllDevicesApi();
+      devices = backendDevices.map((device, index) => ({
+        deviceName: device.deviceName || `Device ${index + 1}`,
+        deviceId: device.deviceId,
+        ip: device.ip,
+        status: device.status,
+        hide: device.hide
+      }));
+      console.log('Fetched Devices:', devices);
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  onMount(() => {
+    fetchAllDevices();
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  });
 
   async function addDevice() {
     if (validateInputs()) {
       try {
-        const isDuplicate = devices.some(device => device.name === deviceName || device.id === deviceId || device.ip === deviceIp);
+        const isDuplicate = devices.some(device => device.deviceName === deviceName || device.deviceId === deviceId || device.ip === deviceIp);
         
         if (isDuplicate) {
           alert('Device Name, ID, and IP must be unique.');
           return;
         }
 
-        const response = await fetch('/api/addDevice', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: deviceName, id: deviceId, ip: deviceIp })
+        const response = await addDeviceApi({
+          deviceName,
+          deviceId,
+          ip: deviceIp,
+          status: status ? 'Active' : 'Inactive',
+          hide: false
         });
 
-        if (response.ok) {
-          navigate('/admin/devicemanagement');
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
+        console.log('Add Response:', response);
+        await fetchAllDevices();
+        closeModal();
       } catch (error) {
         console.error('Error:', error);
         alert('An error occurred while adding the device. Please try again.');
@@ -70,30 +69,35 @@
     if (validateInputs()) {
       if (currentDevice) {
         try {
-          const response = await fetch(`/api/updateDeviceStatus/${currentDevice.id}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ status: status ? 'Active' : 'Inactive' })
+          const response = await updateDeviceApi({
+            _id: currentDevice.deviceId,
+            deviceName,
+            deviceId,
+            ip: deviceIp,
+            status: status ? 'Active' : 'Inactive',
+            hide: currentDevice.hide
           });
 
-          if (response.ok) {
-            closeModal();
-          } else {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.message}`);
-          }
+          console.log('Update Response:', response);
+          await fetchAllDevices();
+          closeModal();
         } catch (error) {
-          console.error('Error:', error);
+          console.error('Error updating device:', error);
           alert('An error occurred while updating the device status. Please try again.');
         }
       }
     }
   }
 
-  function deleteDevice(device) {
-    devices = devices.filter(d => d !== device);
+  async function deleteDevice(device) {
+    try {
+      const response = await deleteDeviceApi(device.deviceId);
+      console.log('Delete Response:', response);
+      await fetchAllDevices();
+    } catch (error) {
+      console.error('Error deleting device:', error);
+      alert('An error occurred while deleting the device. Please try again.');
+    }
   }
 
   function validateInputs() {
@@ -129,8 +133,8 @@
 
   function openEditModal(device) {
     currentDevice = device;
-    deviceName = device.name;
-    deviceId = device.id;
+    deviceName = device.deviceName;
+    deviceId = device.deviceId;
     deviceIp = device.ip;
     status = device.status === 'Active';
     editModal = true;
@@ -202,11 +206,6 @@
       }
     }
   }
-
-  onMount(() => {
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
-  });
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -311,8 +310,8 @@
       <tbody>
         {#each displayedDevices as device, rowIndex}
           <tr>
-            <td class="table-data font-bold text-blueGray-600" title={device.name}>{device.name}</td>
-            <td class="table-data" title={device.id}>{device.id}</td>
+            <td class="table-data font-bold text-blueGray-600" title={device.deviceName}>{device.deviceName}</td>
+            <td class="table-data" title={device.deviceId}>{device.deviceId}</td>
             <td class="table-data" title={device.ip}>{device.ip}</td>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
               {#if device.status === 'Active'}
