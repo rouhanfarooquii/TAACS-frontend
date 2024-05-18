@@ -11,6 +11,9 @@
   let spaces = [];
   let editingModes = {};
 
+  let devicesList = ["Device1", "Device2", "Device3"];
+  let featuresList = ["Feature1", "Feature2", "Feature3"];
+
   onMount(async () => {
     await fetchLocations();
   });
@@ -271,9 +274,9 @@
                   </label>
                   <select id="devices" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={devices}>
                     <option value="">Select Devices</option>
-                    <option value="Projector">Projector</option>
-                    <option value="Whiteboard">Whiteboard</option>
-                    <option value="Conference Call">Conference Call</option>
+                    {#each devicesList as device}
+                      <option value={device}>{device}</option>
+                    {/each}
                   </select>
                   <span id="devices-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
@@ -302,9 +305,9 @@
                   </label>
                   <select id="features" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={features}>
                     <option value="">Select Features</option>
-                    <option value="Projector">Projector</option>
-                    <option value="Whiteboard">Whiteboard</option>
-                    <option value="Conference Call">Conference Call</option>
+                    {#each featuresList as feature}
+                      <option value={feature}>{feature}</option>
+                    {/each}
                   </select>
                   <span id="features-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
@@ -361,9 +364,9 @@
             <div class="flex items-center">
               {#if editingModes[space.id]}
                 <select class="salary-input" bind:value={space.devices}>
-                  <option value="Projector">Projector</option>
-                  <option value="Whiteboard">Whiteboard</option>
-                  <option value="Conference Call">Conference Call</option>
+                  {#each devicesList as device}
+                    <option value={device}>{device}</option>
+                  {/each}
                 </select>
               {:else}
                 <span>{space.devices}</span>
@@ -393,9 +396,9 @@
             <div class="flex items-center">
               {#if editingModes[space.id]}
                 <select class="salary-input1" bind:value={space.features}>
-                  <option value="Projector">Projector</option>
-                  <option value="Whiteboard">Whiteboard</option>
-                  <option value="Conference Call">Conference Call</option>
+                  {#each featuresList as feature}
+                    <option value={feature}>{feature}</option>
+                  {/each}
                 </select>
               {:else}
                 <span>{space.features}</span>
