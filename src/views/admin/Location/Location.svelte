@@ -1,7 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi } from '../../../services/api';
+  import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
+  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi, getAllDevicesApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const edit2 = "../assets/img/icons8-tick-24.png";
@@ -11,13 +12,14 @@
   let spaces = [];
   let editingModes = {};
 
+  let devicesList = [];
   let selectedDevices = [];
-  let selectedFeatures = [];
-  let devicesList = ["Device1", "Device2", "Device3"];
   let featuresList = ["Feature1", "Feature2", "Feature3"];
+  let selectedFeatures = [];
 
   onMount(async () => {
     await fetchLocations();
+    await fetchDevices();
   });
 
   async function fetchLocations() {
@@ -34,6 +36,16 @@
       }));
     } catch (error) {
       console.error("Error fetching locations:", error);
+    }
+  }
+
+  async function fetchDevices() {
+    try {
+      const devices = await getAllDevicesApi();
+      devicesList = devices.map(device => device.title);
+      console.log(devices)
+    } catch (error) {
+      console.error("Error fetching devices:", error);
     }
   }
 
@@ -109,27 +121,11 @@
   function closeModal() {
     showModal = false;
     locationName = '';
-    devices = '';
-    bookable = '';
+    selectedDevices = [];
+    selectedFeatures = [];
+    bookable = 'Yes';
     capacity = '';
-    features = '';
     resetValidationErrors();
-  }
-
-  let dropdownOpen = false;
-
-
-  function toggleDropdown() {
-      dropdownOpen = !dropdownOpen;
-  }
-
-  function handleCheckboxChange(event) {
-      const value = event.target.value;
-      if (event.target.checked) {
-          selectedDevices = [...selectedDevices, value];
-      } else {
-          selectedDevices = selectedDevices.filter(device => device !== value);
-      }
   }
 
   function resetValidationErrors() {
@@ -150,7 +146,7 @@
       document.getElementById('locationName-error').style.display = 'none';
     }
 
-    if (!devices) {
+    if (selectedDevices.length === 0) {
       document.getElementById('devices-error').style.display = 'block';
       isValid = false;
     } else {
@@ -171,7 +167,7 @@
       document.getElementById('capacity-error').style.display = 'none';
     }
 
-    if (!features) {
+    if (selectedFeatures.length === 0) {
       document.getElementById('features-error').style.display = 'block';
       isValid = false;
     } else {
@@ -183,35 +179,31 @@
 
   async function addSpace() {
     if (validateAddInputs()) {
-      const isDuplicate = spaces.some(space => space.locationName === locationName || space.features === features);
+      const isDuplicate = spaces.some(space => space.locationName === locationName || space.features === selectedFeatures.join(', '));
 
       if (isDuplicate) {
         alert('Location Name and Features must be unique.');
         return;
       }
 
-      console.log({
-        title: locationName,
-        devices: devices.split(', '),
-        bookable: bookable === 'Yes',
-        capacity,
-        features: features.split(', ')
-      })
-
-      // try {
-      //   const response = await addLocationApi({
-      //     title: locationName,
-      //     devices: devices.split(', '),
-      //     bookable: bookable === 'Yes',
-      //     capacity,
-      //     features: features.split(', ')
-      //   });
-      //   console.log('Add Response:', response);
-      //   closeModal();
-      //   await fetchLocations();
-      // } catch (error) {
-      //   console.error("Error adding location:", error);
-      // }
+      try {
+        const response = await addLocationApi({
+          title: locationName,
+          devices: selectedDevices,
+          bookable: bookable === 'Yes',
+          booked: false, // Assuming a default value for 'booked' since it's required
+          capacity,
+          features: selectedFeatures
+        });
+        console.log('Add Response:', response);
+        closeModal();
+        await fetchLocations();
+      } catch (error) {
+        console.error("Error adding location:", error);
+        alert('Error adding location. Please try again.');
+      }
+    } else {
+      alert('Please fill in all fields.');
     }
   }
 
@@ -244,10 +236,8 @@
   $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 
   let locationName = '';
-  let devices = '';
   let bookable = 'Yes';
   let capacity = '';
-  let features = '';
 
 </script>
 
@@ -287,12 +277,7 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="devices">
                     Devices
                   </label>
-                  <select id="devices" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={devices}>
-                    <option value="">Select Devices</option>
-                    {#each devicesList as device}
-                      <option value={device}>{device}</option>
-                    {/each}
-                  </select>
+                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesList} placeholder="Select Devices" />
                   <span id="devices-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -318,12 +303,7 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="features">
                     Features
                   </label>
-                  <select id="features" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={features}>
-                    <option value="">Select Features</option>
-                    {#each featuresList as feature}
-                      <option value={feature}>{feature}</option>
-                    {/each}
-                  </select>
+                  <MultiSelect bind:selectedOptions={selectedFeatures} options={featuresList} placeholder="Select Features" />
                   <span id="features-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
               </div>
@@ -347,12 +327,6 @@
     </div>
   </div>
   <p class="text-sm {searchResultColor}">{searchResultText}</p>
-  <!-- <div class="flex items-center mb-4">
-    <input type="search" class="bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
-    {#if searchQuery}
-      <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
-    {/if}
-  </div> -->
   <table>
     <thead>
       <tr>
@@ -378,11 +352,7 @@
           <td class="table-data" title={space.devices}>
             <div class="flex items-center">
               {#if editingModes[space.id]}
-                <select class="salary-input" bind:value={space.devices}>
-                  {#each devicesList as device}
-                    <option value={device}>{device}</option>
-                  {/each}
-                </select>
+                <MultiSelect bind:selectedOptions={space.devices} options={devicesList} placeholder="Select Devices" />
               {:else}
                 <span>{space.devices}</span>
               {/if}
@@ -410,11 +380,7 @@
           <td class="table-data" title={space.features}>
             <div class="flex items-center">
               {#if editingModes[space.id]}
-                <select class="salary-input1" bind:value={space.features}>
-                  {#each featuresList as feature}
-                    <option value={feature}>{feature}</option>
-                  {/each}
-                </select>
+                <MultiSelect bind:selectedOptions={space.features} options={featuresList} placeholder="Select Features" />
               {:else}
                 <span>{space.features}</span>
               {/if}
