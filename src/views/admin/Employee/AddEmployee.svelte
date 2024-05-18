@@ -89,6 +89,19 @@ let salary = '';
     fileInput.addEventListener('change', handleFileInputChange);
   });
 
+  // Add event listener to file input element when the component is mounted
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    const fileInput = document.getElementById('profile-pic');
+    fileInput.addEventListener('change', handleFileInputChange);
+
+    // Cleanup function to remove the event listener when the component is destroyed
+    return () => {
+      fileInput.removeEventListener('change', handleFileInputChange);
+    };
+  });
+
   let listType = 'Permanent_List';
   let showValidDateTimeFields = false;
   let showValidDateAndTimeFields = false;
