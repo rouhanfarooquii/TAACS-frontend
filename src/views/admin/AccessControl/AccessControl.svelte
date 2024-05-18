@@ -56,6 +56,30 @@
     selectedUsers = new Set(selectedUsers); // Force rerender
   }
 
+  let dropdownOpen = false;
+
+
+function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
+}
+
+function handleCheckboxChange(event) {
+  const value = event.target.value;
+  if (event.target.checked) {
+      selectedRooms = [...selectedRooms, value];
+  } else {
+    selectedRooms = selectedRooms.filter(room => room !== value);
+  }  
+}
+  
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
+        dropdownOpen = false;
+    }
+}
+
+
   async function batchUpdate() {
     let departmentDesignationError = !selectedDepartment && !selectedDesignation;
     let accessibleRoomsError = selectedRooms.length === 0;
@@ -189,13 +213,19 @@
             <div class="w-full lg:w-6/12 px-4">
               <div class="relative mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Rooms</label>
-                {#each accessibleRooms as room}
-                <div class="flex items-center">
-                  <input type="checkbox" value={room} bind:group={selectedRooms} />
-                  <label class="ml-2 text-sm text-blueGray-600" for="grid-password">{room}</label>
+                <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                    <button on:click={toggleDropdown} class="dropbtn">Select Rooms</button>
+                    <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
+                        {#each accessibleRooms as room}
+                        <div class="flex items-center">
+                            <input type="checkbox" value={room} on:change={handleCheckboxChange} checked={selectedRooms.includes(room)} />
+                            <label class="ml-2 text-sm text-blueGray-600">{room}</label>
+                        </div>
+                        {/each}
+                    </div>
                 </div>
-                {/each}
-                <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select at least one accessible room</span>
+                <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
+
               </div>
             </div>
           </div>

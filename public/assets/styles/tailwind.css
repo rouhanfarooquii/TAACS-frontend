@@ -4520,6 +4520,7 @@ canvas{
   max-height: 200px;
   overflow-y: auto;
   outline: none;
+  margin-left: 4px;
 }
 
 .dropdown-content.show {
@@ -4532,7 +4533,7 @@ canvas{
   padding: 10px;
   font-size: 16px;
   border: none;
-  cursor: pointer;
+  cursor: text;
   outline: none;
 }
 

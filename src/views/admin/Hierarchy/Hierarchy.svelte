@@ -16,6 +16,13 @@
   ];
 
   let editingModes = {};
+  let showModal = false;
+  let editingMode = false;
+  let currentEditDepartment = null;
+
+  let departmentName = '';
+  let designations = [];
+  let newDesignation = '';
 
   function toggleEditingMode(departmentId) {
     editingModes[departmentId] = !editingModes[departmentId];
@@ -26,7 +33,7 @@
   }
 
   function editDepartment(department) {
-    toggleEditingMode(department.id);
+    openModal(true, department);
   }
 
   function validateEditInputs(department) {
@@ -61,14 +68,24 @@
     selectedDepartments = new Set(selectedDepartments);
   }
 
-  let showModal = false;
-
-  function openModal() {
+  function openModal(isEdit = false, department = null) {
     showModal = true;
+    editingMode = isEdit;
+    if (isEdit && department) {
+      currentEditDepartment = department;
+      departmentName = department.departmentName;
+      designations = [...department.designations];
+    } else {
+      departmentName = '';
+      designations = [];
+      newDesignation = '';
+    }
+    resetValidationErrors();
   }
 
   function closeModal() {
     showModal = false;
+    currentEditDepartment = null;
     departmentName = '';
     designations = [];
     newDesignation = '';
@@ -131,6 +148,17 @@
     department.designations = department.designations.filter((_, i) => i !== index);
   }
 
+  function saveDepartmentEdits() {
+    if (validateAddInputs()) {
+      const index = departments.findIndex(d => d.id === currentEditDepartment.id);
+      if (index !== -1) {
+        departments[index].departmentName = departmentName;
+        departments[index].designations = [...designations];
+        closeModal();
+      }
+    }
+  }
+
   const departmentsPerPage = 5;
   let currentPage = 1;
 
@@ -155,11 +183,6 @@
       : "No Result Found"
     : '';
   $: searchResultColor = filteredDepartments.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
-
-  let departmentName = '';
-  let designations = [];
-  let newDesignation = '';
-
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -169,7 +192,7 @@
         Department and Designations
       </h3>
     </div>
-    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Add Department</button>
+    <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={() => openModal(false)}>Add Department</button>
   </div>
   {#if showModal}
     <div class="modal">
@@ -178,7 +201,7 @@
           <div class="flex flex-wrap items-center">
             <div class="relative w-full px-4 max-w-full flex-grow flex-1">
               <h3 class="font-semibold text-lg text-blueGray-700">
-                Add New Department
+                {editingMode ? 'Edit Department' : 'Add New Department'}
               </h3>
             </div>
           </div>
@@ -217,9 +240,15 @@
               </div>
             </div>
             <div class="flex justify-end">
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addDepartment}>
-                Add
-              </button>
+              {#if editingMode}
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={saveDepartmentEdits}>
+                  Save
+                </button>
+              {:else}
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={addDepartment}>
+                  Add
+                </button>
+              {/if}
               <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                 Cancel
               </button>
@@ -235,17 +264,12 @@
     </div>
   </div>
   <p class="text-sm {searchResultColor}">{searchResultText}</p>
-  <!-- <div class="flex items-center mb-4">
-    <input type="search" class="bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
-    {#if searchQuery}
-      <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
-    {/if}
-  </div> -->
   <table>
     <thead>
       <tr>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department Name</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designations</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"></th>
       </tr>
     </thead>
     <tbody>
