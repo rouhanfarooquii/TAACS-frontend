@@ -56,11 +56,13 @@
 
 <div class="multiselect" bind:this={multiSelectRef}>
   <div class="border px-3 py-2 rounded cursor-pointer" on:click={toggleDropdown}>
-    {#if selectedOptions.length > 0}
-      {selectedOptions.join(', ')}
-    {:else}
-      {placeholder}
-    {/if}
+    <div class="selected-options-container">
+      {#if selectedOptions.length > 0}
+        {selectedOptions.join(', ')}
+      {:else}
+        {placeholder}
+      {/if}
+    </div>
   </div>
   {#if dropdownOpen}
     <div class="multiselect-dropdown">
@@ -71,7 +73,7 @@
       </label>
       {#each options as option}
         <label class="checkbox-container">
-          <input type="checkbox" checked={isSelected(option)} on:change={(event) => handleCheckboxChange(event, option)}>
+          <input type="checkbox" checked={isSelected(option) || (selectedOptions.length === options.length)} on:change={(event) => handleCheckboxChange(event, option)}>
           <span class="checkmark"></span>
           {option}
         </label>
