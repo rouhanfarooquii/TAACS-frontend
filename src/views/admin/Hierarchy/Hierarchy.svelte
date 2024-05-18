@@ -128,8 +128,6 @@
 
       departments.push({ id: Date.now().toString(), departmentName, designations: [...designations] });
       closeModal();
-    } else {
-      alert('Please fill in all fields.');
     }
   }
 

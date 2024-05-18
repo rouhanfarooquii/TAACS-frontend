@@ -194,8 +194,6 @@
       // } catch (error) {
       //   console.error("Error adding location:", error);
       // }
-    } else {
-      alert('Please fill in all fields.');
     }
   }
 
