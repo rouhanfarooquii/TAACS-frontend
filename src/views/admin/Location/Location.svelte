@@ -29,8 +29,9 @@
       spaces = locations.map(loc => ({
         id: loc._id,
         locationName: loc.title,
-        devices: loc.devices.map(device => device.title).join(', '),
+        devices: loc.devices.map(device => device.deviceName).join(', '),
         bookable: loc.bookable ? 'Yes' : 'No',
+        booked: loc.booked ? 'Yes' : 'No',
         capacity: loc.capacity,
         features: loc.features.join(', ')
       }));
@@ -42,8 +43,8 @@
   async function fetchDevices() {
     try {
       const devices = await getAllDevicesApi();
-      devicesList = devices.map(device => device.title);
-      console.log(devices)
+      devicesList = devices.map(device => ({ id: device._id, name: device.deviceName }));
+      console.log(devices);
     } catch (error) {
       console.error("Error fetching devices:", error);
     }
@@ -57,6 +58,7 @@
         title: space.locationName,
         devices: space.devices.split(', '),
         bookable: space.bookable === 'Yes',
+        booked: space.booked === 'Yes',
         capacity: space.capacity,
         features: space.features.split(', ')
       });
@@ -72,7 +74,7 @@
   }
 
   function validateEditInputs(space) {
-    if (!space.locationName || !space.devices || !space.bookable || !space.capacity || !space.features) {
+    if (!space.locationName || !space.devices || !space.bookable || !space.booked || !space.capacity || !space.features) {
       return false;
     }
     return true;
@@ -113,6 +115,10 @@
   }
 
   let showModal = false;
+  let locationName = '';
+  let bookable = 'Yes';
+  let booked = 'No';
+  let capacity = '';
 
   function openModal() {
     showModal = true;
@@ -124,6 +130,7 @@
     selectedDevices = [];
     selectedFeatures = [];
     bookable = 'Yes';
+    booked = 'No';
     capacity = '';
     resetValidationErrors();
   }
@@ -132,6 +139,7 @@
     document.getElementById('locationName-error').style.display = 'none';
     document.getElementById('devices-error').style.display = 'none';
     document.getElementById('bookable-error').style.display = 'none';
+    document.getElementById('booked-error').style.display = 'none';
     document.getElementById('capacity-error').style.display = 'none';
     document.getElementById('features-error').style.display = 'none';
   }
@@ -160,6 +168,13 @@
       document.getElementById('bookable-error').style.display = 'none';
     }
 
+    if (!booked) {
+      document.getElementById('booked-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('booked-error').style.display = 'none';
+    }
+
     if (!capacity) {
       document.getElementById('capacity-error').style.display = 'block';
       isValid = false;
@@ -186,15 +201,19 @@
         return;
       }
 
+      const dataToSend = {
+        title: locationName,
+        devices: selectedDevices.map(device => device.id), // Sending device IDs instead of names
+        bookable: bookable === 'Yes',
+        booked: booked === 'Yes',
+        capacity: Number(capacity),
+        features: selectedFeatures
+      };
+
+      console.log('Data being sent to API:', dataToSend);
+
       try {
-        const response = await addLocationApi({
-          title: locationName,
-          devices: selectedDevices,
-          bookable: bookable === 'Yes',
-          booked: false, // Assuming a default value for 'booked' since it's required
-          capacity,
-          features: selectedFeatures
-        });
+        const response = await addLocationApi(dataToSend);
         console.log('Add Response:', response);
         closeModal();
         await fetchLocations();
@@ -215,6 +234,7 @@
     space.features.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.devices.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.bookable.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    space.booked.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.capacity.toLowerCase().includes(searchQuery.toLowerCase())
   );
   $: displayedSpaces = filteredSpaces.slice(startIndex, endIndex);
@@ -232,10 +252,6 @@
       : "No Result Found"
     : '';
   $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
-
-  let locationName = '';
-  let bookable = 'Yes';
-  let capacity = '';
 
 </script>
 
@@ -275,7 +291,7 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="devices">
                     Devices
                   </label>
-                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesList} placeholder="Select Devices" />
+                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesList.map(device => device.name)} placeholder="Select Devices" />
                   <span id="devices-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -288,13 +304,23 @@
                   </div>
                   <span id="bookable-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="booked">
+                    Booked
+                  </label>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="booked" class="form-checkbox" bind:checked={booked}>
+                    <span class="ml-2 text-blueGray-600">{booked ? 'Yes' : 'No'}</span>
+                  </div>
+                  <span id="booked-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="capacity">
                     Capacity
                   </label>
-                  <input type="text" id="capacity" placeholder="Capacity" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={capacity}>
+                  <input type="number" id="capacity" placeholder="Capacity" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={capacity}>
                   <span id="capacity-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -331,6 +357,7 @@
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location Name</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Devices</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Bookable</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Booked</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Capacity</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Features</th>
       </tr>
@@ -350,7 +377,7 @@
           <td class="table-data" title={space.devices}>
             <div class="flex items-center">
               {#if editingModes[space.id]}
-                <MultiSelect bind:selectedOptions={space.devices} options={devicesList} placeholder="Select Devices" />
+                <MultiSelect bind:selectedOptions={space.devices} options={devicesList.map(device => device.name)} placeholder="Select Devices" />
               {:else}
                 <span>{space.devices}</span>
               {/if}
@@ -366,10 +393,20 @@
               {/if}
             </div>
           </td>
+          <td class="table-data" title={space.booked}>
+            <div class="flex items-center">
+              {#if editingModes[space.id]}
+                <input type="checkbox" class="form-checkbox" bind:checked={space.booked}>
+                <span class="ml-2 text-blueGray-600">{space.booked ? 'Yes' : 'No'}</span>
+              {:else}
+                <span>{space.booked ? 'Yes' : 'No'}</span>
+              {/if}
+            </div>
+          </td>
           <td class="table-data" title={space.capacity}>
             <div class="flex items-center">
               {#if editingModes[space.id]}
-                <input type="text" class="salary-input1" bind:value={space.capacity}>
+                <input type="number" class="salary-input1" bind:value={space.capacity}>
               {:else}
                 <span>{space.capacity}</span>
               {/if}

@@ -1,49 +1,49 @@
 let headers = {'Content-Type': 'application/json'}
 
-// Positions API
-export async function getAllPositionsApi(){
-    const response = await fetch(BACKEND + 'position/getall',{
-        method: 'GET',
-        headers: headers,
-    });
-    const responseObj = await response.json();
-    const positions = await responseObj.positions;
-    return await positions;
-};
+// // Positions API
+// export async function getAllPositionsApi(){
+//     const response = await fetch(BACKEND + 'position/getall',{
+//         method: 'GET',
+//         headers: headers,
+//     });
+//     const responseObj = await response.json();
+//     const positions = await responseObj.positions;
+//     return await positions;
+// };
 
-export async function addPositionApi(obj){
-    const response = await fetch(BACKEND + 'position/add', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({position: obj})
-    })
-    const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+// export async function addPositionApi(obj){
+//     const response = await fetch(BACKEND + 'position/add', {
+//         method: 'POST',
+//         observe: 'body',
+//         headers: headers,
+//         body: JSON.stringify({position: obj})
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
 
-export async function updatePositionApi(obj){
-    const response = await fetch(BACKEND + 'position/update', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({position: obj})
-    })
-    const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+// export async function updatePositionApi(obj){
+//     const response = await fetch(BACKEND + 'position/update', {
+//         method: 'POST',
+//         observe: 'body',
+//         headers: headers,
+//         body: JSON.stringify({position: obj})
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
 
-export async function deletePositionApi(id){
-    const response = await fetch(BACKEND + 'position/delete/' + id, {
-        method: 'POST',
-        headers: headers,
-    })
-    const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+// export async function deletePositionApi(id){
+//     const response = await fetch(BACKEND + 'position/delete/' + id, {
+//         method: 'POST',
+//         headers: headers,
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
 
 // AccessControls API
 export async function getAllAccessControlsApi(){

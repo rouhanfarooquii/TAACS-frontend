@@ -1,19 +1,14 @@
 <script>
   import { onMount } from 'svelte';
-  import { onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const edit2 = "../assets/img/icons8-tick-24.png";
   const delete1 = "../assets/img/icons8-delete-24.png";
   export let color = "light";
 
-  let departments = [
-    { id: '1', departmentName: 'Human Resources', designations: ['Manager', 'Assistant', 'Intern'] },
-    { id: '2', departmentName: 'Finance', designations: ['Accountant', 'Analyst', 'Intern'] },
-    { id: '3', departmentName: 'IT', designations: ['Developer', 'SysAdmin', 'Intern'] },
-    // ... other departments
-  ];
+  let departments = [];
 
   let editingModes = {};
   let showModal = false;
@@ -24,12 +19,16 @@
   let designations = [];
   let newDesignation = '';
 
+  onMount(async () => {
+    try {
+      departments = await getAllDepartmentsApi();
+    } catch (error) {
+      console.error('Failed to fetch departments:', error);
+    }
+  });
+
   function toggleEditingMode(departmentId) {
     editingModes[departmentId] = !editingModes[departmentId];
-  }
-
-  function saveDepartmentChanges(department) {
-    console.log("Saved changes for department:", department);
   }
 
   function editDepartment(department) {
@@ -37,15 +36,21 @@
   }
 
   function validateEditInputs(department) {
-    if (!department.departmentName || !department.designations.length) {
+    if (!department.title || !department.designations.length) {
       alert("All fields are required.");
       return false;
     }
     return true;
   }
 
-  function deleteDepartment(department) {
-    departments = departments.filter(d => d.id !== department.id);
+  async function deleteDepartment(department) {
+    try {
+      const msg = await deleteDepartmentApi(department._id);
+      console.log(msg);
+      departments = await getAllDepartmentsApi();
+    } catch (error) {
+      console.error('Failed to delete department:', error);
+    }
   }
 
   let selectedDepartments = new Set();
@@ -73,8 +78,8 @@
     editingMode = isEdit;
     if (isEdit && department) {
       currentEditDepartment = department;
-      departmentName = department.departmentName;
-      designations = [...department.designations];
+      departmentName = department.title;
+      designations = department.designations.map(d => d.title);
     } else {
       departmentName = '';
       designations = [];
@@ -119,15 +124,33 @@
 
   async function addDepartment() {
     if (validateAddInputs()) {
-      const isDuplicate = departments.some(department => department.departmentName === departmentName);
-
-      if (isDuplicate) {
-        alert('Department Name must be unique.');
-        return;
+      const newDepartment = { title: departmentName, designations: designations.map(d => ({ title: d })) };
+      try {
+        const msg = await addDepartmentApi(newDepartment);
+        console.log(msg);
+        departments = await getAllDepartmentsApi();
+        closeModal();
+      } catch (error) {
+        console.error('Failed to add department:', error);
       }
+    }
+  }
 
-      departments.push({ id: Date.now().toString(), departmentName, designations: [...designations] });
-      closeModal();
+  async function saveDepartmentEdits() {
+    if (validateAddInputs()) {
+      const updatedDepartment = {
+        ...currentEditDepartment,
+        title: departmentName,
+        designations: designations.map(d => ({ title: d }))
+      };
+      try {
+        const msg = await updateDepartmentApi(updatedDepartment);
+        console.log(msg);
+        departments = await getAllDepartmentsApi();
+        closeModal();
+      } catch (error) {
+        console.error('Failed to update department:', error);
+      }
     }
   }
 
@@ -146,25 +169,14 @@
     department.designations = department.designations.filter((_, i) => i !== index);
   }
 
-  function saveDepartmentEdits() {
-    if (validateAddInputs()) {
-      const index = departments.findIndex(d => d.id === currentEditDepartment.id);
-      if (index !== -1) {
-        departments[index].departmentName = departmentName;
-        departments[index].designations = [...designations];
-        closeModal();
-      }
-    }
-  }
-
   const departmentsPerPage = 5;
   let currentPage = 1;
 
   $: startIndex = (currentPage - 1) * departmentsPerPage;
   $: endIndex = Math.min(startIndex + departmentsPerPage, filteredDepartments.length);
   $: filteredDepartments = departments.filter(department => 
-    department.departmentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    department.designations.some(designation => designation.toLowerCase().includes(searchQuery.toLowerCase()))
+    department.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    department.designations.some(designation => designation.title.toLowerCase().includes(searchQuery.toLowerCase()))
   );
   $: displayedDepartments = filteredDepartments.slice(startIndex, endIndex);
   $: totalPages = Math.ceil(filteredDepartments.length / departmentsPerPage);
@@ -271,41 +283,41 @@
       </tr>
     </thead>
     <tbody>
-      {#each displayedDepartments as department (department.id)}
+      {#each displayedDepartments as department (department._id)}
         <tr>
-          <td class="table-data font-bold text-blueGray-600" title={department.departmentName}>
+          <td class="table-data font-bold text-blueGray-600" title={department.title}>
             <div class="flex items-center">
-              {#if editingModes[department.id]}
-                <input type="text" class="salary-input" bind:value={department.departmentName}>
+              {#if editingModes[department._id]}
+                <input type="text" class="salary-input" bind:value={department.title}>
               {:else}
-                <span>{department.departmentName}</span>
+                <span>{department.title}</span>
               {/if}
             </div>
           </td>
-          <td class="table-data" title={department.designations.join(', ')}>
+          <td class="table-data" title={department.designations.map(d => d.title).join(', ')}>
             <div class="flex items-center">
-              {#if editingModes[department.id]}
+              {#if editingModes[department._id]}
                 <div>
                   {#each department.designations as designation, index}
                     <div class="flex items-center mb-2">
-                      <input type="text" class="salary-input" bind:value={department.designations[index]}>
+                      <input type="text" class="salary-input" bind:value={department.designations[index].title}>
                       <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-2 py-1 ml-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={() => removeDesignationFromDepartment(department, index)}>Remove</button>
                     </div>
                   {/each}
                   <div class="flex">
                     <input type="text" placeholder="Add Designation" class="salary-input" bind:value={newDesignation}>
-                    <button class="bg-green-600 text-white active:bg-green-800 font-bold uppercase text-xs px-4 py-2 ml-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={() => { department.designations = [...department.designations, newDesignation]; newDesignation = ''; }}>Add</button>
+                    <button class="bg-green-600 text-white active:bg-green-800 font-bold uppercase text-xs px-4 py-2 ml-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={() => { department.designations.push({ title: newDesignation }); newDesignation = ''; }}>Add</button>
                   </div>
                 </div>
               {:else}
-                <span>{department.designations.join(', ')}</span>
+                <span>{department.designations.map(d => d.title).join(', ')}</span>
               {/if}
             </div>
           </td>
           <td>
             <div class="flex items-center">
-              {#if editingModes[department.id]}
-                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(department)) { saveDepartmentChanges(department); toggleEditingMode(department.id); } }}>
+              {#if editingModes[department._id]}
+                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(department)) { saveDepartmentEdits(); toggleEditingMode(department._id); } }}>
               {:else}
                 <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editDepartment(department)} />
               {/if}

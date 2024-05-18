@@ -18,13 +18,16 @@
   async function fetchAllDevices() {
     try {
       const backendDevices = await getAllDevicesApi();
-      devices = backendDevices.map((device, index) => ({
-        deviceName: device.deviceName || `Device ${index + 1}`,
-        deviceId: device.deviceId,
-        ip: device.ip,
-        status: device.status,
-        hide: device.hide
-      }));
+      for (let i = 0; i < backendDevices.length ; i++) {
+        if(backendDevices[i].status == "Active"){
+          backendDevices[i].status = true
+        }
+        else{
+          backendDevices[i].status = false
+
+        }
+      }
+      devices = JSON.parse(JSON.stringify(backendDevices));
       console.log('Fetched Devices:', devices);
     } catch (error) {
       console.error('Error fetching devices:', error);
@@ -67,17 +70,17 @@
 
   async function updateDevice() {
     if (validateInputs()) {
-      if (currentDevice) {
+      let temp = JSON.parse(JSON.stringify(currentDevice));
+      if (temp) {
         try {
-          const response = await updateDeviceApi({
-            _id: currentDevice.deviceId,
-            deviceName,
-            deviceId,
-            ip: deviceIp,
-            status: status ? 'Active' : 'Inactive',
-            hide: currentDevice.hide
-          });
-
+          console.log(temp);
+          if(temp.status){
+            temp.status = "Active"
+          }
+          else{
+            temp.status = "Inactive"
+          }
+          const response = await updateDeviceApi(temp);
           console.log('Update Response:', response);
           await fetchAllDevices();
           closeModal();
@@ -91,7 +94,7 @@
 
   async function deleteDevice(device) {
     try {
-      const response = await deleteDeviceApi(device.deviceId);
+      const response = await deleteDeviceApi(device._id);
       console.log('Delete Response:', response);
       await fetchAllDevices();
     } catch (error) {
@@ -242,14 +245,14 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
                       Device Name
                     </label>
-                    <input type="text" id="device-name" placeholder="Device Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceName}>
+                    <input type="text" id="device-name" placeholder="Device Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={currentDevice.deviceName}>
                     <span id="device-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
                       Device ID
                     </label>
-                    <input type="text" id="device-id" placeholder="Device ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceId}>
+                    <input type="text" id="device-id" placeholder="Device ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={currentDevice.deviceId}>
                     <span id="device-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
@@ -258,7 +261,7 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                       Device IP
                     </label>
-                    <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceIp}>
+                    <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={currentDevice.ip}>
                     <span id="device-ip-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   {#if editModal}
@@ -267,7 +270,7 @@
                       Status
                     </label>
                     <label class="switch">
-                      <input type="checkbox" id="status" class="hidden" bind:checked={status}>
+                      <input type="checkbox" id="status" class="hidden" bind:checked={currentDevice.status}>
                       <span class="slider round"></span> 
                     </label>
                   </div>
@@ -314,7 +317,7 @@
             <td class="table-data" title={device.deviceId}>{device.deviceId}</td>
             <td class="table-data" title={device.ip}>{device.ip}</td>
             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-              {#if device.status === 'Active'}
+              {#if device.status === true}
                 <i class="fas fa-circle text-green-500 mr-2"></i> Active
               {:else}
                 <i class="fas fa-circle text-red-500 mr-2"></i> Inactive
