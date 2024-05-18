@@ -14,7 +14,7 @@
 
   let devicesList = [];
   let selectedDevices = [];
-  let featuresList = ["Feature1", "Feature2", "Feature3"];
+  let featuresList = ["Projector", "AC", "Internet"];
   let selectedFeatures = [];
 
   onMount(async () => {
@@ -40,11 +40,14 @@
     }
   }
 
+  let tempDevices = []
+
   async function fetchDevices() {
     try {
       const devices = await getAllDevicesApi();
+      tempDevices = devices
       devicesList = devices.map(device => device.deviceName);
-      console.log(devices)
+      console.log(devices);
     } catch (error) {
       console.error("Error fetching devices:", error);
     }
@@ -90,6 +93,54 @@
     }
   }
 
+  async function addSpace() {
+    if (validateAddInputs()) {
+      try {
+        const isDuplicate = spaces.some(space => space.locationName === locationName);
+
+        if (isDuplicate) {
+          alert('Location Name must be unique.');
+          return;
+        }
+
+        const dataToSend = {
+          title: locationName,
+          devices: selectedDevices,
+          bookable: bookable,
+          booked: booked,
+          capacity: Number(capacity),
+          features: selectedFeatures
+        };
+
+        let tempdtosend = []
+
+        for (let i = 0; i < dataToSend.devices.length; i++) {
+          for (let j = 0; j < tempDevices.length; j++) {
+            if(selectedDevices[i] == tempDevices[j].deviceName){
+              tempdtosend.push(tempDevices[j]._id)
+            }
+          }
+        }
+
+        dataToSend.devices = tempdtosend
+
+        // console.log(dataToSend)
+
+        // console.log('Data being sent to API:', dataToSend);
+
+
+        // return;
+        const response = await addLocationApi(dataToSend);
+        console.log('Add Response:', response);
+        await fetchLocations();
+        closeModal();
+      } catch (error) {
+        console.error("Error adding location:", error);
+        alert('Error adding location. Please try again.');
+      }
+    }
+  }
+
   function toggleEditingMode(spaceId) {
     editingModes[spaceId] = !editingModes[spaceId];
   }
@@ -116,8 +167,8 @@
 
   let showModal = false;
   let locationName = '';
-  let bookable = 'Yes';
-  let booked = 'No';
+  let bookable = true;
+  let booked = false;
   let capacity = '';
 
   function openModal() {
@@ -129,8 +180,8 @@
     locationName = '';
     selectedDevices = [];
     selectedFeatures = [];
-    bookable = 'Yes';
-    booked = 'No';
+    bookable = true;
+    booked = false;
     capacity = '';
     resetValidationErrors();
   }
@@ -161,14 +212,14 @@
       document.getElementById('devices-error').style.display = 'none';
     }
 
-    if (!bookable) {
+    if (bookable === null) {
       document.getElementById('bookable-error').style.display = 'block';
       isValid = false;
     } else {
       document.getElementById('bookable-error').style.display = 'none';
     }
 
-    if (!booked) {
+    if (booked === null) {
       document.getElementById('booked-error').style.display = 'block';
       isValid = false;
     } else {
@@ -190,38 +241,6 @@
     }
 
     return isValid;
-  }
-
-  async function addSpace() {
-    if (validateAddInputs()) {
-      const isDuplicate = spaces.some(space => space.locationName === locationName || space.features === selectedFeatures.join(', '));
-
-      if (isDuplicate) {
-        alert('Location Name and Features must be unique.');
-        return;
-      }
-
-      const dataToSend = {
-        title: locationName,
-        devices: selectedDevices.map(device => device.id), // Sending device IDs instead of names
-        bookable: bookable === 'Yes',
-        booked: booked === 'Yes',
-        capacity: Number(capacity),
-        features: selectedFeatures
-      };
-
-      console.log('Data being sent to API:', dataToSend);
-
-      try {
-        const response = await addLocationApi(dataToSend);
-        console.log('Add Response:', response);
-        closeModal();
-        await fetchLocations();
-      } catch (error) {
-        console.error("Error adding location:", error);
-        alert('Error adding location. Please try again.');
-      }
-    }
   }
 
   const spacesPerPage = 5;
@@ -248,7 +267,7 @@
 
   $: searchResultText = searchQuery
     ? filteredSpaces.length > 0
-      ? `Rows Found: ${filteredSpaces.length}`
+      ? Rows Found: ${filteredSpaces.length}
       : "No Result Found"
     : '';
   $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
@@ -291,7 +310,7 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="devices">
                     Devices
                   </label>
-                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesList.map(device => device.name)} placeholder="Select Devices" />
+                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesList} placeholder="Select Devices" />
                   <span id="devices-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -377,7 +396,7 @@
           <td class="table-data" title={space.devices}>
             <div class="flex items-center">
               {#if editingModes[space.id]}
-                <MultiSelect bind:selectedOptions={space.devices} options={devicesList.map(device => device.name)} placeholder="Select Devices" />
+                <MultiSelect bind:selectedOptions={space.devices} options={devicesList} placeholder="Select Devices" />
               {:else}
                 <span>{space.devices}</span>
               {/if}
