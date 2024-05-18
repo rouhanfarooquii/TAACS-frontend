@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi } from '../../../services/api';
+  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi, getAllDevicesApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const edit2 = "../assets/img/icons8-tick-24.png";
@@ -11,11 +11,12 @@
   let spaces = [];
   let editingModes = {};
 
-  let devicesList = ["Device1", "Device2", "Device3"];
+  let devicesList = [];
   let featuresList = ["Feature1", "Feature2", "Feature3"];
 
   onMount(async () => {
     await fetchLocations();
+    await fetchDevices();
   });
 
   async function fetchLocations() {
@@ -32,6 +33,16 @@
       }));
     } catch (error) {
       console.error("Error fetching locations:", error);
+    }
+  }
+
+  async function fetchDevices() {
+    try {
+      const devices = await getAllDevicesApi();
+      console.log('Fetched Devices:', devices);
+      devicesList = devices.map(device => device.title);
+    } catch (error) {
+      console.error("Error fetching devices:", error);
     }
   }
 
@@ -108,7 +119,7 @@
     showModal = false;
     locationName = '';
     devices = '';
-    bookable = '';
+    bookable = 'Yes';
     capacity = '';
     features = '';
     resetValidationErrors();
@@ -172,28 +183,24 @@
         return;
       }
 
-      console.log({
-        title: locationName,
-        devices: devices.split(', '),
-        bookable: bookable === 'Yes',
-        capacity,
-        features: features.split(', ')
-      })
-
-      // try {
-      //   const response = await addLocationApi({
-      //     title: locationName,
-      //     devices: devices.split(', '),
-      //     bookable: bookable === 'Yes',
-      //     capacity,
-      //     features: features.split(', ')
-      //   });
-      //   console.log('Add Response:', response);
-      //   closeModal();
-      //   await fetchLocations();
-      // } catch (error) {
-      //   console.error("Error adding location:", error);
-      // }
+      try {
+        const response = await addLocationApi({
+          title: locationName,
+          devices: devices.split(', '),
+          bookable: bookable === 'Yes',
+          booked: false, // Assuming a default value for 'booked' since it's required
+          capacity,
+          features: features.split(', ')
+        });
+        console.log('Add Response:', response);
+        closeModal();
+        await fetchLocations();
+      } catch (error) {
+        console.error("Error adding location:", error);
+        alert('Error adding location. Please try again.');
+      }
+    } else {
+      alert('Please fill in all fields.');
     }
   }
 
@@ -329,12 +336,6 @@
     </div>
   </div>
   <p class="text-sm {searchResultColor}">{searchResultText}</p>
-  <!-- <div class="flex items-center mb-4">
-    <input type="search" class="bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
-    {#if searchQuery}
-      <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
-    {/if}
-  </div> -->
   <table>
     <thead>
       <tr>
