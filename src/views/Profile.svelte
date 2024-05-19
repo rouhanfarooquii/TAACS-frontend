@@ -5,23 +5,47 @@
   import Footer from "components/Footers/Footer.svelte";
 
   const team2 = "/assets/img/10.jpg";
+  const qrCode = "/assets/img/sample-qr.png";
   export let location;
 
-  let employee= [    
-    { id: 12, name: 'Lisa Nguyen', phoneNumber: '777-222-3333', location: 'Phoenix', department: 'Operations', designation: 'Supervisor', employeeType: 'Full-time', gender: 'Female', email: 'lisa@example.com', address: '901 Maple St, Phoenix', dateOfBirth: '1986-09-10', cardIdNumber: 'L789012', personalPassword: 'mypassword5678', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 60000, active: false },
-  ]
+  let employee = {    
+    id: 12,
+    name: 'Lisa Nguyen',
+    phoneNumber: '777-222-3333',
+    location: 'Phoenix',
+    department: 'Operations',
+    designation: 'Supervisor',
+    employeeType: 'Full-time',
+    gender: 'Female',
+    email: 'lisa@example.com',
+    address: '901 Maple St, Phoenix',
+    dateOfBirth: '1986-09-10',
+    cardIdNumber: 'L789012',
+    personalPassword: 'mypassword5678',
+    fingerIndex1: '',
+    fingerIndex2: '',
+    isFingerAdded: false,
+    salary: 60000,
+    active: false
+  };
 
   let gradientBackground = `
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   `;
 
-  function navigatetoLeave() {
-    navigate('/user/leaveform');
-  }  
-  function navigatetoAttendance() {
-    navigate('/user/attendance');
+  let showSalary = false;
+
+  function toggleSalaryVisibility() {
+    showSalary = !showSalary;
   }
 
+  function navigateToLeave() {
+    navigate('/user/leaveform');
+  }
+
+  function navigateToAttendance() {
+    navigate('/user/attendance');
+  }
 </script>
 
 <div>
@@ -79,12 +103,12 @@
                 <div class="py-6 px-3 mt-32 sm:mt-0">
                   <button
                     class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={navigatetoAttendance}>
+                    type="button" on:click={navigateToAttendance}>
                     View Attendance
                   </button>
                   <button
-                  class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                  type="button" on:click={navigatetoLeave}>
+                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                    type="button" on:click={navigateToLeave}>
                     Request A Leave
                   </button>
                 </div>
@@ -122,30 +146,44 @@
               <h3
                 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2"
               >
-                Jenna Stones
+                {employee.name}
               </h3>
               <div
                 class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase"
               >
-                <i class="fas fa-id-card mr-2 text-lg text-blueGray-400"></i>
-                Los Angeles, California
+                <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
+                {employee.location}
               </div>
               <div class="mb-2 text-blueGray-600 mt-10">
                 <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                Solution Manager - Creative Tim Officer
+                {employee.designation} - {employee.department}
               </div>
               <div class="mb-2 text-blueGray-600">
-                <i class="fas fa-university mr-2 text-lg text-blueGray-400"></i>
-                University of Computer Science
+                <i class="fas fa-user-tag mr-2 text-lg text-blueGray-400"></i>
+                {employee.employeeType}
+              </div>
+              <div class="mb-2 text-blueGray-600">
+                <i class="fas fa-envelope mr-2 text-lg text-blueGray-400"></i>
+                {employee.email}
+              </div>
+              <div class="mb-2 text-blueGray-600">
+                <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
+                {showSalary ? `$${employee.salary}` : '******'}
+                <button
+                  class="ml-2 text-blueGray-600"
+                  on:click={toggleSalaryVisibility}
+                >
+                  {showSalary ? 'Hide' : 'Show'}
+                </button>
               </div>
             </div>
             <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
               <div class="flex flex-wrap justify-center">
                 <div class="w-full lg:w-9/12 px-4">
                   <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                    An artist of considerable range, Jenna the name taken by
+                    An artist of considerable range, Lisa the name taken by
                     Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                    performs and records all of his own music, giving it a warm,
+                    performs and records all of her own music, giving it a warm,
                     intimate feel with a solid groove structure. An artist of
                     considerable range.
                   </p>
@@ -157,6 +195,13 @@
                     Show more
                   </a>
                 </div>
+              </div>
+              <div class="flex justify-center mt-6">
+                <img
+                  alt="QR Code"
+                  src={qrCode}
+                  class="h-32 w-32"
+                />
               </div>
             </div>
           </div>

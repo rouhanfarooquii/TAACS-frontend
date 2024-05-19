@@ -169,7 +169,7 @@
     <table class="items-center w-full bg-transparent border-collapse">
       <thead>
         <tr>
-          <th><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
+          <th class="bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Shift Name/Title</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Start Time</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">End Time</th>
@@ -183,7 +183,7 @@
       <tbody>
         {#each displayedShifts as shift (shift.id)}
         <tr>
-          <td><input type="checkbox" checked={selectedShifts.has(shift.id)} class="rounded" on:click={() => toggleSelection(shift.id)}></td>
+          <td class="table-date"><input type="checkbox" checked={selectedShifts.has(shift.id)} class="rounded" on:click={() => toggleSelection(shift.id)}></td>
           <td class='table-data font-bold text-blueGray-600 wrap-text'>{shift.shiftName}</td>
           <td class='table-data'>{shift.startTime}</td>
           <td class='table-data'>{shift.endTime}</td>
