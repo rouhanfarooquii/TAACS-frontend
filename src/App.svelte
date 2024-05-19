@@ -11,7 +11,6 @@
   // No Layout Pages
   import Index from "./views/Index.svelte";
   import Landing from "./views/Landing.svelte";
-  import Profile from "./views/Profile.svelte";
   import Attendance from "./views/user/Attendance.svelte";
 
   export let url = "";
@@ -26,7 +25,6 @@
   <Route path="user/*user" component="{User}" />
   <!-- no layout pages -->
   <Route path="landing" component="{Landing}" />
-  <Route path="profile" component="{Profile}" />
   <Route path="attendance" component="{Attendance}" />
   <!-- <Route path="/" component="{Index}" /> -->
   <Route path="/" component="{Admin}" />
