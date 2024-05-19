@@ -9,6 +9,7 @@
 
   // pages for this layout
   import Dashboard from "views/admin/Dashboard/Dashboard.svelte";
+  import LiveAttendance from "views/admin/Dashboard/LiveAttendance.svelte";
   import AccessControl from "views/admin//AccessControl/AccessControl.svelte";
   import Payroll from "views/admin/Payroll/Payroll.svelte";
   import RoomBooking from "views/admin/RoomBooking/RoomBooking.svelte";
@@ -39,6 +40,7 @@
     <HeaderStats />
     <div class="px-4 md:px-10 mx-auto w-full -m-24">
       <Router url="admin">
+        <Route path="liveattendance" component="{LiveAttendance}" />
         <Route path="dashboard" component="{Dashboard}" />
         <Route path="accesscontrol" component="{AccessControl}" />
         <Route path="payroll" component="{Payroll}" />
