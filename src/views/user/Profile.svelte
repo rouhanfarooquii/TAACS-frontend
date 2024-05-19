@@ -1,8 +1,9 @@
 <script>
-  // core components
   import { navigate } from 'svelte-routing';
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
+  import QrCode from '../admin/Parking/QRCode.svelte';
   import Footer from "components/Footers/Footer.svelte";
+  import { writable } from 'svelte/store';
 
   const team2 = "/assets/img/10.jpg";
   const qrCode = "/assets/img/sample-qr.png";
@@ -29,11 +30,37 @@
     active: false
   };
 
+  let attendanceData = writable([
+    { date: '2024-05-01', status: 'Present' },
+    { date: '2024-05-02', status: 'Present' },
+    { date: '2024-05-03', status: 'Absent' },
+    { date: '2024-05-06', status: 'Present' },
+    { date: '2024-05-07', status: 'Present' },
+    { date: '2024-05-08', status: 'Absent' },
+    { date: '2024-05-09', status: 'Present' },
+    { date: '2024-05-10', status: 'Present' },
+    { date: '2024-05-13', status: 'Absent' },
+    { date: '2024-05-14', status: 'Present' },
+    { date: '2024-05-15', status: 'Present' },
+    { date: '2024-05-16', status: 'Absent' },
+    { date: '2024-05-17', status: 'Present' },
+    { date: '2024-05-20', status: 'Present' },
+    { date: '2024-05-21', status: 'Absent' },
+    { date: '2024-05-22', status: 'Present' },
+    { date: '2024-05-23', status: 'Present' },
+    { date: '2024-05-24', status: 'Absent' },
+    { date: '2024-05-27', status: 'Present' },
+    { date: '2024-05-28', status: 'Present' },
+    { date: '2024-05-29', status: 'Absent' },
+    { date: '2024-05-30', status: 'Present' },
+    { date: '2024-05-31', status: 'Absent' }
+  ]);
+
+  let showSalary = false;
+
   let gradientBackground = `
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   `;
-
-  let showSalary = false;
 
   function toggleSalaryVisibility() {
     showSalary = !showSalary;
@@ -45,6 +72,15 @@
 
   function navigateToAttendance() {
     navigate('/user/attendance');
+  }
+
+  // Calculate attendance and absence counts
+  let totalAttendance = 0;
+  let totalAbsences = 0;
+
+  $: {
+    totalAttendance = $attendanceData.filter(record => record.status === 'Present').length;
+    totalAbsences = $attendanceData.filter(record => record.status === 'Absent').length;
   }
 </script>
 
@@ -92,7 +128,7 @@
                 <div class="relative">
                   <img
                     alt="..."
-                    src="{team2}"
+                    src={team2}
                     class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                   />
                 </div>
@@ -119,7 +155,7 @@
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      82
+                      {totalAttendance}
                     </span>
                     <span class="text-sm text-blueGray-400">Attendance</span>
                   </div>
@@ -127,17 +163,9 @@
                     <span
                       class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
                     >
-                      10
+                      {totalAbsences}
                     </span>
                     <span class="text-sm text-blueGray-400">Absences</span>
-                  </div>
-                  <div class="lg:mr-4 p-3 text-center">
-                    <span
-                      class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
-                    >
-                      4
-                    </span>
-                    <span class="text-sm text-blueGray-400">Late Arrivals</span>
                   </div>
                 </div>
               </div>
@@ -169,11 +197,12 @@
               <div class="mb-2 text-blueGray-600">
                 <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
                 {showSalary ? `$${employee.salary}` : '******'}
-                <button
-                  class="ml-2 text-blueGray-600"
-                  on:click={toggleSalaryVisibility}
-                >
-                  {showSalary ? 'Hide' : 'Show'}
+                <button class="ml-2 text-blueGray-600 transparent-button" on:click={toggleSalaryVisibility}>
+                  {#if showSalary}
+                    <i class="fas fa-eye-slash"></i>
+                  {:else}
+                    <i class="fas fa-eye"></i>
+                  {/if}
                 </button>
               </div>
             </div>
@@ -181,11 +210,13 @@
               <div class="flex flex-wrap justify-center">
                 <div class="w-full lg:w-9/12 px-4">
                   <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                    An artist of considerable range, Lisa the name taken by
-                    Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                    performs and records all of her own music, giving it a warm,
-                    intimate feel with a solid groove structure. An artist of
-                    considerable range.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consectetur a nulla id ultricies. 
+                    Pellentesque ut turpis dui. Proin ac nisl hendrerit, imperdiet nulla at, volutpat velit. 
+                    Sed iaculis justo eu nulla aliquet scelerisque. Quisque a lorem eu orci molestie lobortis. 
+                    Mauris vel nulla pharetra, fringilla ante non, ultricies nulla. Nunc consequat euismod nunc, quis scelerisque risus venenatis id. 
+                    Vivamus egestas, odio a dictum auctor, dui nisi mattis risus, ut pharetra neque erat quis arcu. 
+                    Suspendisse posuere eget sapien sit amet lobortis. Curabitur dapibus facilisis nisi, 
+                    molestie ullamcorper tortor eleifend pharetra. Nam quis porttitor diam.
                   </p>
                   <a
                     href="#pablo"
@@ -197,11 +228,9 @@
                 </div>
               </div>
               <div class="flex justify-center mt-6">
-                <img
-                  alt="QR Code"
-                  src={qrCode}
-                  class="h-32 w-32"
-                />
+                <td>
+                  <QrCode data={employee.name.toString()} />
+                </td>
               </div>
             </div>
           </div>
