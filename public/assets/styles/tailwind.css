@@ -4411,14 +4411,22 @@ input:checked + .slider:before {
 }
 
 .modal-content {
+  /* Modal box */
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  width: 600px; /* Set a fixed width for the modal */
+}
+
+/* .modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 600px;
   max-width: 100%;
   overflow: hidden;
-}
+} */
 
 .close {
   /* Close button */
