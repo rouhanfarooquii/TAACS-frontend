@@ -192,10 +192,9 @@
           <td class='table-data'>{shift.location}</td>
           <td class='table-data'>{shift.shiftType === 'custom' ? shift.customShiftType : shift.shiftType}</td>
           <td class='table-data'>
-            <div class="flex">
-              <img src={edit1} alt="Edit" class="h-6 w-6 cursor-pointer" on:click={() => openEditModal(shift.id)} />
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <img src={view1} alt="View" class="h-6 w-6 cursor-pointer ml-2" on:click={() => viewShift(shift.id)} />
+            <div class="flex items-center">
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(shift.id)}></i>
+              <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewShift(shift.id)}></i>
             </div>
           </td>
         </tr>

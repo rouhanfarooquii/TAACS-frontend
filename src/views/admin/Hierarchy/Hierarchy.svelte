@@ -317,12 +317,12 @@
           <td>
             <div class="flex items-center">
               {#if editingModes[department._id]}
-                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(department)) { saveDepartmentEdits(); toggleEditingMode(department._id); } }}>
+              <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => { if(validateEditInputs(department)) { saveDepartmentEdits(); toggleEditingMode(department._id); } }}></i>
               {:else}
-                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editDepartment(department)} />
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editDepartment(department)}></i>
               {/if}
-              <div class="ml-4">
-                <img src={delete1} alt="Delete" class="icon-button cursor-pointer" on:click={() => deleteDepartment(department)}>
+              <div class="ml-2">
+                <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteDepartment(department)}></i>
               </div>
             </div>
           </td>
