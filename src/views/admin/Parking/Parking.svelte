@@ -363,12 +363,12 @@
     <td>
       <div class="flex items-center">
         {#if editingModes[space.id]}
-          <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}>
+        <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}></i>
         {:else}
-          <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSpace(space)} />
+        <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSpace(space)}></i>
         {/if}
-        <div class="ml-4">
-          <img src={delete1} alt="Delete" class="icon-button cursor-pointer" on:click={() => deleteSpace(space)}>
+        <div class="ml-2">
+          <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
         </div>
       </div>
     </td>

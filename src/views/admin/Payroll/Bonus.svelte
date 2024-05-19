@@ -295,9 +295,9 @@
               <span>{bonus.activeFrom}</span>
             </div>
           </td>
-          <td>
+          <td class="table-data">
             <div class="flex items-center">
-              <img src={delete1} alt="Delete" class="icon-button cursor-pointer ml-4" on:click={() => deleteBonus(bonus.id)} />
+              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteBonus(bonus.id)}></i>
             </div>
           </td>
         </tr>

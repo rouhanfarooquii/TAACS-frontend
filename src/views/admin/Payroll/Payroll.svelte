@@ -305,11 +305,9 @@
             <!-- Edit button -->
             <div class="flex items-center">
               {#if editingModes[salaries.id]}
-                <!-- Save button -->
-                <img src={edit2} alt="Save" class="icon-button cursor-pointer" on:click={() => {saveSalaryChanges(salaries); toggleEditingMode(salaries.id);}}>
+              <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => {saveSalaryChanges(salaries); toggleEditingMode(salaries.id);}}></i>
               {:else}
-                <!-- Edit button -->
-                <img src={edit1} alt="Edit" class="icon-button cursor-pointer" on:click={() => editSalary(salaries)} />
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSalary(salaries)}></i>
               {/if}
             </div>
           </td>
