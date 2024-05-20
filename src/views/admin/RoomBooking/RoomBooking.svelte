@@ -2,6 +2,7 @@
   import { createPopper } from "@popperjs/core";
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import { getAllRoomBookingsApi, getAllBookableLocationsApi} from '../../../services/api'; // Import the API function
   export let color = "light";
 
   let employeeName = '';
@@ -36,279 +37,36 @@
       dateTimeTo: "2024-05-12T11:00",
       noOfPeople: 8
     },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    }
+    // ... other bookings ...
   ];
+
+  onMount(async () => {
+    try {
+      const roomBookings = await getAllRoomBookingsApi();
+      console.log('Room bookings:', JSON.stringify(roomBookings, null, 2)); // Log the API response to the console
+      
+      // Map the API response to bookingList
+      bookingList = roomBookings.map(booking => ({
+        employeeName: booking.employee.name,
+        designation: booking.employee.designation.title,
+        roomName: "Room 101", // Assuming roomName is not available in API response, hardcoding for now
+        dateTimeFrom: booking.dateTimeFrom,
+        dateTimeTo: booking.dateTimeTo,
+        noOfPeople: booking.numOfPeople
+      }));
+
+      // Fetch and set the bookable locations
+      const bookableLocations = await getAllBookableLocationsApi();
+      console.log('Bookable locations:', JSON.stringify(bookableLocations, null, 2)); // Log the API response to the console
+      roomList = bookableLocations.map(location => ({
+        roomName: location.title,
+        capacity: location.capacity
+      }));
+
+    } catch (error) {
+      console.error('Error fetching room bookings:', error);
+    }
+  });
 
   async function bookRoom() {
     if (!validateInputs()) {
