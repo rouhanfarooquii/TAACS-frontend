@@ -362,7 +362,7 @@ export async function deleteLocationApi(id){
 
 // Parkings API
 export async function getAllParkingsApi(){
-    const response = await fetch(BACKEND + 'parking/getall',{
+    const response = await fetch(BACKEND + 'parking/getAll',{
         method: 'GET',
         headers: headers,
     });
