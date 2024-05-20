@@ -4418,7 +4418,7 @@ input:checked + .slider:before {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* .modal-content {
+.modal-content1 {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -4426,7 +4426,7 @@ input:checked + .slider:before {
   width: 600px;
   max-width: 100%;
   overflow: hidden;
-} */
+}
 
 .close {
   /* Close button */

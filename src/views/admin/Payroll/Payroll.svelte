@@ -188,7 +188,7 @@
 </div>
     {#if showModal}
       <div class="modal">
-        <div class="modal-content">
+        <div class="modal-content1">
           <div class="rounded-t mb-0 px-4 py-10 border-0">
             <div class="flex flex-wrap items-center">
               <div class="relative w-full px-4 max-w-full flex-grow flex-1">
@@ -234,7 +234,7 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
                       Enter Value/Percentage:
                     </label>
-                    <input type="text" id="value" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                    <input type="number" id="value" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
                     <span id="value-error" class="text-red-600 text-xs" style="display: none;">* Value should not be zero</span>
                   </div>
                   <div class="relative mb-3">
@@ -283,6 +283,7 @@
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Designation</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Department</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Salary</th>
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Action</th>
         </tr>
       </thead>
       <tbody>

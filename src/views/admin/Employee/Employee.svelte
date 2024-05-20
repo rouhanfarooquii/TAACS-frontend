@@ -17,7 +17,6 @@
   
     let filters = {
       search: '',
-      experience: '',
       active: ''
     };
   
@@ -29,31 +28,21 @@
           employee.name.toLowerCase().includes(filters.search.toLowerCase()) ||
           employee.department.toLowerCase().includes(filters.search.toLowerCase()) ||
           employee.designation.toLowerCase().includes(filters.search.toLowerCase());
-        
-        const matchesExperience = filters.experience === '' || 
-          (filters.experience === '0-1' && employee.experience >= 0 && employee.experience <= 1) ||
-          (filters.experience === '1-3' && employee.experience > 1 && employee.experience <= 3) ||
-          (filters.experience === '3-5' && employee.experience > 3 && employee.experience <= 5) ||
-          (filters.experience === '5+' && employee.experience > 5);
   
         const matchesActive = filters.active === '' || 
           (filters.active === 'true' && employee.active) ||
           (filters.active === 'false' && !employee.active);
   
-        return matchesSearch && matchesExperience && matchesActive;
+        return matchesSearch && matchesActive;
       });
     }
   
     function clearFilters() {
       filters.search = '';
-      filters.experience = '';
       filters.active = '';
       filteredEmployees = employees;
     }
-  
-    function showRecords(value) {
-      // Show x records logic here
-    }
+
   
     function navigateToAddEmployee() {
       navigate('/admin/addemployee');
@@ -256,16 +245,6 @@
         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="searchBar">Search:</label>
         <input type="text" id="searchBar" name="searchBar" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search by ID, Name, Department, Designation" bind:value={filters.search} />
       </div>
-      <div class="relative mb-3 w-full mr-6">
-        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"  for="filterExperience">Experience:</label>
-        <select id="filterExperience" name="filterExperience" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={filters.experience}>
-          <option value="">All</option>
-          <option value="0-1">0-1 years</option>
-          <option value="1-3">1-3 years</option>
-          <option value="3-5">3-5 years</option>
-          <option value="5+">5+ years</option>
-        </select>
-      </div>
       <div class="relative mb-3 w-full">
         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"  for="filterActive">Active:</label>
         <select id="filterActive" name="filterActive" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={filters.active}>
@@ -300,8 +279,8 @@
       <tbody>
         {#each filteredEmployees as employee, index}
           <tr>
-            <td class="table-data">{index + 1}</td>
-            <td class="table-data">{employee.name}</td>
+            <td class="table-data ">{index + 1}</td>
+            <td class="table-data font-bold text-blueGray-600">{employee.name}</td>
             <td class="table-data">{employee.department}</td>
             <td class="table-data">{employee.designation}</td>
             <td class="table-data">{employee.active ? 'Yes' : 'No'}</td>
@@ -316,16 +295,6 @@
         {/each}
       </tbody>
     </table>
-  
-    <!-- Show x Records -->
-    <div class="mt-4">
-      <label for="showRecords">Show Records:</label>
-      <select id="showRecords" class="small-dropdown rounded" on:change="{() => showRecords(this.value)}">
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="30">30</option>
-      </select>
-    </div>
   
     {#if showModal}
         <div class="modal">
@@ -491,7 +460,7 @@
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                         Phone Number:
                       </label>
-                      <input type="text" id="phone-number" placeholder="Phone Number" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
+                      <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
                       <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                       <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
                     </div>

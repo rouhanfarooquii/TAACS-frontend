@@ -330,7 +330,7 @@ window.onclick = function(event) {
     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
       Phone Number:
     </label>
-    <input type="text" id="phone-number" placeholder="Phone Number" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={phoneNumber}>
+    <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={phoneNumber}>
     <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
   </div>

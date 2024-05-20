@@ -65,7 +65,7 @@
     </div>
   </div>
   {#if dropdownOpen}
-    <div class="multiselect-dropdown">
+    <div class="multiselect-dropdown px-2 py-2">
       <label class="checkbox-container">
         <input type="checkbox" checked={selectedOptions.length === options.length} on:change={(event) => handleCheckboxChange(event, 'Select All')}>
         <span class="checkmark"></span>

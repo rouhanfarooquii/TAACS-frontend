@@ -436,7 +436,7 @@
               {#if editingModes[space.id]}
               <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}></i>
               {:else}
-              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSpace(space)}></i>
+              <i class="fas fa-pencil mr-2 text-sm cursor-pointer" on:click={() => editSpace(space)}></i>
               {/if}
               <div class="ml-2">
                 <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
