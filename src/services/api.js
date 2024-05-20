@@ -46,18 +46,30 @@ let headers = {'Content-Type': 'application/json'}
 // };
 
 // AccessControls API
-export async function getAllAccessControlsApi(){
-    const response = await fetch(BACKEND + 'accessControl/getall',{
-        method: 'GET',
-        headers: headers,
-    });
-    const responseObj = await response.json();
-    const accessControls = await responseObj.accessControls;
-    return await accessControls;
-};
+// export async function getAllAccessControlsApi(){
+//     const response = await fetch(BACKEND + 'accessControl/getall',{
+//         method: 'GET',
+//         headers: headers,
+//     });
+//     const responseObj = await response.json();
+//     const accessControls = await responseObj.accessControls;
+//     return await accessControls;
+// };
 
-export async function addAccessControlApi(obj){
-    const response = await fetch(BACKEND + 'accessControl/add', {
+// export async function addAccessControlApi(obj){
+//     const response = await fetch(BACKEND + 'accessControl/add', {
+//         method: 'POST',
+//         observe: 'body',
+//         headers: headers,
+//         body: JSON.stringify({accessControl: obj})
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
+
+export async function batchUpdateAccessControlApi(obj){
+    const response = await fetch(BACKEND + 'accessControl/batchUpdate', {
         method: 'POST',
         observe: 'body',
         headers: headers,
@@ -68,27 +80,27 @@ export async function addAccessControlApi(obj){
     return await msg;
 };
 
-export async function updateAccessControlApi(obj){
-    const response = await fetch(BACKEND + 'accessControl/update', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({accessControl: obj})
-    })
-    const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+// export async function updateAccessControlApi(obj){
+//     const response = await fetch(BACKEND + 'accessControl/update', {
+//         method: 'POST',
+//         observe: 'body',
+//         headers: headers,
+//         body: JSON.stringify({accessControl: obj})
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
 
-export async function deleteAccessControlApi(id){
-    const response = await fetch(BACKEND + 'accessControl/delete/' + id, {
-        method: 'POST',
-        headers: headers,
-    })
-    const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+// export async function deleteAccessControlApi(id){
+//     const response = await fetch(BACKEND + 'accessControl/delete/' + id, {
+//         method: 'POST',
+//         headers: headers,
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
 
 // Departments API
 export async function getAllDepartmentsApi(){

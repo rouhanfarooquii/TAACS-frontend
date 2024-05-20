@@ -4,7 +4,7 @@
   export let color = "light";
 
   import { onMount } from 'svelte';
-  import { getAllAccessControlsApi, addAccessControlsApi, updateAccessControlsApi, deleteAccessControlsApi } from '../../../services/api';
+  import { getAllEmployeesApi, getAllDepartmentsApi, batchUpdateAccessControlsApi } from '../../../services/api';
 
   let accessControlObject = [];
   let users = [];
@@ -12,8 +12,8 @@
   let selectedDepartment = '';
   let selectedDesignation = '';
   let selectedRooms = [];
-  let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
-  let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
+  let departments = [];
+  let designations = [];
   let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
 
   let selectedUsers = new Set();
@@ -21,19 +21,44 @@
 
   onMount(async () => {
     await getAllAccess();
+    await getAllDepartments();
   });
+
+  async function getAllDepartments(){
+    departments = await getAllDepartmentsApi();
+    departments.push({title: "All"})
+  }
+
+  function setDesignation(obj){
+    designations = []
+
+    if(obj.title == "All"){
+      designations = obj.designations
+      designations.push({title: "All"})
+
+      selectedDesignation = designations[designations.length() - 1]
+    }
+    else{
+      designations = obj.designations
+      designations.push({title: "All"})
+    }
+  }
 
   async function getAllAccess() {
     try {
-      accessControlObject = await getAllAccessControlsApi();
-      console.log('API Response:', JSON.stringify(accessControlObject, null, 2));
-      users = accessControlObject.map(ac => ({
-        id: ac.employee?.employeeID || 'N/A',
-        name: ac.employee?.name || 'N/A',
-        department: ac.employee?.department?.title || 'N/A',
-        designation: ac.employee?.designation?.title || 'N/A',
-        accessibleRooms: ac.locations ? ac.locations.map(location => location.title) : []
-      }));
+      accessControlObject = await getAllEmployeesApi();
+      users = accessControlObject
+      for (let index = 0; index < users.length; index++) {        
+        let names = "";
+        for (let ind = 0; ind < users[index].locations.length; ind++) {
+          names += users[index].locations[ind].title;
+          if (ind < users[index].locations.length - 1) {
+            names += ", ";
+          }
+        }
+        users[index].locations = names;
+      }
+      console.log(users);
     } catch (error) {
       console.error("Error fetching access control data:", error);
     }
@@ -52,34 +77,32 @@
     if (selectedUsers.size === users.length) {
       selectedUsers.clear();
     } else {
-      users.forEach(user => selectedUsers.add(user.id));
+      users.forEach(user => selectedUsers.add(user._id));
     }
     selectedUsers = new Set(selectedUsers); // Force rerender
   }
 
   let dropdownOpen = false;
 
-
-function toggleDropdown() {
+  function toggleDropdown() {
     dropdownOpen = !dropdownOpen;
-}
+  }
 
-function handleCheckboxChange(event) {
-  const value = event.target.value;
-  if (event.target.checked) {
+  function handleCheckboxChange(event) {
+    const value = event.target.value;
+    if (event.target.checked) {
       selectedRooms = [...selectedRooms, value];
-  } else {
-    selectedRooms = selectedRooms.filter(room => room !== value);
-  }  
-}
-  
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
+    } else {
+      selectedRooms = selectedRooms.filter(room => room !== value);
+    }  
+  }
+
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(event) {
     if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
         dropdownOpen = false;
     }
-}
-
+  }
 
   async function batchUpdate() {
     let departmentDesignationError = !selectedDepartment && !selectedDesignation;
@@ -133,13 +156,7 @@ window.onclick = function(event) {
 
   $: startIndex = (currentPage - 1) * usersPerPage;
   $: endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
-  $: filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.id.includes(searchQuery) ||
-    user.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.accessibleRooms.some(room => room.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  $: filteredUsers = users;
   $: displayedUsers = filteredUsers.slice(startIndex, endIndex);
   $: totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
@@ -191,10 +208,10 @@ window.onclick = function(event) {
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Department:
                 </label>
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" on:change={(e) => setDesignation(departments.find(d => d.title === e.target.value))}>
                   <option value="" disabled selected>Select Department</option>
                   {#each departments as department}
-                    <option value={department}>{department}</option>
+                    <option value={department.title}>{department.title}</option>
                   {/each}
                 </select>
                 <span id="department-designation-error" class="text-red-600 text-xs" style="display: none;">* Please select a department or designation</span>
@@ -203,10 +220,10 @@ window.onclick = function(event) {
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Designation:
                 </label>                  
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                   <option value="" disabled selected>Select Designation</option>
                   {#each designations as designation}
-                    <option value={designation}>{designation}</option>
+                    <option value={designation.title}>{designation.title}</option>
                   {/each}
                 </select>
               </div>
@@ -240,14 +257,14 @@ window.onclick = function(event) {
       </tr>
     </thead>
     <tbody>
-      {#each displayedUsers as user}
+      {#each users as user}
       <tr>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"><input type="checkbox" checked={selectedUsers.has(user.id)} on:click={() => toggleSelection(user.id)} /></td>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.id}>{user.id}</td>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.name}>{user.name}</td>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.department}>{user.department}</td>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4" title={user.designation}>{user.designation}</td>
-        <td class="table-data2" title={user.accessibleRooms.join(', ')}>{user.accessibleRooms.join(', ')}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"><input type="checkbox" checked={selectedUsers.has(user._id)} on:click={() => toggleSelection(user._id)} /></td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.employeeID}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.name}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.department.title}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.designation.title}</td>
+        <td class="table-data2">{user.locations}</td>
       </tr>
       {/each}
     </tbody>
