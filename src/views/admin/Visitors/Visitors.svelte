@@ -156,10 +156,9 @@
       <label for="filterActive">Gender:</label>
       <br>
       <select id="filterActive" name="filterActive" class="filter-input" bind:value="{employee.gender}">
-        <option value="">All</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
-        <option value="Other">Other</option>
+        <option value="Other">Prefer Not To Say</option>
       </select>
     </div>
   </div>

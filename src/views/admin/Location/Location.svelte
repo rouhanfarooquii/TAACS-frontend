@@ -40,12 +40,12 @@
     }
   }
 
-  let tempDevices = []
+  let tempDevices = [];
 
   async function fetchDevices() {
     try {
       const devices = await getAllDevicesApi();
-      tempDevices = devices
+      tempDevices = devices;
       devicesList = devices.map(device => device.deviceName);
       console.log(devices);
     } catch (error) {
@@ -53,34 +53,70 @@
     }
   }
 
-  async function saveSpaceChanges(space) {
-    console.log("Saved changes for space:", space);
-    try {
-      const response = await updateLocationApi({
-        _id: space.id,
-        title: space.locationName,
-        devices: space.devices.split(', '),
-        bookable: space.bookable === 'Yes',
-        // booked: space.booked === 'Yes',
-        capacity: space.capacity,
-        features: space.features.split(', ')
-      });
-      console.log('Update Response:', response);
-      await fetchLocations();
-    } catch (error) {
-      console.error("Error updating location:", error);
+  async function saveSpaceChanges() {
+    if (validateEditInputs()) {
+      try {
+        const response = await updateLocationApi({
+          _id: editingSpace.id,
+          title: locationName,
+          devices: selectedDevices,
+          bookable: bookable === 'Yes',
+          // booked: booked === 'Yes',
+          capacity: Number(capacity),
+          features: selectedFeatures
+        });
+        console.log('Update Response:', response);
+        await fetchLocations();
+        closeModal();
+      } catch (error) {
+        console.error("Error updating location:", error);
+      }
     }
   }
 
-  function editSpace(space) {
-    toggleEditingMode(space.id);
+  function openEditModal(space) {
+    showEditModal = true;
+    editingSpace = space;
+    locationName = space.locationName;
+    selectedDevices = space.devices.split(', ');
+    bookable = space.bookable === 'Yes';
+    // booked = space.booked === 'Yes';
+    capacity = space.capacity;
+    selectedFeatures = space.features.split(', ');
   }
 
-  function validateEditInputs(space) {
-    if (!space.locationName || !space.devices || !space.bookable || !space.capacity || !space.features) {
-      return false;
+  function validateEditInputs() {
+    let isValid = true;
+
+    if (!locationName) {
+      document.getElementById('locationName-edit-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('locationName-edit-error').style.display = 'none';
     }
-    return true;
+
+    if (selectedDevices.length === 0) {
+      document.getElementById('devices-edit-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('devices-edit-error').style.display = 'none';
+    }
+
+    if (!capacity) {
+      document.getElementById('capacity-edit-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('capacity-edit-error').style.display = 'none';
+    }
+
+    if (selectedFeatures.length === 0) {
+      document.getElementById('features-edit-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('features-edit-error').style.display = 'none';
+    }
+
+    return isValid;
   }
 
   async function deleteSpace(space) {
@@ -112,60 +148,31 @@
           features: selectedFeatures
         };
 
-        let tempdtosend = []
+        let tempdtosend = [];
 
         for (let i = 0; i < dataToSend.devices.length; i++) {
           for (let j = 0; j < tempDevices.length; j++) {
             if(selectedDevices[i] == tempDevices[j].deviceName){
-              tempdtosend.push(tempDevices[j]._id)
+              tempdtosend.push(tempDevices[j]._id);
             }
           }
         }
 
-        dataToSend.devices = tempdtosend
+        dataToSend.devices = tempdtosend;
 
-        // console.log(dataToSend)
-
-        // console.log('Data being sent to API:', dataToSend);
-
-
-        // return;
         const response = await addLocationApi(dataToSend);
         console.log('Add Response:', response);
         await fetchLocations();
         closeModal();
       } catch (error) {
         console.error("Error adding location:", error);
-        alert('Error adding location. Please try again.');
       }
     }
   }
 
-  function toggleEditingMode(spaceId) {
-    editingModes[spaceId] = !editingModes[spaceId];
-  }
-
-  let selectedSpaces = new Set();
-
-  function toggleSelection(spaceId) {
-    if (selectedSpaces.has(spaceId)) {
-      selectedSpaces.delete(spaceId);
-    } else {
-      selectedSpaces.add(spaceId);
-    }
-    selectedSpaces = new Set(selectedSpaces);
-  }
-
-  function toggleSelectAll() {
-    if (selectedSpaces.size === spaces.length) {
-      selectedSpaces.clear();
-    } else {
-      spaces.forEach(space => selectedSpaces.add(space.id));
-    }
-    selectedSpaces = new Set(selectedSpaces);
-  }
-
   let showModal = false;
+  let showEditModal = false;
+  let editingSpace = null;
   let locationName = '';
   let bookable = true;
   // let booked = false;
@@ -177,6 +184,7 @@
 
   function closeModal() {
     showModal = false;
+    showEditModal = false;
     locationName = '';
     selectedDevices = [];
     selectedFeatures = [];
@@ -193,6 +201,10 @@
     // document.getElementById('booked-error').style.display = 'none';
     document.getElementById('capacity-error').style.display = 'none';
     document.getElementById('features-error').style.display = 'none';
+    document.getElementById('locationName-edit-error').style.display = 'none';
+    document.getElementById('devices-edit-error').style.display = 'none';
+    document.getElementById('capacity-edit-error').style.display = 'none';
+    document.getElementById('features-edit-error').style.display = 'none';
   }
 
   function validateAddInputs() {
@@ -211,13 +223,6 @@
     } else {
       document.getElementById('devices-error').style.display = 'none';
     }
-
-    // if (booked === null) {
-    //   document.getElementById('booked-error').style.display = 'block';
-    //   isValid = false;
-    // } else {
-    //   document.getElementById('booked-error').style.display = 'none';
-    // }
 
     if (!capacity) {
       document.getElementById('capacity-error').style.display = 'block';
@@ -259,11 +264,10 @@
 
   $: searchResultText = searchQuery
     ? filteredSpaces.length > 0
-      ? 'Rows Found: ${filteredSpaces.length}'
+      ? `Rows Found: ${filteredSpaces.length}`
       : "No Result Found"
     : '';
   $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
-
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -331,7 +335,7 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="capacity">
                     Capacity
                   </label>
-                  <input type="number" id="capacity" placeholder="Capacity" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={capacity}>
+                  <input type="number" min="0" id="capacity" placeholder="Capacity" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={capacity}>
                   <span id="capacity-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -356,6 +360,87 @@
       </div>
     </div>
   {/if}
+  {#if showEditModal}
+    <div class="modal">
+      <div class="modal-content">
+        <div class="rounded-t mb-0 px-4 py-10 border-0">
+          <div class="flex flex-wrap items-center">
+            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+              <h3 class="font-semibold text-lg text-blueGray-700">
+                Edit Location
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="block w-full overflow-x-auto">
+          <div class="px-4 py-5 flex-auto">
+            <div class="flex flex-wrap">
+              <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="locationName">
+                    Location Name
+                  </label>
+                  <input type="text" id="locationName" placeholder="Location Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={locationName}>
+                  <span id="locationName-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="devices">
+                    Devices
+                  </label>
+                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesList} placeholder="Select Devices" />
+                  <span id="devices-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="bookable">
+                    Bookable
+                  </label>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="bookable" class="form-checkbox" bind:checked={bookable}>
+                    <span class="ml-2 text-blueGray-600">{bookable ? 'Yes' : 'No'}</span>
+                  </div>
+                  <span id="bookable-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div>
+                <!-- <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="booked">
+                    Booked
+                  </label>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="booked" class="form-checkbox" bind:checked={booked}>
+                    <span class="ml-2 text-blueGray-600">{booked ? 'Yes' : 'No'}</span>
+                  </div>
+                  <span id="booked-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div> -->
+              </div>
+              <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="capacity">
+                    Capacity
+                  </label>
+                  <input type="number" min="0" id="capacity" placeholder="Capacity" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={capacity}>
+                  <span id="capacity-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="features">
+                    Features
+                  </label>
+                  <MultiSelect bind:selectedOptions={selectedFeatures} options={featuresList} placeholder="Select Features" />
+                  <span id="features-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={saveSpaceChanges}>
+                Save
+              </button>
+              <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
   <div class="flex justify-between">
     <div class="relative mb-3">
       <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
@@ -370,77 +455,31 @@
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Bookable</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Capacity</th>
         <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Features</th>
+        <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Actions</th>
       </tr>
     </thead>
     <tbody>
       {#each displayedSpaces as space (space.id)}
         <tr>
           <td class="table-data font-bold text-blueGray-600" title={space.locationName}>
-            <div class="flex items-center">
-              {#if editingModes[space.id]}
-                <input type="text" class="salary-input" bind:value={space.locationName}>
-              {:else}
-                <span>{space.locationName}</span>
-              {/if}
-            </div>
+            {space.locationName}
           </td>
           <td class="table-data" title={space.devices}>
-            <div class="flex items-center">
-              {#if editingModes[space.id]}
-                <MultiSelect bind:selectedOptions={space.devices} options={devicesList} placeholder="Select Devices" />
-              {:else}
-                <span>{space.devices}</span>
-              {/if}
-            </div>
+            {space.devices}
           </td>
           <td class="table-data" title={space.bookable}>
-            <div class="flex items-center">
-              {#if editingModes[space.id]}
-                <input type="checkbox" class="form-checkbox" bind:checked={space.bookable}>
-                <span class="ml-2 text-blueGray-600">{space.bookable ? 'Yes' : 'No'}</span>
-              {:else}
-                <span>{space.bookable ? 'Yes' : 'No'}</span>
-              {/if}
-            </div>
+            {space.bookable ? 'Yes' : 'No'}
           </td>
-          <!-- <td class="table-data" title={space.booked}>
-            <div class="flex items-center">
-              {#if editingModes[space.id]}
-                <input type="checkbox" class="form-checkbox" bind:checked={space.booked}>
-                <span class="ml-2 text-blueGray-600">{space.booked ? 'Yes' : 'No'}</span>
-              {:else}
-                <span>{space.booked ? 'Yes' : 'No'}</span>
-              {/if}
-            </div>
-          </td> -->
           <td class="table-data" title={space.capacity}>
-            <div class="flex items-center">
-              {#if editingModes[space.id]}
-                <input type="number" class="salary-input1" bind:value={space.capacity}>
-              {:else}
-                <span>{space.capacity}</span>
-              {/if}
-            </div>
+            {space.capacity}
           </td>
           <td class="table-data" title={space.features}>
-            <div class="flex items-center">
-              {#if editingModes[space.id]}
-                <MultiSelect bind:selectedOptions={space.features} options={featuresList} placeholder="Select Features" />
-              {:else}
-                <span>{space.features}</span>
-              {/if}
-            </div>
+            {space.features}
           </td>
           <td>
             <div class="flex items-center">
-              {#if editingModes[space.id]}
-              <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}></i>
-              {:else}
-              <i class="fas fa-pencil mr-2 text-sm cursor-pointer" on:click={() => editSpace(space)}></i>
-              {/if}
-              <div class="ml-2">
-                <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
-              </div>
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(space)}></i>
+              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
             </div>
           </td>
         </tr>

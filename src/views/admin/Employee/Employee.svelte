@@ -73,24 +73,23 @@
           }
         }
       }
-      }
+    }
   
-      function viewEmployee(employeeId) {
-      selectedEmployee = employees.find(employee => employee.id === employeeId);
-      showModal = true;
-  }
+    function viewEmployee(employeeId) {
+    selectedEmployee = employees.find(employee => employee.id === employeeId);
+    showModal = true;
+    }
   
   function openEditModal(employeeId) {
     selectedEmployee = employees.find(employee => employee.id === employeeId);
     editModal = true
     }
   
-  function closeModal()
-  {
+  function closeModal() {
     showModal = false;
     editModal = false;
+    applyFilters(); // Re-apply filters to the updated list
   }
-  
   function validateInputs() {
     let isValid = true;
   
@@ -460,7 +459,7 @@
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                         Phone Number:
                       </label>
-                      <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
+                      <input type="number" min="0" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
                       <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                       <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
                     </div>
@@ -536,13 +535,13 @@
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                         Finger Index 1:
                       </label>
-                      <input type="number" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex1}>
+                      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex1}>
                     </div>
                     <div class="relative mb-3">
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                         Finger Index 2:
                       </label>
-                      <input type="number" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex2}>
+                      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.fingerIndex2}>
                     </div>
                     <div class="relative mb-3">
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
@@ -560,7 +559,7 @@
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                         Salary:
                       </label>
-                      <input type="number" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.salary}>
+                      <input type="number" min="0" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.salary}>
                       <span id="salary-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                     </div>
                     <div class="relative mb-3">
