@@ -1,7 +1,8 @@
 <script>
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
-  import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
+  import { onMount } from 'svelte';
+  import { getAllDepartmentsApi, getAllEmployeesApi, updateEmployeeApi } from '../../../services/api';
 
   let showModal = false;
 
@@ -13,77 +14,54 @@
   const edit2 = "../assets/img/icons8-tick-24.png";
   export let color = "light";
 
-  let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
-  let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
+  let departments = [];
+  let trueDepartments = [];
+  let designations = [];
   let valueTypes = ['Percentage', 'Absolute', 'Change'];
   let selectedDepartment = '';
   let selectedDesignation = '';
   let selectedValueType = '';
   let value = '';
-
-  let departmentDesignations = {
-    "Marketing": ["Marketing Manager", "Marketing Coordinator", "Brand Manager", "Digital Marketing Specialist"],
-    "Finance": ["Chief Financial Officer (CFO)", "Financial Analyst", "Accountant", "Finance Manager"],
-    "Human Resources": ["Human Resources Manager", "Recruitment Specialist", "Training Coordinator", "HR Assistant"],
-    "Information Technology": ["Chief Information Officer (CIO)", "IT Manager", "Systems Administrator", "Software Developer"],
-    "Sales": ["Sales Manager", "Sales Representative", "Account Executive", "Business Development Manager"],
-    "Operations": ["Operations Manager", "Operations Coordinator", "Supply Chain Manager", "Logistics Specialist"],
-    "Customer Service": ["Customer Service Manager", "Customer Support Representative", "Client Relations Specialist"],
-    "Legal": ["General Counsel", "Legal Assistant", "Paralegal", "Legal Counsel"],
-    "Administration": ["Office Manager", "Executive Assistant", "Administrative Assistant", "Office Coordinator"]
-  };
-  let designation = [];
+  let employees = []; // Variable to store employee data
 
   // Disable designation field initially
   let isDesignationDisabled = true;
 
-  let salaries = [
-    { id: '1', name: 'Alice Budgies', department: 'Sales', designation: 'Sales Manager', salary: 80000 },
-    { id: '2', name: 'Bob', department: 'Engineering', designation: 'Software Engineer', salary: 70000 },
-    { id: '3', name: 'Charlie', department: 'Marketing', designation: 'Marketing Specialist', salary: 60000 },
-    { id: '4', name: 'David', department: 'HR', designation: 'HR Manager', salary: 75000 },
-    { id: '5', name: 'Eve', department: 'Finance', designation: 'Financial Analyst', salary: 65000 },
-    { id: '6', name: 'Frank', department: 'Sales', designation: 'Sales Associate', salary: 55000 },
-    { id: '7', name: 'Grace', department: 'Engineering', designation: 'Software Developer', salary: 72000 },
-    { id: '8', name: 'Henry', department: 'Marketing', designation: 'Marketing Manager', salary: 68000 },
-    { id: '9', name: 'Ivy', department: 'HR', designation: 'HR Specialist', salary: 60000 },
-    { id: '10', name: 'Jack', department: 'Finance', designation: 'Financial Manager', salary: 78000 },
-    { id: '11', name: 'Kate', department: 'Sales', designation: 'Sales Executive', salary: 60000 },
-    { id: '12', name: 'Leo', department: 'Engineering', designation: 'Senior Software Engineer', salary: 85000 },
-    { id: '13', name: 'Mia', department: 'Marketing', designation: 'Marketing Coordinator', salary: 55000 },
-    { id: '14', name: 'Nick', department: 'HR', designation: 'HR Assistant', salary: 50000 },
-    { id: '15', name: 'Olivia', department: 'Finance', designation: 'Financial Analyst', salary: 62000 },
-  ];
-
   // State variable to track editing mode for each user
   let editingModes = {};
 
-  function toggleEditingMode(userId) {
-    editingModes[userId] = !editingModes[userId];
+  function toggleEditingMode(employeeId) {
+    editingModes[employeeId] = !editingModes[employeeId];
   }
 
-  function saveSalaryChanges(salaries) {
-    // Logic to save the changes made to the salary
-    console.log("Saved changes for user:", salaries);
-    // Assuming you have backend logic here to update the salary
+  async function saveSalaryChanges(employee) {
+    try {
+      const updatedEmployee = { ...employee, salary: employee.salary }; // Only update the salary
+      const responseMsg = await updateEmployeeApi(updatedEmployee);
+      console.log('Response from API:', responseMsg);
+      toggleEditingMode(employee._id); // Exit editing mode after save
+    } catch (error) {
+      console.error('Error updating salary:', error);
+      console.error('Error details:', error.response ? error.response.data : error.message);
+    }
   }
 
-  function editSalary(salaries) {
-    toggleEditingMode(salaries.id);
+  function editSalary(employee) {
+    toggleEditingMode(employee._id);
     // You can perform additional actions here if needed
   }
 
   let selectedUsers = new Set();
 
   // Define pagination logic
-  const salariesPerPage = 5; // Adjust as needed
+  const employeesPerPage = 5; // Adjust as needed
   let currentPage = 1;
 
   // Reactive statements to ensure proper updates
-  $: startIndex = (currentPage - 1) * salariesPerPage;
-  $: endIndex = Math.min(startIndex + salariesPerPage, filteredSalaries.length);
-  $: displayedSalaries = filteredSalaries.slice(startIndex, endIndex);
-  $: totalPages = Math.ceil(filteredSalaries.length / salariesPerPage);
+  $: startIndex = (currentPage - 1) * employeesPerPage;
+  $: endIndex = Math.min(startIndex + employeesPerPage, filteredEmployees.length);
+  $: displayedEmployees = filteredEmployees.slice(startIndex, endIndex);
+  $: totalPages = Math.ceil(filteredEmployees.length / employeesPerPage);
 
   function handlePageChange(event) {
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
@@ -158,24 +136,49 @@
 
   // Search filter logic
   let searchQuery = '';
-  $: filteredSalaries = salaries.filter(salary => {
+  $: filteredEmployees = employees.filter(employee => {
     return (
-      salary.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      salary.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      salary.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      salary.salary.toString().includes(searchQuery)
+      employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.designation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.department.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.salary.toString().includes(searchQuery)
     );
   });
 
   $: searchResultText = searchQuery
-    ? filteredSalaries.length > 0
-      ? `Rows Found: ${filteredSalaries.length}`
+    ? filteredEmployees.length > 0
+      ? `Rows Found: ${filteredEmployees.length}`
       : "No Result Found"
     : '';
-  $: searchResultColor = filteredSalaries.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
+  $: searchResultColor = filteredEmployees.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 
+  onMount(async () => {
+    await getAllDepartments();
+    await fetchEmployees(); // Fetch employees on component mount
+  });
+
+  async function getAllDepartments() {
+    trueDepartments = await getAllDepartmentsApi();
+    departments = JSON.parse(JSON.stringify(trueDepartments));
+    departments.push({ title: "All", _id: "All" });
+  }
+
+  async function fetchEmployees() {
+    employees = await getAllEmployeesApi();
+  }
+
+  function setDesignation(event) {
+    const selectedDepartmentTitle = event.target.value;
+    if (selectedDepartmentTitle === "All") {
+      designations = [{ title: "All", _id: "All" }];
+      selectedDesignation = "All";
+    } else {
+      const selectedDept = trueDepartments.find(d => d.title === selectedDepartmentTitle);
+      designations = [...selectedDept.designations, { title: "All", _id: "All" }];
+      selectedDesignation = '';
+    }
+  }
 </script>
-
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <div class="flex justify-end mb-4">
@@ -206,26 +209,24 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                       Department:
                     </label>
-                    <MultiSelect bind:selectedOptions={selectedDepartment} options={departments} placeholder="Select Departments" />
-                    <!-- <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
+                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment} on:change={setDesignation}>
                       <option value="" disabled selected>Select a department</option>
                       {#each departments as department}
-                        <option value={department}>{department}</option>
+                        <option value={department.title}>{department.title}</option>
                       {/each}
-                    </select> -->
+                    </select>
                     <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                       Designation:
                     </label>
-                    <MultiSelect bind:selectedOptions={selectedDesignation} options={designations} placeholder="Select Designations" />
-                    <!-- <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
                       <option value="" disabled selected>Select a designation</option>
                       {#each designations as designation}
-                        <option value={designation}>{designation}</option>
+                        <option value={designation.title}>{designation.title}</option>
                       {/each}
-                    </select> -->
+                    </select>
                     <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
@@ -270,12 +271,6 @@
       </div>
     </div>
     <p class="text-sm {searchResultColor}">{searchResultText}</p>
-    <!-- <div class="flex items-center mb-4">
-      <input type="search" class="mb-4 bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
-    {#if searchQuery}
-      <span class="{searchResultColor}">{searchResultText}</span>
-    {/if}
-    </div> -->
     <table>
       <thead>
         <tr>
@@ -287,28 +282,28 @@
         </tr>
       </thead>
       <tbody>
-        {#each displayedSalaries as salaries (salaries.id)}
+        {#each displayedEmployees as employee (employee._id)}
         <tr>
-          <td class="table-data font-bold text-blueGray-600" title={salaries.name}>{salaries.name}</td>
-          <td class="table-data" title={salaries.designation}>{salaries.designation}</td>
-          <td class="table-data" title={salaries.department}>{salaries.department}</td>
-          <td class="table-data" title={salaries.salary}>
+          <td class="table-data font-bold text-blueGray-600" title={employee.name}>{employee.name}</td>
+          <td class="table-data" title={employee.designation.title}>{employee.designation.title}</td>
+          <td class="table-data" title={employee.department.title}>{employee.department.title}</td>
+          <td class="table-data" title={employee.salary}>
             <!-- Salary -->
             <div class="flex items-center">
-              {#if editingModes[salaries.id]}
-                <input type="number" class="salary-input width80px text-xs" bind:value={salaries.salary}>
+              {#if editingModes[employee._id]}
+                <input type="number" class="salary-input width80px text-xs" bind:value={employee.salary}>
               {:else}
-                <span>{salaries.salary}</span>
+                <span>{employee.salary}</span>
               {/if}
             </div>
           </td>
           <td>
             <!-- Edit button -->
             <div class="flex items-center">
-              {#if editingModes[salaries.id]}
-              <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => {saveSalaryChanges(salaries); toggleEditingMode(salaries.id);}}></i>
+              {#if editingModes[employee._id]}
+              <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => saveSalaryChanges(employee)}></i>
               {:else}
-              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSalary(salaries)}></i>
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSalary(employee)}></i>
               {/if}
             </div>
           </td>
