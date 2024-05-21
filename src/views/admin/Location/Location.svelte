@@ -31,7 +31,6 @@
         locationName: loc.title,
         devices: loc.devices.map(device => device.deviceName).join(', '),
         bookable: loc.bookable ? 'Yes' : 'No',
-        // booked: loc.booked ? 'Yes' : 'No',
         capacity: loc.capacity,
         features: loc.features.join(', ')
       }));
@@ -56,27 +55,16 @@
   async function saveSpaceChanges() {
     if (validateEditInputs()) {
       try {
-
-
-        // const dataToSend = {
-        //   title: locationName,
-        //   devices: selectedDevices,
-        //   bookable: bookable,
-        //   // booked: booked,
-        //   capacity: Number(capacity),
-        //   features: selectedFeatures
-        // };
-
         let tempdtosend = [];
 
         for (let i = 0; i < selectedDevices.length; i++) {
           for (let j = 0; j < tempDevices.length; j++) {
-            if(selectedDevices[i] == tempDevices[j].deviceName){
+            if (selectedDevices[i] == tempDevices[j].deviceName) {
               tempdtosend.push(tempDevices[j]._id);
             }
           }
         }
-        
+
         const response = await updateLocationApi({
           _id: editingSpace.id,
           title: locationName,
@@ -86,6 +74,17 @@
           features: selectedFeatures
         });
         console.log('Update Response:', response);
+
+        // Update the corresponding space in the spaces array
+        const updatedSpace = spaces.find(space => space.id === editingSpace.id);
+        if (updatedSpace) {
+          updatedSpace.locationName = locationName;
+          updatedSpace.devices = selectedDevices.join(', ');
+          updatedSpace.bookable = bookable ? 'Yes' : 'No';
+          updatedSpace.capacity = capacity;
+          updatedSpace.features = selectedFeatures.join(', ');
+        }
+
         await fetchLocations();
         closeModal();
       } catch (error) {
@@ -100,7 +99,6 @@
     locationName = space.locationName;
     selectedDevices = space.devices.split(', ');
     bookable = space.bookable === 'Yes';
-    // booked = space.booked === 'Yes';
     capacity = space.capacity;
     selectedFeatures = space.features.split(', ');
   }
@@ -163,7 +161,6 @@
           title: locationName,
           devices: selectedDevices,
           bookable: bookable,
-          // booked: booked,
           capacity: Number(capacity),
           features: selectedFeatures
         };
@@ -172,16 +169,13 @@
 
         for (let i = 0; i < dataToSend.devices.length; i++) {
           for (let j = 0; j < tempDevices.length; j++) {
-            if(selectedDevices[i] == tempDevices[j].deviceName){
+            if (selectedDevices[i] == tempDevices[j].deviceName) {
               tempdtosend.push(tempDevices[j]._id);
             }
           }
         }
 
         dataToSend.devices = tempdtosend;
-
-        // console.log(dataToSend)
-        // return;
 
         const response = await addLocationApi(dataToSend);
         console.log('Add Response:', response);
@@ -198,7 +192,6 @@
   let editingSpace = null;
   let locationName = '';
   let bookable = true;
-  // let booked = false;
   let capacity = '';
 
   function openModal() {
@@ -212,7 +205,6 @@
     selectedDevices = [];
     selectedFeatures = [];
     bookable = true;
-    // booked = false;
     capacity = '';
     resetValidationErrors();
   }
@@ -221,7 +213,6 @@
     document.getElementById('locationName-error').style.display = 'none';
     document.getElementById('devices-error').style.display = 'none';
     document.getElementById('bookable-error').style.display = 'none';
-    // document.getElementById('booked-error').style.display = 'none';
     document.getElementById('capacity-error').style.display = 'none';
     document.getElementById('features-error').style.display = 'none';
     document.getElementById('locationName-edit-error').style.display = 'none';
@@ -274,7 +265,7 @@
     space.features.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.devices.toLowerCase().includes(searchQuery.toLowerCase()) ||
     space.bookable.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    space.capacity.toLowerCase().includes(searchQuery.toLowerCase())
+    space.capacity.toString().toLowerCase().includes(searchQuery.toLowerCase())
   );
   $: displayedSpaces = filteredSpaces.slice(startIndex, endIndex);
   $: totalPages = Math.ceil(filteredSpaces.length / spacesPerPage);
@@ -342,16 +333,6 @@
                   </div>
                   <span id="bookable-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
-                <!-- <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="booked">
-                    Booked
-                  </label>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="booked" class="form-checkbox" bind:checked={booked}>
-                    <span class="ml-2 text-blueGray-600">{booked ? 'Yes' : 'No'}</span>
-                  </div>
-                  <span id="booked-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div> -->
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
@@ -423,16 +404,6 @@
                   </div>
                   <span id="bookable-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
-                <!-- <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="booked">
-                    Booked
-                  </label>
-                  <div class="flex items-center">
-                    <input type="checkbox" id="booked" class="form-checkbox" bind:checked={booked}>
-                    <span class="ml-2 text-blueGray-600">{booked ? 'Yes' : 'No'}</span>
-                  </div>
-                  <span id="booked-edit-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div> -->
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
@@ -491,7 +462,7 @@
             {space.devices}
           </td>
           <td class="table-data" title={space.bookable}>
-            {space.bookable ? 'Yes' : 'No'}
+            {space.bookable}
           </td>
           <td class="table-data" title={space.capacity}>
             {space.capacity}
