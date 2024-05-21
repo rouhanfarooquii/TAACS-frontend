@@ -380,18 +380,7 @@
         Personal Password:
       </label>
       <div class="relative">
-        <input type='password' id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
-        <i class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" on:click={togglePasswordVisibility}>
-          <svg class="h-6 w-6 text-blueGray-600" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-            {#if showPassword}
-              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.011.24-.025.479-.042.717m-1.386 3.553A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7 .137-.339.28-.676.429-1.011"/>
-            {:else}
-              <path d="M13.875 18.825A8.941 8.941 0 0112 19c-4.477 0-8.268-2.943-9.542-7A9.978 9.978 0 013.354 6.29m1.829-1.828A8.978 8.978 0 0112 5c4.477 0 8.268 2.943 9.542 7-.274.676-.603 1.333-.975 1.95m-2.393 3.12A9.956 9.956 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 011.257-4.576m2.393-3.12"/>
-              <path d="M4 4l16 16"/>
-            {/if}
-          </svg>
-        </i>
+      <input type='password' id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
       </div>
       <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
