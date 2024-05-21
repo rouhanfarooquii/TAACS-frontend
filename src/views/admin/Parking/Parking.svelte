@@ -3,10 +3,6 @@
   import { getAllParkingsApi, updateParkingApi, deleteParkingApi, addParkingApi, getAllEmployeesApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import QrCode from '../../../components/QR/QRCode.svelte';
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   export let color = "light";
 
   let spaces = [];
@@ -14,7 +10,6 @@
   let tempEmployees = [];
   let editingModes = {};
   let showModal = false;
-  let showEditModal = false;
   let parkingSlot = '';
   let location = '';
   let carId = '';
@@ -22,15 +17,6 @@
   let carMake = '';
   let cardRfidNo = '';
   let employeeId = '';
-
-  let editParkingSlot = '';
-  let editLocation = '';
-  let editCarId = '';
-  let editEmpName = '';
-  let editCarMake = '';
-  let editCardRfidNo = '';
-  let editEmployeeId = '';
-  let editSpaceId = '';
 
   let locations = ['Location 1', 'Location 2', 'Location 3', 'Location 4']; // Dummy data for locations
 
@@ -82,86 +68,148 @@
     }
   }
 
-  async function saveSpaceChanges() {
-    const selectedEmployee = Employeeslist.find(employee => employee.name === editEmpName);
+  async function saveSpaceChanges(space) {
+    // if (validateEditInputs(space)) {
 
-    if (!selectedEmployee) {
-      alert('Selected employee not found.');
-      return;
-    }
 
-    const updatedSpaceData = {
-      id: editSpaceId,
-      parkingSlot: editParkingSlot,
-      location: editLocation,
-      carId: editCarId,
-      employee: selectedEmployee._id,
-      carMake: editCarMake
-    };
+//       empName
+// : 
+// "sdsdsdDoe"
+// employeeId
+// : 
+// undefined
 
-    try {
-      await updateParkingApi(updatedSpaceData);
-      await fetchParkingData(); // Refresh data after update
-      closeEditModal();
-      console.log("Saved changes for space:", updatedSpaceData);
-    } catch (error) {
-      console.error('Error updating space:', error);
-    }
+// Employeeslist = employees.map(employee => employee);
+
+
+      space.employeeId = Employeeslist.find(employee => employee.name === space.empName)._id;
+      delete space.empName
+      // console.log(space)
+      // return;
+      try {
+        await updateParkingApi(space);
+        await fetchParkingData(); // Refresh data after update
+        toggleEditingMode(space.id);
+        console.log("Saved changes for space:", space);
+      } catch (error) {
+        console.error('Error updating space:', error);
+      }
+    // }
   }
 
   async function addSpace() {
-    const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot || space.carId === carId || space.cardRfidNo === cardRfidNo);
+    // if (validateAddInputs()) {
+      const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot || space.carId === carId || space.cardRfidNo === cardRfidNo);
 
-    if (isDuplicate) {
-      alert('Parking slot, Car ID, and Card RFID No must be unique.');
-      return;
-    }
+      if (isDuplicate) {
+        alert('Parking slot, Car ID, and Card RFID No must be unique.');
+        return;
+      }
 
-    const selectedEmployee = Employeeslist.find(employee => employee.name === empName);
+      const selectedEmployee = Employeeslist.find(employee => employee.name === empName);
 
-    if (!selectedEmployee) {
-      alert('Selected employee not found.');
-      return;
-    }
+      if (!selectedEmployee) {
+        alert('Selected employee not found.');
+        return;
+      }
 
-    const newParkingData = {
-      parkingSlot,
-      location,
-      carId,
-      employee: selectedEmployee._id,
-      carMake
-    };
+      const newParkingData = {
+        parkingSlot,
+        location,
+        carId,
+        employee: selectedEmployee._id,
+        carMake
+      };
 
-    try {
-      await addParkingApi(newParkingData);
-      await fetchParkingData(); // Refresh data after adding
-      closeModal();
-    } catch (error) {
-      console.error('Error adding space:', error);
-    }
+      // console.log(newParkingData)
+
+      // console.log(parkingSlot);
+      // console.log(location);
+      // console.log(carId);
+      // console.log(employee);
+      // console.log(carMake);
+
+      // return
+
+      try {
+        await addParkingApi(newParkingData);
+        await fetchParkingData(); // Refresh data after adding
+        closeModal();
+      } catch (error) {
+        console.error('Error adding space:', error);
+      }
+    // }
   }
 
-  function openEditModal(space) {
-    editSpaceId = space.id;
-    editParkingSlot = space.parkingSlot;
-    editLocation = space.location;
-    editCarId = space.carId;
-    editEmpName = space.empName;
-    editCarMake = space.carMake;
-    editCardRfidNo = space.cardRfidNo;
-    editEmployeeId = space.employeeId;
-    showEditModal = true;
+  function toggleEditingMode(spaceId) {
+    editingModes[spaceId] = !editingModes[spaceId];
   }
 
-  function closeEditModal() {
-    showEditModal = false;
-    editParkingSlot = '';
-    editLocation = '';
-    editCarId = '';
-    editEmpName = '';
-    editCarMake = '';
-    editCardRfidNo = '';
-    editEmployeeId = '';
+  function editSpace(space) {
+    toggleEditingMode(space.id);
+  }
+
+  function validateEditInputs(space) {
+    if (!space.parkingSlot || !space.location || !space.carId || !space.empName || !space.carMake || !space.cardRfidNo || !space.employeeId) {
+      alert("All fields are required.");
+      return false;
+    }
+    return true;
+  }
+
+  function validateAddInputs() {
+    let isValid = true;
+
+    if (!parkingSlot) {
+      document.getElementById('parkingSlot-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('parkingSlot-error').style.display = 'none';
+    }
+
+    if (!location) {
+      document.getElementById('location-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('location-error').style.display = 'none';
+    }
+
+    if (!carId) {
+      document.getElementById('carId-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('carId-error').style.display = 'none';
+    }
+
+    if (!empName) {
+      document.getElementById('empName-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('empName-error').style.display = 'none';
+    }
+
+    if (!carMake) {
+      document.getElementById('carMake-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('carMake-error').style.display = 'none';
+    }
+
+    if (!cardRfidNo) {
+      document.getElementById('cardRfidNo-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('cardRfidNo-error').style.display = 'none';
+    }
+
+    if (!employeeId) {
+      document.getElementById('employeeId-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('employeeId-error').style.display = 'none';
+    }
+
+    return isValid;
   }
 
   function openModal() {
@@ -213,7 +261,7 @@
 
   $: searchResultText = searchQuery
     ? filteredSpaces.length > 0
-      ? `Rows Found: ${filteredSpaces.length}`
+      ? Rows Found: ${filteredSpaces.length}
       : "No Result Found"
     : '';
   $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
@@ -221,7 +269,6 @@
   let selectedSpaces = new Set();
 </script>
 
-<!-- HTML structure for the component -->
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
@@ -316,91 +363,6 @@
         </div>
       </div>
     {/if}
-    {#if showEditModal}
-    <div class="modal">
-      <div class="modal-content">
-        <div class="rounded-t mb-0 px-4 py-10 border-0">
-          <div class="flex flex-wrap items-center">
-            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-              <h3 class="font-semibold text-lg text-blueGray-700">
-                Edit Space
-              </h3>
-            </div>
-          </div>
-        </div>
-        <div class="block w-full overflow-x-auto">
-          <div class="px-4 py-5 flex-auto">
-            <div class="flex flex-wrap">
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="editParkingSlot">
-                    Parking Slot
-                  </label>
-                  <input type="text" id="editParkingSlot" placeholder="Parking Slot" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editParkingSlot}>
-                  <span id="editParkingSlot-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="editLocation">
-                    Location
-                  </label>
-                  <select id="editLocation" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editLocation}>
-                    <option value="">Select Location</option>
-                    {#each locations as loc}
-                      <option value={loc}>{loc}</option>
-                    {/each}
-                  </select>
-                  <span id="editLocation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="editCarId">
-                    Car ID
-                  </label>
-                  <input type="text" id="editCarId" placeholder="Car ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editCarId}>
-                  <span id="editCarId-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="editEmpName">
-                    Employee Name
-                  </label>
-                  <select id="editEmpName" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editEmpName}>
-                    <option value="">Select Employee</option>
-                    {#each Employeeslist as employee}
-                      <option value={employee.name}>{employee.name} ({employee.employeeID})</option>
-                    {/each}
-                  </select>
-                  <span id="editEmpName-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="editCarMake">
-                    Car Make
-                  </label>
-                  <input type="text" id="editCarMake" placeholder="Car Make" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editCarMake}>
-                  <span id="editCarMake-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="editCardRfidNo">
-                    Card RFID No
-                  </label>
-                  <input type="text" id="editCardRfidNo" placeholder="Card RFID No" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editCardRfidNo}>
-                  <span id="editCardRfidNo-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex justify-end">
-              <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={saveSpaceChanges}>
-                Save
-              </button>
-              <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeEditModal}>
-                Cancel
-              </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    {/if}
     <div class="flex justify-between">
       <div class="relative mb-3">
         <input type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search..." bind:value={searchQuery} />
@@ -472,9 +434,9 @@
             <td>
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => {saveSpaceChanges()}}></i>
+                <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => {saveSpaceChanges(space)}}></i>
                 {:else}
-                <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(space)}></i>
+                <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSpace(space)}></i>
                 {/if}
                 <div class="ml-2">
                   <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
