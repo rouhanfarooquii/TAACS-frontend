@@ -7,7 +7,6 @@
 
   let employeeName = '';
   let roomName = '';
-  let designation = '';
   let noOfPeople = '';
   let dateTimeFrom = '';
   let dateTimeTo = '';
@@ -90,7 +89,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ employeeName, roomName, designation, noOfPeople, dateTimeFrom, dateTimeTo })
+        body: JSON.stringify({ employeeName, roomName, noOfPeople, dateTimeFrom, dateTimeTo })
       });
 
       if (response.ok) {
@@ -117,7 +116,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ employeeName, roomName, designation, noOfPeople, dateTimeFrom, dateTimeTo })
+          body: JSON.stringify({ employeeName, roomName, noOfPeople, dateTimeFrom, dateTimeTo })
         });
 
         if (response.ok) {
@@ -152,13 +151,6 @@
       isValid = false;
     } else {
       document.getElementById('room-name-error').style.display = 'none';
-    }
-
-    if (!designation) {
-      document.getElementById('designation-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('designation-error').style.display = 'none';
     }
 
     if (!noOfPeople || isNaN(noOfPeople) || noOfPeople <= 0) {
@@ -210,7 +202,6 @@
     currentBooking = booking;
     employeeName = booking.employeeName;
     roomName = booking.roomName;
-    designation = booking.designation;
     noOfPeople = booking.noOfPeople;
     dateTimeFrom = booking.dateTimeFrom;
     dateTimeTo = booking.dateTimeTo;
@@ -223,7 +214,6 @@
     // Reset input fields
     employeeName = '';
     roomName = '';
-    designation = '';
     noOfPeople = '';
     dateTimeFrom = '';
     dateTimeTo = '';
@@ -231,7 +221,6 @@
 
     document.getElementById('employee-name-error').style.display = 'none';
     document.getElementById('room-name-error').style.display = 'none';
-    document.getElementById('designation-error').style.display = 'none';
     document.getElementById('no-of-people-error').style.display = 'none';
     document.getElementById('dateTime-from-error').style.display = 'none';
     document.getElementById('dateTime-to-error').style.display = 'none';
@@ -345,13 +334,6 @@
                       {/each}
                     </select>
                     <span id="room-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                  </div>
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
-                      Designation
-                    </label>
-                    <input type="text" id="designation" placeholder="Designation" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation}>
-                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
