@@ -3,6 +3,8 @@
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import { getAllRoomBookingsApi, getAllBookableLocationsApi} from '../../../services/api'; // Import the API function
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
+
   export let color = "light";
 
   let employeeName = '';
@@ -12,6 +14,8 @@
   let dateTimeTo = '';
   let showModal = false;
   let editModal = false;
+  let confirmationModal = false;
+  let bookingToDelete = null;
   let currentBooking = null;
 
   let roomList = [
@@ -132,8 +136,23 @@
     }
   }
 
-  function deleteBooking(booking) {
-    bookingList = bookingList.filter(b => b !== booking);
+  function showDeleteConfirmation(booking) {
+    bookingToDelete = booking;
+    confirmationModal = true;
+  }
+
+  async function confirmDeleteBooking() {
+    try {
+      bookingList = bookingList.filter(b => b !== bookingToDelete);
+      closeConfirmationModal();
+    } catch (error) {
+      console.error('Failed to delete booking:', error);
+    }
+  }
+
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    bookingToDelete = null;
   }
 
   function validateInputs() {
@@ -305,7 +324,7 @@
         <div class="modal-content">
           <div class="rounded-t mb-0 px-4 py-10 border-0">
             <div class="flex flex-wrap items-center">
-              <div class="relative w-full px-4 max-w-full flex-1">
+              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
                 <h3 class="font-semibold text-lg text-blueGray-700">
                   {editModal ? 'Edit Booking' : 'Book Room'}
                 </h3>
@@ -409,24 +428,22 @@
             <td class="table-data" title={booking.dateTimeTo}>{booking.dateTimeTo}</td>
             <td class="table-data" title={booking.noOfPeople}>{booking.noOfPeople}</td>
             <td class="text-xs">
-              <div>
-                <a class="text-blueGray-500 py-1 px-3" href="#pablo" bind:this={btnDropdownRef[rowIndex]} on:click={(event) => toggleDropdown(event, rowIndex)}>
-                  <i class="fas fa-ellipsis-v"></i>
-                </a>
-                <div bind:this={popoverDropdownRef[rowIndex]} class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}">
-                  <a href="#pablo" on:click={(e) => { e.preventDefault(); openEditModal(booking); }} class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700">
-                    Edit
-                  </a>
-                  <a href="#pablo" on:click={(e) => { e.preventDefault(); deleteBooking(booking); }} class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700">
-                    Delete
-                  </a>
-                </div>
+              <div class="flex items-center">
+                <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(booking)}></i>
+                <i class="fas fa-trash-alt text-sm cursor-pointer" on:click={() => showDeleteConfirmation(booking)}></i>
               </div>
             </td>
           </tr>
         {/each}
       </tbody>
     </table>
+    {#if confirmationModal}
+      <ConfirmationModal
+        message="Are you sure you want to delete this booking?"
+        onConfirm={confirmDeleteBooking}
+        onCancel={closeConfirmationModal}
+      />
+    {/if}
     <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
   </div>
 </div>

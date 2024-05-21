@@ -197,14 +197,18 @@
               <div class="mb-2 text-blueGray-600">
                 <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
                 {showSalary ? `$${employee.salary}` : '******'}
-                <button class="ml-2 text-blueGray-600 transparent-button" on:click={toggleSalaryVisibility}>
+                <i
+                  class="ml-2 text-blueGray-600 cursor-pointer"
+                  on:click={toggleSalaryVisibility}
+                >
                   {#if showSalary}
                     <i class="fas fa-eye-slash"></i>
                   {:else}
                     <i class="fas fa-eye"></i>
                   {/if}
-                </button>
+                </i>
               </div>
+              
             </div>
             <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
               <div class="flex flex-wrap justify-center">

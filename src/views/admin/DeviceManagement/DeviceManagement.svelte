@@ -4,6 +4,7 @@
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
+  import Toast from '../../../components/Confirmation/Toast.svelte'; // Import the Toast component
 
   export let color = "light";
 
@@ -103,7 +104,7 @@
       const response = await deleteDeviceApi(deviceToDelete._id);
       console.log('Delete Response:', response);
       await fetchAllDevices();
-      showToasterMessage('Device deleted successfully!', 'success'); // Show error toaster
+      showToasterMessage('Device deleted successfully!', 'success'); // Show success toaster
       closeConfirmationModal();
     } catch (error) {
       console.error('Error deleting device:', error);
@@ -117,7 +118,7 @@
     showToaster = true;
     setTimeout(() => {
       showToaster = false;
-    }, 2000);
+    }, 3000); // Show toast for 3 seconds
   }
 
   function closeConfirmationModal() {
@@ -236,9 +237,7 @@
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
   {#if showToaster}
-    <div class="toaster {toasterType}">
-      {toasterMessage}
-    </div>
+    <Toast message={toasterMessage} type={toasterType} />
   {/if}
   <div class="rounded-t mb-0 px-4 py-10 border-0">
     <div class="flex flex-wrap items-center">
