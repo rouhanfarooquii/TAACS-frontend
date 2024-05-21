@@ -20,130 +20,113 @@ let fingerIndex2 = '';
 let isFingerAdded = '';
 let salary = '';
 
-  let employee = {
-      id: '',
-      name: '',
-      phoneNumber: '',
-      location: '',
-      department: '',
-      designation: '',
-      employeeType: '',
-      gender: '',
-      email: '',
-      address: '', 
-      dateOfBirth: '',
-      cardIdNumber: '',
-      personalPassword: '',
-      fingerIndex1: '',
-      fingerIndex2: '',
-      isFingerAdded: '',
-      salary: ''
-  };
+let employee = {
+    id: '',
+    name: '',
+    phoneNumber: '',
+    location: '',
+    department: '',
+    designation: '',
+    employeeType: '',
+    gender: '',
+    email: '',
+    address: '', 
+    dateOfBirth: '',
+    cardIdNumber: '',
+    personalPassword: '',
+    fingerIndex1: '',
+    fingerIndex2: '',
+    isFingerAdded: '',
+    salary: ''
+};
 
-  const image = "../assets/img/10.jpg";
+const image = "../assets/img/10.jpg";
 
-  async function handleSubmit() {
-    if (!validateInputs()) {
-        // If inputs are not valid, prevent form submission
-        return;
-    }
+async function handleSubmit() {
+  if (!validateInputs()) {
+      return;
+  }
 
-    try {
-        const response = await fetch('your_backend_api_url', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-                // Add any additional headers if needed
-            },
-            body: JSON.stringify(employee) // Assuming employee is your data object
-        });
+  try {
+      const response = await fetch('your_backend_api_url', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(employee)
+      });
 
-        if (!response.ok) {
-            throw new Error('Failed to submit data to the server');
-        }
+      if (!response.ok) {
+          throw new Error('Failed to submit data to the server');
+      }
 
-        // Handle success response here, e.g., show success message, reset form, etc.
-        console.log('Form submitted successfully');
-    } catch (error) {
-        // Handle errors, e.g., show error message to the user
-        console.error('Error submitting form:', error.message);
-    }
+      console.log('Form submitted successfully');
+  } catch (error) {
+      console.error('Error submitting form:', error.message);
+  }
 }
-  
-  function handleFileInputChange(event) {
-    console.log("File input changed!"); // Check if this message appears in the console
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newImageSrc = e.target.result;
-        document.getElementById('profile-image').src = newImageSrc;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
 
-  // Add event listener to file input element when the document is loaded
-  document.addEventListener("DOMContentLoaded", function() {
-    const fileInput = document.getElementById('profile-pic');
-    fileInput.addEventListener('change', handleFileInputChange);
-  });
-
-  // Add event listener to file input element when the component is mounted
-  import { onMount } from 'svelte';
-
-  onMount(() => {
-    const fileInput = document.getElementById('profile-pic');
-    fileInput.addEventListener('change', handleFileInputChange);
-
-    // Cleanup function to remove the event listener when the component is destroyed
-    return () => {
-      fileInput.removeEventListener('change', handleFileInputChange);
+function handleFileInputChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const newImageSrc = e.target.result;
+      document.getElementById('profile-image').src = newImageSrc;
     };
-  });
-
-  let listType = 'Permanent_List';
-  let showValidDateTimeFields = false;
-  let showValidDateAndTimeFields = false;
-  let showEffectTimesField = false;
-
-  function handleListTypeChange() {
-    switch (listType) {
-      case 'Temporary_List':
-        showValidDateTimeFields = true;
-        showValidDateAndTimeFields = false;
-        showEffectTimesField = false;
-        break;
-      case 'Temporary_List2':
-        showValidDateTimeFields = false;
-        showValidDateAndTimeFields = true;
-        showEffectTimesField = false;
-        break;
-      case 'Temporary_List3':
-        showValidDateTimeFields = false;
-        showValidDateAndTimeFields = false;
-        showEffectTimesField = true;
-        break;
-      default:
-        showValidDateTimeFields = false;
-        showValidDateAndTimeFields = false;
-        showEffectTimesField = false;
-    }
+    reader.readAsDataURL(file);
   }
+}
 
-  // Invoke handleListTypeChange initially in case the default is not 'Permanent_List'
-  handleListTypeChange();
+import { onMount } from 'svelte';
 
-  function navigateToEmployee() {
-      // Handle navigation logic here
-      navigate('/admin/employee');
-      console.log("Navigate to add employee screen");
+onMount(() => {
+  const fileInput = document.getElementById('profile-pic');
+  fileInput.addEventListener('change', handleFileInputChange);
+
+  return () => {
+    fileInput.removeEventListener('change', handleFileInputChange);
+  };
+});
+
+let listType = 'Permanent_List';
+let showValidDateTimeFields = false;
+let showValidDateAndTimeFields = false;
+let showEffectTimesField = false;
+
+function handleListTypeChange() {
+  switch (listType) {
+    case 'Temporary_List':
+      showValidDateTimeFields = true;
+      showValidDateAndTimeFields = false;
+      showEffectTimesField = false;
+      break;
+    case 'Temporary_List2':
+      showValidDateTimeFields = false;
+      showValidDateAndTimeFields = true;
+      showEffectTimesField = false;
+      break;
+    case 'Temporary_List3':
+      showValidDateTimeFields = false;
+      showValidDateAndTimeFields = false;
+      showEffectTimesField = true;
+      break;
+    default:
+      showValidDateTimeFields = false;
+      showValidDateAndTimeFields = false;
+      showEffectTimesField = false;
   }
+}
 
-  function validateInputs() {
+handleListTypeChange();
+
+function navigateToEmployee() {
+  navigate('/admin/employee');
+}
+
+function validateInputs() {
   let isValid = true;
 
-  // ID
   if (!id) {
     document.getElementById('id-error').style.display = 'block';
     isValid = false;
@@ -151,7 +134,6 @@ let salary = '';
     document.getElementById('id-error').style.display = 'none';
   }
 
-  // Name
   if (!name) {
     document.getElementById('name-error').style.display = 'block';
     isValid = false;
@@ -159,22 +141,20 @@ let salary = '';
     document.getElementById('name-error').style.display = 'none';
   }
 
-  // Phone Number
   if (!phoneNumber) {
     document.getElementById('phone-number-error').style.display = 'block';
     isValid = false;
   } else {
     document.getElementById('phone-number-error').style.display = 'none';
   }
-  // Phone Number Format
-if (!/^\d{11}$/.test(phoneNumber)) {
-  document.getElementById('phone-number-format-error').style.display = 'block';
-  isValid = false;
-} else {
-  document.getElementById('phone-number-format-error').style.display = 'none';
-}
 
-  // Department
+  if (!/^\d{11}$/.test(phoneNumber)) {
+    document.getElementById('phone-number-format-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('phone-number-format-error').style.display = 'none';
+  }
+
   if (!department) {
     document.getElementById('department-error').style.display = 'block';
     isValid = false;
@@ -182,7 +162,6 @@ if (!/^\d{11}$/.test(phoneNumber)) {
     document.getElementById('department-error').style.display = 'none';
   }
 
-  // Designation
   if (!designation) {
     document.getElementById('designation-error').style.display = 'block';
     isValid = false;
@@ -190,22 +169,20 @@ if (!/^\d{11}$/.test(phoneNumber)) {
     document.getElementById('designation-error').style.display = 'none';
   }
 
-  // Email
   if (!email) {
     document.getElementById('email-error').style.display = 'block';
     isValid = false;
   } else {
     document.getElementById('email-error').style.display = 'none';
   }
-  // Email Format
-if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
-  document.getElementById('email-format-error').style.display = 'block';
-  isValid = false;
-} else {
-  document.getElementById('email-format-error').style.display = 'none';
-}
 
-  // Gender
+  if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
+    document.getElementById('email-format-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('email-format-error').style.display = 'none';
+  }
+
   if (!gender) {
     document.getElementById('gender-error').style.display = 'block';
     isValid = false;
@@ -213,7 +190,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('gender-error').style.display = 'none';
   }
 
-  // Date of Birth
   if (!dateOfBirth) {
     document.getElementById('date-of-birth-error').style.display = 'block';
     isValid = false;
@@ -221,7 +197,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('date-of-birth-error').style.display = 'none';
   }
 
-  // Address
   if (!address) {
     document.getElementById('address-error').style.display = 'block';
     isValid = false;
@@ -229,7 +204,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('address-error').style.display = 'none';
   }
 
-  // Card ID
   if (!cardIdNumber) {
     document.getElementById('card-id-error').style.display = 'block';
     isValid = false;
@@ -237,7 +211,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('card-id-error').style.display = 'none';
   }
 
-  // Personal Password
   if (!personalPassword) {
     document.getElementById('personal-password-error').style.display = 'block';
     isValid = false;
@@ -245,7 +218,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('personal-password-error').style.display = 'none';
   }
 
-  // Salary
   if (!salary) {
     document.getElementById('salary-error').style.display = 'block';
     isValid = false;
@@ -253,7 +225,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('salary-error').style.display = 'none';
   }
 
-  // Location
   if (!location) {
     document.getElementById('location-error').style.display = 'block';
     isValid = false;
@@ -261,7 +232,6 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
     document.getElementById('location-error').style.display = 'none';
   }
 
-  // Employee Type
   if (!employeeType) {
     document.getElementById('employee-type-error').style.display = 'block';
     isValid = false;
@@ -273,28 +243,36 @@ if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
 }
 
 let dropdownOpen = false;
-  let selectedDevices = [];
-  let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
+let selectedDevices = [];
+let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
 
-  function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
-  }
-
-  function handleCheckboxChange(event) {
-    const value = event.target.value;
-    if (event.target.checked) {
-      selectedDevices = [...selectedDevices, value];
-    } else {
-      selectedDevices = selectedDevices.filter(device => device !== value);
-    }
-  }
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
-        dropdownOpen = false;
-    }
+function toggleDropdown() {
+  dropdownOpen = !dropdownOpen;
 }
+
+function handleCheckboxChange(event) {
+  const value = event.target.value;
+  if (event.target.checked) {
+    selectedDevices = [...selectedDevices, value];
+  } else {
+    selectedDevices = selectedDevices.filter(device => device !== value);
+  }
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
+    dropdownOpen = false;
+  }
+}
+
+// Dummy data for departments and designations
+const departments = {
+  "IT": ["Developer", "Tester", "Manager"],
+  "HR": ["Recruiter", "HR Manager", "Coordinator"],
+  "Finance": ["Accountant", "Financial Analyst", "Auditor"]
+};
+
+$: availableDesignations = department ? departments[department] || [] : [];
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -361,10 +339,12 @@ window.onclick = function(event) {
       <span id="email-format-error" class="text-red-600 text-xs" style="display: none;">Email format incorrect</span>
     </div>
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-        Gender:
-      </label>
-      <input type="text" id="gender" placeholder="Gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={gender}>
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Gender:</label>
+      <select id="filterActive" name="filterActive" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Prefer Not To Say</option>
+      </select>
       <span id="gender-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
     <div class="relative mb-3">

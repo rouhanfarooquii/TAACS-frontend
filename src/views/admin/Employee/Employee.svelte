@@ -239,12 +239,12 @@
   </div>
   
     <!-- Search Bar -->
-    <div class="flex justify-between mb-4">
-      <div class="relative mb-3 w-full mr-6">
+    <div class="flex mb-4">
+      <div class="relative mb-3 w-4/10 mr-2">
         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="searchBar">Search:</label>
         <input type="text" id="searchBar" name="searchBar" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Search by ID, Name, Department, Designation" bind:value={filters.search} />
       </div>
-      <div class="relative mb-3 w-full">
+      <div class="relative mb-3 w-auto">
         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"  for="filterActive">Active:</label>
         <select id="filterActive" name="filterActive" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={filters.active}>
           <option value="">All</option>
