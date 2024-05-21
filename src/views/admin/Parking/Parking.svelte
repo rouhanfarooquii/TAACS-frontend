@@ -3,7 +3,10 @@
   import { getAllParkingsApi, updateParkingApi, deleteParkingApi, addParkingApi, getAllEmployeesApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import QrCode from '../../../components/QR/QRCode.svelte';
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
   export let color = "light";
 
   let spaces = [];
