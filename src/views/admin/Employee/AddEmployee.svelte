@@ -1,6 +1,7 @@
 <script>
   import { navigate } from 'svelte-routing';
   import { onMount } from 'svelte';
+  import Multiselect from 'components/Dropdowns/MultiSelect.svelte';
 
   let selectedEmployee = null;
 
@@ -21,6 +22,9 @@
   let fingerIndex2 = '';
   let isFingerAdded = '';
   let salary = '';
+  let shiftTiming = '';
+  let selectedLocations = [];
+  let locations = ['Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5'];
 
   let employee = {
       id: '',
@@ -39,7 +43,8 @@
       fingerIndex1: '',
       fingerIndex2: '',
       isFingerAdded: '',
-      salary: ''
+      salary: '',
+      shiftTiming: '',
   };
 
   const image = "../assets/img/10.jpg";
@@ -88,37 +93,6 @@
       fileInput.removeEventListener('change', handleFileInputChange);
     };
   });
-
-  let listType = 'Permanent_List';
-  let showValidDateTimeFields = false;
-  let showValidDateAndTimeFields = false;
-  let showEffectTimesField = false;
-
-  function handleListTypeChange() {
-    switch (listType) {
-      case 'Temporary_List':
-        showValidDateTimeFields = true;
-        showValidDateAndTimeFields = false;
-        showEffectTimesField = false;
-        break;
-      case 'Temporary_List2':
-        showValidDateTimeFields = false;
-        showValidDateAndTimeFields = true;
-        showEffectTimesField = false;
-        break;
-      case 'Temporary_List3':
-        showValidDateTimeFields = false;
-        showValidDateAndTimeFields = false;
-        showEffectTimesField = true;
-        break;
-      default:
-        showValidDateTimeFields = false;
-        showValidDateAndTimeFields = false;
-        showEffectTimesField = false;
-    }
-  }
-
-  handleListTypeChange();
 
   function navigateToEmployee() {
     navigate('/admin/employee');
@@ -239,30 +213,14 @@
       document.getElementById('employee-type-error').style.display = 'none';
     }
 
-    return isValid;
-  }
-
-  let dropdownOpen = false;
-  let selectedDevices = [];
-  let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
-
-  function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
-  }
-
-  function handleCheckboxChange(event) {
-    const value = event.target.value;
-    if (event.target.checked) {
-      selectedDevices = [...selectedDevices, value];
+    if (!shiftTiming) {
+      document.getElementById('shift-timing-error').style.display = 'block';
+      isValid = false;
     } else {
-      selectedDevices = selectedDevices.filter(device => device !== value);
+      document.getElementById('shift-timing-error').style.display = 'none';
     }
-  }
 
-  window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
-      dropdownOpen = false;
-    }
+    return isValid;
   }
 
   // Dummy data for departments and designations
@@ -271,6 +229,23 @@
     "HR": ["Recruiter", "HR Manager", "Coordinator"],
     "Finance": ["Accountant", "Financial Analyst", "Auditor"]
   };
+
+  // Dummy data for shift timings
+  const shiftTimings = ["Morning Shift", "Afternoon Shift", "Night Shift"];
+
+  async function fetchShiftTimings() {
+    try {
+      const response = await fetch('your_backend_api_url_for_shift_timings');
+      if (!response.ok) {
+        throw new Error('Failed to fetch shift timings');
+      }
+      const data = await response.json();
+      return data.shiftTimings;
+    } catch (error) {
+      console.error('Error fetching shift timings:', error.message);
+      return shiftTimings; // Return dummy data in case of error
+    }
+  }
 
   let showPassword = false;
 
@@ -404,8 +379,21 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="personal-password">
         Personal Password:
       </label>
-      <input type="password" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
-      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span> 
+      <div class="relative">
+        <input type='password' id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
+        <i class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" on:click={togglePasswordVisibility}>
+          <svg class="h-6 w-6 text-blueGray-600" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+            {#if showPassword}
+              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.011.24-.025.479-.042.717m-1.386 3.553A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7 .137-.339.28-.676.429-1.011"/>
+            {:else}
+              <path d="M13.875 18.825A8.941 8.941 0 0112 19c-4.477 0-8.268-2.943-9.542-7A9.978 9.978 0 013.354 6.29m1.829-1.828A8.978 8.978 0 0112 5c4.477 0 8.268 2.943 9.542 7-.274.676-.603 1.333-.975 1.95m-2.393 3.12A9.956 9.956 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 011.257-4.576m2.393-3.12"/>
+              <path d="M4 4l16 16"/>
+            {/if}
+          </svg>
+        </i>
+      </div>
+      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
   </div>
     
@@ -440,31 +428,22 @@
 
   <!-- Filters Row 6 -->
   <div class="flex justify-between mb-4">
-    <!-- Filter by List Type -->
+    <!-- Filter by Shift Timing -->
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="listType">List Type:</label>
-      <select id="listType" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{listType}" on:change="{handleListTypeChange}">
-        <option value="Permanent_List">Permanent_List</option>
-        <option value="Temporary_List">Temporary_List</option>
-        <option value="Temporary_List2">Temporary_List2</option>
-        <option value="Temporary_List3">Temporary_List3</option>
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
+      <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{shiftTiming}">
+        <option value="" disabled selected>Select Shift Timing</option>
+        {#each shiftTimings as shift}
+          <option value={shift}>{shift}</option>
+        {/each}
       </select>
+      <span id="shift-timing-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
-    <!-- Filter by Accessible Devices -->
-    <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Devices</label>
-      <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-        <button on:click={toggleDropdown} class="dropbtn">Select Device</button>
-        <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
-          {#each accessibleDevices as device}
-            <div class="flex items-center">
-              <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />
-              <label class="ml-2 text-sm text-blueGray-600">{device}</label>
-            </div>
-          {/each}
-        </div>
-      </div>
-      <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
+    <!-- Filter by Accessible Locations -->
+    <div class="relative mb-3 w-1/2">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleDevices">Accessible locations</label>
+      <Multiselect bind:selectedOptions={selectedLocations} options={locations} placeholder="Select Location" />
+      <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
     </div>
     <!-- Filter by Salary -->
     <div class="relative mb-3">
