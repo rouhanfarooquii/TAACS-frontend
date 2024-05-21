@@ -1,20 +1,21 @@
 <script>
-  import { writable } from 'svelte';
+  import { writable } from 'svelte/store';
+  import { onMount } from 'svelte';
+  import { addVisitorApi, getAllLocationsApi } from '../../../services/api';
+  import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
 
-  // Replace with your backend API base URL
-  const API_URL = 'your_backend_api_url';
   export let color = "light";
 
-  let employee = {
+  let visitor = {
     name: '',
     phoneNumber: '',
-    location: '',
+    locations: [],
     gender: '',
     email: '',
     address: '', 
     dateOfBirth: '',
     cardIdNumber: '',
-    reasonForVisiting: '',
+    reasonOfVisiting: '',
     fingerIndex1: '',
     fingerIndex2: '',
     isFingerAdded: false
@@ -44,46 +45,45 @@
     return re.test(String(email).toLowerCase());
   }
 
-  function handleSubmit() {
-    // Check required fields
+  async function handleSubmit() {
     let valid = true;
-    if (!employee.name) {
+    if (!visitor.name) {
       document.getElementById('name-error').style.display = 'block';
       valid = false;
     } else {
       document.getElementById('name-error').style.display = 'none';
     }
-    if (!employee.phoneNumber || employee.phoneNumber.length !== 11) {
+    if (!visitor.phoneNumber || visitor.phoneNumber.length !== 11) {
       document.getElementById('phone-error').style.display = 'block';
       valid = false;
     } else {
       document.getElementById('phone-error').style.display = 'none';
     }
-    if (!employee.location) {
+    if (!visitor.locations.length) {
       document.getElementById('location-error').style.display = 'block';
       valid = false;
     } else {
       document.getElementById('location-error').style.display = 'none';
     }
-    if (!employee.address) {
+    if (!visitor.address) {
       document.getElementById('address-error').style.display = 'block';
       valid = false;
     } else {
       document.getElementById('address-error').style.display = 'none';
     }
-    if (!employee.cardIdNumber) {
+    if (!visitor.cardIdNumber) {
       document.getElementById('cardIdNumber-error').style.display = 'block';
       valid = false;
     } else {
       document.getElementById('cardIdNumber-error').style.display = 'none';
     }
-    if (!employee.reasonForVisiting) {
-      document.getElementById('reasonForVisiting-error').style.display = 'block';
+    if (!visitor.reasonOfVisiting) {
+      document.getElementById('reasonOfVisiting-error').style.display = 'block';
       valid = false;
     } else {
-      document.getElementById('reasonForVisiting-error').style.display = 'none';
+      document.getElementById('reasonOfVisiting-error').style.display = 'none';
     }
-    if (!validateEmail(employee.email)) {
+    if (!validateEmail(visitor.email)) {
       document.getElementById('email-error').style.display = 'block';
       valid = false;
     } else {
@@ -91,11 +91,45 @@
     }
 
     if (valid) {
-      // Submit the form
-      console.log('Form is valid, submitting...');
-      // Implement the API call here
+    // if (true) {
+
+
+      visitor.requestor = "Admin"
+      visitor.status = "pending"
+      let tempdtosend = [];
+
+      for (let i = 0; i < visitor.locations.length; i++) {
+        tempdtosend.push(trueAccessibleRooms.find(loc => loc.title === visitor.locations[i])._id);
+      }
+
+      visitor.locations = tempdtosend
+
+      console.log(visitor)
+      return
+      try {
+        const response = await addVisitorApi(visitor);
+        console.log('Visitor added successfully', response);
+        alert('Visitor added successfully!');
+      } catch (error) {
+        console.error('Error adding visitor:', error);
+        alert('An error occurred while adding the visitor. Please try again.');
+      }
     }
   }
+
+  let trueAccessibleRooms = [];
+  let accessibleRooms = [];
+
+  onMount(async () => {
+    try {
+      const locations = await getAllLocationsApi();
+      trueAccessibleRooms = locations;
+      accessibleRooms = trueAccessibleRooms.map(loc => loc.title)
+      console.log(accessibleRooms);
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+    }
+  });
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -105,7 +139,6 @@
     </h3>
   </div>
   <div class="left-section flex flex-col items-center">
-    <!-- svelte-ignore a11y-img-redundant-alt -->
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
     <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
@@ -113,49 +146,43 @@
 
   <div class="divider"></div>
 
-  <!-- Filters Row 1 -->
   <div class="flex justify-between mb-4">
-    <!-- Filter by Name -->
     <div>
       <label for="filterName">Name:</label>
       <br>
-      <input type="text" id="filterName" name="filterName" class="filter-input" placeholder="Name" bind:value="{employee.name}">
+      <input type="text" id="filterName" name="filterName" class="filter-input" placeholder="Name" bind:value="{visitor.name}">
       <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
-    <!-- Filter by Department -->
     <div>
       <label for="filterDepartment">Mobile Number:</label>
       <br>
-      <input type="text" id="filterDepartment" name="filterDepartment" class="filter-input" placeholder="Mobile Number" bind:value="{employee.phoneNumber}">
+      <input type="text" id="filterDepartment" name="filterDepartment" class="filter-input" placeholder="Mobile Number" bind:value="{visitor.phoneNumber}">
       <span id="phone-error" class="text-red-600 text-xs" style="display: none;">* Mobile Number must be 11 digits</span>
     </div>
-    <!-- Filter by Position -->
     <div>
       <label for="filterPosition">Location:</label>
       <br>
-      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Location" bind:value="{employee.location}">
+      <MultiSelect bind:selectedOptions="{visitor.locations}" options="{accessibleRooms}" placeholder="Select Locations" />
       <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
   </div>
 
-  <!-- Filters Row 3 -->
   <div class="flex justify-between mb-4">
-    <!-- Filter by Position -->
     <div>
       <label for="filterPosition">Email:</label>
       <br>
-      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" bind:value="{employee.email}">
+      <input type="text" id="filterPosition" name="filterPosition" class="filter-input" placeholder="Email" bind:value="{visitor.email}">
       <span id="email-error" class="text-red-600 text-xs" style="display: none;">* Invalid Email Format</span>
     </div>
     <div>
       <label for="dateOfBirth">Date of Birth:</label>
       <br>
-      <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{employee.dateOfBirth}">
+      <input type="date" id="dateOfBirth" name="dateOfBirth" class="filter-input" placeholder="Date of Birth" bind:value="{visitor.dateOfBirth}">
     </div>
     <div>
       <label for="filterActive">Gender:</label>
       <br>
-      <select id="filterActive" name="filterActive" class="filter-input" bind:value="{employee.gender}">
+      <select id="filterActive" name="filterActive" class="filter-input" bind:value="{visitor.gender}">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
         <option value="Other">Prefer Not To Say</option>
@@ -163,46 +190,43 @@
     </div>
   </div>
 
-  <!-- Filters Row 4 -->
   <div class="flex justify-between mb-4">
     <div class="w-full">
       <label for="address">Address:</label>
       <br>
-      <input type="text" id="address" name="address" class="w-full" placeholder="Address" bind:value="{employee.address}">
+      <input type="text" id="address" name="address" class="w-full" placeholder="Address" bind:value="{visitor.address}">
       <span id="address-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
   </div>
 
-  <!-- Filters Row 5 -->
   <div class="flex justify-start mb-4">
     <div>
       <label for="cardIdNumber">Card ID Number:</label>
       <br>
-      <input type="text" id="cardIdNumber" name="cardIdNumber" class="filter-input" placeholder="Card ID Number" bind:value="{employee.cardIdNumber}">
+      <input type="text" id="cardIdNumber" name="cardIdNumber" class="filter-input" placeholder="Card ID Number" bind:value="{visitor.cardIdNumber}">
       <span id="cardIdNumber-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
     <div class="ml-12">
       <label for="filterreasonForVisiting">Reason for visiting:</label>
       <br>
-      <textarea id="filterreasonForVisiting" name="filterreasonForVisiting" class="filter-input" placeholder="Reason for visiting" bind:value="{employee.reasonForVisiting}"></textarea>
-      <span id="reasonForVisiting-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <textarea id="filterreasonForVisiting" name="filterreasonForVisiting" class="filter-input" placeholder="Reason for visiting" bind:value="{visitor.reasonOfVisiting}"></textarea>
+      <span id="reasonOfVisiting-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
   </div>
 
-  <!-- Filters Row 6 -->
   <div class="flex justify-between mb-4">
     <div>
       <label for="fingerIndex1">Finger Index 1:</label>
       <br>
-      <input type="text" id="fingerIndex1" name="fingerIndex1" class="filter-input1" placeholder="Finger Index 1" bind:value="{employee.fingerIndex1}">
+      <input type="text" id="fingerIndex1" name="fingerIndex1" class="filter-input1" placeholder="Finger Index 1" bind:value="{visitor.fingerIndex1}">
     </div>
     <div class="w-1/3 px-3">
       <label for="fingerIndex2">Finger Index 2:</label>
       <br>
-      <input type="text" id="fingerIndex2" name="fingerIndex2" class="filter-input1" placeholder="Finger Index 2" bind:value="{employee.fingerIndex2}">
+      <input type="text" id="fingerIndex2" name="fingerIndex2" class="filter-input1" placeholder="Finger Index 2" bind:value="{visitor.fingerIndex2}">
     </div>
     <div class="w-1/3 pr-15 pt-6">
-      <input type="checkbox" id="isFingerAdded" name="isFingerAdded" class="filter-checkbox" bind:checked="{employee.isFingerAdded}">
+      <input type="checkbox" id="isFingerAdded" name="isFingerAdded" class="filter-checkbox" bind:checked="{visitor.isFingerAdded}">
       <label for="isFingerAdded">Is Finger Added</label>
     </div>
   </div>
