@@ -8,7 +8,7 @@
   // Auto hide the toast after 3 seconds
   setTimeout(() => {
     show = false;
-  }, 1000);
+  }, 1500);
 </script>
 
 <div class="toast {type}" transition:fade="{{ duration: 500 }}" class:hide={!show}>

@@ -37,24 +37,60 @@
   });
 
   async function addDevice() {
-    if (validateInputs()) {
-      try {
-        const isDuplicate = devices.some(device => device.deviceName === deviceName || device.deviceId === deviceId || device.ip === deviceIp);
-        if (isDuplicate) {
-          alert('Device Name, ID, and IP must be unique.');
-          return;
-        }
+  if (validateInputs()) {
+    try {
+      const isDeviceNameDuplicate = devices.some(device => device.deviceName === deviceName);
+      const isDeviceIdDuplicate = devices.some(device => device.deviceId === Number(deviceId));
+      const isDeviceIpDuplicate = devices.some(device => device.ip === deviceIp);
 
-        await addDeviceApi({ deviceName, deviceId, ip: deviceIp, status: status ? 'Active' : 'Inactive', hide: false });
-        await fetchAllDevices();
-        showToasterMessage('Device added successfully!', 'success');
-        closeModal();
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while adding the device. Please try again.');
+      
+      if (isDeviceNameDuplicate && isDeviceIdDuplicate && isDeviceIpDuplicate) {
+        showToasterMessage('Device name, ID, and IP should all be unique.', 'error');
+        return;
       }
+      if (isDeviceNameDuplicate && isDeviceIdDuplicate) {
+        showToasterMessage('Device name and ID should be unique.', 'error');
+        return;
+      }
+      if (isDeviceNameDuplicate && isDeviceIpDuplicate) {
+        showToasterMessage('Device name and IP should be unique.', 'error');
+        return;
+      }
+      if (isDeviceIdDuplicate && isDeviceIpDuplicate) {
+        showToasterMessage('Device ID and IP should be unique.', 'error');
+        return;
+      }
+      if (isDeviceNameDuplicate) {
+        showToasterMessage('Device name should be unique.', 'error');
+        return;
+      }
+      if (isDeviceIdDuplicate) {
+        showToasterMessage('Device ID should be unique.', 'error');
+        return;
+      }
+      if (isDeviceIpDuplicate) {
+        showToasterMessage('Device IP should be unique.', 'error');
+        return;
+      }
+
+      console.log('Adding device:', { deviceName, deviceId, deviceIp, status });
+
+      await addDeviceApi({
+        deviceName,
+        deviceId,
+        ip: deviceIp,
+        status: status ? 'Active' : 'Inactive',
+        hide: false
+      });
+      await fetchAllDevices();
+      showToasterMessage('Device added successfully!', 'success');
+      closeModal();
+    } catch (error) {
+      console.error('Error:', error);
+      showToasterMessage('An error occurred while adding the device. Please try again.', 'error');
     }
   }
+}
 
   async function updateDevice() {
     if (validateInputs() && currentDevice) {
@@ -66,7 +102,8 @@
         closeModal();
       } catch (error) {
         console.error('Error updating device:', error);
-        alert('An error occurred while updating the device status. Please try again.');
+        showToasterMessage('An error occurred while updating the device status. Please try again.', 'error');
+        // alert('An error occurred while updating the device status. Please try again.');
       }
     }
   }
@@ -84,7 +121,8 @@
       closeConfirmationModal();
     } catch (error) {
       console.error('Error deleting device:', error);
-      alert('An error occurred while deleting the device. Please try again.');
+      showToasterMessage('An error occurred while deleting the device. Please try again.', 'error');
+      // alert('An error occurred while deleting the device. Please try again.');
     }
   }
 
@@ -92,7 +130,9 @@
     toasterMessage = message;
     toasterType = type;
     showToaster = true;
-    setTimeout(() => showToaster = false, 3000);
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
   }
 
   function closeConfirmationModal() {
@@ -103,29 +143,48 @@
   function validateInputs() {
     let isValid = true;
 
+    const deviceName = document.getElementById('device-name').value;
+    const deviceId = document.getElementById('device-id').value;
+    const deviceIp = document.getElementById('device-ip').value;
+
+    // Validate Device Name
     if (!deviceName) {
-      document.getElementById('device-name-error').style.display = 'block';
-      isValid = false;
+        document.getElementById('device-name-error').innerText = '* Field Required';
+        document.getElementById('device-name-error').style.display = 'block';
+        isValid = false;
     } else {
-      document.getElementById('device-name-error').style.display = 'none';
+        document.getElementById('device-name-error').style.display = 'none';
     }
 
+    // Validate Device ID
     if (!deviceId) {
-      document.getElementById('device-id-error').style.display = 'block';
-      isValid = false;
+        document.getElementById('device-id-error').innerText = '* Field Required';
+        document.getElementById('device-id-error').style.display = 'block';
+        isValid = false;
+    } else if (isNaN(deviceId)) {
+        document.getElementById('device-id-error').innerText = 'Device ID must be a number.';
+        document.getElementById('device-id-error').style.display = 'block';
+        isValid = false;
     } else {
-      document.getElementById('device-id-error').style.display = 'none';
+        document.getElementById('device-id-error').style.display = 'none';
     }
 
+    // Validate Device IP
+    const ipPattern = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/;
     if (!deviceIp) {
-      document.getElementById('device-ip-error').style.display = 'block';
-      isValid = false;
+        document.getElementById('device-ip-error').innerText = '* Field Required';
+        document.getElementById('device-ip-error').style.display = 'block';
+        isValid = false;
+    } else if (!ipPattern.test(deviceIp)) {
+        document.getElementById('device-ip-error').innerText = 'Invalid IP address format. (xxx.xxx.xxx.xxx)';
+        document.getElementById('device-ip-error').style.display = 'block';
+        isValid = false;
     } else {
-      document.getElementById('device-ip-error').style.display = 'none';
+        document.getElementById('device-ip-error').style.display = 'none';
     }
 
     return isValid;
-  }
+}
 
   function openModal() {
     showModal = true;
@@ -202,14 +261,14 @@
                       Device Name
                     </label>
                     <input type="text" id="device-name" placeholder="Device Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceName}>
-                    <span id="device-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    <span id="device-name-error" class="text-red-600 text-xs" style="display: none;"></span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
                       Device ID
                     </label>
                     <input type="text" id="device-id" placeholder="Device ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceId}>
-                    <span id="device-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    <span id="device-id-error" class="text-red-600 text-xs" style="display: none;"></span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
@@ -218,7 +277,7 @@
                       Device IP
                     </label>
                     <input type="text" id="device-ip" placeholder="Device IP" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={deviceIp}>
-                    <span id="device-ip-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    <span id="device-ip-error" class="text-red-600 text-xs" style="display: none;"></span>
                   </div>
                   {#if editModal}
                   <div class="relative mb-3">
@@ -271,7 +330,7 @@
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
             Status
           </th>
-          <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
             Actions
           </th>
         </tr>
