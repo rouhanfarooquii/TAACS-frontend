@@ -4887,3 +4887,22 @@ canvas{
 .park-dropdown li:hover {
   background-color: #eee;
 }
+
+.toaster {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  color: white;
+  transition: opacity 0.5s;
+}
+.toaster.success {
+  background-color: green;
+}
+.toaster.error {
+  background-color: red;
+}
+.toaster.hidden {
+  opacity: 0;
+}

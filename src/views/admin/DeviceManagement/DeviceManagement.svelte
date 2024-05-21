@@ -3,6 +3,7 @@
   import { createPopper } from "@popperjs/core";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   export let color = "light";
 
@@ -12,8 +13,14 @@
   let status = false;
   let showModal = false;
   let editModal = false;
+  let confirmationModal = false; // State to show/hide confirmation modal
   let currentDevice = null;
+  let deviceToDelete = null; // Device to be deleted
   let devices = [];
+  // Toaster state
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = ''; // e.g., 'success', 'error'
 
   async function fetchAllDevices() {
     try {
@@ -54,6 +61,7 @@
 
         console.log('Add Response:', response);
         await fetchAllDevices();
+        showToasterMessage('Device added successfully!', 'success'); // Show success toaster
         closeModal();
       } catch (error) {
         console.error('Error:', error);
@@ -75,6 +83,7 @@
           const response = await updateDeviceApi(temp);
           console.log('Update Response:', response);
           await fetchAllDevices();
+          showToasterMessage('Device updated successfully!', 'success'); // Show success toaster
           closeModal();
         } catch (error) {
           console.error('Error updating device:', error);
@@ -84,15 +93,36 @@
     }
   }
 
-  async function deleteDevice(device) {
+  function showDeleteConfirmation(device) {
+    deviceToDelete = device;
+    confirmationModal = true;
+  }
+
+  async function confirmDeleteDevice() {
     try {
-      const response = await deleteDeviceApi(device._id);
+      const response = await deleteDeviceApi(deviceToDelete._id);
       console.log('Delete Response:', response);
       await fetchAllDevices();
+      showToasterMessage('Device deleted successfully!', 'success'); // Show error toaster
+      closeConfirmationModal();
     } catch (error) {
       console.error('Error deleting device:', error);
       alert('An error occurred while deleting the device. Please try again.');
     }
+  }
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 2000);
+  }
+
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    deviceToDelete = null;
   }
 
   function validateInputs() {
@@ -205,6 +235,11 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
+  {#if showToaster}
+    <div class="toaster {toasterType}">
+      {toasterMessage}
+    </div>
+  {/if}
   <div class="rounded-t mb-0 px-4 py-10 border-0">
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 max-w-full flex-grow flex-1">
@@ -283,6 +318,13 @@
         </div>
       </div>
       {/if}
+      {#if confirmationModal}
+      <ConfirmationModal
+        message="Are you sure you want to delete this device?"
+        onConfirm={confirmDeleteDevice}
+        onCancel={closeConfirmationModal}
+      />
+      {/if}
     </div>
   </div>
   <div class="block w-full overflow-x-auto">
@@ -334,7 +376,7 @@
                     Edit
                   </a>
                   <a
-                    href="#pablo" on:click={(e) => { e.preventDefault(); deleteDevice(device); }}
+                    href="#pablo" on:click={(e) => { e.preventDefault(); showDeleteConfirmation(device); }}
                     class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
                   >
                     Delete

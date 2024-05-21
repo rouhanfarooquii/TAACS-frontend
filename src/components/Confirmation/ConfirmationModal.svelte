@@ -7,10 +7,8 @@
 
 <div class="modal">
     <div class="modal-content">
-                <h3 class="font-semibold text-lg text-blueGray-700">
-                Confirmation
-                </h3>
-                <hr class="mb-4">
+        <h3 class="font-semibold text-lg text-blueGray-700">Confirmation</h3>
+        <hr class="mb-4">
         <div class="relative mb-5">
             <p class="block uppercase text-blueGray-600 text-sm font-bold mb-2">{message}</p>
         </div>
