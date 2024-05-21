@@ -1,7 +1,8 @@
 <script>
-  import { reactive } from 'svelte';
+  import { onMount } from 'svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
-  const delete1 = "../assets/img/icons8-delete-24.png";
+  import { getAllDepartmentsApi, getAllPayrollsApi, addPayrollApi } from '../../../services/api'; // Assuming you have an API service file
+
   export let color = "light";
 
   let bonusName = '';
@@ -9,33 +10,82 @@
   let value = '';
   let selectedDepartment = '';
   let selectedDesignation = '';
-  let departments = ['Marketing', 'Finance', 'Human Resources', 'Information Technology', 'Sales', 'Operations'];
-  let designations = ['Sales Manager', 'Software Engineer', 'Marketing Specialist', 'HR Manager', 'Financial Analyst'];
+  let departments = [];
+  let trueDepartments = [];
+  let designations = [];
   let valueTypes = ['Percentage', 'Absolute'];
   let selectedValueType = '';
 
-  let bonuses = [
-    { id: '1', name: 'Year End Bonus', department: 'All', designation: 'All', percentage: 5, activeFrom: '2022-01-01' },
-    { id: '2', name: 'Engineering Excellence Award', department: 'Engineering', designation: 'Senior Software Engineer', percentage: 3, activeFrom: '2022-01-15' },
-    { id: '3', name: 'Marketing Performance Bonus', department: 'Marketing', designation: 'All', percentage: 4, activeFrom: '2022-02-01' },
-    { id: '4', name: 'Leadership Bonus', department: 'All', designation: 'Manager', percentage: 6, activeFrom: '2022-03-01' },
-    { id: '5', name: 'Finance Achievement Award', department: 'Finance', designation: 'Financial Analyst', percentage: 5, activeFrom: '2022-04-01' },
-  ];
+  let bonuses = [];
 
-  function deleteBonus(id) {
-    bonuses = bonuses.filter(bonus => bonus.id !== id);
+  onMount(async () => {
+    await getAllDepartments();
+    await fetchBonuses();
+  });
+
+  async function getAllDepartments() {
+    trueDepartments = await getAllDepartmentsApi();
+    departments = JSON.parse(JSON.stringify(trueDepartments));
+    departments.push({ title: "All", _id: "All" });
   }
 
-  function update() {
-    if (!validateInputs()) {
-      return;
-    }
-    console.log("Batch update performed");
-    selectedDepartment = '';
-    selectedDesignation = '';
-    selectedValueType = null;
-    value = '';
+  async function update() {
+  if (!validateInputs()) {
+    return;
+  }
+
+  let department = selectedDepartment !== "All" ? trueDepartments.find(dept => dept.title === selectedDepartment) : { _id: "All", title: "All" };
+  let designation = selectedDesignation !== "All" ? department.designations.find(des => des.title === selectedDesignation) : { _id: "All" };
+
+  const newBonus = {
+    name: bonusName,
+    value: parseFloat(value),
+    department: {
+      _id: department._id,
+      title: department.title
+    },
+    designation: designation._id,
+    activeFrom: new Date(activeDate).toISOString()
+  };
+
+  console.log('Payload being sent to API:', newBonus);
+
+  try {
+    const responseMsg = await addPayrollApi(newBonus);
+    console.log('Response from API:', responseMsg);
+    await fetchBonuses(); // Refresh the bonuses list after adding a new bonus
     closeModal();
+  } catch (error) {
+    console.error('Error adding new bonus:', error);
+  }
+}
+
+  async function fetchBonuses() {
+  const bonusesFromApi = await getAllPayrollsApi();
+  bonuses = bonusesFromApi.map(bonus => {
+    const department = trueDepartments.find(dept => dept._id === bonus.department._id);
+    const designation = department ? department.designations.find(des => des._id === bonus.designation) : { title: 'N/A' };
+    return {
+      ...bonus,
+      designationTitle: designation ? designation.title : 'ALL'
+    };
+  });
+}
+
+  function setDesignation(event) {
+    const selectedDepartmentTitle = event.target.value;
+    if (selectedDepartmentTitle === "All") {
+      designations = [{ title: "All", _id: "All" }];
+      selectedDesignation = "All";
+    } else {
+      const selectedDept = trueDepartments.find(d => d.title === selectedDepartmentTitle);
+      designations = [...selectedDept.designations, { title: "All", _id: "All" }];
+      selectedDesignation = '';
+    }
+  }
+
+  function deleteBonus(id) {
+    bonuses = bonuses.filter(bonus => bonus._id !== id);
   }
 
   function validateInputs() {
@@ -86,8 +136,6 @@
     return isValid;
   }
 
-  let selectedUsers = new Set();
-
   let showModal = false;
 
   function openModal() {
@@ -123,8 +171,8 @@
   $: filteredBonuses = bonuses.filter(bonus => 
     bonus.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     bonus.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bonus.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bonus.percentage.toString().includes(searchQuery)
+    bonus.department.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    bonus.value.toString().includes(searchQuery)
   );
   $: displayedBonuses = filteredBonuses.slice(startIndex, endIndex);
   $: totalPages = Math.ceil(filteredBonuses.length / bonusesPerPage);
@@ -142,8 +190,6 @@
     : '';
   $: searchResultColor = filteredBonuses.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 </script>
-
-
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   <div class="flex justify-end mb-4">
@@ -181,10 +227,10 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
                       Department:
                     </label>
-                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment}>
-                      <option value="" disabled selected>Select a department</option>
+                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment} on:change={setDesignation}>
+                      <option value="" disabled selected>Select Department</option>
                       {#each departments as department}
-                        <option value={department}>{department}</option>
+                        <option value={department.title}>{department.title}</option>
                       {/each}
                     </select>
                     <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
@@ -205,7 +251,7 @@
                   </div>
                 </div>
 
-<div class="w-full lg:w-6/12 px-4">
+                <div class="w-full lg:w-6/12 px-4">
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="activation-date">
                       Activation Date
@@ -213,20 +259,18 @@
                     <input type="date" id="activation-date" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={activeDate}>
                     <span id="activation-date-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-
-		  <div class="relative mb-3">
+                  <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
                       Designation:
                     </label>
                     <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
-                      <option value="" disabled selected>Select a designation</option>
+                      <option value="" disabled selected>Select Designation</option>
                       {#each designations as designation}
-                        <option value={designation}>{designation}</option>
+                        <option value={designation.title}>{designation.title}</option>
                       {/each}
                     </select>
                     <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
                       Enter Value/Percentage:
@@ -253,12 +297,6 @@
       </div>
     </div>
     <p class="text-sm {searchResultColor}">{searchResultText}</p>
-    <!-- <div class="flex items-center mb-4">
-      <input type="search" class="bg-gray-800 text-black rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
-      {#if searchQuery}
-        <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
-      {/if}
-    </div> -->
     <table>
       <thead>
         <tr>
@@ -271,36 +309,36 @@
         </tr>
       </thead>
       <tbody>
-        {#each displayedBonuses as bonus (bonus.id)}
+        {#each displayedBonuses as bonus (bonus._id)}
         <tr>
           <td class="table-data font-bold text-blueGray-600" title={bonus.name}>
             <div class="flex items-center">
               <span>{bonus.name}</span>
             </div>
           </td>
-          <td class="table-data" title={bonus.designation}>
+          <td class="table-data" title={bonus.designationTitle}>
             <div class="flex items-center">
-              <span>{bonus.designation}</span>
+              <span>{bonus.designationTitle}</span>
+            </div>
+          </td>          
+          <td class="table-data" title={bonus.department.title}>
+            <div class="flex items-center">
+              <span>{bonus.department.title}</span>
             </div>
           </td>
-          <td class="table-data" title={bonus.department}>
+          <td class="table-data" title={bonus.value}>
             <div class="flex items-center">
-              <span>{bonus.department}</span>
+              <span>{bonus.value}</span>
             </div>
           </td>
-          <td class="table-data" title={bonus.percentage}>
+          <td class="table-data" title={new Date(bonus.activeFrom).toLocaleDateString()}>
             <div class="flex items-center">
-              <span>{bonus.percentage}%</span>
-            </div>
-          </td>
-          <td class="table-data" title={bonus.activeFrom}>
-            <div class="flex items-center">
-              <span>{bonus.activeFrom}</span>
+              <span>{new Date(bonus.activeFrom).toLocaleDateString()}</span>
             </div>
           </td>
           <td class="table-data">
             <div class="flex items-center">
-              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteBonus(bonus.id)}></i>
+              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteBonus(bonus._id)}></i>
             </div>
           </td>
         </tr>
