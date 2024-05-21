@@ -1,73 +1,5 @@
 let headers = {'Content-Type': 'application/json'}
 
-// // Positions API
-// export async function getAllPositionsApi(){
-//     const response = await fetch(BACKEND + 'position/getall',{
-//         method: 'GET',
-//         headers: headers,
-//     });
-//     const responseObj = await response.json();
-//     const positions = await responseObj.positions;
-//     return await positions;
-// };
-
-// export async function addPositionApi(obj){
-//     const response = await fetch(BACKEND + 'position/add', {
-//         method: 'POST',
-//         observe: 'body',
-//         headers: headers,
-//         body: JSON.stringify({position: obj})
-//     })
-//     const responseObj = await response.json();
-//     const msg = await responseObj.msg;
-//     return await msg;
-// };
-
-// export async function updatePositionApi(obj){
-//     const response = await fetch(BACKEND + 'position/update', {
-//         method: 'POST',
-//         observe: 'body',
-//         headers: headers,
-//         body: JSON.stringify({position: obj})
-//     })
-//     const responseObj = await response.json();
-//     const msg = await responseObj.msg;
-//     return await msg;
-// };
-
-// export async function deletePositionApi(id){
-//     const response = await fetch(BACKEND + 'position/delete/' + id, {
-//         method: 'POST',
-//         headers: headers,
-//     })
-//     const responseObj = await response.json();
-//     const msg = await responseObj.msg;
-//     return await msg;
-// };
-
-// AccessControls API
-// export async function getAllAccessControlsApi(){
-//     const response = await fetch(BACKEND + 'accessControl/getall',{
-//         method: 'GET',
-//         headers: headers,
-//     });
-//     const responseObj = await response.json();
-//     const accessControls = await responseObj.accessControls;
-//     return await accessControls;
-// };
-
-// export async function addAccessControlApi(obj){
-//     const response = await fetch(BACKEND + 'accessControl/add', {
-//         method: 'POST',
-//         observe: 'body',
-//         headers: headers,
-//         body: JSON.stringify({accessControl: obj})
-//     })
-//     const responseObj = await response.json();
-//     const msg = await responseObj.msg;
-//     return await msg;
-// };
-
 export async function batchUpdateAccessControlApi(obj){
     const response = await fetch(BACKEND + 'accessControl/batchUpdate', {
         method: 'POST',
@@ -338,6 +270,17 @@ export async function getAllLocationsApi(){
     return await locations;
 };
 
+export async function getAllBookableLocationsApi() {
+    const response = await fetch(BACKEND + 'location/getall', {
+        method: 'GET',
+        headers: headers,
+    });
+    const responseObj = await response.json();
+    const locations = await responseObj.locations;
+    const bookableLocations = locations.filter(location => location.bookable);
+    return bookableLocations;
+}
+
 export async function addLocationApi(obj){
     const response = await fetch(BACKEND + 'location/add', {
         method: 'POST',
@@ -462,15 +405,26 @@ export async function deletePayrollApi(id){
 };
 
 // RoomBookings API
-export async function getAllRoomBookingsApi(){
-    const response = await fetch(BACKEND + 'roomBooking/getall',{
+export async function getAllRoomBookingsApi() {
+    const response = await fetch(BACKEND + 'roomBooking/getall', {
         method: 'GET',
         headers: headers,
     });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
     const responseObj = await response.json();
-    const roomBookings = await responseObj.roomBookings;
-    return await roomBookings;
-};
+
+    console.log('API response object:', JSON.stringify(responseObj, null, 2)); // Log the entire response object
+
+    // Adjust the structure check according to the actual response
+    if (responseObj && responseObj.roomBooking) {
+        return responseObj.roomBooking;
+    } else {
+        throw new Error('Invalid response structure');
+    }
+}
 
 export async function addRoomBookingApi(obj){
     const response = await fetch(BACKEND + 'roomBooking/add', {
