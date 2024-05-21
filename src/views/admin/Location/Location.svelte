@@ -65,11 +65,22 @@
           }
         }
 
+        // console.log(bookable)
+        // console.log({
+        //   _id: editingSpace.id,
+        //   title: locationName,
+        //   devices: tempdtosend,
+        //   bookable: bookable,
+        //   capacity: Number(capacity),
+        //   features: selectedFeatures
+        // })
+        // return;
+
         const response = await updateLocationApi({
           _id: editingSpace.id,
           title: locationName,
           devices: tempdtosend,
-          bookable: bookable === 'Yes',
+          bookable: bookable,
           capacity: Number(capacity),
           features: selectedFeatures
         });
