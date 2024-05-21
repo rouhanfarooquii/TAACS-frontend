@@ -380,7 +380,7 @@ export async function getAllParkingsApi(){
     });
     const responseObj = await response.json();
     const parkings = await responseObj.parkings;
-    return await parkings;
+    return await responseObj;
 };
 
 export async function addParkingApi(obj){
