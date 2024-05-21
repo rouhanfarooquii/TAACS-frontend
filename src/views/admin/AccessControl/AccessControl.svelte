@@ -4,7 +4,7 @@
   export let color = "light";
 
   import { onMount } from 'svelte';
-  import { getAllEmployeesApi, getAllDepartmentsApi, batchUpdateAccessControlsApi } from '../../../services/api';
+  import { getAllEmployeesApi, getAllDepartmentsApi, getAllLocationsApi, batchUpdateAccessControlApi } from '../../../services/api';
 
   let accessControlObject = [];
   let users = [];
@@ -13,8 +13,10 @@
   let selectedDesignation = '';
   let selectedRooms = [];
   let departments = [];
+  let trueDepartments = []
   let designations = [];
-  let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
+  let trueAccessibleRooms = []
+  let accessibleRooms = [];
 
   let selectedUsers = new Set();
   let searchQuery = '';
@@ -22,25 +24,30 @@
   onMount(async () => {
     await getAllAccess();
     await getAllDepartments();
+    await getAllRooms();
   });
 
-  async function getAllDepartments(){
-    departments = await getAllDepartmentsApi();
-    departments.push({title: "All"})
+  async function getAllRooms(){
+    trueAccessibleRooms = await getAllLocationsApi();
+    accessibleRooms = JSON.parse(JSON.stringify(trueAccessibleRooms));
+    accessibleRooms = accessibleRooms.map(loc => loc.title)
   }
 
-  function setDesignation(obj){
-    designations = []
+  async function getAllDepartments(){
+    trueDepartments = await getAllDepartmentsApi();
+    departments = JSON.parse(JSON.stringify(trueDepartments));
+    departments.push({title: "All", _id: "All"})
+  }
 
-    if(obj.title == "All"){
-      designations = obj.designations
-      designations.push({title: "All"})
-
-      selectedDesignation = designations[designations.length() - 1]
-    }
-    else{
-      designations = obj.designations
-      designations.push({title: "All"})
+  function setDesignation(event){
+    const selectedDepartmentTitle = event.target.value;
+    if (selectedDepartmentTitle === "All") {
+      designations = [{title: "All", _id: "All"}];
+      selectedDesignation = "All";
+    } else {
+      const selectedDept = trueDepartments.find(d => d.title === selectedDepartmentTitle);
+      designations = [...selectedDept.designations, {title: "All", _id: "All"}];
+      selectedDesignation = '';
     }
   }
 
@@ -124,18 +131,45 @@
       return;
     }
 
-    // Implement batch update logic here
+    let payloadDepartment
+    if(selectedDepartment != "All"){
+      payloadDepartment = (trueDepartments.find(d => d.title === selectedDepartment))
+    }
+    else{
+      payloadDepartment = selectedDepartment
+    }
+    let payloadDesignation
+    if(selectedDesignation != "All"){
+      payloadDesignation = (payloadDepartment.designations.find(d => d.title === selectedDesignation))._id
+    }
+    else{
+      payloadDesignation = selectedDesignation
+    }
+    if(selectedDepartment != "All"){
+      payloadDepartment = payloadDepartment._id
+    }
+    let payloadLocations = []
+    for (let index = 0; index < selectedRooms.length; index++) {
+      payloadLocations.push((trueAccessibleRooms.find(d => d.title === selectedRooms[index]))._id)
+    }
 
-    // Close modal and refresh list
-    closeModal();
-    await getAllAccess();
-  }
+    const payload = {
+      department: payloadDepartment,
+      designation: payloadDesignation,
+      locations: payloadLocations,
+      users: Array.from(selectedUsers)
+    };
 
-  async function deleteSelectedUsers() {
-    // Delete selected users logic
+    console.log('Payload sent to API:', payload);
 
-    // Refresh list
-    await getAllAccess();
+    try {
+      const response = await batchUpdateAccessControlApi(payload);
+      console.log('Response from API:', response);
+      closeModal();
+      await getAllAccess();
+    } catch (error) {
+      console.error('Error updating access control:', error);
+    }
   }
 
   function openModal() {
@@ -156,7 +190,13 @@
 
   $: startIndex = (currentPage - 1) * usersPerPage;
   $: endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
-  $: filteredUsers = users;
+  $: filteredUsers = users.filter(user => 
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.employeeID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.department.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.designation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.locations.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   $: displayedUsers = filteredUsers.slice(startIndex, endIndex);
   $: totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
@@ -181,7 +221,6 @@
         Access Control
       </h3>
     </div>
-    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow mr-1 hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={deleteSelectedUsers}>Delete</button>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" on:click={openModal}>Batch Update</button>
   </div>
   <div class="flex justify-between">
@@ -208,7 +247,7 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Department:
                 </label>
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" on:change={(e) => setDesignation(departments.find(d => d.title === e.target.value))}>
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment} on:change={setDesignation}>
                   <option value="" disabled selected>Select Department</option>
                   {#each departments as department}
                     <option value={department.title}>{department.title}</option>
@@ -220,7 +259,7 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Designation:
                 </label>                  
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
                   <option value="" disabled selected>Select Designation</option>
                   {#each designations as designation}
                     <option value={designation.title}>{designation.title}</option>
@@ -257,7 +296,7 @@
       </tr>
     </thead>
     <tbody>
-      {#each users as user}
+      {#each displayedUsers as user}
       <tr>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"><input type="checkbox" checked={selectedUsers.has(user._id)} on:click={() => toggleSelection(user._id)} /></td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.employeeID}</td>

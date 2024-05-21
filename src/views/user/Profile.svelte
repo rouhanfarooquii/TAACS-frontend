@@ -1,7 +1,7 @@
 <script>
   import { navigate } from 'svelte-routing';
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
-  import QrCode from '../admin/Parking/QRCode.svelte';
+  import QrCode from 'components/QR/QRCode.svelte';
   import Footer from "components/Footers/Footer.svelte";
   import { writable } from 'svelte/store';
 
