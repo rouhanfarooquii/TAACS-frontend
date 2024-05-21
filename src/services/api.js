@@ -345,8 +345,8 @@ export async function getAllParkingsApi(){
         headers: headers,
     });
     const responseObj = await response.json();
-    const parkings = await responseObj.parkings;
-    return await parkings;
+    // const parkings = await responseObj.parkings;
+    return await responseObj;
 };
 
 export async function addParkingApi(obj){

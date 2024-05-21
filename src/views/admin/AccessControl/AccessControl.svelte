@@ -13,6 +13,7 @@
   let selectedDesignation = '';
   let selectedRooms = [];
   let departments = [];
+  let trueDepartments = []
   let designations = [];
   let accessibleRooms = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
 
@@ -25,23 +26,32 @@
   });
 
   async function getAllDepartments(){
+    trueDepartments = await getAllDepartmentsApi();
+    departments =  JSON.parse(JSON.stringify(trueDepartments));
     departments = await getAllDepartmentsApi();
-    departments.push({title: "All"})
+    departments.push({title: "All", _id: "All"})
   }
 
   function setDesignation(obj){
-    designations = []
-
-    if(obj.title == "All"){
-      designations = obj.designations
-      designations.push({title: "All"})
-
-      selectedDesignation = designations[designations.length() - 1]
-    }
-    else{
-      designations = obj.designations
-      designations.push({title: "All"})
-    }
+    // ob = setDesignation(departments.find(d => d.title === obj.target.value))
+    console.log(obj.target.value)
+    // designations = []
+    // console.log(obj)
+    // if(obj.title == "All"){
+      // designations.push({title: "All", _id: "All"})
+      // selectedDesignation = designations[0]
+    // }
+    // else{
+      // designations = JSON.parse(JSON.stringify(obj.designations))
+      // designations.push({title: "All", _id: "All"})
+      // designations = obj.designations
+    // }
+    // for (let index = 0; index < designations.length-1; index++) {
+    //   if(designations[index]._id == "All" && designations[index+1]._id == "All"){
+    //     designations.splice(index, 1)
+    //   }
+    // }
+    // console.log(designations)
   }
 
   async function getAllAccess() {
@@ -208,11 +218,12 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Department:
                 </label>
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" on:change={(e) => setDesignation(departments.find(d => d.title === e.target.value))}>
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment} on:change={(e) => setDesignation(e)}>
                   <option value="" disabled selected>Select Department</option>
                   {#each departments as department}
-                    <option value={department.title}>{department.title}</option>
+                    <option value={department}>{department.title}</option>
                   {/each}
+                  <!-- <option value={{title: "All", _id: "All"}}>All</option> -->
                 </select>
                 <span id="department-designation-error" class="text-red-600 text-xs" style="display: none;">* Please select a department or designation</span>
               </div>
@@ -220,7 +231,7 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Designation:
                 </label>                  
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
                   <option value="" disabled selected>Select Designation</option>
                   {#each designations as designation}
                     <option value={designation.title}>{designation.title}</option>
