@@ -1,12 +1,14 @@
 <script>
   import { onMount } from 'svelte';
-  import { getAllParkingsApi, updateParkingApi, deleteParkingApi, addParkingApi } from '../../../services/api';
+  import { getAllParkingsApi, updateParkingApi, deleteParkingApi, addParkingApi, getAllEmployeesApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import QrCode from './QRCode.svelte';
 
   export let color = "light";
 
   let spaces = [];
+  let Employeeslist = [];
+  let tempEmployees = [];
   let editingModes = {};
   let showModal = false;
   let parkingSlot = '';
@@ -15,6 +17,9 @@
   let empName = '';
   let carMake = '';
   let cardRfidNo = '';
+  let employeeId = '';
+
+  let locations = ['Location 1', 'Location 2', 'Location 3', 'Location 4']; // Dummy data for locations
 
   async function fetchParkingData() {
     try {
@@ -29,6 +34,7 @@
         empName: parking.employee.name,
         carMake: parking.carMake,
         cardRfidNo: parking.employee.cardIdNumber,
+        employeeId: parking.employee.employeeId
       }));
       console.log('Fetched Parking Data:', spaces);
     } catch (error) {
@@ -36,24 +42,51 @@
     }
   }
 
+  async function fetchEmployees() {
+    try {
+      const employees = await getAllEmployeesApi();
+      tempEmployees = employees;
+      Employeeslist = employees.map(employee => employee);
+      console.log(employees);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  }
+
   onMount(() => {
     fetchParkingData();
+    fetchEmployees();
   });
 
   async function deleteSpace(space) {
-  try {
-    const response = await deleteParkingApi(space.id);
-    console.log('Delete Response:', response);
-    await fetchParkingData();
-  } catch (error) {
-    console.error('Error deleting space:', error);
-    alert('An error occurred while deleting the space. Please try again.');
+    try {
+      const response = await deleteParkingApi(space.id);
+      console.log('Delete Response:', response);
+      await fetchParkingData();
+    } catch (error) {
+      console.error('Error deleting space:', error);
+      alert('An error occurred while deleting the space. Please try again.');
+    }
   }
-}
-
 
   async function saveSpaceChanges(space) {
-    if (validateEditInputs(space)) {
+    // if (validateEditInputs(space)) {
+
+
+//       empName
+// : 
+// "sdsdsdDoe"
+// employeeId
+// : 
+// undefined
+
+// Employeeslist = employees.map(employee => employee);
+
+
+      space.employeeId = Employeeslist.find(employee => employee.name === space.empName)._id;
+      delete space.empName
+      // console.log(space)
+      // return;
       try {
         await updateParkingApi(space);
         await fetchParkingData(); // Refresh data after update
@@ -62,11 +95,11 @@
       } catch (error) {
         console.error('Error updating space:', error);
       }
-    }
+    // }
   }
 
   async function addSpace() {
-    if (validateAddInputs()) {
+    // if (validateAddInputs()) {
       const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot || space.carId === carId || space.cardRfidNo === cardRfidNo);
 
       if (isDuplicate) {
@@ -74,14 +107,39 @@
         return;
       }
 
+      const selectedEmployee = Employeeslist.find(employee => employee.name === empName);
+
+      if (!selectedEmployee) {
+        alert('Selected employee not found.');
+        return;
+      }
+
+      const newParkingData = {
+        parkingSlot,
+        location,
+        carId,
+        employee: selectedEmployee._id,
+        carMake
+      };
+
+      // console.log(newParkingData)
+
+      // console.log(parkingSlot);
+      // console.log(location);
+      // console.log(carId);
+      // console.log(employee);
+      // console.log(carMake);
+
+      // return
+
       try {
-        await addParkingApi({ parkingSlot, location, carId, empName, carMake, cardRfidNo });
+        await addParkingApi(newParkingData);
         await fetchParkingData(); // Refresh data after adding
         closeModal();
       } catch (error) {
         console.error('Error adding space:', error);
       }
-    }
+    // }
   }
 
   function toggleEditingMode(spaceId) {
@@ -93,7 +151,7 @@
   }
 
   function validateEditInputs(space) {
-    if (!space.parkingSlot || !space.location || !space.carId || !space.empName || !space.carMake || !space.cardRfidNo) {
+    if (!space.parkingSlot || !space.location || !space.carId || !space.empName || !space.carMake || !space.cardRfidNo || !space.employeeId) {
       alert("All fields are required.");
       return false;
     }
@@ -145,6 +203,13 @@
       document.getElementById('cardRfidNo-error').style.display = 'none';
     }
 
+    if (!employeeId) {
+      document.getElementById('employeeId-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('employeeId-error').style.display = 'none';
+    }
+
     return isValid;
   }
 
@@ -160,6 +225,7 @@
     empName = '';
     carMake = '';
     cardRfidNo = '';
+    employeeId = '';
     resetValidationErrors();
   }
 
@@ -170,6 +236,7 @@
     document.getElementById('empName-error').style.display = 'none';
     document.getElementById('carMake-error').style.display = 'none';
     document.getElementById('cardRfidNo-error').style.display = 'none';
+    document.getElementById('employeeId-error').style.display = 'none';
   }
 
   const spacesPerPage = 5;
@@ -239,7 +306,12 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
                     Location
                   </label>
-                  <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
+                  <select id="location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
+                    <option value="">Select Location</option>
+                    {#each locations as loc}
+                      <option value={loc}>{loc}</option>
+                    {/each}
+                  </select>
                   <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -255,7 +327,12 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="empName">
                     Employee Name
                   </label>
-                  <input type="text" id="empName" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={empName}>
+                  <select id="empName" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={empName}>
+                    <option value="">Select Employee</option>
+                    {#each Employeeslist as employee}
+                      <option value={employee.name}>{employee.name} ({employee.employeeID})</option>
+                    {/each}
+                  </select>
                   <span id="empName-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -358,7 +435,7 @@
             <td>
               <div class="flex items-center">
                 {#if editingModes[space.id]}
-                <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => { if(validateEditInputs(space)) { saveSpaceChanges(space); toggleEditingMode(space.id); } }}></i>
+                <i class="fas fa-save mr-2 text-sm cursor-pointer" on:click={() => {saveSpaceChanges(space)}}></i>
                 {:else}
                 <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editSpace(space)}></i>
                 {/if}
