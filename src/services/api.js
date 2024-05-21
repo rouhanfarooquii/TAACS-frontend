@@ -1,4 +1,5 @@
 let headers = {'Content-Type': 'application/json'}
+let formHeaders = {'Content-Type': 'multipart/form-data'};
 
 export async function batchUpdateAccessControlApi(obj){
     const response = await fetch(BACKEND + 'accessControl/batchUpdate', {
@@ -462,7 +463,7 @@ export async function deleteRoomBookingApi(id){
 
 // ShiftTimings API
 export async function getAllShiftTimingsApi(){
-    const response = await fetch(BACKEND + 'shiftTiming/getall',{
+    const response = await fetch(BACKEND + 'shiftTiming/getAll',{
         method: 'GET',
         headers: headers,
     });
@@ -520,7 +521,7 @@ export async function addVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/add', {
         method: 'POST',
         observe: 'body',
-        headers: headers,
+        headers: formHeaders,
         body: JSON.stringify({visitor: obj})
     })
     const responseObj = await response.json();
@@ -532,7 +533,7 @@ export async function updateVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/update', {
         method: 'POST',
         observe: 'body',
-        headers: headers,
+        headers: formHeaders,
         body: JSON.stringify({visitor: obj})
     })
     const responseObj = await response.json();

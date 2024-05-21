@@ -62,7 +62,7 @@
 
         console.log('Add Response:', response);
         await fetchAllDevices();
-        showToasterMessage('Device added successfully!', 'success'); // Show success toaster
+        showToasterMessage('Device added successfully!', 'success');
         closeModal();
       } catch (error) {
         console.error('Error:', error);
