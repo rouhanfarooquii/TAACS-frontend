@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
-  import { getAllDepartmentsApi, getAllPayrollsApi, addPayrollApi } from '../../../services/api'; // Assuming you have an API service file
+  import { getAllDepartmentsApi, getAllPayrollsApi, addPayrollApi, deletePayrollApi } from '../../../services/api'; // Assuming you have an API service file
 
   export let color = "light";
 
@@ -30,47 +30,72 @@
   }
 
   async function update() {
-  if (!validateInputs()) {
-    return;
+    if (!validateInputs()) {
+      return;
+    }
+
+    let department = selectedDepartment !== "All" ? trueDepartments.find(dept => dept.title === selectedDepartment) : { _id: "All", title: "All" };
+    let designation = selectedDesignation !== "All" ? department.designations.find(des => des.title === selectedDesignation) : { _id: "All" };
+
+    const newBonus = {
+      bonus: {
+        name: bonusName,
+        department: department._id,
+        designation: designation._id,
+        bonusValue: parseFloat(value),
+        valueType: selectedValueType,
+        activationDate: new Date(activeDate).toISOString()
+      }
+    };
+
+    // Log the form data for debugging
+    console.log('Form Data:', {
+      bonusName,
+      activeDate,
+      value,
+      selectedDepartment,
+      selectedDesignation,
+      selectedValueType
+    });
+
+    console.log('Payload being sent to API:', newBonus);
+
+    try {
+      const responseMsg = await addPayrollApi(newBonus);
+      console.log('Response from API:', responseMsg);
+      await fetchBonuses(); // Refresh the bonuses list after adding a new bonus
+      closeModal();
+    } catch (error) {
+      console.error('Error adding new bonus:', error);
+      console.error('Error details:', error.response ? error.response.data : error.message);
+    }
   }
-
-  let department = selectedDepartment !== "All" ? trueDepartments.find(dept => dept.title === selectedDepartment) : { _id: "All", title: "All" };
-  let designation = selectedDesignation !== "All" ? department.designations.find(des => des.title === selectedDesignation) : { _id: "All" };
-
-  const newBonus = {
-    name: bonusName,
-    value: parseFloat(value),
-    department: {
-      _id: department._id,
-      title: department.title
-    },
-    designation: designation._id,
-    activeFrom: new Date(activeDate).toISOString()
-  };
-
-  console.log('Payload being sent to API:', newBonus);
-
-  try {
-    const responseMsg = await addPayrollApi(newBonus);
-    console.log('Response from API:', responseMsg);
-    await fetchBonuses(); // Refresh the bonuses list after adding a new bonus
-    closeModal();
-  } catch (error) {
-    console.error('Error adding new bonus:', error);
-  }
-}
 
   async function fetchBonuses() {
-  const bonusesFromApi = await getAllPayrollsApi();
-  bonuses = bonusesFromApi.map(bonus => {
-    const department = trueDepartments.find(dept => dept._id === bonus.department._id);
-    const designation = department ? department.designations.find(des => des._id === bonus.designation) : { title: 'N/A' };
-    return {
-      ...bonus,
-      designationTitle: designation ? designation.title : 'ALL'
-    };
-  });
-}
+    const bonusesFromApi = await getAllPayrollsApi();
+    bonuses = bonusesFromApi.map(bonus => {
+      const department = trueDepartments.find(dept => dept._id === bonus.department._id);
+      const designation = department ? department.designations.find(des => des._id === bonus.designation._id) : { title: 'N/A' };
+      return {
+        ...bonus,
+        departmentTitle: department ? department.title : 'N/A',
+        designationTitle: designation ? designation.title : 'N/A',
+        bonusValue: bonus.bonusValue,
+        activationDate: bonus.activationDate
+      };
+    });
+  }
+
+  async function deleteBonus(id) {
+    try {
+      const responseMsg = await deletePayrollApi(id);
+      console.log('Response from API:', responseMsg);
+      bonuses = bonuses.filter(bonus => bonus._id !== id); // Update the bonuses list
+    } catch (error) {
+      console.error('Error deleting bonus:', error);
+      console.error('Error details:', error.response ? error.response.data : error.message);
+    }
+  }
 
   function setDesignation(event) {
     const selectedDepartmentTitle = event.target.value;
@@ -82,10 +107,6 @@
       designations = [...selectedDept.designations, { title: "All", _id: "All" }];
       selectedDesignation = '';
     }
-  }
-
-  function deleteBonus(id) {
-    bonuses = bonuses.filter(bonus => bonus._id !== id);
   }
 
   function validateInputs() {
@@ -326,14 +347,14 @@
               <span>{bonus.department.title}</span>
             </div>
           </td>
-          <td class="table-data" title={bonus.value}>
+          <td class="table-data" title={bonus.bonusValue}>
             <div class="flex items-center">
-              <span>{bonus.value}</span>
+              <span>{bonus.bonusValue}</span>
             </div>
           </td>
-          <td class="table-data" title={new Date(bonus.activeFrom).toLocaleDateString()}>
+          <td class="table-data" title={new Date(bonus.activationDate).toLocaleDateString()}>
             <div class="flex items-center">
-              <span>{new Date(bonus.activeFrom).toLocaleDateString()}</span>
+              <span>{new Date(bonus.activationDate).toLocaleDateString()}</span>
             </div>
           </td>
           <td class="table-data">
