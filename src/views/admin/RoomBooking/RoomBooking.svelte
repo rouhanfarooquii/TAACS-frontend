@@ -2,11 +2,11 @@
   import { createPopper } from "@popperjs/core";
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import { getAllRoomBookingsApi, getAllBookableLocationsApi} from '../../../services/api'; // Import the API function
   export let color = "light";
 
   let employeeName = '';
   let roomName = '';
-  let designation = '';
   let noOfPeople = '';
   let dateTimeFrom = '';
   let dateTimeTo = '';
@@ -36,279 +36,36 @@
       dateTimeTo: "2024-05-12T11:00",
       noOfPeople: 8
     },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    },
-    {
-      employeeName: "John Doe",
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    {
-      employeeName: "Jane Smith",
-      designation: "Team Lead",
-      roomName: "Room 102",
-      dateTimeFrom: "2024-05-13T09:00",
-      dateTimeTo: "2024-05-13T10:30",
-      noOfPeople: 6
-    },
-    {
-      employeeName: "Alice Johnson",
-      designation: "Developer",
-      roomName: "Room 103",
-      dateTimeFrom: "2024-05-14T11:30",
-      dateTimeTo: "2024-05-14T13:00",
-      noOfPeople: 4
-    },
-    {
-      employeeName: "Bob Brown",
-      designation: "Designer",
-      roomName: "Room 104",
-      dateTimeFrom: "2024-05-15T14:00",
-      dateTimeTo: "2024-05-15T15:30",
-      noOfPeople: 10
-    },
-    {
-      employeeName: "Eve White",
-      designation: "Analyst",
-      roomName: "Room 105",
-      dateTimeFrom: "2024-05-16T10:00",
-      dateTimeTo: "2024-05-16T11:30",
-      noOfPeople: 5
-    }
+    // ... other bookings ...
   ];
+
+  onMount(async () => {
+    try {
+      const roomBookings = await getAllRoomBookingsApi();
+      console.log('Room bookings:', JSON.stringify(roomBookings, null, 2)); // Log the API response to the console
+      
+      // Map the API response to bookingList
+      bookingList = roomBookings.map(booking => ({
+        employeeName: booking.employee.name,
+        designation: booking.employee.designation.title,
+        roomName: "Room 101", // Assuming roomName is not available in API response, hardcoding for now
+        dateTimeFrom: booking.dateTimeFrom,
+        dateTimeTo: booking.dateTimeTo,
+        noOfPeople: booking.numOfPeople
+      }));
+
+      // Fetch and set the bookable locations
+      const bookableLocations = await getAllBookableLocationsApi();
+      console.log('Bookable locations:', JSON.stringify(bookableLocations, null, 2)); // Log the API response to the console
+      roomList = bookableLocations.map(location => ({
+        roomName: location.title,
+        capacity: location.capacity
+      }));
+
+    } catch (error) {
+      console.error('Error fetching room bookings:', error);
+    }
+  });
 
   async function bookRoom() {
     if (!validateInputs()) {
@@ -332,7 +89,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ employeeName, roomName, designation, noOfPeople, dateTimeFrom, dateTimeTo })
+        body: JSON.stringify({ employeeName, roomName, noOfPeople, dateTimeFrom, dateTimeTo })
       });
 
       if (response.ok) {
@@ -359,7 +116,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ employeeName, roomName, designation, noOfPeople, dateTimeFrom, dateTimeTo })
+          body: JSON.stringify({ employeeName, roomName, noOfPeople, dateTimeFrom, dateTimeTo })
         });
 
         if (response.ok) {
@@ -394,13 +151,6 @@
       isValid = false;
     } else {
       document.getElementById('room-name-error').style.display = 'none';
-    }
-
-    if (!designation) {
-      document.getElementById('designation-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('designation-error').style.display = 'none';
     }
 
     if (!noOfPeople || isNaN(noOfPeople) || noOfPeople <= 0) {
@@ -452,7 +202,6 @@
     currentBooking = booking;
     employeeName = booking.employeeName;
     roomName = booking.roomName;
-    designation = booking.designation;
     noOfPeople = booking.noOfPeople;
     dateTimeFrom = booking.dateTimeFrom;
     dateTimeTo = booking.dateTimeTo;
@@ -465,7 +214,6 @@
     // Reset input fields
     employeeName = '';
     roomName = '';
-    designation = '';
     noOfPeople = '';
     dateTimeFrom = '';
     dateTimeTo = '';
@@ -473,7 +221,6 @@
 
     document.getElementById('employee-name-error').style.display = 'none';
     document.getElementById('room-name-error').style.display = 'none';
-    document.getElementById('designation-error').style.display = 'none';
     document.getElementById('no-of-people-error').style.display = 'none';
     document.getElementById('dateTime-from-error').style.display = 'none';
     document.getElementById('dateTime-to-error').style.display = 'none';
@@ -587,13 +334,6 @@
                       {/each}
                     </select>
                     <span id="room-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                  </div>
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
-                      Designation
-                    </label>
-                    <input type="text" id="designation" placeholder="Designation" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation}>
-                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
                 <div class="w-full lg:w-6/12 px-4">
