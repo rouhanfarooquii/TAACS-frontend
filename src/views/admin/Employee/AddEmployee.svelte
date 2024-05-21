@@ -1,291 +1,297 @@
 <script>
-import { navigate } from 'svelte-routing';
-let selectedEmployee = null;
+  import { navigate } from 'svelte-routing';
+  import { onMount } from 'svelte';
 
-let id = '';
-let name = '';
-let phoneNumber = '';
-let location = '';
-let department = '';
-let designation = '';
-let employeeType = '';
-let gender = '';
-let email = '';
-let address = '';
-let dateOfBirth = '';
-let cardIdNumber = '';
-let personalPassword = '';
-let fingerIndex1 = '';
-let fingerIndex2 = '';
-let isFingerAdded = '';
-let salary = '';
+  let selectedEmployee = null;
 
-let employee = {
-    id: '',
-    name: '',
-    phoneNumber: '',
-    location: '',
-    department: '',
-    designation: '',
-    employeeType: '',
-    gender: '',
-    email: '',
-    address: '', 
-    dateOfBirth: '',
-    cardIdNumber: '',
-    personalPassword: '',
-    fingerIndex1: '',
-    fingerIndex2: '',
-    isFingerAdded: '',
-    salary: ''
-};
+  let id = '';
+  let name = '';
+  let phoneNumber = '';
+  let location = '';
+  let department = '';
+  let designation = '';
+  let employeeType = '';
+  let gender = '';
+  let email = '';
+  let address = '';
+  let dateOfBirth = '';
+  let cardIdNumber = '';
+  let personalPassword = '';
+  let fingerIndex1 = '';
+  let fingerIndex2 = '';
+  let isFingerAdded = '';
+  let salary = '';
 
-const image = "../assets/img/10.jpg";
-
-async function handleSubmit() {
-  if (!validateInputs()) {
-      return;
-  }
-
-  try {
-      const response = await fetch('your_backend_api_url', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(employee)
-      });
-
-      if (!response.ok) {
-          throw new Error('Failed to submit data to the server');
-      }
-
-      console.log('Form submitted successfully');
-  } catch (error) {
-      console.error('Error submitting form:', error.message);
-  }
-}
-
-function handleFileInputChange(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const newImageSrc = e.target.result;
-      document.getElementById('profile-image').src = newImageSrc;
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-import { onMount } from 'svelte';
-
-onMount(() => {
-  const fileInput = document.getElementById('profile-pic');
-  fileInput.addEventListener('change', handleFileInputChange);
-
-  return () => {
-    fileInput.removeEventListener('change', handleFileInputChange);
+  let employee = {
+      id: '',
+      name: '',
+      phoneNumber: '',
+      location: '',
+      department: '',
+      designation: '',
+      employeeType: '',
+      gender: '',
+      email: '',
+      address: '', 
+      dateOfBirth: '',
+      cardIdNumber: '',
+      personalPassword: '',
+      fingerIndex1: '',
+      fingerIndex2: '',
+      isFingerAdded: '',
+      salary: ''
   };
-});
 
-let listType = 'Permanent_List';
-let showValidDateTimeFields = false;
-let showValidDateAndTimeFields = false;
-let showEffectTimesField = false;
+  const image = "../assets/img/10.jpg";
 
-function handleListTypeChange() {
-  switch (listType) {
-    case 'Temporary_List':
-      showValidDateTimeFields = true;
-      showValidDateAndTimeFields = false;
-      showEffectTimesField = false;
-      break;
-    case 'Temporary_List2':
-      showValidDateTimeFields = false;
-      showValidDateAndTimeFields = true;
-      showEffectTimesField = false;
-      break;
-    case 'Temporary_List3':
-      showValidDateTimeFields = false;
-      showValidDateAndTimeFields = false;
-      showEffectTimesField = true;
-      break;
-    default:
-      showValidDateTimeFields = false;
-      showValidDateAndTimeFields = false;
-      showEffectTimesField = false;
-  }
-}
+  async function handleSubmit() {
+    if (!validateInputs()) {
+        return;
+    }
 
-handleListTypeChange();
+    try {
+        const response = await fetch('your_backend_api_url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(employee)
+        });
 
-function navigateToEmployee() {
-  navigate('/admin/employee');
-}
+        if (!response.ok) {
+            throw new Error('Failed to submit data to the server');
+        }
 
-function validateInputs() {
-  let isValid = true;
-
-  if (!id) {
-    document.getElementById('id-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('id-error').style.display = 'none';
+        console.log('Form submitted successfully');
+    } catch (error) {
+        console.error('Error submitting form:', error.message);
+    }
   }
 
-  if (!name) {
-    document.getElementById('name-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('name-error').style.display = 'none';
+  function handleFileInputChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const newImageSrc = e.target.result;
+        document.getElementById('profile-image').src = newImageSrc;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
-  if (!phoneNumber) {
-    document.getElementById('phone-number-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('phone-number-error').style.display = 'none';
+  onMount(() => {
+    const fileInput = document.getElementById('profile-pic');
+    fileInput.addEventListener('change', handleFileInputChange);
+
+    return () => {
+      fileInput.removeEventListener('change', handleFileInputChange);
+    };
+  });
+
+  let listType = 'Permanent_List';
+  let showValidDateTimeFields = false;
+  let showValidDateAndTimeFields = false;
+  let showEffectTimesField = false;
+
+  function handleListTypeChange() {
+    switch (listType) {
+      case 'Temporary_List':
+        showValidDateTimeFields = true;
+        showValidDateAndTimeFields = false;
+        showEffectTimesField = false;
+        break;
+      case 'Temporary_List2':
+        showValidDateTimeFields = false;
+        showValidDateAndTimeFields = true;
+        showEffectTimesField = false;
+        break;
+      case 'Temporary_List3':
+        showValidDateTimeFields = false;
+        showValidDateAndTimeFields = false;
+        showEffectTimesField = true;
+        break;
+      default:
+        showValidDateTimeFields = false;
+        showValidDateAndTimeFields = false;
+        showEffectTimesField = false;
+    }
   }
 
-  if (!/^\d{11}$/.test(phoneNumber)) {
-    document.getElementById('phone-number-format-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('phone-number-format-error').style.display = 'none';
+  handleListTypeChange();
+
+  function navigateToEmployee() {
+    navigate('/admin/employee');
   }
 
-  if (!department) {
-    document.getElementById('department-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('department-error').style.display = 'none';
+  function validateInputs() {
+    let isValid = true;
+
+    if (!id) {
+      document.getElementById('id-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('id-error').style.display = 'none';
+    }
+
+    if (!name) {
+      document.getElementById('name-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('name-error').style.display = 'none';
+    }
+
+    if (!phoneNumber) {
+      document.getElementById('phone-number-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('phone-number-error').style.display = 'none';
+    }
+
+    if (!/^\d{11}$/.test(phoneNumber)) {
+      document.getElementById('phone-number-format-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('phone-number-format-error').style.display = 'none';
+    }
+
+    if (!department) {
+      document.getElementById('department-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('department-error').style.display = 'none';
+    }
+
+    if (!designation) {
+      document.getElementById('designation-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('designation-error').style.display = 'none';
+    }
+
+    if (!email) {
+      document.getElementById('email-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('email-error').style.display = 'none';
+    }
+
+    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
+      document.getElementById('email-format-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('email-format-error').style.display = 'none';
+    }
+
+    if (!gender) {
+      document.getElementById('gender-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('gender-error').style.display = 'none';
+    }
+
+    if (!dateOfBirth) {
+      document.getElementById('date-of-birth-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('date-of-birth-error').style.display = 'none';
+    }
+
+    if (!address) {
+      document.getElementById('address-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('address-error').style.display = 'none';
+    }
+
+    if (!cardIdNumber) {
+      document.getElementById('card-id-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('card-id-error').style.display = 'none';
+    }
+
+    if (!personalPassword) {
+      document.getElementById('personal-password-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('personal-password-error').style.display = 'none';
+    }
+
+    if (!salary) {
+      document.getElementById('salary-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('salary-error').style.display = 'none';
+    }
+
+    if (!location) {
+      document.getElementById('location-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('location-error').style.display = 'none';
+    }
+
+    if (!employeeType) {
+      document.getElementById('employee-type-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('employee-type-error').style.display = 'none';
+    }
+
+    return isValid;
   }
 
-  if (!designation) {
-    document.getElementById('designation-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('designation-error').style.display = 'none';
+  let dropdownOpen = false;
+  let selectedDevices = [];
+  let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
+
+  function toggleDropdown() {
+    dropdownOpen = !dropdownOpen;
   }
 
-  if (!email) {
-    document.getElementById('email-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('email-error').style.display = 'none';
+  function handleCheckboxChange(event) {
+    const value = event.target.value;
+    if (event.target.checked) {
+      selectedDevices = [...selectedDevices, value];
+    } else {
+      selectedDevices = selectedDevices.filter(device => device !== value);
+    }
   }
 
-  if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
-    document.getElementById('email-format-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('email-format-error').style.display = 'none';
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
+      dropdownOpen = false;
+    }
   }
 
-  if (!gender) {
-    document.getElementById('gender-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('gender-error').style.display = 'none';
+  // Dummy data for departments and designations
+  const departments = {
+    "IT": ["Developer", "Tester", "Manager"],
+    "HR": ["Recruiter", "HR Manager", "Coordinator"],
+    "Finance": ["Accountant", "Financial Analyst", "Auditor"]
+  };
+
+  let showPassword = false;
+
+  function togglePasswordVisibility() {
+    showPassword = !showPassword;
   }
 
-  if (!dateOfBirth) {
-    document.getElementById('date-of-birth-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('date-of-birth-error').style.display = 'none';
-  }
-
-  if (!address) {
-    document.getElementById('address-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('address-error').style.display = 'none';
-  }
-
-  if (!cardIdNumber) {
-    document.getElementById('card-id-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('card-id-error').style.display = 'none';
-  }
-
-  if (!personalPassword) {
-    document.getElementById('personal-password-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('personal-password-error').style.display = 'none';
-  }
-
-  if (!salary) {
-    document.getElementById('salary-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('salary-error').style.display = 'none';
-  }
-
-  if (!location) {
-    document.getElementById('location-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('location-error').style.display = 'none';
-  }
-
-  if (!employeeType) {
-    document.getElementById('employee-type-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('employee-type-error').style.display = 'none';
-  }
-
-  return isValid;
-}
-
-let dropdownOpen = false;
-let selectedDevices = [];
-let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
-
-function toggleDropdown() {
-  dropdownOpen = !dropdownOpen;
-}
-
-function handleCheckboxChange(event) {
-  const value = event.target.value;
-  if (event.target.checked) {
-    selectedDevices = [...selectedDevices, value];
-  } else {
-    selectedDevices = selectedDevices.filter(device => device !== value);
-  }
-}
-
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
-    dropdownOpen = false;
-  }
-}
-
-// Dummy data for departments and designations
-const departments = {
-  "IT": ["Developer", "Tester", "Manager"],
-  "HR": ["Recruiter", "HR Manager", "Coordinator"],
-  "Finance": ["Accountant", "Financial Analyst", "Auditor"]
-};
-
-$: availableDesignations = department ? departments[department] || [] : [];
+  $: availableDesignations = department ? departments[department] || [] : [];
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-    <div class="left-section flex flex-col items-center"> <!-- Adjust this value according to your needs -->
-      <!-- svelte-ignore a11y-img-redundant-alt -->
-      <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
-      <input type="file" accept="image/*" id="profile-pic" style="display: none" />
-      <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
-    </div>
+  <div class="left-section flex flex-col items-center"> <!-- Adjust this value according to your needs -->
+    <!-- svelte-ignore a11y-img-redundant-alt -->
+    <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
+    <input type="file" accept="image/*" id="profile-pic" style="display: none" />
+    <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
+  </div>
 
-    <div class="divider"></div>
+  <div class="divider"></div>
 
-   <!-- Filters Row 1 -->
+  <!-- Filters Row 1 -->
   <div class="flex justify-between mb-4">
     <!-- Filter by EmployeeID -->
     <div class="relative mb-3">
@@ -303,41 +309,55 @@ $: availableDesignations = department ? departments[department] || [] : [];
       <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={name}>
       <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
-   <!-- Filter by Department -->
-   <div class="relative mb-3">
-    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
-      Phone Number:
-    </label>
-    <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={phoneNumber}>
-    <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-    <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
-  </div>
-  <div class="relative mb-3">
-    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
-      Department:
-    </label>
-    <input type="text" id="department" placeholder="Department" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={department}>
-    <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-  </div>
-  </div>
-
-  <!-- Filters Row 2 -->
-  <div class="flex justify-between mb-4">
+    <!-- Filter by Phone Number -->
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-        Designation:
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
+        Phone Number:
       </label>
-      <input type="text" id="designation" placeholder="Designation" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation}>
-      <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={phoneNumber}>
+      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
     </div>
+    <!-- Filter by Email -->
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="email">
         Email:
       </label>
       <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={email}>
       <span id="email-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
       <span id="email-format-error" class="text-red-600 text-xs" style="display: none;">Email format incorrect</span>
     </div>
+  </div>
+
+  <!-- Filters Row 2 -->
+  <div class="flex justify-between mb-4">
+    <!-- Filter by Department -->
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
+        Department:
+      </label>
+      <select id="department" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={department}>
+        <option value="" disabled selected>Select Department</option>
+        {#each Object.keys(departments) as dept}
+          <option value={dept}>{dept}</option>
+        {/each}
+      </select>
+      <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+    </div>
+    <!-- Filter by Designation -->
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
+        Designation:
+      </label>
+      <select id="designation" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation} disabled={!department}>
+        <option value="" disabled selected>Select Designation</option>
+        {#each availableDesignations as desig}
+          <option value={desig}>{desig}</option>
+        {/each}
+      </select>
+      <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+    </div>
+    <!-- Filter by Gender -->
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Gender:</label>
       <select id="filterActive" name="filterActive" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}">
@@ -347,8 +367,9 @@ $: availableDesignations = department ? departments[department] || [] : [];
       </select>
       <span id="gender-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
+    <!-- Filter by Date of Birth -->
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
         Date of birth:
       </label>
       <input type="date" id="date-of-birth" placeholder="Date of birth" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateOfBirth}>
@@ -358,45 +379,55 @@ $: availableDesignations = department ? departments[department] || [] : [];
 
   <!-- Filters Row 3 -->
   <div class="flex justify-between mb-4">
+    <!-- Filter by Address -->
     <div class="relative mb-3 w-9/12">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="address">
         Address:
       </label>
       <textarea id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={address}></textarea>
       <span id="address-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
-    <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+  </div>
+    
+  <!-- Filters Row 4 -->
+  <div class="flex justify-start mb-4">
+    <!-- Filter by Card ID -->
+    <div class="relative mb-3 mr-6">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="card-id">
         Card ID:
       </label>
       <input type="text" id="card-id" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber}>
       <span id="card-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
-  </div>
-    
-  <!-- Filters Row 4 -->
-  <div class="flex justify-between mb-4">
-    <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+    <!-- Filter by Personal Password -->
+    <div class="relative mb-3 w-1/2">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="personal-password">
         Personal Password:
       </label>
-      <input type="text" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
-      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>                  
+      <input type="password" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
+      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span> 
     </div>
-    <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+  </div>
+    
+  <!-- Filters Row 5 -->
+  <div class="flex justify-between mb-4">
+    <!-- Filter by Finger Index 1 -->
+    <div class="relative mb-3 w-4/10">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-1">
         Finger Index 1:
       </label>
-      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex1}>
+      <input type="text" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex1}>
     </div>
-    <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+    <!-- Filter by Finger Index 2 -->
+    <div class="relative mb-3 w-4/10">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-2">
         Finger Index 2:
       </label>
-      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex2}>
+      <input type="text" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex2}>
     </div>
+    <!-- Filter by Finger Added -->
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
         Finger Added:
       </label>
       <label class="switch">
@@ -407,94 +438,50 @@ $: availableDesignations = department ? departments[department] || [] : [];
     </div>
   </div>
 
-<!-- Filters Row 6 -->
-<div class="flex justify-between mb-4">
-  <div class="relative mb-3">
-    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="listType">List Type:</label>
-    <select id="listType" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{listType}" on:change="{handleListTypeChange}">
-      <option value="Permanent_List">Permanent_List</option>
-      <option value="Temporary_List">Temporary_List</option>
-      <option value="Temporary_List2">Temporary_List2</option>
-      <option value="Temporary_List3">Temporary_List3</option>
-    </select>
-  </div>
-  <div class="relative mb-3">
-    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Devices</label>
-    <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-      <button on:click={toggleDropdown} class="dropbtn">Select Device</button>
-      <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
-        {#each accessibleDevices as device}
-          <div class="flex items-center">
-            <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />
-            <label class="ml-2 text-sm text-blueGray-600">{device}</label>
-          </div>
-        {/each}
+  <!-- Filters Row 6 -->
+  <div class="flex justify-between mb-4">
+    <!-- Filter by List Type -->
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="listType">List Type:</label>
+      <select id="listType" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{listType}" on:change="{handleListTypeChange}">
+        <option value="Permanent_List">Permanent_List</option>
+        <option value="Temporary_List">Temporary_List</option>
+        <option value="Temporary_List2">Temporary_List2</option>
+        <option value="Temporary_List3">Temporary_List3</option>
+      </select>
+    </div>
+    <!-- Filter by Accessible Devices -->
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">Accessible Devices</label>
+      <div class="dropdown placeholder-blueGray-300 text-blueGray-600 bg-white text-sm rounded shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+        <button on:click={toggleDropdown} class="dropbtn">Select Device</button>
+        <div class="px-2 {`dropdown-content ${dropdownOpen ? 'show' : ''}`}">
+          {#each accessibleDevices as device}
+            <div class="flex items-center">
+              <input type="checkbox" value={device} on:change={handleCheckboxChange} checked={selectedDevices.includes(device)} />
+              <label class="ml-2 text-sm text-blueGray-600">{device}</label>
+            </div>
+          {/each}
+        </div>
       </div>
+      <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
     </div>
-    <span id="accessible-rooms-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
+    <!-- Filter by Salary -->
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="salary">
+        Salary:
+      </label>
+      <input type="number" min="0" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={salary}>
+      <span id="salary-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+    </div>
   </div>
-  <div class="relative mb-3">
-    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-      Salary:
-    </label>
-    <input type="number" min="0" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={salary}>
-    <span id="salary-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-  </div>
-</div>
 
-{#if showValidDateTimeFields}
-  <!-- Valid Begin and End DateTime Fields -->
-  <div class="flex mb-4">
-    <div>
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="validBeginDateTime">Valid Begin Date:</label>
-      <input type="date" id="validBeginDateTime" name="validBeginDateTime" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
-    <div class = "ml-9">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="validEndDateTime">Valid End Date:</label>
-      <input type="date" id="validEndDateTime" name="validEndDateTime" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
+  <div class="flex justify-end mb-4">
+    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToEmployee}>
+      Back
+    </button>
+    <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
+      Submit
+    </button>
   </div>
-{/if}
-
-{#if showValidDateAndTimeFields}
-  <!-- Valid Begin Date and Time Fields -->
-  <div class="flex justify-between mb-4">
-    <div>
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="validBeginDate">Valid Begin Date:</label>
-      <input type="date" id="validBeginDate" name="validBeginDate" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
-    <div>
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="validBeginTime">Valid Begin Time:</label>
-      <input type="time" id="validBeginTime" name="validBeginTime" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
-    <!-- Valid End Date and Time Fields -->
-    <div>
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="validEndDate">Valid End Date:</label>
-      <input type="date" id="validEndDate" name="validEndDate" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
-    <div>
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="validEndTime">Valid End Time:</label>
-      <input type="time" id="validEndTime" name="validEndTime" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
-  </div>
-{/if}
-
-{#if showEffectTimesField}
-  <!-- Effect Times Field -->
-  <div class="flex justify-between mb-4">
-    <div>
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="effectTimes">Effect Times:</label>
-      <input type="text" id="effectTimes" name="effectTimes" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-    </div>
-  </div>
-{/if}
-
-<div class="flex justify-end mb-4">
-  <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={navigateToEmployee}>
-    Back
-  </button>
-  <button class=" bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
-    Submit
-  </button>
-</div>
 </div>

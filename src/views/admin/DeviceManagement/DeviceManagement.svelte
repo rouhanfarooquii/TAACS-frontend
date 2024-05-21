@@ -1,10 +1,9 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { createPopper } from "@popperjs/core";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
-  import Toast from '../../../components/Confirmation/Toast.svelte'; // Import the Toast component
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   export let color = "light";
 
@@ -14,23 +13,20 @@
   let status = false;
   let showModal = false;
   let editModal = false;
-  let confirmationModal = false; // State to show/hide confirmation modal
+  let confirmationModal = false;
   let currentDevice = null;
-  let deviceToDelete = null; // Device to be deleted
+  let deviceToDelete = null;
   let devices = [];
-  // Toaster state
+  
   let showToaster = false;
   let toasterMessage = '';
-  let toasterType = ''; // e.g., 'success', 'error'
+  let toasterType = '';
 
   async function fetchAllDevices() {
     try {
       const backendDevices = await getAllDevicesApi();
-      for (let i = 0; i < backendDevices.length; i++) {
-        backendDevices[i].status = backendDevices[i].status === "Active";
-      }
+      backendDevices.forEach(device => device.status = device.status === "Active");
       devices = JSON.parse(JSON.stringify(backendDevices));
-      console.log('Fetched Devices:', devices);
     } catch (error) {
       console.error('Error fetching devices:', error);
     }
@@ -38,29 +34,18 @@
 
   onMount(() => {
     fetchAllDevices();
-    window.addEventListener('click', handleClickOutside);
-    return () => window.removeEventListener('click', handleClickOutside);
   });
 
   async function addDevice() {
     if (validateInputs()) {
       try {
         const isDuplicate = devices.some(device => device.deviceName === deviceName || device.deviceId === deviceId || device.ip === deviceIp);
-        
         if (isDuplicate) {
           alert('Device Name, ID, and IP must be unique.');
           return;
         }
 
-        const response = await addDeviceApi({
-          deviceName,
-          deviceId,
-          ip: deviceIp,
-          status: status ? 'Active' : 'Inactive',
-          hide: false
-        });
-
-        console.log('Add Response:', response);
+        await addDeviceApi({ deviceName, deviceId, ip: deviceIp, status: status ? 'Active' : 'Inactive', hide: false });
         await fetchAllDevices();
         showToasterMessage('Device added successfully!', 'success');
         closeModal();
@@ -72,24 +57,16 @@
   }
 
   async function updateDevice() {
-    if (validateInputs()) {
-      let temp = JSON.parse(JSON.stringify(currentDevice));
-      if (temp) {
-        try {
-          temp.deviceName = deviceName;
-          temp.deviceId = deviceId;
-          temp.ip = deviceIp;
-          temp.status = status ? "Active" : "Inactive";
-
-          const response = await updateDeviceApi(temp);
-          console.log('Update Response:', response);
-          await fetchAllDevices();
-          showToasterMessage('Device updated successfully!', 'success'); // Show success toaster
-          closeModal();
-        } catch (error) {
-          console.error('Error updating device:', error);
-          alert('An error occurred while updating the device status. Please try again.');
-        }
+    if (validateInputs() && currentDevice) {
+      try {
+        const updatedDevice = { ...currentDevice, deviceName, deviceId, ip: deviceIp, status: status ? "Active" : "Inactive" };
+        await updateDeviceApi(updatedDevice);
+        await fetchAllDevices();
+        showToasterMessage('Device updated successfully!', 'success');
+        closeModal();
+      } catch (error) {
+        console.error('Error updating device:', error);
+        alert('An error occurred while updating the device status. Please try again.');
       }
     }
   }
@@ -101,10 +78,9 @@
 
   async function confirmDeleteDevice() {
     try {
-      const response = await deleteDeviceApi(deviceToDelete._id);
-      console.log('Delete Response:', response);
+      await deleteDeviceApi(deviceToDelete._id);
       await fetchAllDevices();
-      showToasterMessage('Device deleted successfully!', 'success'); // Show success toaster
+      showToasterMessage('Device deleted successfully!', 'success');
       closeConfirmationModal();
     } catch (error) {
       console.error('Error deleting device:', error);
@@ -116,9 +92,7 @@
     toasterMessage = message;
     toasterType = type;
     showToaster = true;
-    setTimeout(() => {
-      showToaster = false;
-    }, 3000); // Show toast for 3 seconds
+    setTimeout(() => showToaster = false, 3000);
   }
 
   function closeConfirmationModal() {
@@ -191,48 +165,6 @@
   function handlePageChange(event) {
     currentPage = event.detail.pageNumber;
   }
-
-  let dropdownPopoverShow = new Array(devices.length).fill(false); 
-  let btnDropdownRef = new Array(devices.length);
-  let popoverDropdownRef = new Array(devices.length);
-
-  function toggleDropdown(event, rowIndex) {
-    event.stopPropagation();
-    dropdownPopoverShow[rowIndex] = !dropdownPopoverShow[rowIndex];
-
-    dropdownPopoverShow.forEach((open, index) => {
-      if (index !== rowIndex) dropdownPopoverShow[index] = false;
-    });
-
-    if (dropdownPopoverShow[rowIndex]) {
-      createPopper(btnDropdownRef[rowIndex], popoverDropdownRef[rowIndex], {
-        placement: "bottom-start",
-      });
-    }
-  }
-
-  onDestroy(() => {
-    window.removeEventListener('click', handleClickOutside, true);
-  });
-
-  $: {
-    if (dropdownPopoverShow.includes(true)) {
-      window.addEventListener('click', handleClickOutside, true);
-    } else {
-      window.removeEventListener('click', handleClickOutside, true);
-    }
-  }
-
-  function handleClickOutside(event) {
-    for (let i = 0; i < btnDropdownRef.length; i++) {
-      const button = btnDropdownRef[i];
-      const popover = popoverDropdownRef[i];
-
-      if (button && !button.contains(event.target) && popover && !popover.contains(event.target)) {
-        dropdownPopoverShow[i] = false;
-      }
-    }
-  }
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -246,10 +178,7 @@
           Device Management
         </h3>
       </div>
-      <button
-        class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-        type="button" on:click={openModal}
-      >
+      <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>
         Add Device
       </button>
       {#if showModal || editModal}
@@ -305,7 +234,7 @@
                 </div>
               </div>
               <div class="flex justify-end">
-                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"  on:click={editModal ? updateDevice : addDevice}>
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={editModal ? updateDevice : addDevice}>
                   {editModal ? 'Update' : 'Add'}
                 </button>
                 <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
@@ -342,6 +271,9 @@
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
             Status
           </th>
+          <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -350,7 +282,7 @@
             <td class="table-data font-bold text-blueGray-600" title={device.deviceName}>{device.deviceName}</td>
             <td class="table-data" title={device.deviceId}>{device.deviceId}</td>
             <td class="table-data" title={device.ip}>{device.ip}</td>
-            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+            <td class="table-data">
               {#if device.status === true}
                 <i class="fas fa-circle text-green-500 mr-2"></i> Active
               {:else}
@@ -358,29 +290,9 @@
               {/if}
             </td>
             <td class="table-data">
-              <div>
-                <a
-                  class="text-blueGray-500 py-1 px-3"
-                  href="#pablo"
-                  bind:this={btnDropdownRef[rowIndex]}
-                  on:click={(event) => toggleDropdown(event, rowIndex)}
-                >
-                  <i class="fas fa-ellipsis-v"></i>
-                </a>
-                <div bind:this={popoverDropdownRef[rowIndex]} class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow[rowIndex] ? 'block':'hidden'}" on:click|self={(e) => e.stopPropagation()}>
-                  <a
-                    href="#pablo" on:click={(e) => { e.preventDefault(); openEditModal(device); }}
-                    class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-                  >
-                    Edit
-                  </a>
-                  <a
-                    href="#pablo" on:click={(e) => { e.preventDefault(); showDeleteConfirmation(device); }}
-                    class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-                  >
-                    Delete
-                  </a>
-                </div>
+              <div class="flex items-center">
+                <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(device)}></i>
+                <i class="fas fa-trash-alt text-sm cursor-pointer" on:click={() => showDeleteConfirmation(device)}></i>
               </div>
             </td>
           </tr>
