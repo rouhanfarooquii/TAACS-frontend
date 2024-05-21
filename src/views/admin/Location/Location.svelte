@@ -56,12 +56,32 @@
   async function saveSpaceChanges() {
     if (validateEditInputs()) {
       try {
+
+
+        // const dataToSend = {
+        //   title: locationName,
+        //   devices: selectedDevices,
+        //   bookable: bookable,
+        //   // booked: booked,
+        //   capacity: Number(capacity),
+        //   features: selectedFeatures
+        // };
+
+        let tempdtosend = [];
+
+        for (let i = 0; i < selectedDevices.length; i++) {
+          for (let j = 0; j < tempDevices.length; j++) {
+            if(selectedDevices[i] == tempDevices[j].deviceName){
+              tempdtosend.push(tempDevices[j]._id);
+            }
+          }
+        }
+        
         const response = await updateLocationApi({
           _id: editingSpace.id,
           title: locationName,
-          devices: selectedDevices,
+          devices: tempdtosend,
           bookable: bookable === 'Yes',
-          // booked: booked === 'Yes',
           capacity: Number(capacity),
           features: selectedFeatures
         });
@@ -159,6 +179,9 @@
         }
 
         dataToSend.devices = tempdtosend;
+
+        // console.log(dataToSend)
+        // return;
 
         const response = await addLocationApi(dataToSend);
         console.log('Add Response:', response);
