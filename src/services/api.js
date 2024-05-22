@@ -437,26 +437,36 @@ export async function deletePayrollApi(id){
 };
 
 // RoomBookings API
-export async function getAllRoomBookingsApi() {
-    const response = await fetch(BACKEND + 'roomBooking/getall', {
+// export async function getAllRoomBookingsApi() {
+//     const response = await fetch(BACKEND + 'roomBooking/getall', {
+//         method: 'GET',
+//         headers: headers,
+//     });
+
+//     if (!response.ok) {
+//         throw new Error('Network response was not ok');
+//     }
+//     const responseObj = await response.json();
+
+//     // console.log('API response object:', JSON.stringify(responseObj, null, 2)); // Log the entire response object
+
+//     // Adjust the structure check according to the actual response
+//     if (responseObj && responseObj.roomBooking) {
+//         return responseObj.roomBooking;
+//     } else {
+//         throw new Error('Invalid response structure');
+//     }
+// }
+
+export async function getAllRoomBookingsApi(){
+    const response = await fetch(BACKEND + 'roomBooking/getall',{
         method: 'GET',
         headers: headers,
     });
-
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
     const responseObj = await response.json();
-
-    console.log('API response object:', JSON.stringify(responseObj, null, 2)); // Log the entire response object
-
-    // Adjust the structure check according to the actual response
-    if (responseObj && responseObj.roomBooking) {
-        return responseObj.roomBooking;
-    } else {
-        throw new Error('Invalid response structure');
-    }
-}
+    const roomBookings = await responseObj.roomBookings;
+    return await roomBookings;
+};
 
 export async function addRoomBookingApi(obj){
     const response = await fetch(BACKEND + 'roomBooking/add', {

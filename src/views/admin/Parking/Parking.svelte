@@ -98,8 +98,8 @@
 
     try {
       await updateParkingApi(updatedSpaceData);
-      await fetchParkingData(); // Refresh data after update
       closeEditModal();
+      await fetchParkingData(); // Refresh data after update
       console.log("Saved changes for space:", updatedSpaceData);
     } catch (error) {
       console.error('Error updating space:', error);

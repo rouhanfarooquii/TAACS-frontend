@@ -2,158 +2,82 @@
   import { createPopper } from "@popperjs/core";
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllRoomBookingsApi, getAllBookableLocationsApi } from '../../../services/api';
+  import { addRoomBookingApi, updateRoomBookingApi, getAllRoomBookingsApi, getAllBookableLocationsApi, getAllEmployeesApi, deleteRoomBookingApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   export let color = "light";
 
-  let employeeName = '';
-  let employeeId = '';
-  let roomName = '';
-  let noOfPeople = '';
-  let dateTimeFrom = '';
-  let dateTimeTo = '';
   let showModal = false;
   let editModal = false;
   let confirmationModal = false;
   let bookingToDelete = null;
-  let currentBooking = null;
 
-  let roomList = [
-    { roomName: "Room 101", capacity: 10 },
-    { roomName: "Room 102", capacity: 6 },
-    { roomName: "Room 103", capacity: 8 },
-    { roomName: "Room 104", capacity: 12 },
-    { roomName: "Room 105", capacity: 4 },
-    { roomName: "Room 106", capacity: 20 },
-    { roomName: "Room 107", capacity: 15 },
-    { roomName: "Room 108", capacity: 8 },
-    { roomName: "Room 109", capacity: 10 },
-    { roomName: "Room 110", capacity: 18 }
-  ];
+  let roombooking = {
+    employee: null,
+    numOfPeople: null,
+    dateTimeFrom: null,
+    dateTimeTo: null,
+    location: null,
+  }
 
-  let bookingList = [
-    {
-      employeeName: "John Doe",
-      employeeId: 12345,
-      designation: "Manager",
-      roomName: "Room 101",
-      dateTimeFrom: "2024-05-12T10:00",
-      dateTimeTo: "2024-05-12T11:00",
-      noOfPeople: 8
-    },
-    // ... other bookings ...
-  ];
-
-  let employeeList = bookingList.map(booking => ({
-    displayText: `${booking.employeeName} (${booking.employeeId})`,
-    employeeName: booking.employeeName,
-    employeeId: booking.employeeId
-  }));
+  let locationsList = [];
+  let roomBookingsList = [];
+  let employeesList = [];
 
   let searchQuery = '';
   let filteredOptions = [];
   let dropdownVisible = false;
 
   onMount(async () => {
-    try {
-      const roomBookings = await getAllRoomBookingsApi();
-      console.log('Room bookings:', JSON.stringify(roomBookings, null, 2)); // Log the API response to the console
-      
-      // Map the API response to bookingList
-      bookingList = roomBookings.map(booking => ({
-        employeeName: booking.employee.name,
-        employeeId: booking.employee.id,
-        designation: booking.employee.designation.title,
-        roomName: "Room 101", // Assuming roomName is not available in API response, hardcoding for now
-        dateTimeFrom: booking.dateTimeFrom,
-        dateTimeTo: booking.dateTimeTo,
-        noOfPeople: booking.numOfPeople
-      }));
-
-      // Fetch and set the bookable locations
-      const bookableLocations = await getAllBookableLocationsApi();
-      console.log('Bookable locations:', JSON.stringify(bookableLocations, null, 2)); // Log the API response to the console
-      roomList = bookableLocations.map(location => ({
-        roomName: location.title,
-        capacity: location.capacity
-      }));
-
-      // Update employeeList
-      employeeList = bookingList.map(booking => ({
-        displayText: `${booking.employeeName} (${booking.employeeId})`,
-        employeeName: booking.employeeName,
-        employeeId: booking.employeeId
-      }));
-
-      filteredOptions = [...employeeList];
-    } catch (error) {
-      console.error('Error fetching room bookings:', error);
-    }
+    await fetchEmployees();
+    await fetchRoomBookings();
+    await fetchBookableLocations();
   });
 
-  async function bookRoom() {
-    if (!validateInputs()) {
-      return;
-    }
-
+  async function fetchEmployees() {
     try {
-      const isDuplicate = bookingList.some(
-        booking =>
-          booking.roomName === roomName &&
-          booking.dateTimeFrom === dateTimeFrom
-      );
-
-      if (isDuplicate) {
-        alert('Booking already exists.');
-        return;
-      }
-
-      const response = await fetch('/api/bookRoom', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ employeeName, roomName, noOfPeople, dateTimeFrom, dateTimeTo })
-      });
-
-      if (response.ok) {
-        navigate('/admin/RoomBooking');
-      } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
-      }
+      employeesList = await getAllEmployeesApi();
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while adding the booking. Please try again.');
+      console.error("Error fetching employees:", error);
+    }
+  }
+
+  async function fetchRoomBookings() {
+    try {
+      roomBookingsList = await getAllRoomBookingsApi();
+    } catch (error) {
+      console.error("Error fetching room bookings:", error);
+    }
+  }
+
+  async function fetchBookableLocations() {
+    try {
+      locationsList = await getAllBookableLocationsApi();
+    } catch (error) {
+      console.error("Error fetching room bookings:", error);
+      locationsList = [];
+    }
+  }
+
+  async function bookRoom() {
+    try {
+      await addRoomBookingApi(roombooking);
+      await fetchRoomBookings();
+      closeModal();
+    } catch (error) {
+      console.error('Error adding room booking:', error);
     }
   }
 
   async function updateBooking() {
-    if (!validateInputs()) {
-      return;
-    }
-
-    if (currentBooking) {
-      try {
-        const response = await fetch(`/api/updateRoomBooking/${currentBooking.id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ employeeName, roomName, noOfPeople, dateTimeFrom, dateTimeTo })
-        });
-
-        if (response.ok) {
-          closeModal();
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while updating the booking. Please try again.');
-      }
+    // if (!validateInputs()) return;
+    delete roombooking.__v
+    try {
+      await updateRoomBookingApi(roombooking);
+      await fetchRoomBookings();
+      closeModal();
+    } catch (error) {
+      console.error('Error updating room booking:', error);
     }
   }
 
@@ -164,8 +88,9 @@
 
   async function confirmDeleteBooking() {
     try {
-      bookingList = bookingList.filter(b => b !== bookingToDelete);
+      await deleteRoomBookingApi(bookingToDelete._id.toString())
       closeConfirmationModal();
+      await fetchRoomBookings()
     } catch (error) {
       console.error('Failed to delete booking:', error);
     }
@@ -179,26 +104,26 @@
   function validateInputs() {
     let isValid = true;
 
-    if (!employeeName) {
-      document.getElementById('employee-name-error').style.display = 'block';
+    if (!roombooking.employee) {
+      document.getElementById('empName-error').style.display = 'block';
       isValid = false;
     } else {
-      document.getElementById('employee-name-error').style.display = 'none';
+      document.getElementById('empName-error').style.display = 'none';
     }
 
-    if (!roomName) {
+    if (!roombooking.location) {
       document.getElementById('room-name-error').style.display = 'block';
       isValid = false;
     } else {
       document.getElementById('room-name-error').style.display = 'none';
     }
 
-    if (!noOfPeople || isNaN(noOfPeople) || noOfPeople <= 0) {
+    if (!roombooking.numOfPeople || isNaN(roombooking.numOfPeople) || roombooking.numOfPeople <= 0) {
       document.getElementById('no-of-people-error').style.display = 'block';
       isValid = false;
     } else {
-      const selectedRoom = roomList.find(room => room.roomName === roomName);
-      if (selectedRoom && noOfPeople > selectedRoom.capacity) {
+      const selectedRoom = locationsList.find(room => room._id === roombooking.location);
+      if (selectedRoom && roombooking.numOfPeople > selectedRoom.capacity) {
         document.getElementById('no-of-people-error').innerText = '* Number of people exceeds room capacity';
         document.getElementById('no-of-people-error').style.display = 'block';
         isValid = false;
@@ -208,21 +133,21 @@
       }
     }
 
-    if (!dateTimeFrom) {
+    if (!roombooking.dateTimeFrom) {
       document.getElementById('dateTime-from-error').style.display = 'block';
       isValid = false;
     } else {
       document.getElementById('dateTime-from-error').style.display = 'none';
     }
 
-    if (!dateTimeTo) {
+    if (!roombooking.dateTimeTo) {
       document.getElementById('dateTime-to-error').style.display = 'block';
       isValid = false;
     } else {
       document.getElementById('dateTime-to-error').style.display = 'none';
     }
 
-    if (dateTimeFrom && dateTimeTo && new Date(dateTimeTo) < new Date(dateTimeFrom)) {
+    if (roombooking.dateTimeFrom && roombooking.dateTimeTo && new Date(roombooking.dateTimeTo) < new Date(roombooking.dateTimeFrom)) {
       document.getElementById('dateTime-to-error').innerText = '* Date & Time To cannot be before Date & Time From';
       document.getElementById('dateTime-to-error').style.display = 'block';
       isValid = false;
@@ -239,29 +164,31 @@
   }
 
   function openEditModal(booking) {
-    currentBooking = booking;
-    employeeName = booking.employeeName;
-    employeeId = booking.employeeId;
-    roomName = booking.roomName;
-    noOfPeople = booking.noOfPeople;
-    dateTimeFrom = booking.dateTimeFrom;
-    dateTimeTo = booking.dateTimeTo;
+    roombooking = {
+      ...booking,
+      dateTimeFrom: new Date(booking.dateTimeFrom).toISOString().slice(0, 16),
+      dateTimeTo: new Date(booking.dateTimeTo).toISOString().slice(0, 16),
+      employee: employeesList.find(emp => emp._id == booking.employee._id),
+      location: locationsList.find(loc => loc._id == booking.location._id),
+    };
+
+    console.log(roombooking)
+
     editModal = true;
   }
 
   function closeModal() {
     showModal = false;
     editModal = false;
-    // Reset input fields
-    employeeName = '';
-    employeeId = '';
-    roomName = '';
-    noOfPeople = '';
-    dateTimeFrom = '';
-    dateTimeTo = '';
-    currentBooking = null;
+    roombooking = {
+      employee: null,
+      numOfPeople: null,
+      dateTimeFrom: null,
+      dateTimeTo: null,
+      location: null,
+    };
 
-    document.getElementById('employee-name-error').style.display = 'none';
+    document.getElementById('empName-error').style.display = 'none';
     document.getElementById('room-name-error').style.display = 'none';
     document.getElementById('no-of-people-error').style.display = 'none';
     document.getElementById('dateTime-from-error').style.display = 'none';
@@ -272,17 +199,17 @@
   let currentPage = 1;
 
   $: startIndex = (currentPage - 1) * bookingsPerPage;
-  $: endIndex = Math.min(startIndex + bookingsPerPage, bookingList.length);
-  $: displayedData = bookingList.slice(startIndex, endIndex);
-  $: totalPages = Math.ceil(bookingList.length / bookingsPerPage);
+  $: endIndex = Math.min(startIndex + bookingsPerPage, roomBookingsList.length);
+  $: displayedData = roomBookingsList.slice(startIndex, endIndex);
+  $: totalPages = Math.ceil(roomBookingsList.length / bookingsPerPage);
 
   function handlePageChange(event) {
     currentPage = event.detail.pageNumber;
   }
 
-  let dropdownPopoverShow = new Array(bookingList.length).fill(false);
-  let btnDropdownRef = new Array(bookingList.length);
-  let popoverDropdownRef = new Array(bookingList.length);
+  let dropdownPopoverShow = new Array(roomBookingsList.length).fill(false);
+  let btnDropdownRef = new Array(roomBookingsList.length);
+  let popoverDropdownRef = new Array(roomBookingsList.length);
 
   function toggleDropdown(event, rowIndex) {
     event.stopPropagation();
@@ -323,8 +250,7 @@
   });
 
   function handleEmployeeSelect(option) {
-    employeeName = option.employeeName;
-    employeeId = option.employeeId;
+    roombooking.employee = option;
     searchQuery = option.displayText;
     dropdownVisible = false;
   }
@@ -332,7 +258,7 @@
   function toggleDropdownVisibility() {
     dropdownVisible = !dropdownVisible;
     if (dropdownVisible) {
-      filteredOptions = employeeList.filter(option =>
+      filteredOptions = employeesList.filter(option =>
         option.displayText.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
@@ -369,53 +295,33 @@
             <div class="px-4 py-5 flex-auto">
               <div class="flex flex-wrap">
                 <div class="w-full lg:w-6/12 px-4">
-<div class="relative mb-3">
-  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employee-name">
-    Employee Name
-  </label>
-  <div class="relative dropdown">
-    <input
-      type="text"
-      placeholder="Search..."
-      bind:value={searchQuery}
-      class="border px-3 py-2 rounded w-full"
-      on:focus={toggleDropdownVisibility}
-      on:input={() => {
-        filteredOptions = employeeList.filter(option =>
-          option.displayText.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }}
-    />
-    {#if dropdownVisible && filteredOptions.length > 0}
-      <ul class="absolute bg-white border w-full mt-1 max-h-60 overflow-y-auto z-10">
-        {#each filteredOptions as option}
-          <li
-            class="p-2 hover:bg-gray-200 cursor-pointer"
-            on:click={() => handleEmployeeSelect(option)}
-          >
-            {option.displayText}
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  </div>
-  <span id="employee-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-</div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="empName">
+                      Employee Name
+                    </label>
+                    <select id="empName" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roombooking.employee}>
+                      <option value={null}>Select Employee</option>
+                      {#each employeesList as employee}
+                        <option value={employee}>{employee.name} ({employee.employeeID})</option>
+                      {/each}
+                    </select>
+                    <span id="empName-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-from">
                       Date & Time From
                     </label>
-                    <input type="datetime-local" id="dateTime-from" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateTimeFrom}>
+                    <input type="datetime-local" id="dateTime-from" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roombooking.dateTimeFrom}>
                     <span id="dateTime-from-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="rooms">
-                      Rooms
+                      Room (Capacity)
                     </label>
-                    <select id="rooms" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roomName}>
-                      <option value="" disabled selected>Select a room</option>
-                      {#each roomList as room}
-                        <option value={room.roomName}>{room.roomName}</option>
+                    <select id="rooms" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roombooking.location}>
+                      <option value={null} disabled selected>Select a room</option>
+                      {#each locationsList as location}
+                        <option value={location}>{location.title} ({location.capacity})</option>
                       {/each}
                     </select>
                     <span id="room-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
@@ -426,7 +332,7 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="no-of-people">
                       # of People
                     </label>
-                    <input type="number" min="0" id="no-of-people" placeholder="# of People" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={noOfPeople}>
+                    <input type="number" min="0" id="no-of-people" placeholder="# of People" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roombooking.numOfPeople}>
                     <span id="no-of-people-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   
@@ -434,7 +340,7 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-to">
                       Date & Time To
                     </label>
-                    <input type="datetime-local" id="dateTime-to" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateTimeTo}>
+                    <input type="datetime-local" id="dateTime-to" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roombooking.dateTimeTo}>
                     <span id="dateTime-to-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
@@ -462,9 +368,6 @@
             Employee Name
           </th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
-            Designation
-          </th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
             Room Booked
           </th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">
@@ -479,14 +382,13 @@
         </tr>
       </thead>
       <tbody>
-        {#each displayedData as booking, rowIndex}
+        {#each displayedData as booking}
           <tr>
-            <td class="table-data font-bold text-blueGray-600" title={booking.employeeName}>{booking.employeeName}</td>
-            <td class="table-data" title={booking.designation}>{booking.designation}</td>
-            <td class="table-data" title={booking.roomName}>{booking.roomName}</td>
-            <td class="table-data" title={booking.dateTimeFrom}>{booking.dateTimeFrom}</td>
-            <td class="table-data" title={booking.dateTimeTo}>{booking.dateTimeTo}</td>
-            <td class="table-data" title={booking.noOfPeople}>{booking.noOfPeople}</td>
+            <td class="table-data font-bold text-blueGray-600">{booking.employee.name}</td>
+            <td class="table-data">{booking.location.title}</td>
+            <td class="table-data">{booking.dateTimeFrom}</td>
+            <td class="table-data">{booking.dateTimeTo}</td>
+            <td class="table-data">{booking.numOfPeople}</td>
             <td class="text-xs">
               <div class="flex items-center">
                 <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(booking)}></i>
