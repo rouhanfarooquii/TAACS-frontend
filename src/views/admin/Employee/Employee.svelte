@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { getAllEmployeesApi, addEmployeeApi, updateEmployeeApi } from '../../../services/api';
+  import { getAllEmployeesApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Multiselect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { navigate } from 'svelte-routing';
@@ -17,20 +17,46 @@
     active: ''
   };
 
-  let employees = [
-    { id: 1, name: 'John Doe', phoneNumber: '123-456-7890', location: 'New York', department: 'HR', designation: 'Manager', employeeType: 'Full-time', gender: 'Male', email: 'john@example.com', address: '123 Main St, New York', dateOfBirth: '1980-05-15', cardIdNumber: 'A123456', personalPassword: 'password123', fingerIndex1: '123456', fingerIndex2: '654321', isFingerAdded: true, salary: 70000, active: true },
-    { id: 2, name: 'Jane Smith', phoneNumber: '987-654-3210', location: 'Los Angeles', department: 'Marketing', designation: 'Executive', employeeType: 'Full-time', gender: 'Female', email: 'jane@example.com', address: '456 Elm St, Los Angeles', dateOfBirth: '1985-08-20', cardIdNumber: 'B654321', personalPassword: 'pass123word', fingerIndex1: '654321', fingerIndex2: '123456', isFingerAdded: true, salary: 60000, active: false },
-    { id: 3, name: 'Bob Johnson', phoneNumber: '555-123-4567', location: 'Chicago', department: 'Sales', designation: 'Representative', employeeType: 'Full-time', gender: 'Male', email: 'bob@example.com', address: '789 Oak St, Chicago', dateOfBirth: '1975-10-10', cardIdNumber: 'C789012', personalPassword: 'secret123', fingerIndex1: '789012', fingerIndex2: '', isFingerAdded: false, salary: 55000, active: true },
-    { id: 4, name: 'Alice Brown', phoneNumber: '333-555-9999', location: 'San Francisco', department: 'IT', designation: 'Developer', employeeType: 'Full-time', gender: 'Female', email: 'alice@example.com', address: '321 Pine St, San Francisco', dateOfBirth: '1990-12-25', cardIdNumber: 'D345678', personalPassword: 'securepwd', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 75000, active: true },
-    { id: 5, name: 'Mike Davis', phoneNumber: '444-777-2222', location: 'Seattle', department: 'Finance', designation: 'Analyst', employeeType: 'Full-time', gender: 'Male', email: 'mike@example.com', address: '567 Cedar St, Seattle', dateOfBirth: '1988-03-05', cardIdNumber: 'E901234', personalPassword: 'mysecretpass', fingerIndex1: '', fingerIndex2: '', isFingerAdded: false, salary: 65000, active: false },
-  ];
-
-  let filteredEmployees = employees;
+  let employees = [];
+  let filteredEmployees = [];
 
   let currentPage = 1;
   let itemsPerPage = 5;
 
   $: paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  onMount(async () => {
+    await fetchEmployees();
+  });
+
+  async function fetchEmployees() {
+    try {
+      const fetchedEmployees = await getAllEmployeesApi();
+      employees = fetchedEmployees.map(emp => ({
+        id: emp._id,
+        name: emp.name,
+        phoneNumber: emp.mobileNumber,
+        location: emp.locations.join(", "),
+        department: emp.department.title,
+        designation: emp.designation.title,
+        employeeType: 'Full-time',
+        gender: emp.gender,
+        email: emp.email,
+        address: emp.address,
+        dateOfBirth: new Date(emp.dateOfBirth).toLocaleDateString(),
+        cardIdNumber: emp.cardIdNumber,
+        personalPassword: emp.personalPassword,
+        fingerIndex1: emp.fingerIndex1,
+        fingerIndex2: emp.fingerIndex2,
+        isFingerAdded: Boolean(emp.fingerIndex1 || emp.fingerIndex2),
+        salary: emp.salary,
+        active: emp.active,
+      }));
+      filteredEmployees = employees;
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  }
 
   function applyFilters() {
     filteredEmployees = employees.filter(employee => {

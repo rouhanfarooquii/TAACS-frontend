@@ -1,7 +1,8 @@
 <script>
   import { navigate } from 'svelte-routing';
   import { onMount } from 'svelte';
-  import Multiselect from 'components/Dropdowns/MultiSelect.svelte';
+  import Multiselect from '../../../components/Dropdowns/MultiSelect.svelte';
+  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi } from '../../../services/api';
 
   let selectedEmployee = null;
 
@@ -20,56 +21,109 @@
   let personalPassword = '';
   let fingerIndex1 = '';
   let fingerIndex2 = '';
-  let isFingerAdded = '';
+  let isFingerAdded = false;
   let salary = '';
   let shiftTiming = '';
   let selectedLocations = [];
-  let locations = ['Device 1', 'Device 2', 'Device 3', 'Device 4', 'Device 5'];
-
-  let employee = {
-      id: '',
-      name: '',
-      phoneNumber: '',
-      location: '',
-      department: '',
-      designation: '',
-      employeeType: '',
-      gender: '',
-      email: '',
-      address: '', 
-      dateOfBirth: '',
-      cardIdNumber: '',
-      personalPassword: '',
-      fingerIndex1: '',
-      fingerIndex2: '',
-      isFingerAdded: '',
-      salary: '',
-      shiftTiming: '',
-  };
+  let locations = [];
+  let departments = [];
+  let designations = [];
+  let shiftTimings = [];
 
   const image = "../assets/img/10.jpg";
 
+  onMount(() => {
+    const fileInput = document.getElementById('profile-pic');
+    fileInput.addEventListener('change', handleFileInputChange);
+
+    fetchDepartments();
+    fetchLocations();
+    fetchShiftTimings();
+
+    return () => {
+      fileInput.removeEventListener('change', handleFileInputChange);
+    };
+  });
+
+  async function fetchDepartments() {
+    try {
+      const fetchedDepartments = await getAllDepartmentsApi();
+      departments = fetchedDepartments;
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  }
+
+  async function fetchLocations() {
+    try {
+      const fetchedLocations = await getAllLocationsApi();
+      locations = fetchedLocations.map(loc => loc.title);
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+    }
+  }
+
+  async function fetchShiftTimings() {
+  try {
+    const response = await getAllShiftTimingsApi();
+    shiftTimings = response.timings.map(shift => shift.shiftName);
+  } catch (error) {
+    console.error('Error fetching shift timings:', error);
+  }
+}
+
+  function setDesignation(event) {
+    const selectedDepartmentTitle = event.target.value;
+    if (selectedDepartmentTitle) {
+      const selectedDept = departments.find(d => d.title === selectedDepartmentTitle);
+      designations = selectedDept ? selectedDept.designations : [];
+    } else {
+      designations = [];
+    }
+  }
+
   async function handleSubmit() {
     if (!validateInputs()) {
-        return;
+      return;
     }
 
+    const employee = {
+      id,
+      name,
+      phoneNumber,
+      location,
+      department,
+      designation,
+      employeeType,
+      gender,
+      email,
+      address,
+      dateOfBirth,
+      cardIdNumber,
+      personalPassword,
+      fingerIndex1,
+      fingerIndex2,
+      isFingerAdded,
+      salary,
+      shiftTiming,
+    };
+
     try {
-        const response = await fetch('your_backend_api_url', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(employee)
-        });
+      const response = await fetch('your_backend_api_url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(employee)
+      });
 
-        if (!response.ok) {
-            throw new Error('Failed to submit data to the server');
-        }
+      if (!response.ok) {
+        throw new Error('Failed to submit data to the server');
+      }
 
-        console.log('Form submitted successfully');
+      console.log('Form submitted successfully');
     } catch (error) {
-        console.error('Error submitting form:', error.message);
+      console.error('Error submitting form:', error.message);
     }
   }
 
@@ -84,15 +138,6 @@
       reader.readAsDataURL(file);
     }
   }
-
-  onMount(() => {
-    const fileInput = document.getElementById('profile-pic');
-    fileInput.addEventListener('change', handleFileInputChange);
-
-    return () => {
-      fileInput.removeEventListener('change', handleFileInputChange);
-    };
-  });
 
   function navigateToEmployee() {
     navigate('/admin/employee');
@@ -223,41 +268,17 @@
     return isValid;
   }
 
-  // Dummy data for departments and designations
-  const departments = {
-    "IT": ["Developer", "Tester", "Manager"],
-    "HR": ["Recruiter", "HR Manager", "Coordinator"],
-    "Finance": ["Accountant", "Financial Analyst", "Auditor"]
-  };
-
-  // Dummy data for shift timings
-  const shiftTimings = ["Morning Shift", "Afternoon Shift", "Night Shift"];
-
-  async function fetchShiftTimings() {
-    try {
-      const response = await fetch('your_backend_api_url_for_shift_timings');
-      if (!response.ok) {
-        throw new Error('Failed to fetch shift timings');
-      }
-      const data = await response.json();
-      return data.shiftTimings;
-    } catch (error) {
-      console.error('Error fetching shift timings:', error.message);
-      return shiftTimings; // Return dummy data in case of error
-    }
-  }
-
   let showPassword = false;
 
   function togglePasswordVisibility() {
     showPassword = !showPassword;
   }
 
-  $: availableDesignations = department ? departments[department] || [] : [];
+  $: availableDesignations = department ? departments.find(d => d.title === department)?.designations || [] : [];
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-  <div class="left-section flex flex-col items-center"> <!-- Adjust this value according to your needs -->
+  <div class="left-section flex flex-col items-center">
     <!-- svelte-ignore a11y-img-redundant-alt -->
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
@@ -311,10 +332,10 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
         Department:
       </label>
-      <select id="department" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={department}>
+      <select id="department" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={department} on:change={setDesignation}>
         <option value="" disabled selected>Select Department</option>
-        {#each Object.keys(departments) as dept}
-          <option value={dept}>{dept}</option>
+        {#each departments as dept}
+          <option value={dept.title}>{dept.title}</option>
         {/each}
       </select>
       <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
@@ -327,7 +348,7 @@
       <select id="designation" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation} disabled={!department}>
         <option value="" disabled selected>Select Designation</option>
         {#each availableDesignations as desig}
-          <option value={desig}>{desig}</option>
+          <option value={desig.title}>{desig.title}</option>
         {/each}
       </select>
       <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
@@ -418,16 +439,16 @@
   <!-- Filters Row 6 -->
   <div class="flex justify-between mb-4">
     <!-- Filter by Shift Timing -->
-    <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
-      <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{shiftTiming}">
-        <option value="" disabled selected>Select Shift Timing</option>
-        {#each shiftTimings as shift}
-          <option value={shift}>{shift}</option>
-        {/each}
-      </select>
-      <span id="shift-timing-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-    </div>
+<div class="relative mb-3">
+  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
+  <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftTiming}>
+    <option value="" disabled selected>Select Shift Timing</option>
+    {#each shiftTimings as shift}
+      <option value={shift}>{shift}</option>
+    {/each}
+  </select>
+  <span id="shift-timing-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+</div>
     <!-- Filter by Accessible Locations -->
     <div class="relative mb-3 w-1/2">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleDevices">Accessible locations</label>
