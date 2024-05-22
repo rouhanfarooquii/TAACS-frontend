@@ -254,7 +254,7 @@ export async function deleteEmployeeApi(id){
 
 // Leaves API
 export async function getAllLeavesApi(){
-    const response = await fetch(BACKEND + 'leave/getall',{
+    const response = await fetch(BACKEND + 'leave/getAll',{
         method: 'GET',
         headers: headers,
     });
@@ -275,8 +275,8 @@ export async function addLeaveApi(obj){
     return await msg;
 };
 
-export async function updateLeaveApprovedApi(obj){
-    const response = await fetch(BACKEND + 'leave/approved', {
+export async function updateLeaveApprovedApi(id, obj){
+    const response = await fetch(`${BACKEND}leave/approved/${id}`, {
         method: 'POST',
         observe: 'body',
         headers: headers,
@@ -287,8 +287,8 @@ export async function updateLeaveApprovedApi(obj){
     return await msg;
 };
 
-export async function updateLeaveRejectedApi(obj){
-    const response = await fetch(BACKEND + 'leave/rejected', {
+export async function updateLeaveRejectedApi(id, obj){
+    const response = await fetch(`${BACKEND}leave/rejected/${id}`, {
         method: 'POST',
         observe: 'body',
         headers: headers,

@@ -1,5 +1,5 @@
 <script>
-  // core components
+  // Core components
   import CardTable from "components/Cards/CardTable.svelte";
   import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
@@ -30,33 +30,34 @@
   });
 
   async function updateLeaveStatus(request, status) {
-    const updateObj = {
-      employee: request.employee._id,
-      status: status,
-      reason: request.reason,
-      fromDate: request.fromDate,
-      toDate: request.toDate
-    };
+  const updateObj = {
+    employee: request.employee._id,
+    status: status,
+    reason: request.reason,
+    fromDate: request.fromDate,
+    toDate: request.toDate
+  };
 
-    try {
-      let responseMsg;
-      if (status === 'approved') {
-        responseMsg = await updateLeaveApprovedApi(updateObj);
-      } else if (status === 'rejected') {
-        responseMsg = await updateLeaveRejectedApi(updateObj);
-      }
-      console.log('Update response:', responseMsg);
-      loadLeaveRequests(); // Refresh leave requests after update
-    } catch (error) {
-      console.error('Error updating leave request:', error);
+  try {
+    let responseMsg;
+    if (status === 'approved') {
+      responseMsg = await updateLeaveApprovedApi(request._id, updateObj);
+    } else if (status === 'rejected') {
+      responseMsg = await updateLeaveRejectedApi(request._id, updateObj);
     }
+    console.log('Update response:', responseMsg);
+    loadLeaveRequests(); // Refresh leave requests after update
+  } catch (error) {
+    console.error('Error updating leave request:', error);
   }
+}
 
-  export function handleApprove(request) {
+
+  function handleApprove(request) {
     updateLeaveStatus(request, 'approved');
   }
 
-  export function handleReject(request) {
+  function handleReject(request) {
     updateLeaveStatus(request, 'rejected');
   }
 
@@ -133,10 +134,10 @@
         </div>
         <div class="flex justify-end mb-1 pt-6">
           <button 
-            data-id="{request._id}" onclick={() => handleApprove(request)}
+            data-id="{request._id}" on:click={() => handleApprove(request)}
             class="bg-green-600 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2">Approve</button>
           <button
-            data-id="{request._id}" onclick={() => handleReject(request)}
+            data-id="{request._id}" on:click={() => handleReject(request)}
             class="bg-red-600 text-white active:bg-red-800 uppercase font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150">Reject</button>
         </div>
       </div>
