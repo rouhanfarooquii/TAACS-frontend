@@ -2,12 +2,13 @@
   import { createPopper } from "@popperjs/core";
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllRoomBookingsApi, getAllBookableLocationsApi} from '../../../services/api'; // Import the API function
+  import { getAllRoomBookingsApi, getAllBookableLocationsApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   export let color = "light";
 
   let employeeName = '';
+  let employeeId = '';
   let roomName = '';
   let noOfPeople = '';
   let dateTimeFrom = '';
@@ -34,6 +35,7 @@
   let bookingList = [
     {
       employeeName: "John Doe",
+      employeeId: 12345,
       designation: "Manager",
       roomName: "Room 101",
       dateTimeFrom: "2024-05-12T10:00",
@@ -43,6 +45,16 @@
     // ... other bookings ...
   ];
 
+  let employeeList = bookingList.map(booking => ({
+    displayText: `${booking.employeeName} (${booking.employeeId})`,
+    employeeName: booking.employeeName,
+    employeeId: booking.employeeId
+  }));
+
+  let searchQuery = '';
+  let filteredOptions = [];
+  let dropdownVisible = false;
+
   onMount(async () => {
     try {
       const roomBookings = await getAllRoomBookingsApi();
@@ -51,6 +63,7 @@
       // Map the API response to bookingList
       bookingList = roomBookings.map(booking => ({
         employeeName: booking.employee.name,
+        employeeId: booking.employee.id,
         designation: booking.employee.designation.title,
         roomName: "Room 101", // Assuming roomName is not available in API response, hardcoding for now
         dateTimeFrom: booking.dateTimeFrom,
@@ -66,6 +79,14 @@
         capacity: location.capacity
       }));
 
+      // Update employeeList
+      employeeList = bookingList.map(booking => ({
+        displayText: `${booking.employeeName} (${booking.employeeId})`,
+        employeeName: booking.employeeName,
+        employeeId: booking.employeeId
+      }));
+
+      filteredOptions = [...employeeList];
     } catch (error) {
       console.error('Error fetching room bookings:', error);
     }
@@ -220,6 +241,7 @@
   function openEditModal(booking) {
     currentBooking = booking;
     employeeName = booking.employeeName;
+    employeeId = booking.employeeId;
     roomName = booking.roomName;
     noOfPeople = booking.noOfPeople;
     dateTimeFrom = booking.dateTimeFrom;
@@ -232,6 +254,7 @@
     editModal = false;
     // Reset input fields
     employeeName = '';
+    employeeId = '';
     roomName = '';
     noOfPeople = '';
     dateTimeFrom = '';
@@ -289,13 +312,8 @@
   }
 
   function handleClickOutside(event) {
-    for (let i = 0; i < btnDropdownRef.length; i++) {
-      const button = btnDropdownRef[i];
-      const popover = popoverDropdownRef[i];
-
-      if (button && !button.contains(event.target) && popover && !popover.contains(event.target)) {
-        dropdownPopoverShow[i] = false;
-      }
+    if (!event.target.closest('.dropdown')) {
+      dropdownVisible = false;
     }
   }
 
@@ -303,6 +321,22 @@
     window.addEventListener('click', handleClickOutside);
     return () => window.removeEventListener('click', handleClickOutside);
   });
+
+  function handleEmployeeSelect(option) {
+    employeeName = option.employeeName;
+    employeeId = option.employeeId;
+    searchQuery = option.displayText;
+    dropdownVisible = false;
+  }
+
+  function toggleDropdownVisibility() {
+    dropdownVisible = !dropdownVisible;
+    if (dropdownVisible) {
+      filteredOptions = employeeList.filter(option =>
+        option.displayText.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+  }
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -335,12 +369,44 @@
             <div class="px-4 py-5 flex-auto">
               <div class="flex flex-wrap">
                 <div class="w-full lg:w-6/12 px-4">
+<div class="relative mb-3">
+  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employee-name">
+    Employee Name
+  </label>
+  <div class="relative dropdown">
+    <input
+      type="text"
+      placeholder="Search..."
+      bind:value={searchQuery}
+      class="border px-3 py-2 rounded w-full"
+      on:focus={toggleDropdownVisibility}
+      on:input={() => {
+        filteredOptions = employeeList.filter(option =>
+          option.displayText.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }}
+    />
+    {#if dropdownVisible && filteredOptions.length > 0}
+      <ul class="absolute bg-white border w-full mt-1 max-h-60 overflow-y-auto z-10">
+        {#each filteredOptions as option}
+          <li
+            class="p-2 hover:bg-gray-200 cursor-pointer"
+            on:click={() => handleEmployeeSelect(option)}
+          >
+            {option.displayText}
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </div>
+  <span id="employee-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+</div>
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employee-name">
-                      Employee Name
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-from">
+                      Date & Time From
                     </label>
-                    <input type="text" id="employee-name" placeholder="Employee Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeName}>
-                    <span id="employee-name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    <input type="datetime-local" id="dateTime-from" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateTimeFrom}>
+                    <span id="dateTime-from-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="rooms">
@@ -363,13 +429,7 @@
                     <input type="number" min="0" id="no-of-people" placeholder="# of People" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={noOfPeople}>
                     <span id="no-of-people-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-from">
-                      Date & Time From
-                    </label>
-                    <input type="datetime-local" id="dateTime-from" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateTimeFrom}>
-                    <span id="dateTime-from-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                  </div>
+                  
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="dateTime-to">
                       Date & Time To
