@@ -238,8 +238,8 @@ export async function addLeaveApi(obj){
     return await msg;
 };
 
-export async function updateLeaveApi(obj){
-    const response = await fetch(BACKEND + 'leave/update', {
+export async function updateLeaveApprovedApi(obj){
+    const response = await fetch(BACKEND + 'leave/approved', {
         method: 'POST',
         observe: 'body',
         headers: headers,
@@ -250,10 +250,12 @@ export async function updateLeaveApi(obj){
     return await msg;
 };
 
-export async function deleteLeaveApi(id){
-    const response = await fetch(BACKEND + 'leave/delete/' + id, {
+export async function updateLeaveRejectedApi(obj){
+    const response = await fetch(BACKEND + 'leave/rejected', {
         method: 'POST',
+        observe: 'body',
         headers: headers,
+        body: JSON.stringify({leave: obj})
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
