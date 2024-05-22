@@ -1,6 +1,9 @@
 <script>
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
+  import { onMount } from 'svelte';
+  import { getAllShiftTimingsApi } from '../../../services/api';
+
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
   export let color = "light";
@@ -8,50 +11,34 @@
   let showModal = false;
   let editModal = false;
 
-  let shifts = [
-    // Example shifts; replace with actual data as needed
-    {
-      id: 0,
-      shiftName: 'Morning Shift',
-      startTime: '06:00',
-      endTime: '14:00',
-      dateFrom: '2024-05-20',
-      dateTo: '2024-05-20',
-      recurrence: 'None',
-      breaks: [{ start: '09:00', end: '09:15' }],
-      location: 'Office',
-      shiftType: 'Morning',
-      customShiftType: '',
-      notes: 'Regular morning shift',
-    },
-    {
-      id: 1,
-      shiftName: 'Evening Shift',
-      startTime: '14:00',
-      endTime: '22:00',
-      dateFrom: '2024-05-20',
-      dateTo: '2024-05-20',
-      recurrence: 'None',
-      breaks: [{ start: '17:00', end: '17:15' }],
-      location: 'Office',
-      shiftType: 'Evening',
-      customShiftType: '',
-      notes: 'Regular evening shift',
-    },
-  ];
+  let shifts = [];
 
-  function deleteShift(id) {
-    shifts = shifts.filter(shift => shift.id !== id);
+  onMount(async () => {
+    await fetchShifts();
+  });
+
+  async function fetchShifts() {
+    try {
+      shifts = await getAllShiftTimingsApi();
+      console.log(shifts);
+    } catch (error) {
+      console.error("Error fetching shifts:", error);
+      shifts = []; // Fallback to an empty array in case of error
+    }
   }
 
-  function viewShift(id) {
-    shiftSelected = shifts.find(shift => shift.id === id);
+  function deleteShift(id) {
+    shifts = shifts.filter(shift => shift._id !== id);
+  }
+
+  function viewShift(shift) {
+    shiftSelected = shift
     showModal = true;
     console.log('Shift selected for view:', shiftSelected);
   }
 
-  function openEditModal(id) {
-    shiftSelected = shifts.find(shift => shift.id === id);
+  function openEditModal(shift) {
+    shiftSelected = shift
     editModal = true;
     console.log('Shift selected for edit:', shiftSelected);
   }
@@ -66,7 +53,7 @@
   }
 
   function saveEdit() {
-    const index = shifts.findIndex(shift => shift.id === shiftSelected.id);
+    const index = shifts.findIndex(shift => shift._id === shiftSelected._id);
     if (index !== -1) {
       shifts[index] = { ...shiftSelected };
       closeModal();
@@ -88,7 +75,7 @@
     if (selectedShifts.size === shifts.length) {
       selectedShifts.clear();
     } else {
-      shifts.forEach(shift => selectedShifts.add(shift.id));
+      shifts.forEach(shift => selectedShifts.add(shift._id));
     }
     selectedShifts = new Set(selectedShifts); // Force rerender
   }
@@ -104,7 +91,7 @@
   $: startIndex = (currentPage - 1) * shiftsPerPage;
   $: endIndex = Math.min(startIndex + shiftsPerPage, filteredShifts.length);
   $: filteredShifts = shifts.filter(shift => 
-    shift.shiftName.toLowerCase().includes(searchQuery.toLowerCase())
+    shift.shiftName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
   $: displayedShifts = filteredShifts.slice(startIndex, endIndex);
   $: totalPages = Math.ceil(filteredShifts.length / shiftsPerPage);
@@ -159,12 +146,6 @@
     </div>
   </div>
   <p class="text-sm {searchResultColor}">{searchResultText}</p>
-  <!-- <div class="flex items-center mb-4">
-    <input type="search" class="bg-gray-800 text-white rounded-lg px-4 py-2" placeholder="Search..." bind:value={searchQuery}>
-    {#if searchQuery}
-      <span class="ml-4 text-sm {searchResultColor}">{searchResultText}</span>
-    {/if}
-  </div> -->
   <div class="block w-full overflow-x-auto">
     <table class="items-center w-full bg-transparent border-collapse">
       <thead>
@@ -175,26 +156,26 @@
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">End Time</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Date From</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Date To</th>
-          <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location</th>
+          <!-- <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location</th> -->
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Shift Type</th>
           <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {#each displayedShifts as shift (shift.id)}
+        {#each displayedShifts as shift (shift._id)}
         <tr>
-          <td class="table-date"><input type="checkbox" checked={selectedShifts.has(shift.id)} class="rounded" on:click={() => toggleSelection(shift.id)}></td>
+          <td class="table-date"><input type="checkbox" checked={selectedShifts.has(shift._id)} class="rounded" on:click={() => toggleSelection(shift._id)}></td>
           <td class='table-data font-bold text-blueGray-600 wrap-text'>{shift.shiftName}</td>
           <td class='table-data'>{shift.startTime}</td>
           <td class='table-data'>{shift.endTime}</td>
           <td class='table-data'>{shift.dateFrom}</td>
           <td class='table-data'>{shift.dateTo}</td>
-          <td class='table-data'>{shift.location}</td>
+          <!-- <td class='table-data'>{shift.location}</td> -->
           <td class='table-data'>{shift.shiftType === 'custom' ? shift.customShiftType : shift.shiftType}</td>
           <td class='table-data'>
             <div class="flex items-center">
-              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(shift.id)}></i>
-              <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewShift(shift.id)}></i>
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(shift)}></i>
+              <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewShift(shift)}></i>
             </div>
           </td>
         </tr>

@@ -2,6 +2,9 @@
     import { createPopper } from "@popperjs/core";
     import { onMount, onDestroy } from 'svelte';
     import { navigate } from 'svelte-routing';
+
+  import { addShiftTimingApi } from '../../../services/api';
+
   
     let shiftName = '';
     let startTime = '';
@@ -10,7 +13,7 @@
     let dateTo = '';
     let recurrence = '';
     let breaks = [];
-    let location = '';
+    // let location = '';
     let shiftType = '';
     let customShiftType = '';
     let notes = '';
@@ -36,13 +39,17 @@
       if (!dateFrom) errors.dateFrom = "Date from is required.";
       if (!dateTo) errors.dateTo = "Date to is required.";
       if (new Date(dateTo) < new Date(dateFrom)) errors.dateTo = "Date to cannot be before Date from.";
-      if (!location) errors.location = "Location is required.";
+      // if (!location) errors.location = "Location is required.";
       if (!shiftType) errors.shiftType = "Shift type is required.";
       if (shiftType === 'custom' && !customShiftType) errors.customShiftType = "Custom shift type is required.";
       return Object.keys(errors).length === 0;
     }
+
+    function navigateToShift() {
+      navigate('/admin/shifttiming');
+    }
   
-    function saveShift() {
+    async function saveShift() {
       if (validateFields()) {
         const shiftData = {
           shiftName,
@@ -52,18 +59,22 @@
           dateTo,
           recurrence,
           breaks,
-          location,
+          // location,
           shiftType,
           customShiftType,
           notes
         };
-        console.log("Shift data:", shiftData);
-        // Here you would typically send this data to a backend server
+
+        // console.log(shiftData)
+        
+        try {
+          const response = await addShiftTimingApi(shiftData);
+          console.log('API Response:', response);
+          navigateToShift()
+        } catch (error) {
+          console.error('Error adding space:', error);
+        }
       }
-    }
-  
-    function navigateToShift() {
-      navigate('/admin/shifttiming');
     }
   </script>
   
@@ -102,9 +113,9 @@
               </label>
               <select id="recurrence" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={recurrence}>
                 <option value="">None</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
               </select>
             </div>
           </div>
@@ -188,7 +199,7 @@
       <br>
     
         <div class="flex flex-wrap mb-4">
-          <div class="w-full lg:w-4/12 px-4">
+          <!-- <div class="w-full lg:w-4/12 px-4">
             <div class="relative mb-3">
               <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
                 Location
@@ -198,7 +209,7 @@
                 <div class="text-red-500 text-xs mt-1">{errors.location}</div>
               {/if}
             </div>
-          </div>
+          </div> -->
           <div class="w-full lg:w-4/12 px-4">
             <div class="relative mb-3">
               <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftType">

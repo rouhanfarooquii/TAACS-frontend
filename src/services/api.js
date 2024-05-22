@@ -524,7 +524,7 @@ export async function deleteRoomBookingApi(id){
 
 // ShiftTimings API
 export async function getAllShiftTimingsApi(){
-    const response = await fetch(BACKEND + 'shift/getAll',{
+    const response = await fetch(BACKEND + 'shiftTiming/getAll',{
         method: 'GET',
         headers: headers,
     });
