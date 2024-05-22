@@ -5,7 +5,7 @@
   import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { onMount } from 'svelte';
-  import { getAllEmergenciesApi, deleteEmergencyApi } from '../../../services/api';
+  import { getAllEmergenciesApi, addEmergencyApi, activateEmergencyApi, deactivateEmergencyApi, getAllLocationsApi, deleteEmergencyApi } from '../../../services/api';
 
   export let location;
   export let color = "light";
@@ -13,13 +13,10 @@
   let id = '';
   let name = '';
   let description = '';
-  let selectedDevices = [];
-  let doors = '';
-  let devicesToDeactivate = [
-    'Main Entrance Scanner', 'Elevator Control', 'Security Cameras', 'Lobby Scanner', 'Conference Room Door Lock',
-    'Internal Security Cameras', 'Server Room Door Lock', 'Backup Generator Control', 'IT Department Access Control',
-    'Parking Garage Door Lock', 'Security Alarms', 'All Door Locks', 'Internal Communication Systems'
-  ];
+  let selectedLocations = [];
+  let doors = 'Closed';
+  let trueLocations = [];
+  let locations = [];
   let showModal = false;
   let dropdownOpen = false;  // Define the variable
 
@@ -28,23 +25,39 @@
   async function loadEmergencies() {
     try {
       const emergenciesData = await getAllEmergenciesApi();
-      emergencies = emergenciesData.map(emergency => ({
-        id: emergency._id,
-        name: emergency.name,
-        description: emergency.description,
-        devices: emergency.devices ? emergency.devices.join(', ') : 'None',
-        doors: emergency.doors === 'open' ? 'Always Open' : 'Always Closed',
-        isActive: emergency.active
-      }));
-      console.log("Emergencies loaded:", emergencies);
+
+      // console.log(emergenciesData)
+      // return;
+      emergencies = JSON.parse(JSON.stringify(emergenciesData));
+
+      for (let i = 0; i < emergencies.length; i++) {
+        console.log(emergencies[i].locations)
+        for (let j = 0; j < emergencies[i].locations.length; j++) {
+          emergencies[i].locations[j] = emergencies[i].locations[j].title
+        }
+      }
+      console.log(emergencies);
+
     } catch (error) {
       console.error('Failed to load emergencies:', error);
     }
   }
 
-  onMount(() => {
-    loadEmergencies();
+  onMount(async () => {
+    await loadEmergencies();
+    await fetchLocations()
   });
+
+  async function fetchLocations() {
+    try {
+      trueLocations = await getAllLocationsApi();
+      locations = trueLocations.map(loc => loc.title)
+      // console.log(locations)
+    } catch (error) {
+      console.error("Error fetching room bookings:", error);
+      locations = [];
+    }
+  }
 
   function toggleDropdown() {
     dropdownOpen = !dropdownOpen;
@@ -53,9 +66,9 @@
   function handleCheckboxChange(event) {
     const value = event.target.value;
     if (event.target.checked) {
-      selectedDevices = [...selectedDevices, value];
+      selectedLocations = [...selectedLocations, value];
     } else {
-      selectedDevices = selectedDevices.filter(device => device !== value);
+      selectedLocations = selectedLocations.filter(location => location !== value);
     }
   }
 
@@ -67,32 +80,49 @@
     showModal = false;
     name = '';
     description = '';
-    selectedDevices = [];
-    doors = '';
+    selectedLocations = [];
+    doors = 'Closed';
   }
 
-  async function handleActivate(emergency) {
-    emergency.isActive = true;
-    // Add logic to update the backend if necessary
+  async function handleActivate(id) {
+    try {
+      await activateEmergencyApi(id)
+      await loadEmergencies()
+    } catch (error) {
+      console.error('Failed to activate emergency:', error);
+    }
   }
 
-  async function handleDeactivate(emergency) {
-    emergency.isActive = false;
-    // Add logic to update the backend if necessary
+  async function handleDeactivate(id) {
+    try {
+      await deactivateEmergencyApi(id)
+      await loadEmergencies()
+    } catch (error) {
+      console.error('Failed to deactivate emergency:', error);
+    }
   }
 
-  function addProtocol() {
+  async function addProtocol() {
     if (validateInputs()) {
       const newProtocol = {
-        id: `EP${(Math.random() * 1000).toFixed(0)}`,
         name,
         description,
-        devicesToDeactivate: selectedDevices,
+        locations: [],
         doors,
-        isActive: false
+        active: false
       };
-      emergencies = [...emergencies, newProtocol];
-      closeModal();
+
+      for (let index = 0; index < selectedLocations.length; index++) {
+        newProtocol.locations.push(trueLocations.find(l => l.title === selectedLocations[index])._id)
+      }
+
+      try {
+        await addEmergencyApi(newProtocol);
+        await loadEmergencies();
+        closeModal();
+      } catch (error) {
+        console.error('Error adding emergency:', error);
+      }
     }
   }
 
@@ -123,11 +153,11 @@
       document.getElementById('description-error').style.display = 'none';
     }
 
-    if (!selectedDevices.length) {
-      document.getElementById('devices-error').style.display = 'block';
+    if (!selectedLocations.length) {
+      document.getElementById('locations-error').style.display = 'block';
       isValid = false;
     } else {
-      document.getElementById('devices-error').style.display = 'none';
+      document.getElementById('locations-error').style.display = 'none';
     }
 
     if (!doors) {
@@ -193,21 +223,21 @@
               </div>
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="devicesToDeactivate">Devices To Include</label>
-                  <MultiSelect bind:selectedOptions={selectedDevices} options={devicesToDeactivate} placeholder="Select Devices" />
-                  <span id="devices-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="locations">Locations To Include</label>
+                  <MultiSelect bind:selectedOptions={selectedLocations} options={locations} placeholder="Select Locations" />
+                  <span id="locations-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="doors">
                     Doors:
                   </label>
                   <div class="flex items-center">
-                    <label for="alwaysOpen" class="mr-2">
-                      <input type="radio" id="alwaysOpen" name="doorStatus" value="Always Open" class="mr-1" bind:group={doors} />
+                    <label for="aOpen" class="mr-2">
+                      <input type="radio" id="Open" name="doorStatus" value="Open" class="mr-1" bind:group={doors} />
                       Open
                     </label>
-                    <label for="alwaysClosed">
-                      <input type="radio" id="alwaysClosed" name="doorStatus" value="Always Closed" class="mr-1" bind:group={doors} />
+                    <label for="Closed">
+                      <input type="radio" id="Closed" name="doorStatus" value="Closed" class="mr-1" bind:group={doors} />
                       Closed
                     </label>
                   </div>
@@ -230,35 +260,35 @@
   {/if}
   <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     {#each emergencies as emergency}
-      <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-        <button class="right top-2 transparent-button" on:click={() => deleteProtocol(emergency.id)}>
+      <div style="border-color: {emergency.active ? 'green' : 'rgba(228, 228, 231, var(--tw-border-opacity))'};" class="w-full max-w-sm p-4 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+        <button class="right top-2 transparent-button" on:click={() => deleteProtocol(emergency._id)}>
           <i class="fas fa-trash-alt text-blueGray-800"></i>
         </button>
         <h3 class="text-4xl font-bold text-blueGray-800">{emergency.name}</h3>
         <p class="text-blueGray-400 pb-6">{emergency.doors}</p>
         <div class="flex items-center mb-4">
-          <span class="mr-1">Devices: {emergency.devices}</span>
+          <span class="mr-1">Locations: {emergency.locations}</span>
         </div>
         <div class="bg-gray-100 p-4 rounded-lg shadow dark:bg-gray-700">
           <p>Description: {emergency.description}</p>
         </div>
         <div class="flex justify-end mb-1 pt-6">
           <button
-            data-id="{emergency.id}" 
-            onclick={() => handleActivate(emergency)}
-            class="bg-green-600 active:bg-green-700 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2"
-            disabled={emergency.isActive}
-          >
-            Activate
-          </button>
-          <button 
-            data-id="{emergency.id}" 
-            onclick={() => handleDeactivate(emergency)}
-            class="bg-red-600 text-white active:bg-red-800 uppercase font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-            disabled={!emergency.isActive}
-          >
-            Deactivate
-          </button>
+          on:click={() => handleActivate(emergency._id)}
+          class="bg-green-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2 active:bg-green-700"
+          disabled={emergency.active}
+          style="opacity: {emergency.active ? 0.6 : 1}; cursor: {emergency.active ? 'not-allowed' : 'pointer'}"
+        >
+          Activate
+        </button>
+        <button
+          on:click={() => handleDeactivate(emergency._id)}
+          class="bg-red-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 active:bg-red-800"
+          disabled={!emergency.active}
+          style="opacity: {!emergency.active ? 0.6 : 1}; cursor: {!emergency.active ? 'not-allowed' : 'pointer'}"
+        >
+          Deactivate
+        </button>
         </div>
       </div>
     {/each}

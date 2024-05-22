@@ -160,6 +160,26 @@ export async function updateEmergencyApi(obj){
     return await msg;
 };
 
+export async function activateEmergencyApi(id){
+    const response = await fetch(BACKEND + 'emergency/activate/' + id, {
+        method: 'POST',
+        headers: headers,
+    })
+    const responseObj = await response.json();
+    const msg = await responseObj.msg;
+    return await msg;
+};
+
+export async function deactivateEmergencyApi(id){
+    const response = await fetch(BACKEND + 'emergency/deactivate/' + id, {
+        method: 'POST',
+        headers: headers,
+    })
+    const responseObj = await response.json();
+    const msg = await responseObj.msg;
+    return await msg;
+};
+
 export async function deleteEmergencyApi(id) {
     try {
         const response = await fetch(BACKEND + 'emergency/delete/' + id, {
