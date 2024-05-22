@@ -283,13 +283,6 @@
                 </div>
                 <div class="w-full lg:w-7/12 px-4">
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
-                      Enter Value/Percentage:
-                    </label>
-                    <input type="number" min="0" id="value" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
-                    <span id="value-error" class="text-red-600 text-xs" style="display: none;">* Value should not be zero</span>
-                  </div>
-                  <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value-type">
                       Value Type:
                     </label>
@@ -302,6 +295,13 @@
                       {/each}
                     </div>
                     <span id="value-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  </div>
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
+                      Enter Value/Percentage:
+                    </label>
+                    <input type="number" min="0" id="value" placeholder="Enter Value/Percentage" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={value}>
+                    <span id="value-error" class="text-red-600 text-xs" style="display: none;">* Value should not be zero</span>
                   </div>
                 </div> 
               </div>

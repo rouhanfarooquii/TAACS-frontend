@@ -38,27 +38,28 @@
     let designation = selectedDesignation !== "All" ? department.designations.find(des => des.title === selectedDesignation) : { _id: "All" };
 
     const newBonus = {
-      bonus: {
-        name: bonusName,
-        department: department._id,
-        designation: designation._id,
-        bonusValue: parseFloat(value),
-        valueType: selectedValueType,
-        activationDate: new Date(activeDate).toISOString()
-      }
+      name: bonusName,
+      department: department._id,
+      designation: designation._id,
+      bonusValue: parseFloat(value),
+      valueType: selectedValueType,
+      activationDate: new Date(activeDate).toISOString()
     };
 
     // Log the form data for debugging
-    console.log('Form Data:', {
-      bonusName,
-      activeDate,
-      value,
-      selectedDepartment,
-      selectedDesignation,
-      selectedValueType
-    });
+    // console.log('Form Data:', {
+    //   bonusName,
+    //   activeDate,
+    //   value,
+    //   selectedDepartment,
+    //   selectedDesignation,
+    //   selectedValueType
+    // });
 
-    console.log('Payload being sent to API:', newBonus);
+    // console.log('Payload being sent to API:', newBonus);
+
+    // console.log(newBonus)
+    // return;
 
     try {
       const responseMsg = await addPayrollApi(newBonus);
@@ -256,19 +257,17 @@
                     </select>
                     <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
-		  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value-type">
-                      Value Type:
+                  <div class="relative mb-3">
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
+                      Designation:
                     </label>
-                    <div id="value-type" class="flex">
-                      {#each valueTypes as type}
-                        <label class="inline-flex items-center mt-3 mr-3">
-                          <input type="radio" class="form-radio h-5 w-5 text-blueGray-600" value={type} on:click={() => selectValueType(type)} checked={selectedValueType === type}>
-                          <span class="ml-2 text-blueGray-600">{type}</span>
-                        </label>
+                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                      <option value="" disabled selected>Select Designation</option>
+                      {#each designations as designation}
+                        <option value={designation.title}>{designation.title}</option>
                       {/each}
-                    </div>
-                    <span id="value-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    </select>
+                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                 </div>
 
@@ -281,16 +280,18 @@
                     <span id="activation-date-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
-                      Designation:
+                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value-type">
+                      Value Type:
                     </label>
-                    <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
-                      <option value="" disabled selected>Select Designation</option>
-                      {#each designations as designation}
-                        <option value={designation.title}>{designation.title}</option>
+                    <div id="value-type" class="flex">
+                      {#each valueTypes as type}
+                        <label class="inline-flex items-center mt-3 mr-3">
+                          <input type="radio" class="form-radio h-5 w-5 text-blueGray-600" value={type} on:click={() => selectValueType(type)} checked={selectedValueType === type}>
+                          <span class="ml-2 text-blueGray-600">{type}</span>
+                        </label>
                       {/each}
-                    </select>
-                    <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                    </div>
+                    <span id="value-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="value">
