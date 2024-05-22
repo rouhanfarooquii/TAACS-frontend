@@ -2,11 +2,11 @@
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { onMount } from 'svelte';
-  import { getAllDepartmentsApi, getAllEmployeesApi, updateEmployeeApi } from '../../../services/api';
+  import { getAllDepartmentsApi, getAllEmployeesApi, updateEmployeeJSONApi, batchUpdatePayrollApi } from '../../../services/api';
 
   let showModal = false;
 
-  function openModal() {
+  function openModal() {updateEmployeeJSONApi
     showModal = true;
   }
 
@@ -35,9 +35,18 @@
   }
 
   async function saveSalaryChanges(employee) {
+    let tempEmployee = JSON.parse(JSON.stringify(employee));
+    tempEmployee.department = tempEmployee.department._id
+    tempEmployee.designation = tempEmployee.designation._id
+    for (let index = 0; index < tempEmployee.locations.length; index++) {
+      tempEmployee.locations[index] = tempEmployee.locations[index]._id
+    }
+    delete tempEmployee.__v
+    // console.log(tempEmployee)
+    // return;
     try {
-      const updatedEmployee = { ...employee, salary: employee.salary }; // Only update the salary
-      const responseMsg = await updateEmployeeApi(updatedEmployee);
+      // const updatedEmployee = { ...employee, salary: employee.salary }; // Only update the salary
+      const responseMsg = await updateEmployeeJSONApi(tempEmployee);
       console.log('Response from API:', responseMsg);
       toggleEditingMode(employee._id); // Exit editing mode after save
     } catch (error) {
@@ -68,19 +77,61 @@
     currentPage = event.detail.pageNumber;
   }
 
-  function update() {
+  async function update() {
     if (!validateBatchUpdateInputs()) {
       return;
     }
-    // Logic to handle batch update
-    console.log("Batch update performed");
-    // You can add logic to perform batch update here
-    // Reset fields after update
-    selectedDepartment = '';
-    selectedDesignation = '';
-    selectedValueType = null;
-    value = '';
-    closeModal();
+
+    let payloadDepartment
+    if(selectedDepartment != "All"){
+      payloadDepartment = (trueDepartments.find(d => d.title === selectedDepartment))
+    }
+    else{
+      payloadDepartment = selectedDepartment
+    }
+    let payloadDesignation
+    if(selectedDesignation != "All"){
+      payloadDesignation = (payloadDepartment.designations.find(d => d.title === selectedDesignation))._id
+    }
+    else{
+      payloadDesignation = selectedDesignation
+    }
+    if(selectedDepartment != "All"){
+      payloadDepartment = payloadDepartment._id
+    }
+
+    let temp = {
+      department: payloadDepartment,
+      designation: payloadDesignation,
+      value: value,
+      valueType: selectedValueType
+    }
+
+    try {
+      const response = await batchUpdatePayrollApi(temp);
+      console.log('Response from API:', response);
+      selectedDepartment = '';
+      selectedDesignation = '';
+      selectedValueType = null;
+      value = '';
+      closeModal();
+      await fetchEmployees();
+    } catch (error) {
+      console.error('Error updating access control:', error);
+    }
+
+    // console.log(temp)
+
+    // return;
+    // // Logic to handle batch update
+    // console.log("Batch update performed");
+    // // You can add logic to perform batch update here
+    // // Reset fields after update
+    // selectedDepartment = '';
+    // selectedDesignation = '';
+    // selectedValueType = null;
+    // value = '';
+    // closeModal();
   }
 
   function validateBatchUpdateInputs() {

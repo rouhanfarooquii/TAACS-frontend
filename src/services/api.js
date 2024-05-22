@@ -193,9 +193,7 @@ export async function getAllEmployeesApi(){
 export async function addEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/add', {
         method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({employee: obj})
+        headers: formHeaders
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
@@ -204,6 +202,16 @@ export async function addEmployeeApi(obj){
 
 export async function updateEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/update', {
+        method: 'POST',
+        headers: formHeaders
+    })
+    const responseObj = await response.json();
+    const msg = await responseObj.msg;
+    return await msg;
+};
+
+export async function updateEmployeeJSONApi(obj){
+    const response = await fetch(BACKEND + 'employee/updateJSON', {
         method: 'POST',
         observe: 'body',
         headers: headers,
@@ -406,6 +414,18 @@ export async function updatePayrollApi(obj){
     return await msg;
 };
 
+export async function batchUpdatePayrollApi(obj){
+    const response = await fetch(BACKEND + 'payroll/batchUpdate', {
+        method: 'POST',
+        observe: 'body',
+        headers: headers,
+        body: JSON.stringify({payroll: obj})
+    })
+    const responseObj = await response.json();
+    const msg = await responseObj.msg;
+    return await msg;
+};
+
 export async function deletePayrollApi(id){
     const response = await fetch(BACKEND + 'payroll/delete/' + id, {
         method: 'POST',
@@ -531,9 +551,7 @@ export async function getAllVisitorsApi(){
 export async function addVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/add', {
         method: 'POST',
-        observe: 'body',
-        headers: formHeaders,
-        body: JSON.stringify({visitor: obj})
+        headers: formHeaders
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
@@ -543,9 +561,7 @@ export async function addVisitorApi(obj){
 export async function updateVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/update', {
         method: 'POST',
-        observe: 'body',
-        headers: formHeaders,
-        body: JSON.stringify({visitor: obj})
+        headers: formHeaders
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
