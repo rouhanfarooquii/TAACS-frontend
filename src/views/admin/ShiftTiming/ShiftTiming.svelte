@@ -350,8 +350,7 @@
                   <input type="time" id="end-time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.endTime}>
                 </div>
               </div>
-              <div class="w-full lg:w-6/12 px-4 mb-6">
-                <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={addBreak}>Add Break</button>
+              <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={addBreak}>Add Break</button>
                 {#each shiftSelected.breaks as breakTime, index}
                     <div class="relative mb-3">
                       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
@@ -367,7 +366,6 @@
                     </div>
                       <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => removeBreak(index)}>Remove</button>                    
                 {/each}
-              </div>
             </div>
             <div class="flex justify-end">
               <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={saveEdit}>
