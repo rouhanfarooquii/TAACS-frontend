@@ -5,7 +5,7 @@
   import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { onMount } from 'svelte';
-  import { getAllEmergenciesApi } from '../../../services/api';
+  import { getAllEmergenciesApi, deleteEmergencyApi } from '../../../services/api';
 
   export let location;
   export let color = "light";
@@ -21,6 +21,7 @@
     'Parking Garage Door Lock', 'Security Alarms', 'All Door Locks', 'Internal Communication Systems'
   ];
   let showModal = false;
+  let dropdownOpen = false;  // Define the variable
 
   let emergencies = [];
 
@@ -95,8 +96,14 @@
     }
   }
 
-  function deleteProtocol(id) {
-    emergencies = emergencies.filter(protocol => protocol.id !== id);
+  async function deleteProtocol(id) {
+    try {
+      const responseMsg = await deleteEmergencyApi(id);
+      console.log('Delete response:', responseMsg);
+      loadEmergencies(); // Refresh emergencies after deletion
+    } catch (error) {
+      console.error('Error deleting emergency:', error);
+    }
   }
 
   function validateInputs() {

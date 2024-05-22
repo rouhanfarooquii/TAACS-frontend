@@ -160,15 +160,24 @@ export async function updateEmergencyApi(obj){
     return await msg;
 };
 
-export async function deleteEmergencyApi(id){
-    const response = await fetch(BACKEND + 'emergency/delete/' + id, {
-        method: 'POST',
-        headers: headers,
-    })
-    const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+export async function deleteEmergencyApi(id) {
+    try {
+        const response = await fetch(BACKEND + 'emergency/delete/' + id, {
+            method: 'DELETE',
+            headers: headers,
+        });
+
+        // Log raw response text for debugging
+        const responseText = await response.text();
+        console.log('Raw response text:', responseText);
+
+        const responseObj = JSON.parse(responseText);
+        return responseObj.msg;
+    } catch (error) {
+        console.error('Error in deleteEmergencyApi:', error);
+        throw error;
+    }
+}
 
 // Employees API
 export async function getAllEmployeesApi(){
