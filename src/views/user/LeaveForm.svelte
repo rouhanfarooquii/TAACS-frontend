@@ -1,6 +1,9 @@
 <script>
     import { navigate } from 'svelte-routing';
     export let color = "light";
+    
+    // Import the API function
+    import { addLeaveApi } from '../../services/api';  // Adjust the path as necessary
 
     let currentTime = new Date();
 
@@ -11,8 +14,7 @@
         dateFrom: '',
         dateTo: '',
         reason: '',
-        timeStamp: '',
-        attachment: null
+        timeStamp: ''
     };
 
     let fromDate, toDate;
@@ -39,23 +41,35 @@
         return !Object.values(errors).some(error => error !== '');
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         if (!validate()) {
             return;
         }
 
-        request.timeStamp = currentTime;
-        console.log(request);
+        // Prepare the data object for the API
+        const leaveObj = {
+            employee: "664902f9b3303091b8620e51", // hardcoded value
+            status: "pending", // hardcoded value
+            reason: request.reason,
+            fromDate: request.dateFrom,
+            toDate: request.dateTo
+        };
+
+        console.log(leaveObj);
+
+        try {
+            const msg = await addLeaveApi(leaveObj);
+            console.log(msg); // Log the message or handle it as needed
+            navigate('/success'); // Navigate to a success page or handle differently
+        } catch (error) {
+            console.error('Failed to submit leave request:', error);
+            // Handle errors, e.g., show an error message to the user
+        }
     }
 
     function goBack() {
-        navigate('/profile');
-        console.log("Navigate to Profile screen");
-    }
-
-    function handleFileUpload(event) {
-        request.attachment = event.target.files[0];
-        console.log('File attached:', request.attachment);
+        navigate(-1);
+        console.log("Navigated back");
     }
 </script>
 
@@ -103,10 +117,10 @@
         <div class="relative mb-3">
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateTo ? 'label-required' : ''}" for="dateTo">
                 To:
-            </label>
+            </label> <!-- Make sure this tag is properly closed -->
             <input type="datetime-local" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
             {#if errors.dateTo}<p class="text-red-500 text-xs italic">{errors.dateTo}</p>{/if}
-        </div>
+        </div>        
         
         <div class="relative mb-3">
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.reason ? 'label-required' : ''}" for="reason">
@@ -114,16 +128,6 @@
             </label>
             <textarea id="reason" name="reason" class="custom-filter-input resize-none {errors.reason ? 'input-error' : ''}" placeholder="Reason:" bind:value={request.reason}></textarea>
             {#if errors.reason}<p class="text-red-500 text-xs italic">{errors.reason}</p>{/if}
-        </div>
-    </div>
-
-    <!-- File Attachment -->
-    <div class="flex justify-between mb-4 ml-4 mr-4">
-        <div class="relative mb-3">
-            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="fileAttachment">
-                Attach File:
-            </label>
-            <input type="file" id="fileAttachment" name="fileAttachment" class="custom-filter-input" accept=".pdf, .jpg, .jpeg, .png" on:change={handleFileUpload}>
         </div>
     </div>
 </div>
