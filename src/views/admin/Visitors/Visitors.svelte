@@ -32,6 +32,7 @@
         document.getElementById('profile-image').src = newImageSrc;
       };
       reader.readAsDataURL(file);
+      visitor.file = file; // Add the file to the visitor object
     }
   }
 
@@ -105,7 +106,6 @@
       visitor.locations = tempdtosend
 
       console.log(visitor)
-      return
       try {
         const response = await addVisitorApi(visitor);
         console.log('Visitor added successfully', response);
