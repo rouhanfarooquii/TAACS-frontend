@@ -76,7 +76,7 @@
   }
 
   async function bookRoom() {
-    if (!validateInputs()) return;
+    if (!await validateInputs()) return;
 
     try {
       await addRoomBookingApi(roombooking);
@@ -90,7 +90,7 @@
   }
 
   async function updateBooking() {
-    if (!validateInputs()) return;
+    if (!await validateInputs()) return;
 
     delete roombooking.__v;
     try {
@@ -135,7 +135,7 @@
     }, 3000); // Show toast for 3 seconds
   }
 
-  function validateInputs() {
+  async function validateInputs() {
     let isValid = true;
     let errorMessage = '';
 
@@ -165,6 +165,21 @@
     } else if (roombooking.dateTimeFrom && roombooking.dateTimeTo && new Date(roombooking.dateTimeTo) < new Date(roombooking.dateTimeFrom)) {
       errorMessage = 'Date & Time To cannot be before Date & Time From';
       isValid = false;
+    }
+
+    if (isValid) {
+      // Check for time conflicts
+      const conflictingBookings = roomBookingsList.filter(booking => 
+        booking.location._id === roombooking.location._id &&
+        ((new Date(roombooking.dateTimeFrom) >= new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeFrom) < new Date(booking.dateTimeTo)) ||
+        (new Date(roombooking.dateTimeTo) > new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeTo) <= new Date(booking.dateTimeTo)) ||
+        (new Date(roombooking.dateTimeFrom) <= new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeTo) >= new Date(booking.dateTimeTo)))
+      );
+
+      if (conflictingBookings.length > 0) {
+        errorMessage = 'The selected room is already booked within the chosen time slot';
+        isValid = false;
+      }
     }
 
     if (!isValid) {
