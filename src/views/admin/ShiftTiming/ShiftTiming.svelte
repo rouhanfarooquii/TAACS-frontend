@@ -13,6 +13,8 @@
 
   let shifts = [];
 
+  const shiftTypes = ["Morning", "Evening", "Night", "Half Day", "custom"];
+
   onMount(async () => {
     await fetchShifts();
   });
@@ -32,13 +34,14 @@
   }
 
   function viewShift(shift) {
-    shiftSelected = shift
+    shiftSelected = shift;
     showModal = true;
     console.log('Shift selected for view:', shiftSelected);
   }
 
   function openEditModal(shift) {
-    shiftSelected = shift
+    shiftSelected = { ...shift, breakStart: '', breakEnd: '' }; // Initialize break times
+    shiftSelected.breakTimings = formatBreakTimings(shift.breaks); // Format existing breaks
     editModal = true;
     console.log('Shift selected for edit:', shiftSelected);
   }
@@ -55,9 +58,21 @@
   function saveEdit() {
     const index = shifts.findIndex(shift => shift._id === shiftSelected._id);
     if (index !== -1) {
-      shifts[index] = { ...shiftSelected };
+      shifts[index] = { ...shiftSelected, breaks: parseBreakTimings(shiftSelected.breakTimings) };
       closeModal();
     }
+  }
+
+  function parseBreakTimings(breakTimings) {
+    return breakTimings.split(',').map(b => {
+      const [start, end] = b.split('-').map(t => t.trim());
+      return { start, end };
+    });
+  }
+
+  function formatBreakTimings(breaks) {
+    if (!breaks || breaks.length === 0) return '';
+    return breaks.map(b => `${b.start} - ${b.end}`).join(', ');
   }
 
   let selectedShifts = new Set();
@@ -111,17 +126,25 @@
 
   function addBreak() {
     console.log('Add Break function called');
-    if (shiftSelected) {
-      shiftSelected = { ...shiftSelected, breaks: [...shiftSelected.breaks, { start: '', end: '' }] };
-      console.log('Break added:', shiftSelected.breaks);
+    if (shiftSelected && shiftSelected.breakStart && shiftSelected.breakEnd) {
+      const newBreak = `${shiftSelected.breakStart} - ${shiftSelected.breakEnd}`;
+      shiftSelected.breakTimings = shiftSelected.breakTimings ? `${shiftSelected.breakTimings}, ${newBreak}` : newBreak;
+      shiftSelected.breakStart = '';
+      shiftSelected.breakEnd = '';
+      console.log('Break added:', shiftSelected.breakTimings);
     } else {
-      console.log('No shift selected');
+      console.log('Break start or end time not specified');
     }
   }
 
-  function removeBreak(index) {
-    if (shiftSelected) {
-      shiftSelected = { ...shiftSelected, breaks: shiftSelected.breaks.filter((_, i) => i !== index) };
+  function removeBreak() {
+    if (shiftSelected && shiftSelected.breakTimings) {
+      const breakArray = shiftSelected.breakTimings.split(',').map(b => b.trim());
+      breakArray.pop();
+      shiftSelected.breakTimings = breakArray.join(', ');
+      console.log('Last break removed:', shiftSelected.breakTimings);
+    } else {
+      console.log('No breaks to remove');
     }
   }
 </script>
@@ -302,11 +325,9 @@
                   </label>
                   <select id="shift-type" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.shiftType}>
                     <option value="" disabled>Select Shift Type</option>
-                    <option value="Morning">Morning</option>
-                    <option value="Evening">Evening</option>
-                    <option value="Night">Night</option>
-                    <option value="Half Day">Half Day</option>
-                    <option value="custom">Custom</option>
+                    {#each shiftTypes as shiftType}
+                      <option value={shiftType}>{shiftType}</option>
+                    {/each}
                   </select>
                 </div>
                 {#if shiftSelected.shiftType === 'custom'}
@@ -317,11 +338,11 @@
                     <input type="text" id="custom-shift-type" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.customShiftType}>
                   </div>
                 {/if}
-                <div class="relative mb-3">
+                <div class="relative mb-2">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="notes">
                     Notes:
                   </label>
-                  <textarea id="notes" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.notes}></textarea>
+                  <textarea id="notes" class="border-0 px-3 py-2 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.notes}></textarea>
                 </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">
@@ -337,39 +358,31 @@
                   </label>
                   <input type="date" id="date-to" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.dateTo}>
                 </div>
-              </div>
-              <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="start-time">
-                    Start Time:
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
+                    Break Start Time:
                   </label>
-                  <input type="time" id="start-time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.startTime}>
+                  <input type="time" id="break-start" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakStart}>
                 </div>
                 <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="end-time">
-                    End Time:
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-end">
+                    Break End Time:
                   </label>
-                  <input type="time" id="end-time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.endTime}>
+                  <input type="time" id="break-end" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakEnd}>
                 </div>
-                <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={addBreak}>Add Break</button>
               </div>
             </div>
-            <div class="flex">
-                {#each shiftSelected.breaks as breakTime, index}
-                    <div class="relative mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
-                        Break Start Time:
-                      </label>
-                      <input type="time" id="break-start" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={breakTime.start}>
-                    </div>
-                    <div class="relative mb-3">
-                      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-end">
-                        Break End Time:
-                      </label>
-                      <input type="time" id="break-end" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={breakTime.end}>
-                    </div>
-                      <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={() => removeBreak(index)}>Remove</button>                    
-                {/each}
+            <div class="w-full lg:w-12/12 px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-timings">
+                  Break Timings:
+                </label>
+                <input type="text" id="break-timings" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakTimings} readonly>
+              </div>
+              <div class="flex">
+                <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mr-2" on:click={addBreak}>Add Break</button>
+                <button type="button" class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={removeBreak}>Remove Break</button>
+              </div>
             </div>
             <div class="flex justify-end mt-4">
               <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={saveEdit}>
