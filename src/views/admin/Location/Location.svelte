@@ -4,6 +4,7 @@
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
   import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi, getAllDevicesApi } from '../../../services/api';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const edit2 = "../assets/img/icons8-tick-24.png";
@@ -21,6 +22,18 @@
   let showToaster = false;
   let toasterMessage = '';
   let toasterType = '';
+
+  let confirmationModal = false;
+  let locToDelete = null;
+
+  function showDeleteConfirmation(space) {
+    locToDelete = space;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    locToDelete = null;
+  }
 
   onMount(async () => {
     await fetchLocations();
@@ -155,11 +168,12 @@
     return isValid;
   }
 
-  async function deleteSpace(space) {
+  async function deleteSpace() {
     try {
-      const response = await deleteLocationApi(space.id);
+      const response = await deleteLocationApi(locToDelete.id);
       console.log('Delete Response:', response);
       showToasterMessage('Location deleted successfully!', 'success');
+      closeConfirmationModal();
       await fetchLocations();
     } catch (error) {
       console.error("Error deleting location:", error);
@@ -334,6 +348,13 @@
     </div>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Add Location</button>
   </div>
+  {#if confirmationModal}
+  <ConfirmationModal
+    message="Are you sure you want to delete this location?"
+    onConfirm={deleteSpace}
+    onCancel={closeConfirmationModal}
+  />
+  {/if}
   {#if showModal}
     <div class="modal">
       <div class="modal-content">
@@ -514,7 +535,7 @@
           <td>
             <div class="flex items-center">
               <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(space)}></i>
-              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
+              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => showDeleteConfirmation(space)}></i>
             </div>
           </td>
         </tr>

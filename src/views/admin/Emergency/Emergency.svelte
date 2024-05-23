@@ -5,6 +5,7 @@
   import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
   import { onMount } from 'svelte';
   import { getAllEmergenciesApi, addEmergencyApi, activateEmergencyApi, deactivateEmergencyApi, getAllLocationsApi, deleteEmergencyApi } from '../../../services/api';
 
@@ -26,6 +27,18 @@
   let showToaster = false;
   let toasterMessage = '';
   let toasterType = '';
+
+  let confirmationModal = false;
+  let protocolToDelete = null;
+
+  function showDeleteConfirmation(emergency) {
+    protocolToDelete = emergency;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    protocolToDelete = null;
+  }
 
   async function loadEmergencies() {
     try {
@@ -141,11 +154,12 @@
     }
   }
 
-  async function deleteProtocol(id) {
+  async function deleteProtocol() {
     try {
-      const responseMsg = await deleteEmergencyApi(id);
+      const responseMsg = await deleteEmergencyApi(protocolToDelete._id);
       console.log('Delete response:', responseMsg);
       showToasterMessage('Protocol deleted successfully!', 'success');
+      closeConfirmationModal();
       loadEmergencies(); // Refresh emergencies after deletion
     } catch (error) {
       console.error('Error deleting emergency:', error);
@@ -223,6 +237,13 @@
       New Protocol
     </button>
   </div>
+  {#if confirmationModal}
+  <ConfirmationModal
+    message="Are you sure you want to delete this device?"
+    onConfirm={deleteProtocol}
+    onCancel={closeConfirmationModal}
+  />
+  {/if}
   {#if showModal}
     <div class="modal">
       <div class="modal-content1">
@@ -294,7 +315,7 @@
   <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     {#each emergencies as emergency}
       <div style="border-color: {emergency.active ? 'green' : 'rgba(228, 228, 231, var(--tw-border-opacity))'};" class="w-full max-w-sm p-4 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-        <button class="right top-2 transparent-button" on:click={() => deleteProtocol(emergency._id)}>
+        <button class="right top-2 transparent-button" on:click={() => showDeleteConfirmation(emergency)}>
           <i class="fas fa-trash-alt text-blueGray-800"></i>
         </button>
         <h3 class="text-4xl font-bold text-blueGray-800">{emergency.name}</h3>

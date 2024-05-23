@@ -3,6 +3,7 @@
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
   import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi } from '../../../services/api';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const edit2 = "../assets/img/icons8-tick-24.png";
@@ -31,6 +32,18 @@
     setTimeout(() => {
       showToaster = false;
     }, 3000); // Show toast for 3 seconds
+  }
+
+  let confirmationModal = false;
+  let deptToDelete = null;
+
+  function showDeleteConfirmation(department) {
+    deptToDelete = department;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    deptToDelete = null;
   }
 
   onMount(async () => {
@@ -64,11 +77,12 @@
   return true;
 }
 
-  async function deleteDepartment(department) {
+  async function deleteDepartment() {
     try {
-      const msg = await deleteDepartmentApi(department._id);
+      const msg = await deleteDepartmentApi(deptToDelete._id);
       console.log(msg);
       showToasterMessage('Department deleted successfully!', 'success');
+      closeConfirmationModal();
       departments = await getAllDepartmentsApi();
     } catch (error) {
       console.error('Failed to delete department:', error);
@@ -248,6 +262,13 @@ function validateAddInputs() {
     </div>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={() => openModal(false)}>Add Department</button>
   </div>
+  {#if confirmationModal}
+  <ConfirmationModal
+    message="Are you sure you want to delete this department"
+    onConfirm={deleteDepartment}
+    onCancel={closeConfirmationModal}
+  />
+  {/if}
   {#if showModal}
     <div class="modal">
       <div class="modal-content">
@@ -366,7 +387,7 @@ function validateAddInputs() {
               <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => editDepartment(department)}></i>
               {/if}
               <div class="ml-2">
-                <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteDepartment(department)}></i>
+                <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => showDeleteConfirmation(department)}></i>
               </div>
             </div>
           </td>

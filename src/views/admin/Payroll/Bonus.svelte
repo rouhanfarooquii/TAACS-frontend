@@ -3,8 +3,10 @@
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { getAllDepartmentsApi, getAllPayrollsApi, addPayrollApi, deletePayrollApi } from '../../../services/api'; // Assuming you have an API service file
   import Toast from '../../../components/Confirmation/Toast.svelte';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   export let color = "light";
+
 
   let bonusName = '';
   let activeDate = ''; 
@@ -22,6 +24,18 @@
   let toasterType = '';
 
   let bonuses = [];
+
+  let confirmationModal = false;
+  let bonusToDelete = null;
+
+  function showDeleteConfirmation(department) {
+    bonusToDelete = department;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    bonusToDelete = null;
+  }
 
   onMount(async () => {
     await getAllDepartments();
@@ -94,12 +108,13 @@
     });
   }
 
-  async function deleteBonus(id) {
+  async function deleteBonus() {
     try {
-      const responseMsg = await deletePayrollApi(id);
+      const responseMsg = await deletePayrollApi(bonusToDelete._id);
       console.log('Response from API:', responseMsg);
       bonuses = bonuses.filter(bonus => bonus._id !== id); // Update the bonuses list
       showToasterMessage('Bonus deleted successfully!', 'success');
+      closeConfirmationModal();
     } catch (error) {
       console.error('Error deleting bonus:', error);
       console.error('Error details:', error.response ? error.response.data : error.message);
@@ -243,6 +258,13 @@
     </div>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Add New Bonus</button>
 </div>
+    {#if confirmationModal}
+      <ConfirmationModal
+        message="Are you sure you want to delete this device?"
+        onConfirm={deleteBonus}
+        onCancel={closeConfirmationModal}
+      />
+      {/if} 
     {#if showModal}
       <div class="modal">
         <div class="modal-content">
@@ -381,7 +403,7 @@
           </td>
           <td class="table-data">
             <div class="flex items-center">
-              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteBonus(bonus._id)}></i>
+              <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => showDeleteConfirmation(bonus)}></i>
             </div>
           </td>
         </tr>

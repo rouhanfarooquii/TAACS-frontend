@@ -4,8 +4,21 @@
   import { onMount } from 'svelte';
   import { getAllDepartmentsApi, getAllEmployeesApi, updateEmployeeJSONApi, batchUpdatePayrollApi } from '../../../services/api';
   import Toast from '../../../components/Confirmation/Toast.svelte';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   let showModal = false;
+
+  let confirmationModal = false;
+  let payToDelete = null;
+
+  function showDeleteConfirmation(department) {
+    payToDelete = department;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    payToDelete = null;
+  }
 
   function openModal() {updateEmployeeJSONApi
     showModal = true;
