@@ -136,58 +136,72 @@
   }
 
   async function validateInputs() {
-    let isValid = true;
-    let errorMessage = '';
+  let isValid = true;
+  let errorMessage = '';
 
-    if (!roombooking.employee) {
-      errorMessage = 'Employee is required';
+  const now = new Date();
+
+  if (!roombooking.employee) {
+    errorMessage = 'Employee is required';
+    isValid = false;
+  } else if (!roombooking.location) {
+    errorMessage = 'Room is required';
+    isValid = false;
+  } else if (!roombooking.numOfPeople || isNaN(roombooking.numOfPeople) || roombooking.numOfPeople <= 0) {
+    errorMessage = 'Number of people is required and must be a positive number';
+    isValid = false;
+  } else {
+    const selectedRoom = locationsList.find(room => room._id === roombooking.location._id);
+    if (selectedRoom && roombooking.numOfPeople > selectedRoom.capacity) {
+      errorMessage = 'Number of people exceeds room capacity';
       isValid = false;
-    } else if (!roombooking.location) {
-      errorMessage = 'Room is required';
-      isValid = false;
-    } else if (!roombooking.numOfPeople || isNaN(roombooking.numOfPeople) || roombooking.numOfPeople <= 0) {
-      errorMessage = 'Number of people is required and must be a positive number';
-      isValid = false;
-    } else {
-      const selectedRoom = locationsList.find(room => room._id === roombooking.location._id);
-      if (selectedRoom && roombooking.numOfPeople > selectedRoom.capacity) {
-        errorMessage = 'Number of people exceeds room capacity';
-        isValid = false;
-      }
     }
+  }
 
-    if (!roombooking.dateTimeFrom) {
-      errorMessage = 'Date & Time From is required';
-      isValid = false;
-    } else if (!roombooking.dateTimeTo) {
-      errorMessage = 'Date & Time To is required';
-      isValid = false;
-    } else if (roombooking.dateTimeFrom && roombooking.dateTimeTo && new Date(roombooking.dateTimeTo) < new Date(roombooking.dateTimeFrom)) {
+  if (!roombooking.dateTimeFrom) {
+    errorMessage = 'Date & Time From is required';
+    isValid = false;
+  } else if (!roombooking.dateTimeTo) {
+    errorMessage = 'Date & Time To is required';
+    isValid = false;
+  } else if (roombooking.dateTimeFrom && roombooking.dateTimeTo) {
+    const dateTimeFrom = new Date(roombooking.dateTimeFrom);
+    const dateTimeTo = new Date(roombooking.dateTimeTo);
+    
+    if (dateTimeTo < dateTimeFrom) {
       errorMessage = 'Date & Time To cannot be before Date & Time From';
       isValid = false;
+    } else if (dateTimeFrom < now) {
+      errorMessage = '"From" date/time must be in the future';
+      isValid = false;
+    } else if (dateTimeTo < now) {
+      errorMessage = '"To" date/time must be in the future';
+      isValid = false;
     }
-
-    if (isValid) {
-      // Check for time conflicts
-      const conflictingBookings = roomBookingsList.filter(booking => 
-        booking.location._id === roombooking.location._id &&
-        ((new Date(roombooking.dateTimeFrom) >= new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeFrom) < new Date(booking.dateTimeTo)) ||
-        (new Date(roombooking.dateTimeTo) > new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeTo) <= new Date(booking.dateTimeTo)) ||
-        (new Date(roombooking.dateTimeFrom) <= new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeTo) >= new Date(booking.dateTimeTo)))
-      );
-
-      if (conflictingBookings.length > 0) {
-        errorMessage = 'The selected room is already booked within the chosen time slot';
-        isValid = false;
-      }
-    }
-
-    if (!isValid) {
-      showToasterMessage(errorMessage, 'error');
-    }
-
-    return isValid;
   }
+
+  if (isValid) {
+    // Check for time conflicts
+    const conflictingBookings = roomBookingsList.filter(booking => 
+      booking.location._id === roombooking.location._id &&
+      booking._id !== roombooking._id && // Ignore the booking being edited
+      ((new Date(roombooking.dateTimeFrom) >= new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeFrom) < new Date(booking.dateTimeTo)) ||
+      (new Date(roombooking.dateTimeTo) > new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeTo) <= new Date(booking.dateTimeTo)) ||
+      (new Date(roombooking.dateTimeFrom) <= new Date(booking.dateTimeFrom) && new Date(roombooking.dateTimeTo) >= new Date(booking.dateTimeTo)))
+    );
+
+    if (conflictingBookings.length > 0) {
+      errorMessage = 'The selected room is already booked within the chosen time slot';
+      isValid = false;
+    }
+  }
+
+  if (!isValid) {
+    showToasterMessage(errorMessage, 'error');
+  }
+
+  return isValid;
+}
 
   function openModal() {
     showModal = true;
