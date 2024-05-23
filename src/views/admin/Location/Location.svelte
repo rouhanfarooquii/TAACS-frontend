@@ -73,6 +73,12 @@
   async function saveSpaceChanges() {
     if (validateEditInputs()) {
       try {
+        const isLocationNameDuplicate = spaces.some(space => space.locationName === locationName && space.id !== editingSpace.id);
+
+      if (isLocationNameDuplicate) {
+        showToasterMessage('Location Name must be unique.', 'error');
+        return;
+      }
         let tempdtosend = [];
 
         for (let i = 0; i < selectedDevices.length; i++) {
@@ -184,13 +190,12 @@
   async function addSpace() {
     if (validateAddInputs()) {
       try {
-        const isDuplicate = spaces.some(space => space.locationName === locationName);
+        const isLocationNameDuplicate = spaces.some(space => space.locationName === locationName);
 
-        if (isDuplicate) {
-          showToasterMessage('Location Name must be unique.', 'error');
-          // alert('Location Name must be unique.');
-          return;
-        }
+      if (isLocationNameDuplicate) {
+        showToasterMessage('Location Name must be unique.', 'error');
+        return;
+      }
 
         const dataToSend = {
           title: locationName,
