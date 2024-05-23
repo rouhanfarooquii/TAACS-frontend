@@ -190,6 +190,10 @@ function validateAddInputs() {
   }
 
   async function saveDepartmentEdits() { 
+    if (!isDepartmentNameUnique(departmentName)) {
+    showToasterMessage('Department name must be unique!', 'error');
+    return;
+  }
     if (validateAddInputs()) {
       const updatedDepartment = {
         ...currentEditDepartment,

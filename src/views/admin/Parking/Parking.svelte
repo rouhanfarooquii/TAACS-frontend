@@ -3,6 +3,7 @@
   import { getAllParkingsApi, updateParkingApi, deleteParkingApi, addParkingApi, getAllEmployeesApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import QrCode from '../../../components/QR/QRCode.svelte';
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   export let color = "light";
 
@@ -30,6 +31,19 @@
   let editSpaceId = '';
 
   let locations = ['Location 1', 'Location 2', 'Location 3', 'Location 4']; // Dummy data for locations
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 
   async function fetchParkingData() {
     try {
@@ -72,18 +86,43 @@
     try {
       const response = await deleteParkingApi(space.id);
       console.log('Delete Response:', response);
+      showToasterMessage('Space deleted successfully!', 'success');
       await fetchParkingData();
     } catch (error) {
       console.error('Error deleting space:', error);
-      alert('An error occurred while deleting the space. Please try again.');
+      showToasterMessage('An error occurred while deleting the space. Please try again.', 'error');
+      // alert('An error occurred while deleting the space. Please try again.');
     }
   }
 
   async function saveSpaceChanges() {
+    if (!validateInputs(true)) {
+        return;
+    }
+
+    const isDuplicateParkingSlot = spaces.some(space => space.parkingSlot === editParkingSlot && space.id !== editSpaceId);
+  const isDuplicateCarId = spaces.some(space => space.carId === editCarId && space.id !== editSpaceId);
+
+  if (isDuplicateParkingSlot && isDuplicateCarId) {
+    showToasterMessage('Parking slot and Car ID must be unique', 'error');
+    return;
+  }
+
+  if (isDuplicateParkingSlot) {
+    showToasterMessage('Parking slot must be unique', 'error');
+    return;
+  }
+
+  if (isDuplicateCarId) {
+    showToasterMessage('Car ID must be unique', 'error');
+    return;
+  }
+
     const selectedEmployee = Employeeslist.find(employee => employee.name === editEmpName);
 
     if (!selectedEmployee) {
-      alert('Selected employee not found.');
+      showToasterMessage('Selected employee not found', 'error');
+      // alert('Selected employee not found.');
       return;
     }
 
@@ -100,24 +139,41 @@
       await updateParkingApi(updatedSpaceData);
       closeEditModal();
       await fetchParkingData(); // Refresh data after update
+      showToasterMessage('Space updated successfully!', 'success');
       console.log("Saved changes for space:", updatedSpaceData);
     } catch (error) {
       console.error('Error updating space:', error);
+      showToasterMessage('An error occurred while updating space. Please try again.', 'error');
     }
   }
 
   async function addSpace() {
-    const isDuplicate = spaces.some(space => space.parkingSlot === parkingSlot || space.carId === carId || space.cardRfidNo === cardRfidNo);
-
-    if (isDuplicate) {
-      alert('Parking slot, Car ID, and Card RFID No must be unique.');
-      return;
+    if (!validateInputs()) {
+        return;
     }
 
+    const isDuplicateParkingSlot = spaces.some(space => space.parkingSlot === parkingSlot);
+  const isDuplicateCarId = spaces.some(space => space.carId === carId);
+
+  if (isDuplicateParkingSlot && isDuplicateCarId) {
+    showToasterMessage('Parking slot and Car ID must be unique', 'error');
+    return;
+  }
+
+  if (isDuplicateParkingSlot) {
+    showToasterMessage('Parking slot must be unique', 'error');
+    return;
+  }
+
+  if (isDuplicateCarId) {
+    showToasterMessage('Car ID must be unique', 'error');
+    return;
+  }
     const selectedEmployee = Employeeslist.find(employee => employee.name === empName);
 
     if (!selectedEmployee) {
-      alert('Selected employee not found.');
+      showToasterMessage('Selected employee not found', 'error');
+      // alert('Selected employee not found.');
       return;
     }
 
@@ -132,11 +188,83 @@
     try {
       await addParkingApi(newParkingData);
       await fetchParkingData(); // Refresh data after adding
+      showToasterMessage('Space added successfully!', 'success');
       closeModal();
     } catch (error) {
       console.error('Error adding space:', error);
+      showToasterMessage('An error occurred while adding space. Please try again.', 'error');
     }
   }
+
+  function validateInputs(isEdit = false) {
+    let isValid = true;
+
+    const parkingSlot = document.getElementById(isEdit ? 'editParkingSlot' : 'parkingSlot').value;
+    const location = document.getElementById(isEdit ? 'editLocation' : 'location').value;
+    const carId = document.getElementById(isEdit ? 'editCarId' : 'carId').value;
+    const empName = document.getElementById(isEdit ? 'editEmpName' : 'empName').value;
+    const carMake = document.getElementById(isEdit ? 'editCarMake' : 'carMake').value;
+    const cardRfidNo = document.getElementById(isEdit ? 'editCardRfidNo' : 'cardRfidNo').value;
+
+    // Validate Parking Slot
+    if (!parkingSlot) {
+        document.getElementById(isEdit ? 'editParkingSlot-error' : 'parkingSlot-error').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById(isEdit ? 'editParkingSlot-error' : 'parkingSlot-error').style.display = 'none';
+    }
+
+    // Validate Location
+    if (!location) {
+        document.getElementById(isEdit ? 'editLocation-error' : 'location-error').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById(isEdit ? 'editLocation-error' : 'location-error').style.display = 'none';
+    }
+
+    if (!carId) {
+        document.getElementById(isEdit ? 'editCarId-error' : 'carId-error').innerText = '* Field Required';
+        document.getElementById(isEdit ? 'editCarId-error' : 'carId-error').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById(isEdit ? 'editCarId-error' : 'carId-error').style.display = 'none';
+
+        const carIdFormat = /^([A-Z]{2,3}-\d{3,4})$/; // Example formats: ABC-123 or AB-1234
+        if (!carIdFormat.test(carId)) {
+            document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error').innerText = 'Invalid Car ID format. Please use the format: ABC-123 or AB-1234';
+            document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error').style.display = 'block';
+            isValid = false;
+        } else {
+            document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error').style.display = 'none';
+        }
+    }
+
+    // Validate Employee Name
+    if (!empName) {
+        document.getElementById(isEdit ? 'editEmpName-error' : 'empName-error').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById(isEdit ? 'editEmpName-error' : 'empName-error').style.display = 'none';
+    }
+
+    // Validate Car Make
+    if (!carMake) {
+        document.getElementById(isEdit ? 'editCarMake-error' : 'carMake-error').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById(isEdit ? 'editCarMake-error' : 'carMake-error').style.display = 'none';
+    }
+
+    // Validate Card RFID No
+    if (!cardRfidNo) {
+        document.getElementById(isEdit ? 'editCardRfidNo-error' : 'cardRfidNo-error').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById(isEdit ? 'editCardRfidNo-error' : 'cardRfidNo-error').style.display = 'none';
+    }
+
+    return isValid;
+}
 
   function openEditModal(space) {
     editSpaceId = space.id;
@@ -220,6 +348,9 @@
 
 <!-- HTML structure for the component -->
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
@@ -269,6 +400,7 @@
                   </label>
                   <input type="text" id="carId" placeholder="Car ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={carId}>
                   <span id="carId-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  <span id="carIdNum-error" class="text-red-600 text-xs" style="display: none;">Invalid Car ID format. Please use the format: ABC-123 or AB-1234'</span>
                 </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">
@@ -354,6 +486,7 @@
                   </label>
                   <input type="text" id="editCarId" placeholder="Car ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={editCarId}>
                   <span id="editCarId-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  <span id="editCarIdNum-error" class="text-red-600 text-xs" style="display: none;">Invalid Car ID format. Please use the format: ABC-123 or AB-1234'</span>
                 </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">

@@ -103,6 +103,38 @@
 
   async function updateDevice() {
     if (validateInputs() && currentDevice) {
+    const isDeviceNameDuplicate = devices.some(device => device.deviceName === deviceName && device._id !== currentDevice._id);
+    const isDeviceIdDuplicate = devices.some(device => device.deviceId === Number(deviceId) && device._id !== currentDevice._id);
+    const isDeviceIpDuplicate = devices.some(device => device.ip === deviceIp && device._id !== currentDevice._id);
+
+    if (isDeviceNameDuplicate && isDeviceIdDuplicate && isDeviceIpDuplicate) {
+      showToasterMessage('Device name, ID, and IP should all be unique.', 'error');
+      return;
+    }
+    if (isDeviceNameDuplicate && isDeviceIdDuplicate) {
+      showToasterMessage('Device name and ID should be unique.', 'error');
+      return;
+    }
+    if (isDeviceNameDuplicate && isDeviceIpDuplicate) {
+      showToasterMessage('Device name and IP should be unique.', 'error');
+      return;
+    }
+    if (isDeviceIdDuplicate && isDeviceIpDuplicate) {
+      showToasterMessage('Device ID and IP should be unique.', 'error');
+      return;
+    }
+    if (isDeviceNameDuplicate) {
+      showToasterMessage('Device name should be unique.', 'error');
+      return;
+    }
+    if (isDeviceIdDuplicate) {
+      showToasterMessage('Device ID should be unique.', 'error');
+      return;
+    }
+    if (isDeviceIpDuplicate) {
+      showToasterMessage('Device IP should be unique.', 'error');
+      return;
+    }
       try {
         const updatedDevice = { ...currentDevice, deviceName, deviceId, ip: deviceIp, status: status ? "Active" : "Inactive" };
         await updateDeviceApi(updatedDevice);
