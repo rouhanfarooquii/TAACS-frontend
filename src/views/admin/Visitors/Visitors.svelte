@@ -8,7 +8,7 @@
 
   let visitor = {
     name: '',
-    phoneNumber: '',
+    mobileNumber: '',
     locations: [],
     gender: '',
     email: '',
@@ -54,7 +54,7 @@
     } else {
       document.getElementById('name-error').style.display = 'none';
     }
-    if (!visitor.phoneNumber || visitor.phoneNumber.length !== 11) {
+    if (!visitor.mobileNumber || visitor.mobileNumber.length !== 11) {
       document.getElementById('phone-error').style.display = 'block';
       valid = false;
     } else {
@@ -156,7 +156,7 @@
     <div>
       <label for="filterDepartment">Mobile Number:</label>
       <br>
-      <input type="text" id="filterDepartment" name="filterDepartment" class="filter-input" placeholder="Mobile Number" bind:value="{visitor.phoneNumber}">
+      <input type="text" id="filterDepartment" name="filterDepartment" class="filter-input" placeholder="Mobile Number" bind:value="{visitor.mobileNumber}">
       <span id="phone-error" class="text-red-600 text-xs" style="display: none;">* Mobile Number must be 11 digits</span>
     </div>
     <div>

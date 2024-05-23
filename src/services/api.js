@@ -1,5 +1,4 @@
 let headers = {'Content-Type': 'application/json'}
-let formHeaders = {'Content-Type': 'multipart/form-data'};
 
 export async function batchUpdateAccessControlApi(obj){
     const response = await fetch(BACKEND + 'accessControl/batchUpdate', {
@@ -213,7 +212,7 @@ export async function getAllEmployeesApi(){
 export async function addEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/add', {
         method: 'POST',
-        headers: formHeaders
+        body: obj
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
@@ -223,7 +222,7 @@ export async function addEmployeeApi(obj){
 export async function updateEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/update', {
         method: 'POST',
-        headers: formHeaders
+        body: obj
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
@@ -581,7 +580,7 @@ export async function getAllVisitorsApi(){
 export async function addVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/add', {
         method: 'POST',
-        headers: formHeaders
+        body: obj
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
@@ -591,7 +590,7 @@ export async function addVisitorApi(obj){
 export async function updateVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/update', {
         method: 'POST',
-        headers: formHeaders
+        body: obj
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;

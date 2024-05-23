@@ -2,17 +2,15 @@
   import { navigate } from 'svelte-routing';
   import { onMount } from 'svelte';
   import Multiselect from '../../../components/Dropdowns/MultiSelect.svelte';
-  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi } from '../../../services/api';
+  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, addEmployeeApi } from '../../../services/api';
 
   let selectedEmployee = null;
 
-  let id = '';
+  let employeeID = '';
   let name = '';
-  let phoneNumber = '';
-  let location = '';
+  let mobileNumber = '';
   let department = '';
   let designation = '';
-  let employeeType = '';
   let gender = '';
   let email = '';
   let address = '';
@@ -22,23 +20,31 @@
   let fingerIndex1 = '';
   let fingerIndex2 = '';
   let isFingerAdded = false;
+  let active = true;
   let salary = '';
   let shiftTiming = '';
-  let selectedLocations = [];
   let locations = [];
+
+  let trueLocations = [];
+  let trueDepartments = [];
+  let trueShiftTimings = [];
+
+  let file = null
+
+  let locationsList = [];
   let departments = [];
   let designations = [];
   let shiftTimings = [];
 
   const image = "../assets/img/10.jpg";
 
-  onMount(() => {
+  onMount(async () => {
     const fileInput = document.getElementById('profile-pic');
     fileInput.addEventListener('change', handleFileInputChange);
 
-    fetchDepartments();
-    fetchLocations();
-    fetchShiftTimings();
+    await fetchDepartments();
+    await fetchLocations();
+    await fetchShiftTimings();
 
     return () => {
       fileInput.removeEventListener('change', handleFileInputChange);
@@ -47,8 +53,8 @@
 
   async function fetchDepartments() {
     try {
-      const fetchedDepartments = await getAllDepartmentsApi();
-      departments = fetchedDepartments;
+      trueDepartments = await getAllDepartmentsApi();
+      departments = trueDepartments;
     } catch (error) {
       console.error('Error fetching departments:', error);
     }
@@ -56,21 +62,21 @@
 
   async function fetchLocations() {
     try {
-      const fetchedLocations = await getAllLocationsApi();
-      locations = fetchedLocations.map(loc => loc.title);
+      trueLocations = await getAllLocationsApi();
+      locationsList = trueLocations.map(loc => loc.title);
     } catch (error) {
       console.error('Error fetching locations:', error);
     }
   }
 
   async function fetchShiftTimings() {
-  try {
-    const response = await getAllShiftTimingsApi();
-    shiftTimings = response.timings.map(shift => shift.shiftName);
-  } catch (error) {
-    console.error('Error fetching shift timings:', error);
+    try {
+      trueShiftTimings = await getAllShiftTimingsApi();
+      shiftTimings = trueShiftTimings.map(shift => shift.shiftName);
+    } catch (error) {
+      console.error('Error fetching shift timings:', error);
+    }
   }
-}
 
   function setDesignation(event) {
     const selectedDepartmentTitle = event.target.value;
@@ -83,52 +89,51 @@
   }
 
   async function handleSubmit() {
-    if (!validateInputs()) {
-      return;
-    }
+    // if (!validateInputs()) {
+    //   return;
+    // }
 
-    const employee = {
-      id,
-      name,
-      phoneNumber,
-      location,
-      department,
-      designation,
-      employeeType,
-      gender,
-      email,
-      address,
-      dateOfBirth,
-      cardIdNumber,
-      personalPassword,
-      fingerIndex1,
-      fingerIndex2,
-      isFingerAdded,
-      salary,
-      shiftTiming,
-    };
+
+    let loc = []
+    for (let index = 0; index < locations.length; index++) {
+      loc.push(trueLocations.find(o => o.title == locations[index])._id)
+    }
+    let dep = trueDepartments.find(o => o.title == department)
+    let des = dep.designations.find(o => o.title == designation)._id
+    dep = dep._id
+    let sif = trueShiftTimings.find(o => o.shiftName == shiftTiming)._id
+
+    const formData = new FormData();
+    formData.append('employeeID', employeeID);
+    formData.append('name', name);
+    formData.append('mobileNumber', mobileNumber);
+    formData.append('locations', loc);
+    formData.append('department', dep);
+    formData.append('designation', des);
+    formData.append('gender', gender);
+    formData.append('email', email);
+    formData.append('address', address);
+    formData.append('dateOfBirth', dateOfBirth);
+    formData.append('cardIdNumber', cardIdNumber);
+    formData.append('personalPassword', personalPassword);
+    formData.append('fingerIndex1', fingerIndex1);
+    formData.append('fingerIndex2', fingerIndex2);
+    formData.append('isFingerAdded', isFingerAdded);
+    formData.append('active', active);
+    formData.append('salary', salary);
+    formData.append('shiftTiming', sif);
+    formData.append('file', file);
 
     try {
-      const response = await fetch('your_backend_api_url', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(employee)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit data to the server');
-      }
-
-      console.log('Form submitted successfully');
+      await addEmployeeApi(formData);
+      navigateToEmployee()
     } catch (error) {
-      console.error('Error submitting form:', error.message);
+      console.error('Error adding space:', error);
     }
   }
 
   function handleFileInputChange(event) {
-    const file = event.target.files[0];
+    file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -146,11 +151,18 @@
   function validateInputs() {
     let isValid = true;
 
-    if (!id) {
-      document.getElementById('id-error').style.display = 'block';
+    if (!file) {
+      document.getElementById('file-error').style.display = 'block';
       isValid = false;
     } else {
-      document.getElementById('id-error').style.display = 'none';
+      document.getElementById('file-error').style.display = 'none';
+    }
+
+    if (!employeeID) {
+      document.getElementById('employeeID-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('employeeID-error').style.display = 'none';
     }
 
     if (!name) {
@@ -160,14 +172,14 @@
       document.getElementById('name-error').style.display = 'none';
     }
 
-    if (!phoneNumber) {
+    if (!mobileNumber) {
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
     } else {
       document.getElementById('phone-number-error').style.display = 'none';
     }
 
-    if (!/^\d{11}$/.test(phoneNumber)) {
+    if (!/^\d{11}$/.test(mobileNumber)) {
       document.getElementById('phone-number-format-error').style.display = 'block';
       isValid = false;
     } else {
@@ -244,18 +256,11 @@
       document.getElementById('salary-error').style.display = 'none';
     }
 
-    if (!location) {
-      document.getElementById('location-error').style.display = 'block';
+    if (!locations) {
+      document.getElementById('locations-error').style.display = 'block';
       isValid = false;
     } else {
-      document.getElementById('location-error').style.display = 'none';
-    }
-
-    if (!employeeType) {
-      document.getElementById('employee-type-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('employee-type-error').style.display = 'none';
+      document.getElementById('locations-error').style.display = 'none';
     }
 
     if (!shiftTiming) {
@@ -263,6 +268,20 @@
       isValid = false;
     } else {
       document.getElementById('shift-timing-error').style.display = 'none';
+    }
+
+    if (!isFingerAdded) {
+      document.getElementById('finger-added-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('finger-added-error').style.display = 'none';
+    }
+
+    if (!active) {
+      document.getElementById('active-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('active-error').style.display = 'none';
     }
 
     return isValid;
@@ -283,6 +302,7 @@
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
     <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
+    <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
   </div>
 
   <div class="divider"></div>
@@ -294,7 +314,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employeeId">
         Employee ID:
       </label>
-      <input type="text" id="employeeId" placeholder="Employee ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={id}>
+      <input type="text" id="employeeID" placeholder="Employee ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeID}>
       <span id="id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
     <!-- Filter by Name -->
@@ -310,7 +330,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
         Phone Number:
       </label>
-      <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={phoneNumber}>
+      <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={mobileNumber}>
       <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
       <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
     </div>
@@ -434,6 +454,16 @@
       </label>
       <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
+        Active:
+      </label>
+      <label class="switch">
+        <input type="checkbox" id="status" class="hidden" bind:checked={active}>
+        <span class="slider round"></span> 
+      </label>
+      <span id="active-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+    </div>
   </div>
 
   <!-- Filters Row 6 -->
@@ -452,8 +482,8 @@
     <!-- Filter by Accessible Locations -->
     <div class="relative mb-3 w-1/2">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleDevices">Accessible locations</label>
-      <Multiselect bind:selectedOptions={selectedLocations} options={locations} placeholder="Select Location" />
-      <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
+      <Multiselect bind:selectedOptions={locations} options={locationsList} placeholder="Select Location" />
+      <span id="locations-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
     </div>
     <!-- Filter by Salary -->
     <div class="relative mb-3">

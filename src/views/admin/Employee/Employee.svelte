@@ -5,6 +5,10 @@
   import Multiselect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { navigate } from 'svelte-routing';
 
+
+  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi } from '../../../services/api';
+
+
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
   let selectedEmployee = null;
@@ -20,6 +24,20 @@
   let employees = [];
   let filteredEmployees = [];
 
+  let trueLocations = []
+  let trueDepartments = []
+  let trueShiftTimings = []
+
+  let dropdownOpen = false;
+  let selectedLocations = [];
+  let accessibleLocations = [];
+
+  let shiftTimings = [];
+
+  let departments =[]
+
+  let file = null
+
   let currentPage = 1;
   let itemsPerPage = 5;
 
@@ -27,34 +45,44 @@
 
   onMount(async () => {
     await fetchEmployees();
+    await fetchLocations();
+    await fetchDepartments()
+    await fetchShiftTimings()
   });
 
   async function fetchEmployees() {
     try {
       const fetchedEmployees = await getAllEmployeesApi();
-      employees = fetchedEmployees.map(emp => ({
-        id: emp._id,
-        name: emp.name,
-        phoneNumber: emp.mobileNumber,
-        location: emp.locations.join(", "),
-        department: emp.department.title,
-        designation: emp.designation.title,
-        employeeType: 'Full-time',
-        gender: emp.gender,
-        email: emp.email,
-        address: emp.address,
-        dateOfBirth: new Date(emp.dateOfBirth).toLocaleDateString(),
-        cardIdNumber: emp.cardIdNumber,
-        personalPassword: emp.personalPassword,
-        fingerIndex1: emp.fingerIndex1,
-        fingerIndex2: emp.fingerIndex2,
-        isFingerAdded: Boolean(emp.fingerIndex1 || emp.fingerIndex2),
-        salary: emp.salary,
-        active: emp.active,
-      }));
-      filteredEmployees = employees;
+      filteredEmployees = fetchedEmployees;
     } catch (error) {
       console.error('Error fetching employees:', error);
+    }
+  }
+
+  async function fetchLocations() {
+    try {
+      trueLocations = await getAllLocationsApi();
+      accessibleLocations = trueLocations.map(loc => loc.title);
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+    }
+  }
+
+  async function fetchShiftTimings() {
+    try {
+      trueShiftTimings = await getAllShiftTimingsApi();
+      shiftTimings = trueShiftTimings.map(shift => shift.shiftName);
+    } catch (error) {
+      console.error('Error fetching shift timings:', error);
+    }
+  }
+
+  async function fetchDepartments() {
+    try {
+      trueDepartments = await getAllDepartmentsApi();
+      departments = trueDepartments.map(o => o.title);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
     }
   }
 
@@ -84,45 +112,92 @@
   }
 
   async function editEmployee() {
-    if (validateInputs()) {
-      if (selectedEmployee) {
-        try {
-          const response = await fetch(`/api/updateEmployee/${selectedEmployee.id}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ active: active ? 'Yes' : 'No' })
-          });
 
-          if (response.ok) {
-            closeModal();
-          } else {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.message}`);
-          }
-        } catch (error) {
-          console.error('Error:', error);
-          alert('An error occurred while updating the employee. Please try again.');
-        }
-      }
+    let loc = []
+    for (let index = 0; index < selectedLocations.length; index++) {
+      loc.push(trueLocations.find(o => o.title == selectedLocations[index])._id)
+      // loc.push(selectedLocations[index])
+      // selectedEmployee.locations[index] = selectedEmployee.locations[index]._id
+    }
+    selectedEmployee.locations = loc
+    let dep = trueDepartments.find(o => o.title == selectedEmployee.department)
+    let des = dep.designations.find(o => o.title == selectedEmployee.designation)._id
+    dep = dep._id
+    selectedEmployee.department = dep
+    selectedEmployee.designation = des
+    let sif = trueShiftTimings.find(o => o.shiftName == selectedEmployee.shiftTiming)._id
+    selectedEmployee.shiftTiming = sif
+
+    // console.log(loc)
+    // console.log(selectedEmployee._id)
+    // return;
+
+    const formData = new FormData();
+    formData.append('_id', selectedEmployee._id);
+    formData.append('employeeID', selectedEmployee.employeeID);
+    formData.append('name', selectedEmployee.name);
+    formData.append('mobileNumber', selectedEmployee.mobileNumber);
+    formData.append('locations', loc);
+    formData.append('department', dep);
+    formData.append('designation', des);
+    formData.append('gender', selectedEmployee.gender);
+    formData.append('email', selectedEmployee.email);
+    formData.append('address', selectedEmployee.address);
+    formData.append('dateOfBirth', selectedEmployee.dateOfBirth);
+    formData.append('cardIdNumber', selectedEmployee.cardIdNumber);
+    formData.append('personalPassword', selectedEmployee.personalPassword);
+    formData.append('fingerIndex1', selectedEmployee.fingerIndex1);
+    formData.append('fingerIndex2', selectedEmployee.fingerIndex2);
+    formData.append('isFingerAdded', selectedEmployee.isFingerAdded);
+    formData.append('active', selectedEmployee.active);
+    formData.append('salary', selectedEmployee.salary);
+    formData.append('shiftTiming', sif);
+    if(file) {formData.append('file', file);}
+
+    try {
+      await updateEmployeeApi(formData);
+      closeModal()
+      await fetchEmployees()
+    } catch (error) {
+      console.error('Error updating employee:', error);
     }
   }
 
-  function viewEmployee(employeeId) {
-    selectedEmployee = employees.find(employee => employee.id === employeeId);
+  function viewEmployee(employee) {
+    selectedEmployee = employee
     showModal = true;
   }
 
-  function openEditModal(employeeId) {
-    selectedEmployee = employees.find(employee => employee.id === employeeId);
+  function openEditModal(emp) {
+    let employee = JSON.parse(JSON.stringify(emp))
+    employee.dateOfBirth = new Date(employee.dateOfBirth).toISOString().slice(0, 10)
+    let temp = []
+    for (let index = 0; index < employee.locations.length; index++) {
+      temp.push(employee.locations[index].title)
+    }
+    selectedLocations = temp
+    employee.department = employee.department.title
+    employee.designation = employee.designation.title
+    employee.shiftTiming = employee.shiftTiming.shiftName
+
+
+    
+
+    // console.log(employee)
+
+    // return;
+
+    // return
+    selectedEmployee = employee
+    
+
+
     editModal = true;
   }
 
   function closeModal() {
     showModal = false;
     editModal = false;
-    applyFilters(); // Re-apply filters to the updated list
   }
 
   function validateInputs() {
@@ -134,28 +209,9 @@
     return isValid;
   }
 
-  const departments = {
-    "IT": ["Developer", "Tester", "Manager"],
-    "HR": ["Recruiter", "HR Manager", "Coordinator"],
-    "Finance": ["Accountant", "Financial Analyst", "Auditor"]
-  };
+  // $: availableDesignations = selectedEmployee?.department ? departments[selectedEmployee.department] || [] : [];
 
-  const shiftTimings = ["Morning", "Afternoon", "Night"];
-
-  async function fetchShiftTimings() {
-    // Simulate an async fetch function
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(["Morning", "Afternoon", "Night"]);
-      }, 1000);
-    });
-  }
-
-  let dropdownOpen = false;
-  let selectedDevices = [];
-  let accessibleDevices = ["Conference Room", "Testing Lab", "Meeting Room", "Lobby", "Lounge", "Cafeteria", "Admin Office", "Training Room", "Training Office"];
-
-  $: availableDesignations = selectedEmployee?.department ? departments[selectedEmployee.department] || [] : [];
+  $: availableDesignations = selectedEmployee?.department ? (trueDepartments.find(d => d.title === selectedEmployee?.department)?.designations).map(o => o.title) || [] : [];
 
   function handlePageChange(event) {
     currentPage = event.detail.pageNumber;
@@ -217,14 +273,14 @@
         <tr>
           <td class="table-data ">{(currentPage - 1) * itemsPerPage + index + 1}</td>
           <td class="table-data font-bold text-blueGray-600">{employee.name}</td>
-          <td class="table-data">{employee.department}</td>
-          <td class="table-data">{employee.designation}</td>
+          <td class="table-data">{employee.department.title}</td>
+          <td class="table-data">{employee.designation.title}</td>
           <td class="table-data">{employee.active ? 'Yes' : 'No'}</td>
           <td class='table-data'>
             <div class="flex">
               <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(employee.id)}></i>
-              <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewEmployee(employee.id)}></i>
+              <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(employee)}></i>
+              <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewEmployee(employee)}></i>
             </div>
           </td>
         </tr>
@@ -260,13 +316,7 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                     Phone Number:
                   </label>
-                  <p>{selectedEmployee.phoneNumber}</p>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                    Location:
-                  </label>
-                  <p>{selectedEmployee.location}</p>
+                  <p>{selectedEmployee.mobileNumber}</p>
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
@@ -352,12 +402,6 @@
                   </label>
                   <p>{selectedEmployee.active ? 'Yes' : 'No'}</p>
                 </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                    Employee Type:
-                  </label>
-                  <p>{selectedEmployee.employeeType}</p>
-                </div>
               </div>
             </div>
             <div class="flex justify-end">
@@ -398,16 +442,9 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                     Phone Number:
                   </label>
-                  <input type="number" min="0" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.phoneNumber}>
+                  <input type="number" min="0" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.mobileNumber}>
                   <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                    Location:
-                  </label>
-                  <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.location}>
-                  <span id="location-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
@@ -415,7 +452,7 @@
                   </label>
                   <select id="department" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.department}>
                     <option value="" disabled selected>Select Department</option>
-                    {#each Object.keys(departments) as dept}
+                    {#each departments as dept}
                       <option value={dept}>{dept}</option>
                     {/each}
                   </select>
@@ -479,9 +516,9 @@
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                    Personal Password:
+                    Personal Password
                   </label>
-                  <input type="password" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.personalPassword}>
+                  <input type="text" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.personalPassword}>
                   <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
@@ -498,9 +535,9 @@
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessible-devices">
-                    Accessible Devices:
+                    Accessible Locations:
                   </label>
-                  <Multiselect bind:selectedItems={selectedDevices} items={accessibleDevices} />
+                  <Multiselect bind:selectedOptions={selectedLocations} options={accessibleLocations} />
                 </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">
@@ -515,15 +552,11 @@
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                     Active:
                   </label>
-                  <input type="text" id="active" placeholder="Active" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.active}>
-                  <span id="active-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-                </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
-                    Employee Type:
+                  <label class="switch">
+                    <input type="checkbox" id="status" class="hidden" bind:checked={selectedEmployee.active}>
+                    <span class="slider round"></span>
                   </label>
-                  <input type="text" id="employee-type" placeholder="Employee Type" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.employeeType}>
-                  <span id="employee-type-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shift-timing">

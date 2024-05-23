@@ -12,7 +12,7 @@
   let employee = {    
     id: 12,
     name: 'Lisa Nguyen',
-    phoneNumber: '777-222-3333',
+    mobileNumber: '777-222-3333',
     location: 'Phoenix',
     department: 'Operations',
     designation: 'Supervisor',
