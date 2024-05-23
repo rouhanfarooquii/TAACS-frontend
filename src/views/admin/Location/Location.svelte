@@ -202,7 +202,13 @@
         console.log('Add Response:', response);
         await fetchLocations();
         showToasterMessage('Location added successfully!', 'success');
-        closeModal();
+        showModal = false;
+        showEditModal = false;
+        locationName = '';
+        selectedDevices = [];
+        selectedFeatures = [];
+        bookable = true;
+        capacity = '';
       } catch (error) {
         console.error("Error adding location:", error);
         showToasterMessage('An error occurred while adding location. Please try again.', 'error');
