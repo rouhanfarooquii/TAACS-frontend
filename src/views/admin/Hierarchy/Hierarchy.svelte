@@ -50,19 +50,19 @@
   }
 
   function validateEditInputs(department) {
-    if (!department.title || !department.designations.length) {
-      alert("All fields are required.");
-      return false;
-    }
+  if (!department.title || !department.designations.length) {
+    showToasterMessage('All fields are required.', 'error');
+    return false;
+  }
 
-    const lowerCaseDesignations = department.designations.map(d => d.title.toLowerCase());
+  const lowerCaseDesignations = department.designations.map(d => d.title.toLowerCase());
   if (new Set(lowerCaseDesignations).size !== department.designations.length) {
     showToasterMessage('Designation names must be unique within the department!', 'error');
     return false;
   }
 
-    return true;
-  }
+  return true;
+}
 
   async function deleteDepartment(department) {
     try {
@@ -175,8 +175,7 @@ function validateAddInputs() {
     }
   }
 
-  async function saveDepartmentEdits() {
-    
+  async function saveDepartmentEdits() { 
     if (validateAddInputs()) {
       const updatedDepartment = {
         ...currentEditDepartment,
