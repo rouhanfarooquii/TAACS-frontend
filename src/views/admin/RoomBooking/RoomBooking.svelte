@@ -59,7 +59,7 @@
     try {
       locationsList = await getAllBookableLocationsApi();
     } catch (error) {
-      console.error("Error fetching room bookings:", error);
+      console.error("Error fetching bookable locations:", error);
       locationsList = [];
     }
   }
@@ -137,57 +137,38 @@
 
   function validateInputs() {
     let isValid = true;
+    let errorMessage = '';
 
     if (!roombooking.employee) {
-      document.getElementById('empName-error').style.display = 'block';
+      errorMessage = 'Employee is required';
+      isValid = false;
+    } else if (!roombooking.location) {
+      errorMessage = 'Room is required';
+      isValid = false;
+    } else if (!roombooking.numOfPeople || isNaN(roombooking.numOfPeople) || roombooking.numOfPeople <= 0) {
+      errorMessage = 'Number of people is required and must be a positive number';
       isValid = false;
     } else {
-      document.getElementById('empName-error').style.display = 'none';
-    }
-
-    if (!roombooking.location) {
-      document.getElementById('room-name-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('room-name-error').style.display = 'none';
-    }
-
-    if (!roombooking.numOfPeople || isNaN(roombooking.numOfPeople) || roombooking.numOfPeople <= 0) {
-      document.getElementById('no-of-people-error').style.display = 'block';
-      isValid = false;
-    } else {
-      const selectedRoom = locationsList.find(room => room._id === roombooking.location);
+      const selectedRoom = locationsList.find(room => room._id === roombooking.location._id);
       if (selectedRoom && roombooking.numOfPeople > selectedRoom.capacity) {
-        document.getElementById('no-of-people-error').innerText = '* Number of people exceeds room capacity';
-        document.getElementById('no-of-people-error').style.display = 'block';
+        errorMessage = 'Number of people exceeds room capacity';
         isValid = false;
-      } else {
-        document.getElementById('no-of-people-error').innerText = '* Field Required';
-        document.getElementById('no-of-people-error').style.display = 'none';
       }
     }
 
     if (!roombooking.dateTimeFrom) {
-      document.getElementById('dateTime-from-error').style.display = 'block';
+      errorMessage = 'Date & Time From is required';
       isValid = false;
-    } else {
-      document.getElementById('dateTime-from-error').style.display = 'none';
+    } else if (!roombooking.dateTimeTo) {
+      errorMessage = 'Date & Time To is required';
+      isValid = false;
+    } else if (roombooking.dateTimeFrom && roombooking.dateTimeTo && new Date(roombooking.dateTimeTo) < new Date(roombooking.dateTimeFrom)) {
+      errorMessage = 'Date & Time To cannot be before Date & Time From';
+      isValid = false;
     }
 
-    if (!roombooking.dateTimeTo) {
-      document.getElementById('dateTime-to-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('dateTime-to-error').style.display = 'none';
-    }
-
-    if (roombooking.dateTimeFrom && roombooking.dateTimeTo && new Date(roombooking.dateTimeTo) < new Date(roombooking.dateTimeFrom)) {
-      document.getElementById('dateTime-to-error').innerText = '* Date & Time To cannot be before Date & Time From';
-      document.getElementById('dateTime-to-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('dateTime-to-error').innerText = '* Field Required';
-      document.getElementById('dateTime-to-error').style.display = 'none';
+    if (!isValid) {
+      showToasterMessage(errorMessage, 'error');
     }
 
     return isValid;
