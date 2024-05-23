@@ -112,6 +112,10 @@
   }
 
   async function addProtocol() {
+    if (!isNameUnique(name)) {
+    showToasterMessage('Protocol name must be unique!', 'error');
+    return;
+  }
     if (validateInputs()) {
       const newProtocol = {
         name,
@@ -157,6 +161,10 @@
       showToaster = false;
     }, 3000); // Show toast for 3 seconds
   }
+
+  function isNameUnique(name) {
+  return !emergencies.some(emergency => emergency.name.toLowerCase() === name.toLowerCase());
+}
 
   function validateInputs() {
     let isValid = true;
