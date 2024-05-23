@@ -53,6 +53,13 @@
       return;
     }
 
+    const isBonusNameDuplicate = bonuses.some(bonus => bonus.name === bonusName);
+  
+  if (isBonusNameDuplicate) {
+    showToasterMessage('Bonus name must be unique.', 'error');
+    return;
+  }
+
     let department = selectedDepartment !== "All" ? trueDepartments.find(dept => dept.title === selectedDepartment) : { _id: "All", title: "All" };
     let designation = selectedDesignation !== "All" ? department.designations.find(des => des.title === selectedDesignation) : { _id: "All" };
 

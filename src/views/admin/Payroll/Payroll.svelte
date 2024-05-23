@@ -376,7 +376,7 @@
             <!-- Salary -->
             <div class="flex items-center">
               {#if editingModes[employee._id]}
-                <input type="number" class="salary-input width80px text-xs" bind:value={employee.salary}>
+                <input type="number" min="0" class="salary-input width80px text-xs" bind:value={employee.salary}>
               {:else}
                 <span>{employee.salary}</span>
               {/if}
