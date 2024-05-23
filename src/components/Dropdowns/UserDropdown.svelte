@@ -1,8 +1,8 @@
 <script>
   // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
-
-  // core components
+  import { onMount, onDestroy } from 'svelte';
+  import { navigate } from 'svelte-routing';
 
   const image = "../assets/img/10.jpg";
 
@@ -13,19 +13,40 @@
 
   const toggleDropdown = (event) => {
     event.preventDefault();
+    dropdownPopoverShow = !dropdownPopoverShow;
     if (dropdownPopoverShow) {
-      dropdownPopoverShow = false;
-    } else {
-      dropdownPopoverShow = true;
       createPopper(btnDropdownRef, popoverDropdownRef, {
         placement: "bottom-start",
       });
     }
   };
 
-  function navigatetoProfile() {
-    navigate('/user/Profile');
+  function closeDropdown() {
+    dropdownPopoverShow = false;
   }
+
+  function navigateToProfile() {
+    navigate('/user/profile');
+  }
+
+  function signOut() {
+    // Implement sign out logic here
+    console.log('Sign out');
+  }
+
+  function handleClickOutside(event) {
+    if (popoverDropdownRef && !popoverDropdownRef.contains(event.target) && btnDropdownRef && !btnDropdownRef.contains(event.target)) {
+      closeDropdown();
+    }
+  }
+
+  onMount(() => {
+    document.addEventListener('click', handleClickOutside);
+  });
+
+  onDestroy(() => {
+    document.removeEventListener('click', handleClickOutside);
+  });
 </script>
 
 <div>
@@ -52,10 +73,11 @@
     class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow ? 'block':'hidden'}"
   >
     <a
-      href="#pablo" on:click={(e) => e.preventDefault()}
-      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+    href="#pablo" on:click={(e) => e.preventDefault()}
+    on:click="{navigateToProfile}"
+    class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700" 
     >
-      Action
+      Profile
     </a>
     <a
       href="#pablo" on:click={(e) => e.preventDefault()}
@@ -63,18 +85,13 @@
     >
       Another action
     </a>
-    <a
-      href="#pablo" on:click={(e) => e.preventDefault()}
-      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-    >
-      Something else here
-    </a>
     <div class="h-0 my-2 border border-solid border-blueGray-100" />
     <a
-      href="#pablo" on:click={(e) => e.preventDefault()}
-      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+    href="#pablo" on:click={(e) => e.preventDefault()}
+    on:click="{signOut}"
+    class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
     >
-      Seprated link
+      Sign Out
     </a>
   </div>
 </div>

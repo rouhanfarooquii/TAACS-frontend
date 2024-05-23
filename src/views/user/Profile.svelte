@@ -85,7 +85,6 @@
 </script>
 
 <div>
-  <AuthNavbar />
   <main class="profile-page">
     <section class="relative block h-500-px">
       <div

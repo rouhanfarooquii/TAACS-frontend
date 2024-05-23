@@ -68,7 +68,7 @@
     }
 
     function goBack() {
-        navigate(-1);
+        navigate('/user/profile');
         console.log("Navigated back");
     }
 </script>

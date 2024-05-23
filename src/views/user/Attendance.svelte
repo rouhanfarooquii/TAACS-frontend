@@ -91,7 +91,6 @@
     // Adding days of the current month
     for (let i = 1; i <= numDays; i++) {
       const currentDate = new Date(year, month, i);
-      const dayOfWeek = currentDate.getDay();
       const attendance = get(attendanceData).find(
         (att) => att.date === currentDate.toISOString().split('T')[0]
       );
@@ -111,7 +110,6 @@
 </script>
 
 <div>
-  <AuthNavbar />
   <main class="profile-page">
     <section class="relative block h-500-px">
       <div
@@ -155,7 +153,8 @@
                   <img
                     alt="..."
                     src={team2}
-                    class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
+                    class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 max-w-150-px"
+                    style="left: 50%; transform: translateX(-50%);"
                   />
                 </div>
               </div>
@@ -222,3 +221,4 @@
   </main>
   <Footer />
 </div>
+

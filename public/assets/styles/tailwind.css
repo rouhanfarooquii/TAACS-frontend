@@ -4682,8 +4682,7 @@ canvas{
   margin-right: 5px;
 }
 
-/* Attendance Calendar Styles */
-.attendance-calendar {
+/* .attendance-calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
@@ -4746,6 +4745,60 @@ canvas{
 
 .attendance-legend-item.weekend {
   background-color: #edf2f7;
+} */
+
+
+.attendance-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.attendance-header {
+  font-weight: bold;
+  text-align: center;
+}
+.attendance-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  border: 1px solid #ddd;
+}
+.attendance-day.weekend {
+  background-color: #f0f0f0;
+}
+.attendance-day.present {
+  background-color: #c8e6c9;
+}
+.attendance-day.absent {
+  background-color: #ffcdd2;
+}
+.attendance-day.not-current-month {
+  background-color: #f5f5f5;
+}
+.attendance-day.empty {
+  visibility: hidden;
+}
+.attendance-legend {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.attendance-legend-item {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+.attendance-legend-item.present {
+  background-color: #c8e6c9;
+}
+.attendance-legend-item.absent {
+  background-color: #ffcdd2;
+}
+.attendance-legend-item.weekend {
+  background-color: #f0f0f0;
 }
 
 .input-style {
