@@ -41,7 +41,7 @@
           emergencies[i].locations[j] = emergencies[i].locations[j].title
         }
       }
-      console.log(emergencies);
+      // console.log(emergencies);
 
     } catch (error) {
       console.error('Failed to load emergencies:', error);

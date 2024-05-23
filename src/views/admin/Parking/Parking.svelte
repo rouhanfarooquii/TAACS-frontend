@@ -88,7 +88,7 @@
     }
 
     const updatedSpaceData = {
-      id: editSpaceId,
+      _id: editSpaceId,
       parkingSlot: editParkingSlot,
       location: editLocation,
       carId: editCarId,
