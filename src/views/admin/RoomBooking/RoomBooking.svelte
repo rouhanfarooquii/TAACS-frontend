@@ -23,7 +23,7 @@
     dateTimeFrom: null,
     dateTimeTo: null,
     location: null,
-  }
+  };
 
   let locationsList = [];
   let roomBookingsList = [];
@@ -64,7 +64,20 @@
     }
   }
 
+  function formatDateTime(dateTime) {
+    const date = new Date(dateTime);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}-${month}-${year} (${hours}:${minutes})`;
+  }
+
   async function bookRoom() {
+    if (!validateInputs()) return;
+
     try {
       await addRoomBookingApi(roombooking);
       await fetchRoomBookings();
@@ -77,8 +90,9 @@
   }
 
   async function updateBooking() {
-    // if (!validateInputs()) return;
-    delete roombooking.__v
+    if (!validateInputs()) return;
+
+    delete roombooking.__v;
     try {
       await updateRoomBookingApi(roombooking);
       await fetchRoomBookings();
@@ -97,10 +111,10 @@
 
   async function confirmDeleteBooking() {
     try {
-      await deleteRoomBookingApi(bookingToDelete._id.toString())
+      await deleteRoomBookingApi(bookingToDelete._id.toString());
       showToasterMessage('Room booking deleted successfully!', 'success');
       closeConfirmationModal();
-      await fetchRoomBookings()
+      await fetchRoomBookings();
     } catch (error) {
       console.error('Failed to delete booking:', error);
       showToasterMessage('An error occurred while deleting room booking. Please try again.', 'error');
@@ -192,7 +206,7 @@
       location: locationsList.find(loc => loc._id == booking.location._id),
     };
 
-    console.log(roombooking)
+    console.log(roombooking);
 
     editModal = true;
   }
@@ -409,8 +423,8 @@
           <tr>
             <td class="table-data font-bold text-blueGray-600">{booking.employee.name}</td>
             <td class="table-data">{booking.location.title}</td>
-            <td class="table-data">{booking.dateTimeFrom}</td>
-            <td class="table-data">{booking.dateTimeTo}</td>
+            <td class="table-data">{formatDateTime(booking.dateTimeFrom)}</td>
+            <td class="table-data">{formatDateTime(booking.dateTimeTo)}</td>
             <td class="table-data">{booking.numOfPeople}</td>
             <td class="text-xs">
               <div class="flex items-center">
