@@ -3,6 +3,7 @@
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { onMount } from 'svelte';
   import { getAllDepartmentsApi, getAllEmployeesApi, updateEmployeeJSONApi, batchUpdatePayrollApi } from '../../../services/api';
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   let showModal = false;
 
@@ -30,6 +31,10 @@
   // State variable to track editing mode for each user
   let editingModes = {};
 
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
   function toggleEditingMode(employeeId) {
     editingModes[employeeId] = !editingModes[employeeId];
   }
@@ -48,16 +53,27 @@
       // const updatedEmployee = { ...employee, salary: employee.salary }; // Only update the salary
       const responseMsg = await updateEmployeeJSONApi(tempEmployee);
       console.log('Response from API:', responseMsg);
+      showToasterMessage('Salary updated successfully!', 'success');
       toggleEditingMode(employee._id); // Exit editing mode after save
     } catch (error) {
       console.error('Error updating salary:', error);
       console.error('Error details:', error.response ? error.response.data : error.message);
+      showToasterMessage('An error occurred while updating salary. Please try again.', 'error');
     }
   }
 
   function editSalary(employee) {
     toggleEditingMode(employee._id);
     // You can perform additional actions here if needed
+  }
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
   }
 
   let selectedUsers = new Set();
@@ -114,10 +130,12 @@
       selectedDesignation = '';
       selectedValueType = null;
       value = '';
+      showToasterMessage('Batch updated successfully!', 'success');
       closeModal();
       await fetchEmployees();
     } catch (error) {
       console.error('Error updating access control:', error);
+      showToasterMessage('An error occurred while updating batch. Please try again.', 'error');
     }
 
     // console.log(temp)
@@ -232,6 +250,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">

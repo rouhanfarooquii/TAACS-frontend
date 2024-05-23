@@ -3,12 +3,17 @@
   import CardTable from "components/Cards/CardTable.svelte";
   import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import Toast from '../../../components/Confirmation/Toast.svelte';
   import { onMount } from 'svelte';
   import { getAllLeavesApi, updateLeaveApprovedApi, updateLeaveRejectedApi } from '../../../services/api';
 
   export let location;
   export let color = "light";
   let selectedState = 'all'; // Initial state
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
 
   const handleTabClick = (state) => {
     selectedState = state;
@@ -42,13 +47,16 @@
     let responseMsg;
     if (status === 'approved') {
       responseMsg = await updateLeaveApprovedApi(request._id, updateObj);
+      showToasterMessage('Leave approved', 'success');
     } else if (status === 'rejected') {
       responseMsg = await updateLeaveRejectedApi(request._id, updateObj);
+      showToasterMessage('Leave rejected', 'success');
     }
     console.log('Update response:', responseMsg);
     loadLeaveRequests(); // Refresh leave requests after update
   } catch (error) {
     console.error('Error updating leave request:', error);
+    showToasterMessage('An error occurred while updating leave request. Please try again.', 'error');
   }
 }
 
@@ -96,9 +104,21 @@
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
     currentPage = event.detail.pageNumber;
   }
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="relative w-full px-4 max-w-full flex-grow flex-1">
     <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
       Leave Requests

@@ -2,6 +2,7 @@
     import { createPopper } from "@popperjs/core";
     import { onMount, onDestroy } from 'svelte';
     import { navigate } from 'svelte-routing';
+    import Toast from '../../../components/Confirmation/Toast.svelte';
 
   import { addShiftTimingApi } from '../../../services/api';
 
@@ -18,6 +19,10 @@
     let customShiftType = '';
     let notes = '';
     let errors = {};
+
+    let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
   
     function handleShiftSelection(event) {
       shiftType = event.target.value;
@@ -70,15 +75,29 @@
         try {
           const response = await addShiftTimingApi(shiftData);
           console.log('API Response:', response);
+          showToasterMessage('Shift added successfully!', 'success');
           navigateToShift()
         } catch (error) {
           console.error('Error adding space:', error);
+          showToasterMessage('An error occurred while adding the shift. Please try again.', 'error');
         }
       }
     }
+
+    function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
   </script>
   
   <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg bg-white">
+    {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
     <div class="rounded-t mb-0 px-4 py-10 border-0">
       <div class="flex flex-wrap items-center">
         <div class="relative w-full px-4 max-w-full flex-grow flex-1">

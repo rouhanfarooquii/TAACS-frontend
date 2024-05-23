@@ -1,6 +1,7 @@
 <script>
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
+  import Toast from '../../../components/Confirmation/Toast.svelte';
   export let color = "light";
 
   import { onMount } from 'svelte';
@@ -20,6 +21,10 @@
 
   let selectedUsers = new Set();
   let searchQuery = '';
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
 
   onMount(async () => {
     await getAllAccess();
@@ -69,6 +74,15 @@
     } catch (error) {
       console.error("Error fetching access control data:", error);
     }
+  }
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
   }
 
   function toggleSelection(userId) {
@@ -165,10 +179,12 @@
     try {
       const response = await batchUpdateAccessControlApi(payload);
       console.log('Response from API:', response);
+      showToasterMessage('Batch updated successfully!', 'success');
       closeModal();
       await getAllAccess();
     } catch (error) {
       console.error('Error updating access control:', error);
+      showToasterMessage('An error occurred while updating access control. Please try again.', 'error');
     }
   }
 
@@ -215,6 +231,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">

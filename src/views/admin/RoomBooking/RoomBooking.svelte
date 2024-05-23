@@ -4,6 +4,7 @@
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import { addRoomBookingApi, updateRoomBookingApi, getAllRoomBookingsApi, getAllBookableLocationsApi, getAllEmployeesApi, deleteRoomBookingApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   export let color = "light";
 
@@ -11,6 +12,10 @@
   let editModal = false;
   let confirmationModal = false;
   let bookingToDelete = null;
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
 
   let roombooking = {
     employee: null,
@@ -63,9 +68,11 @@
     try {
       await addRoomBookingApi(roombooking);
       await fetchRoomBookings();
+      showToasterMessage('Room Booking added successfully!', 'success');
       closeModal();
     } catch (error) {
       console.error('Error adding room booking:', error);
+      showToasterMessage('An error occurred while adding room booking. Please try again.', 'error');
     }
   }
 
@@ -75,9 +82,11 @@
     try {
       await updateRoomBookingApi(roombooking);
       await fetchRoomBookings();
+      showToasterMessage('Room Booking updated successfully!', 'success');
       closeModal();
     } catch (error) {
       console.error('Error updating room booking:', error);
+      showToasterMessage('An error occurred while updating room booking. Please try again.', 'error');
     }
   }
 
@@ -89,16 +98,27 @@
   async function confirmDeleteBooking() {
     try {
       await deleteRoomBookingApi(bookingToDelete._id.toString())
+      showToasterMessage('Room booking deleted successfully!', 'success');
       closeConfirmationModal();
       await fetchRoomBookings()
     } catch (error) {
       console.error('Failed to delete booking:', error);
+      showToasterMessage('An error occurred while deleting room booking. Please try again.', 'error');
     }
   }
 
   function closeConfirmationModal() {
     confirmationModal = false;
     bookingToDelete = null;
+  }
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
   }
 
   function validateInputs() {
@@ -266,6 +286,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="rounded-t mb-0 px-4 py-10 border-0">
     <div class="flex flex-wrap items-center">
       <div class="relative w-full px-4 max-w-full flex-grow flex-1">

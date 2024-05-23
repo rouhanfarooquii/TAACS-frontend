@@ -4,6 +4,7 @@
   import CardPageVisits from "components/Cards/CardPageVisits.svelte";
   import CardSocialTraffic from "components/Cards/CardSocialTraffic.svelte";
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
+  import Toast from '../../../components/Confirmation/Toast.svelte';
   import { onMount } from 'svelte';
   import { getAllEmergenciesApi, addEmergencyApi, activateEmergencyApi, deactivateEmergencyApi, getAllLocationsApi, deleteEmergencyApi } from '../../../services/api';
 
@@ -21,6 +22,10 @@
   let dropdownOpen = false;  // Define the variable
 
   let emergencies = [];
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
 
   async function loadEmergencies() {
     try {
@@ -88,8 +93,10 @@
     try {
       await activateEmergencyApi(id)
       await loadEmergencies()
+      showToasterMessage('Protocol activated', 'success');
     } catch (error) {
       console.error('Failed to activate emergency:', error);
+      showToasterMessage('An error occurred while activating protocol. Please try again.', 'error');
     }
   }
 
@@ -97,8 +104,10 @@
     try {
       await deactivateEmergencyApi(id)
       await loadEmergencies()
+      showToasterMessage('Protocol deactivated', 'success');
     } catch (error) {
       console.error('Failed to deactivate emergency:', error);
+      showToasterMessage('An error occurred while deactivating protocol. Please try again.', 'error');
     }
   }
 
@@ -119,9 +128,11 @@
       try {
         await addEmergencyApi(newProtocol);
         await loadEmergencies();
+        showToasterMessage('Protocol added successfully!', 'success');
         closeModal();
       } catch (error) {
         console.error('Error adding emergency:', error);
+        showToasterMessage('An error occurred while adding protocol. Please try again.', 'error');
       }
     }
   }
@@ -130,10 +141,21 @@
     try {
       const responseMsg = await deleteEmergencyApi(id);
       console.log('Delete response:', responseMsg);
+      showToasterMessage('Protocol deleted successfully!', 'success');
       loadEmergencies(); // Refresh emergencies after deletion
     } catch (error) {
       console.error('Error deleting emergency:', error);
+      showToasterMessage('An error occurred while deleting protocol. Please try again.', 'error');
     }
+  }
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
   }
 
   function validateInputs() {
@@ -178,6 +200,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">

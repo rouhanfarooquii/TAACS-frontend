@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
+  import Toast from '../../../components/Confirmation/Toast.svelte';
   import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi, getAllDevicesApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -16,6 +17,10 @@
   let selectedDevices = [];
   let featuresList = ["Projector", "AC", "Internet"];
   let selectedFeatures = [];
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
 
   onMount(async () => {
     await fetchLocations();
@@ -97,9 +102,11 @@
         }
 
         await fetchLocations();
+        showToasterMessage('Location updated successfully!', 'success');
         closeModal();
       } catch (error) {
         console.error("Error updating location:", error);
+        showToasterMessage('An error occurred while updating location. Please try again.', 'error');
       }
     }
   }
@@ -152,9 +159,11 @@
     try {
       const response = await deleteLocationApi(space.id);
       console.log('Delete Response:', response);
+      showToasterMessage('Location deleted successfully!', 'success');
       await fetchLocations();
     } catch (error) {
       console.error("Error deleting location:", error);
+      showToasterMessage('An error occurred while deleting location. Please try again.', 'error');
     }
   }
 
@@ -164,7 +173,8 @@
         const isDuplicate = spaces.some(space => space.locationName === locationName);
 
         if (isDuplicate) {
-          alert('Location Name must be unique.');
+          showToasterMessage('Location Name must be unique.', 'error');
+          // alert('Location Name must be unique.');
           return;
         }
 
@@ -191,9 +201,11 @@
         const response = await addLocationApi(dataToSend);
         console.log('Add Response:', response);
         await fetchLocations();
+        showToasterMessage('Location added successfully!', 'success');
         closeModal();
       } catch (error) {
         console.error("Error adding location:", error);
+        showToasterMessage('An error occurred while adding location. Please try again.', 'error');
       }
     }
   }
@@ -266,6 +278,15 @@
     return isValid;
   }
 
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
+
   const spacesPerPage = 5;
   let currentPage = 1;
 
@@ -296,6 +317,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">

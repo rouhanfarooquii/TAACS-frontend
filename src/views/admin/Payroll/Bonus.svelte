@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { getAllDepartmentsApi, getAllPayrollsApi, addPayrollApi, deletePayrollApi } from '../../../services/api'; // Assuming you have an API service file
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   export let color = "light";
 
@@ -15,6 +16,10 @@
   let designations = [];
   let valueTypes = ['Percentage', 'Absolute'];
   let selectedValueType = '';
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
 
   let bonuses = [];
 
@@ -65,10 +70,12 @@
       const responseMsg = await addPayrollApi(newBonus);
       console.log('Response from API:', responseMsg);
       await fetchBonuses(); // Refresh the bonuses list after adding a new bonus
+      showToasterMessage('Bonus added successfully!', 'success');
       closeModal();
     } catch (error) {
       console.error('Error adding new bonus:', error);
       console.error('Error details:', error.response ? error.response.data : error.message);
+      showToasterMessage('An error occurred while adding new bonus. Please try again.', 'error');
     }
   }
 
@@ -92,9 +99,11 @@
       const responseMsg = await deletePayrollApi(id);
       console.log('Response from API:', responseMsg);
       bonuses = bonuses.filter(bonus => bonus._id !== id); // Update the bonuses list
+      showToasterMessage('Bonus deleted successfully!', 'success');
     } catch (error) {
       console.error('Error deleting bonus:', error);
       console.error('Error details:', error.response ? error.response.data : error.message);
+      showToasterMessage('An error occurred while deleting bonus. Please try again.', 'error');
     }
   }
 
@@ -168,6 +177,15 @@
     selectedValueType = value;
   }
 
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
+
   function closeModal() {
     showModal = false;
     bonusName = '';
@@ -214,6 +232,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
