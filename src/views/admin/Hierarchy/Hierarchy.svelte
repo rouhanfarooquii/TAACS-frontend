@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
+  import Toast from '../../../components/Confirmation/Toast.svelte';
   import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -18,6 +19,19 @@
   let departmentName = '';
   let designations = [];
   let newDesignation = '';
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 
   onMount(async () => {
     try {
@@ -40,6 +54,13 @@
       alert("All fields are required.");
       return false;
     }
+
+    const lowerCaseDesignations = department.designations.map(d => d.title.toLowerCase());
+  if (new Set(lowerCaseDesignations).size !== department.designations.length) {
+    showToasterMessage('Designation names must be unique within the department!', 'error');
+    return false;
+  }
+
     return true;
   }
 
@@ -47,9 +68,11 @@
     try {
       const msg = await deleteDepartmentApi(department._id);
       console.log(msg);
+      showToasterMessage('Department deleted successfully!', 'success');
       departments = await getAllDepartmentsApi();
     } catch (error) {
       console.error('Failed to delete department:', error);
+      showToasterMessage('An error occurred while deleting department. Please try again.', 'error');
     }
   }
 
@@ -102,7 +125,11 @@
     document.getElementById('designations-error').style.display = 'none';
   }
 
-  function validateAddInputs() {
+  function isDepartmentNameUnique(name) {
+  return !departments.some(department => department.title.toLowerCase() === name.toLowerCase());
+}
+
+function validateAddInputs() {
     let isValid = true;
 
     if (!departmentName) {
@@ -119,24 +146,37 @@
       document.getElementById('designations-error').style.display = 'none';
     }
 
+    const lowerCaseDesignations = designations.map(d => d.toLowerCase());
+  if (new Set(lowerCaseDesignations).size !== designations.length) {
+    showToasterMessage('Designation names must be unique within the department!', 'error');
+    isValid = false;
+  }
+
     return isValid;
   }
 
   async function addDepartment() {
+    if (!isDepartmentNameUnique(departmentName)) {
+    showToasterMessage('Department name must be unique!', 'error');
+    return;
+  }
     if (validateAddInputs()) {
       const newDepartment = { title: departmentName, designations: designations.map(d => ({ title: d })) };
       try {
         const msg = await addDepartmentApi(newDepartment);
         console.log(msg);
         departments = await getAllDepartmentsApi();
+        showToasterMessage('Department added successfully!', 'success');
         closeModal();
       } catch (error) {
         console.error('Failed to add department:', error);
+        showToasterMessage('An error occurred while adding department. Please try again.', 'error');
       }
     }
   }
 
   async function saveDepartmentEdits() {
+    
     if (validateAddInputs()) {
       const updatedDepartment = {
         ...currentEditDepartment,
@@ -147,9 +187,11 @@
         const msg = await updateDepartmentApi(updatedDepartment);
         console.log(msg);
         departments = await getAllDepartmentsApi();
+        showToasterMessage('Department updated successfully!', 'success');
         closeModal();
       } catch (error) {
         console.error('Failed to update department:', error);
+        showToasterMessage('An error occurred while updating department. Please try again.', 'error');
       }
     }
   }
@@ -196,6 +238,9 @@
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">
       <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">

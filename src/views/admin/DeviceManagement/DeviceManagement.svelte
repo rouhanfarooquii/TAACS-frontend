@@ -22,6 +22,15 @@
   let toasterMessage = '';
   let toasterType = '';
 
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
+
   async function fetchAllDevices() {
     try {
       const backendDevices = await getAllDevicesApi();
@@ -124,15 +133,6 @@
       showToasterMessage('An error occurred while deleting the device. Please try again.', 'error');
       // alert('An error occurred while deleting the device. Please try again.');
     }
-  }
-
-  function showToasterMessage(message, type) {
-    toasterMessage = message;
-    toasterType = type;
-    showToaster = true;
-    setTimeout(() => {
-      showToaster = false;
-    }, 3000); // Show toast for 3 seconds
   }
 
   function closeConfirmationModal() {
