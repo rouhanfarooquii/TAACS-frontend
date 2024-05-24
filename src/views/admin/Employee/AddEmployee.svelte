@@ -93,7 +93,7 @@
   }
 
   function validatePhoneFormat(phone) {
-    const re = /^03\d{2}-\d{7}$/;
+    const re = /^03\d{9}$/;
     return re.test(phone);
   }
 
@@ -140,7 +140,7 @@
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
     } else if (!validatePhoneFormat(mobileNumber)) {
-      document.getElementById('phone-number-error').innerText = '* Number must follow the format 03xx-xxxxxxx';
+      document.getElementById('phone-number-error').innerText = '* Number must follow the format 03xxxxxxxxx';
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
     } else {
