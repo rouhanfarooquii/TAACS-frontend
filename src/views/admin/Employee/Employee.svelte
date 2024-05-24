@@ -123,38 +123,16 @@
     navigate('/admin/addemployee');
   }
 
-  // async function deleteEmployee() {
-  //   try {
-  //     const msg = await deleteEmployeeApi(empToDelete._id);
-  //     console.log(msg);
-  //     // showToasterMessage('Employee deleted successfully!', 'success');
-  //     closeConfirmationModal();
-  //     filteredEmployees = await getAllEmployeesApi();
-  //   } catch (error) {
-  //     console.error('Failed to delete employee:', error);
-  //     // showToasterMessage('An error occurred while deleting employee. Please try again.', 'error');
-  //   }
-  // }
-
   async function deleteEmployee() {
-  try {
-    if (empToDelete) {
-      await deleteEmployeeApi(empToDelete._id);
-      console.log('Employee deleted successfully!');
-      closeConfirmationModal();
-      employees = employees.filter(employee => employee._id !== empToDelete._id);
-      filteredEmployees = employees; // Update filtered employees
-
-      // Reset the deletion state
-      empToDelete = null;
-      // showToasterMessage('Employee deleted successfully!', 'success');
+    try {
+        const msg = await deleteEmployeeApi(empToDelete._id);
+        console.log(msg);
+        closeConfirmationModal();  // Ensure the modal is closed after deletion
+        filteredEmployees = await getAllEmployeesApi();
+    } catch (error) {
+        console.error('Failed to delete employee:', error);
     }
-  } catch (error) {
-    console.error('Failed to delete employee:', error);
-    // showToasterMessage('An error occurred while deleting employee. Please try again.', 'error');
   }
-}
-
 
   async function editEmployee() {
 
@@ -314,7 +292,7 @@
       </tr>
     </thead>
     <tbody>
-      {#each paginatedEmployees as employee, index}
+      {#each filteredEmployees as employee, index}
         <tr>
           <td class="table-data ">{(currentPage - 1) * itemsPerPage + index + 1}</td>
           <td class="table-data font-bold text-blueGray-600">{employee.name}</td>
@@ -341,7 +319,7 @@
     onConfirm={deleteEmployee}
     onCancel={closeConfirmationModal}
   />
-  {/if}
+{/if}
   {#if showModal}
     <div class="modal">
       <div class="modal-content">
@@ -651,4 +629,5 @@
       </div>
     </div>
   {/if}
+<!-- <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} /> -->
 </div>
