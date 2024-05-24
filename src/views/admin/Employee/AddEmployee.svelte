@@ -4,8 +4,6 @@
   import Multiselect from '../../../components/Dropdowns/MultiSelect.svelte';
   import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, addEmployeeApi } from '../../../services/api';
 
-  let selectedEmployee = null;
-
   let employeeID = '';
   let name = '';
   let mobileNumber = '';
@@ -29,7 +27,8 @@
   let trueDepartments = [];
   let trueShiftTimings = [];
 
-  let file = null
+  let file = null;
+  let imageUploadLabel = 'Upload';
 
   let locationsList = [];
   let departments = [];
@@ -88,20 +87,196 @@
     }
   }
 
-  async function handleSubmit() {
-    // if (!validateInputs()) {
-    //   return;
+  function validateEmailFormat(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  function validatePhoneFormat(phone) {
+    const re = /^03\d{2}-\d{7}$/;
+    return re.test(phone);
+  }
+
+  function validateInputs() {
+  let isValid = true;
+
+    // const employeeID = document.getElementById('employeeID').value;
+    // const name = document.getElementById('name').value;
+    // const mobileNumber = document.getElementById('phone-number').value;
+    // const department = document.getElementById('department').value;
+    // const designation = document.getElementById('designation').value;
+    // const gender = document.getElementById('gender').value;
+    // const email = document.getElementById('email').value;
+    // const address = document.getElementById('address').value;
+    // const dateOfBirth = document.getElementById('date-of-birth').value;
+    // const cardIdNumber = document.getElementById('card-id').value;
+    // const personalPassword = document.getElementById('personal-password').value;
+    // const salary = document.getElementById('salary').value;
+    // const shiftTiming = document.getElementById('shiftTiming').value;
+    // const locations = document.getElementById('locations').value;
+
+    if (!employeeID) {
+      document.getElementById('id-error').innerText = '* Field Required';
+      document.getElementById('id-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('id-error').style.display = 'none';
+    }
+
+    if (!name) {
+      document.getElementById('name-error').innerText = '* Field Required';
+      document.getElementById('name-error').style.display = 'block';
+      isValid = false;
+    } else if (/\d/.test(name)) {
+      document.getElementById('name-error').innerText = '* Wrong Format';
+      document.getElementById('name-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('name-error').style.display = 'none';
+    }
+
+    if (!mobileNumber) {
+      document.getElementById('phone-number-error').innerText = '* Field Required';
+      document.getElementById('phone-number-error').style.display = 'block';
+      isValid = false;
+    } else if (!validatePhoneFormat(mobileNumber)) {
+      document.getElementById('phone-number-error').innerText = '* Number must follow the format 03xx-xxxxxxx';
+      document.getElementById('phone-number-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('phone-number-error').style.display = 'none';
+    }
+
+    if (!email) {
+      document.getElementById('email-error').innerText = '* Field Required';
+      document.getElementById('email-error').style.display = 'block';
+      isValid = false;
+    } else if (!validateEmailFormat(email)) {
+      document.getElementById('email-error').innerText = '* Invalid Email Format';
+      document.getElementById('email-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('email-error').style.display = 'none';
+    }
+
+    if (!department) {
+      document.getElementById('department-error').innerText = '* Field Required';
+      document.getElementById('department-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('department-error').style.display = 'none';
+    }
+    
+    if (!designation) {
+      document.getElementById('designation-error').innerText = '* Field Required';
+      document.getElementById('designation-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('designation-error').style.display = 'none';
+    }
+
+    if (!gender) {
+      document.getElementById('gender-error').innerText = '* Field Required';
+      document.getElementById('gender-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('gender-error').style.display = 'none';
+    }
+
+    if (!dateOfBirth) {
+      document.getElementById('date-of-birth-error').innerText = '* Field Required';
+      document.getElementById('date-of-birth-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('date-of-birth-error').style.display = 'none';
+    }
+
+    if (!address) {
+      document.getElementById('address-error').innerText = '* Field Required';
+      document.getElementById('address-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('address-error').style.display = 'none';
+    }
+
+    if (!cardIdNumber) {
+      document.getElementById('card-id-error').innerText = '* Field Required';
+      document.getElementById('card-id-error').style.display = 'block';
+      isValid = false;
+    } else if (cardIdNumber.length !== 10) {
+      document.getElementById('card-id-error').innerText = '* card ID must contain 10 digits';
+      document.getElementById('card-id-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('card-id-error').style.display = 'none';
+    }
+
+    if (!personalPassword) {
+      document.getElementById('personal-password-error').innerText = '* Field Required';
+      document.getElementById('personal-password-error').style.display = 'block';
+      isValid = false;
+    } else if (personalPassword.length !== 6) {
+      document.getElementById('personal-password-error').innerText = '* Password must contain 6 digits';
+      document.getElementById('personal-password-error').style.display = 'block';
+      isValid = false;
+    } else if (!/^\d{6}$/.test(personalPassword)) {
+      document.getElementById('personal-password-error').innerText = '* Password must contain only numbers';
+      document.getElementById('personal-password-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('personal-password-error').style.display = 'none';
+    }
+
+    if (!shiftTiming) {
+      document.getElementById('shift-timing-error').innerText = '* Field Required';
+      document.getElementById('shift-timing-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('shift-timing-error').style.display = 'none';
+    }
+
+    if (!salary) {
+      document.getElementById('salary-error').innerText = '* Field Required';
+      document.getElementById('salary-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('salary-error').style.display = 'none';
+    }
+
+    // if (!locations) {
+    //   document.getElementById('locations-error').innerText = '* Field Required';
+    //   document.getElementById('locations-error').style.display = 'block';
+    //   isValid = false;
+    // } else {
+    //   document.getElementById('locations-error').style.display = 'none';
     // }
 
-
-    let loc = []
-    for (let index = 0; index < locations.length; index++) {
-      loc.push(trueLocations.find(o => o.title == locations[index])._id)
+    if (locations.length === 0) {
+      document.getElementById('locations-error').innerText = '* Please select at least one location';
+      document.getElementById('locations-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('locations-error').style.display = 'none';
     }
-    let dep = trueDepartments.find(o => o.title == department)
-    let des = dep.designations.find(o => o.title == designation)._id
-    dep = dep._id
-    let sif = trueShiftTimings.find(o => o.shiftName == shiftTiming)._id
+
+    ///////////////locations
+
+    return isValid;
+  }
+
+  async function handleSubmit() {
+    if (!validateInputs()) {
+      return;
+    }
+
+    let loc = [];
+    for (let index = 0; index < locations.length; index++) {
+      loc.push(trueLocations.find(o => o.title == locations[index])._id);
+    }
+    let dep = trueDepartments.find(o => o.title == department);
+    let des = dep.designations.find(o => o.title == designation)._id;
+    dep = dep._id;
+    let sif = trueShiftTimings.find(o => o.shiftName == shiftTiming)._id;
 
     const formData = new FormData();
     formData.append('employeeID', employeeID);
@@ -126,210 +301,27 @@
 
     try {
       await addEmployeeApi(formData);
-      navigateToEmployee()
+      navigateToEmployee();
     } catch (error) {
-      console.error('Error adding space:', error);
+      console.error('Error adding employee:', error);
     }
   }
 
   function handleFileInputChange(event) {
-  file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const newImageSrc = e.target.result;
-      document.getElementById('profile-image').src = newImageSrc;
-      document.querySelector('label[for="profile-pic"]').textContent = 'Edit';
-    };
-    reader.readAsDataURL(file);
+    file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const newImageSrc = e.target.result;
+        document.getElementById('profile-image').src = newImageSrc;
+        imageUploadLabel = 'Edit';
+      };
+      reader.readAsDataURL(file);
+    }
   }
-}
-
 
   function navigateToEmployee() {
     navigate('/admin/employee');
-  }
-
-  function validateInputs() {
-  let isValid = true;
-
-  if (!file) {
-    document.getElementById('file-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('file-error').style.display = 'none';
-  }
-
-  if (!employeeID) {
-    document.getElementById('employeeID-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('employeeID-error').style.display = 'none';
-  }
-
-  // Check for unique employee ID
-  if (!isUniqueEmployeeID(employeeID)) {
-    document.getElementById('employeeID-error').innerText = '* Employee ID must be unique';
-    document.getElementById('employeeID-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('employeeID-error').innerText = '* Field Required';
-  }
-
-  if (!name) {
-    document.getElementById('name-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('name-error').style.display = 'none';
-  }
-
-  if (!mobileNumber) {
-    document.getElementById('phone-number-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('phone-number-error').style.display = 'none';
-  }
-
-  if (!/^\d{4}-\d{7}$/.test(mobileNumber)) {
-    document.getElementById('phone-number-format-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('phone-number-format-error').style.display = 'none';
-  }
-
-  if (!department) {
-    document.getElementById('department-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('department-error').style.display = 'none';
-  }
-
-  if (!designation) {
-    document.getElementById('designation-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('designation-error').style.display = 'none';
-  }
-
-  if (!email) {
-    document.getElementById('email-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('email-error').style.display = 'none';
-  }
-
-  if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
-    document.getElementById('email-format-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('email-format-error').style.display = 'none';
-  }
-
-  // Check for unique email
-  if (!isUniqueEmail(email)) {
-    document.getElementById('email-error').innerText = '* Email must be unique';
-    document.getElementById('email-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('email-error').innerText = '* Field Required';
-  }
-
-  if (!gender) {
-    document.getElementById('gender-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('gender-error').style.display = 'none';
-  }
-
-  if (!dateOfBirth) {
-    document.getElementById('date-of-birth-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('date-of-birth-error').style.display = 'none';
-  }
-
-  if (!address) {
-    document.getElementById('address-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('address-error').style.display = 'none';
-  }
-
-  if (!cardIdNumber) {
-    document.getElementById('card-id-error').style.display = 'block';
-    isValid = false;
-  } else if (cardIdNumber.length > 10) {
-    document.getElementById('card-id-error').innerText = '* Card ID must be 10 digits or less';
-    document.getElementById('card-id-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('card-id-error').style.display = 'none';
-  }
-
-  if (!personalPassword) {
-    document.getElementById('personal-password-error').style.display = 'block';
-    isValid = false;
-  } else if (personalPassword.length !== 6) {
-    document.getElementById('personal-password-error').innerText = '* Personal Password must be 6 digits';
-    document.getElementById('personal-password-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('personal-password-error').style.display = 'none';
-  }
-
-  if (!salary) {
-    document.getElementById('salary-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('salary-error').style.display = 'none';
-  }
-
-  if (!locations || locations.length === 0) {
-    document.getElementById('locations-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('locations-error').style.display = 'none';
-  }
-
-  if (!shiftTiming) {
-    document.getElementById('shift-timing-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('shift-timing-error').style.display = 'none';
-  }
-
-  if (!isFingerAdded) {
-    document.getElementById('finger-added-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('finger-added-error').style.display = 'none';
-  }
-
-  if (!active) {
-    document.getElementById('active-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('active-error').style.display = 'none';
-  }
-
-  return isValid;
-}
-
-function isUniqueEmployeeID(employeeID) {
-  // Implement the logic to check for unique employee ID
-  return true;
-}
-
-function isUniqueEmail(email) {
-  // Implement the logic to check for unique email
-  return true;
-}
-
-
-  let showPassword = false;
-
-  function togglePasswordVisibility() {
-    showPassword = !showPassword;
   }
 
   $: availableDesignations = department ? departments.find(d => d.title === department)?.designations || [] : [];
@@ -340,8 +332,7 @@ function isUniqueEmail(email) {
     <!-- svelte-ignore a11y-img-redundant-alt -->
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
-    <label id="upload-label" for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
-    <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+    <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">{imageUploadLabel}</label>
   </div>
 
   <div class="divider"></div>
@@ -350,11 +341,11 @@ function isUniqueEmail(email) {
   <div class="flex justify-between mb-4">
     <!-- Filter by EmployeeID -->
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employeeId">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employeeID">
         Employee ID:
       </label>
-      <input type="text" id="employeeID" placeholder="Employee ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeID}>
-      <span id="employeeID-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <input type="number"  min="0" id="employeeID" placeholder="Employee ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeID}>
+      <span id="id-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Name -->
     <div class="relative mb-3">
@@ -362,7 +353,7 @@ function isUniqueEmail(email) {
         Name:
       </label>
       <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={name}>
-      <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="name-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Phone Number -->
     <div class="relative mb-3">
@@ -370,8 +361,7 @@ function isUniqueEmail(email) {
         Phone Number:
       </label>
       <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={mobileNumber}>
-      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-      <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - 11 digits</span>
+      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Email -->
     <div class="relative mb-3">
@@ -379,8 +369,7 @@ function isUniqueEmail(email) {
         Email:
       </label>
       <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={email}>
-      <span id="email-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-      <span id="email-format-error" class="text-red-600 text-xs" style="display: none;">Email format incorrect</span>
+      <span id="email-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
@@ -397,7 +386,7 @@ function isUniqueEmail(email) {
           <option value={dept.title}>{dept.title}</option>
         {/each}
       </select>
-      <span id="department-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="department-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Designation -->
     <div class="relative mb-3">
@@ -410,17 +399,16 @@ function isUniqueEmail(email) {
           <option value={desig.title}>{desig.title}</option>
         {/each}
       </select>
-      <span id="designation-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="designation-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Gender -->
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Gender:</label>
-      <select id="filterActive" name="filterActive" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}">
+      <select id="gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
-        <option value="Other">Prefer Not To Say</option>
       </select>
-      <span id="gender-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="gender-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Date of Birth -->
     <div class="relative mb-3">
@@ -428,7 +416,7 @@ function isUniqueEmail(email) {
         Date of birth:
       </label>
       <input type="date" id="date-of-birth" placeholder="Date of birth" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateOfBirth}>
-      <span id="date-of-birth-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="date-of-birth-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
@@ -440,7 +428,7 @@ function isUniqueEmail(email) {
         Address:
       </label>
       <textarea id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={address}></textarea>
-      <span id="address-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="address-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
     
@@ -451,8 +439,8 @@ function isUniqueEmail(email) {
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="card-id">
         Card ID:
       </label>
-      <input type="text" id="card-id" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber}>
-      <span id="card-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <input type="number" id="card-id" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber}>
+      <span id="card-id-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Personal Password -->
     <div class="relative mb-3 w-1/2">
@@ -460,9 +448,9 @@ function isUniqueEmail(email) {
         Personal Password:
       </label>
       <div class="relative">
-      <input type='password' id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
+      <input type='password' inputmode="numeric" pattern="[0-9]*" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
       </div>
-      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
     
@@ -473,14 +461,14 @@ function isUniqueEmail(email) {
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-1">
         Finger Index 1:
       </label>
-      <input type="text" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex1}>
+      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex1}>
     </div>
     <!-- Filter by Finger Index 2 -->
     <div class="relative mb-3 w-4/10">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-2">
         Finger Index 2:
       </label>
-      <input type="text" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex2}>
+      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex2}>
     </div>
     <!-- Filter by Finger Added -->
     <div class="relative mb-3">
@@ -488,41 +476,41 @@ function isUniqueEmail(email) {
         Finger Added:
       </label>
       <label class="switch">
-        <input type="checkbox" id="status" class="hidden" bind:checked={isFingerAdded}>
+        <input type="checkbox" id="finger-added" class="hidden" bind:checked={isFingerAdded}>
         <span class="slider round"></span> 
       </label>
-      <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
         Active:
       </label>
       <label class="switch">
-        <input type="checkbox" id="status" class="hidden" bind:checked={active}>
+        <input type="checkbox" id="active" class="hidden" bind:checked={active}>
         <span class="slider round"></span> 
       </label>
-      <span id="active-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="active-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
   <!-- Filters Row 6 -->
   <div class="flex justify-between mb-4">
     <!-- Filter by Shift Timing -->
-<div class="relative mb-3">
-  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
-  <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftTiming}>
-    <option value="" disabled selected>Select Shift Timing</option>
-    {#each shiftTimings as shift}
-      <option value={shift}>{shift}</option>
-    {/each}
-  </select>
-  <span id="shift-timing-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-</div>
+    <div class="relative mb-3">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
+      <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftTiming}>
+        <option value="" disabled selected>Select Shift Timing</option>
+        {#each shiftTimings as shift}
+          <option value={shift}>{shift}</option>
+        {/each}
+      </select>
+      <span id="shift-timing-error" class="text-red-600 text-xs" style="display: none;"></span>
+    </div>
     <!-- Filter by Accessible Locations -->
     <div class="relative mb-3 w-1/2">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleDevices">Accessible locations</label>
-      <Multiselect bind:selectedOptions={locations} options={locationsList} placeholder="Select Location" />
-      <span id="locations-error" class="text-red-600 text-xs" style="display: none;">* Please select a room</span>
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleLocations">Accessible locations</label>
+      <Multiselect bind:selectedOptions={locations} options={locationsList} id="locations" placeholder="Select Location" />
+      <span id="locations-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Salary -->
     <div class="relative mb-3">
@@ -530,7 +518,7 @@ function isUniqueEmail(email) {
         Salary:
       </label>
       <input type="number" min="0" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={salary}>
-      <span id="salary-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="salary-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
