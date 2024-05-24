@@ -107,6 +107,19 @@
   }
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  function navigateToLeave() {
+    navigate('/user/leaveform');
+  }
+
+  function navigateToVisitor() {
+    navigate('/user/visitors');
+  }
+
+  function navigateToProfile() {
+    navigate('/user/profile');
+  }
+
 </script>
 
 <div>
@@ -156,6 +169,22 @@
                     class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 max-w-150-px"
                     style="left: 50%; transform: translateX(-50%);"
                   />
+                </div>
+              </div>
+              <div
+                class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center"
+              >
+                <div class="py-6 px-3 mt-32 sm:mt-0">
+                  <button
+                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                    type="button" on:click={navigateToProfile}>
+                    Go Back
+                  </button>
+                  <button
+                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                    type="button" on:click={navigateToLeave}>
+                    Request A Leave
+                  </button>
                 </div>
               </div>
               <div class="w-full lg:w-4/12 px-4 lg:order-1">

@@ -70,6 +70,10 @@
     navigate('/user/leaveform');
   }
 
+  function navigateToVisitor() {
+    navigate('/user/visitors');
+  }
+
   function navigateToAttendance() {
     navigate('/user/attendance');
   }
@@ -143,8 +147,8 @@
                   </button>
                   <button
                     class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={navigateToLeave}>
-                    Request A Leave
+                    type="button" on:click={navigateToVisitor}>
+                    File Visitor Request
                   </button>
                 </div>
               </div>
@@ -241,5 +245,4 @@
       </div>
     </section>
   </main>
-  <Footer />
 </div>

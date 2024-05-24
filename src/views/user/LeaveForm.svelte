@@ -67,10 +67,9 @@
         }
     }
 
-    function goBack() {
-        navigate('/user/profile');
-        console.log("Navigated back");
-    }
+    function navigateToProfile() {
+    navigate('/user/profile');
+  }
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -136,7 +135,7 @@
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
         Submit
     </button>
-    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={goBack}>
+    <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToProfile}>
         Cancel
     </button>
 </div>
