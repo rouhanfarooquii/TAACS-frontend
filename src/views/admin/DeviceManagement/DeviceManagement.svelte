@@ -82,17 +82,22 @@
         return;
       }
 
-      console.log('Adding device:', { deviceName, deviceId, deviceIp, status });
+      // console.log('Adding device:', { deviceName, deviceId, deviceIp, status });
 
-      await addDeviceApi({
+      let res = await addDeviceApi({
         deviceName,
         deviceId,
         ip: deviceIp,
         status: status ? 'Active' : 'Inactive',
         hide: false
       });
+      if(res == "Device not found online"){
+        showToasterMessage('Device not found online', 'error');
+      }
+      else{
+        showToasterMessage('Device added successfully!', 'success');
+      }
       await fetchAllDevices();
-      showToasterMessage('Device added successfully!', 'success');
       closeModal();
     } catch (error) {
       console.error('Error:', error);
