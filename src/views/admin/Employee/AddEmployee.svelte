@@ -325,6 +325,12 @@
     navigate('/admin/employee');
   }
 
+  function restrictInput(event) {
+    const input = event.target;
+    const value = input.value;
+    input.value = value.replace(/[^0-9]/g, '');
+  }
+
   $: availableDesignations = department ? departments.find(d => d.title === department)?.designations || [] : [];
 </script>
 
@@ -361,8 +367,9 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
         Phone Number:
       </label>
-      <input type="number" id="phone-number" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={mobileNumber}>
-      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;"></span>
+      <input type="text" id="phone-number" maxlength="11" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={mobileNumber} on:input="{restrictInput}">
+      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - xxxx-xxxxxxx</span>
     </div>
     <!-- Filter by Email -->
     <div class="relative mb-3">
@@ -440,18 +447,16 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="card-id">
         Card ID:
       </label>
-      <input type="number" id="card-id" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber}>
-      <span id="card-id-error" class="text-red-600 text-xs" style="display: none;"></span>
+      <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber} on:input="{restrictInput}">
+      <span id="card-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
     <!-- Filter by Personal Password -->
     <div class="relative mb-3 w-1/2">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="personal-password">
         Personal Password:
       </label>
-      <div class="relative">
-      <input type='password' inputmode="numeric" pattern="[0-9]*" id="personal-password" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
-      </div>
-      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;"></span>
+      <input type="text" id="personal-password" maxlength="6" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword} on:input="{restrictInput}">
+      <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
   </div>
     
