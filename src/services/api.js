@@ -556,6 +556,18 @@ export async function updateShiftTimingApi(obj){
     return await msg;
 };
 
+export async function batchDeleteShiftTimingApi(obj){
+    const response = await fetch(BACKEND + 'shiftTiming/deleteAll', {
+        method: 'POST',
+        observe: 'body',
+        headers: headers,
+        body: JSON.stringify({shiftTiming: obj})
+    })
+    const responseObj = await response.json();
+    const msg = await responseObj.msg;
+    return await msg;
+};
+
 export async function deleteShiftTimingApi(id){
     const response = await fetch(BACKEND + 'shiftTiming/delete/' + id, {
         method: 'POST',
@@ -565,6 +577,7 @@ export async function deleteShiftTimingApi(id){
     const msg = await responseObj.msg;
     return await msg;
 };
+
 
 // Visitors API
 export async function getAllVisitorsApi() {

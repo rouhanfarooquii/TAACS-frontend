@@ -2,7 +2,7 @@
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { onMount } from 'svelte';
-  import { getAllShiftTimingsApi } from '../../../services/api';
+  import { getAllShiftTimingsApi, addShiftTimingApi, updateShiftTimingApi, deleteShiftTimingApi, batchDeleteShiftTimingApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
@@ -12,8 +12,13 @@
   let editModal = false;
 
   let shifts = [];
-
   const shiftTypes = ["Morning", "Evening", "Night", "Half Day", "custom"];
+
+  let selectedShifts = new Set();
+  let searchQuery = '';
+
+  const shiftsPerPage = 5; 
+  let currentPage = 1;
 
   onMount(async () => {
     await fetchShifts();
@@ -29,8 +34,37 @@
     }
   }
 
-  function deleteShift(id) {
-    shifts = shifts.filter(shift => shift._id !== id);
+  async function addShift(obj) {
+    try {
+      const msg = await addShiftTimingApi(obj);
+      console.log(msg);
+      await fetchShifts(); 
+    } catch (error) {
+      console.error("Error adding shift:", error);
+    }
+  }
+
+  async function updateShift(obj) {
+    try {
+      const msg = await updateShiftTimingApi(obj);
+      console.log(msg);
+      await fetchShifts(); // Refresh the shift list
+    } catch (error) {
+      console.error("Error updating shift:", error);
+    }
+  }
+
+  async function deleteShift(id) {
+    try {
+      console.log(id)
+      return
+      const msg = await deleteShiftTimingApi(id);
+      console.log(msg);
+      // Update the shifts array to remove the deleted shift
+      shifts = shifts.filter(shift => shift._id !== id);
+    } catch (error) {
+      console.error("Error deleting shift:", error);
+    }
   }
 
   function viewShift(shift) {
@@ -75,8 +109,6 @@
     return breaks.map(b => `${b.start} - ${b.end}`).join(', ');
   }
 
-  let selectedShifts = new Set();
-
   function toggleSelection(shiftId) {
     if (selectedShifts.has(shiftId)) {
       selectedShifts.delete(shiftId);
@@ -95,13 +127,20 @@
     selectedShifts = new Set(selectedShifts); // Force rerender
   }
 
-  function deleteSelectedShifts() {
-    selectedShifts.forEach(id => deleteShift(id));
-    selectedShifts.clear();
-  }
+  async function deleteSelectedShifts() {
 
-  const shiftsPerPage = 5; // Adjust as needed
-  let currentPage = 1;
+    let ids = [...selectedShifts]
+    console.log(ids)
+
+    try {
+      const msg = await batchDeleteShiftTimingApi({ids: ids});
+      console.log(msg);
+      await fetchShifts(); 
+    } catch (error) {
+      console.error("Error adding shift:", error);
+    }
+
+  }
 
   $: startIndex = (currentPage - 1) * shiftsPerPage;
   $: endIndex = Math.min(startIndex + shiftsPerPage, filteredShifts.length);
@@ -114,8 +153,6 @@
   function handlePageChange(event) {
     currentPage = event.detail.pageNumber;
   }
-
-  let searchQuery = '';
 
   $: searchResultText = searchQuery
     ? filteredShifts.length > 0
@@ -173,13 +210,14 @@
     <table class="items-center w-full bg-transparent border-collapse">
       <thead>
         <tr>
-          <th class="bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"><input type="checkbox" class="rounded" on:click={toggleSelectAll}></th>
+          <th class="bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+            <input type="checkbox" class="rounded" on:click={toggleSelectAll}>
+          </th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Shift Name/Title</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Start Time</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">End Time</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Date From</th>
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Date To</th>
-          <!-- <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Location</th> -->
           <th class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Shift Type</th>
           <th class="px-6 text-center border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}">Actions</th>
         </tr>
@@ -187,13 +225,14 @@
       <tbody>
         {#each displayedShifts as shift (shift._id)}
         <tr>
-          <td class="table-date"><input type="checkbox" checked={selectedShifts.has(shift._id)} class="rounded" on:click={() => toggleSelection(shift._id)}></td>
+          <td class="table-date">
+            <input type="checkbox" checked={selectedShifts.has(shift._id)} class="rounded" on:click={() => toggleSelection(shift._id)}>
+          </td>
           <td class='table-data font-bold text-blueGray-600 wrap-text'>{shift.shiftName}</td>
           <td class='table-data'>{shift.startTime}</td>
           <td class='table-data'>{shift.endTime}</td>
           <td class='table-data'>{shift.dateFrom}</td>
           <td class='table-data'>{shift.dateTo}</td>
-          <!-- <td class='table-data'>{shift.location}</td> -->
           <td class='table-data'>{shift.shiftType === 'custom' ? shift.customShiftType : shift.shiftType}</td>
           <td class='table-data'>
             <div class="flex items-center">
