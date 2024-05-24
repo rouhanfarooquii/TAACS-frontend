@@ -133,159 +133,198 @@
   }
 
   function handleFileInputChange(event) {
-    file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newImageSrc = e.target.result;
-        document.getElementById('profile-image').src = newImageSrc;
-      };
-      reader.readAsDataURL(file);
-    }
+  file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const newImageSrc = e.target.result;
+      document.getElementById('profile-image').src = newImageSrc;
+      document.querySelector('label[for="profile-pic"]').textContent = 'Edit';
+    };
+    reader.readAsDataURL(file);
   }
+}
+
 
   function navigateToEmployee() {
     navigate('/admin/employee');
   }
 
   function validateInputs() {
-    let isValid = true;
+  let isValid = true;
 
-    if (!file) {
-      document.getElementById('file-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('file-error').style.display = 'none';
-    }
-
-    if (!employeeID) {
-      document.getElementById('employeeID-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('employeeID-error').style.display = 'none';
-    }
-
-    if (!name) {
-      document.getElementById('name-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('name-error').style.display = 'none';
-    }
-
-    if (!mobileNumber) {
-      document.getElementById('phone-number-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('phone-number-error').style.display = 'none';
-    }
-
-    if (!/^\d{11}$/.test(mobileNumber)) {
-      document.getElementById('phone-number-format-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('phone-number-format-error').style.display = 'none';
-    }
-
-    if (!department) {
-      document.getElementById('department-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('department-error').style.display = 'none';
-    }
-
-    if (!designation) {
-      document.getElementById('designation-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('designation-error').style.display = 'none';
-    }
-
-    if (!email) {
-      document.getElementById('email-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('email-error').style.display = 'none';
-    }
-
-    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
-      document.getElementById('email-format-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('email-format-error').style.display = 'none';
-    }
-
-    if (!gender) {
-      document.getElementById('gender-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('gender-error').style.display = 'none';
-    }
-
-    if (!dateOfBirth) {
-      document.getElementById('date-of-birth-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('date-of-birth-error').style.display = 'none';
-    }
-
-    if (!address) {
-      document.getElementById('address-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('address-error').style.display = 'none';
-    }
-
-    if (!cardIdNumber) {
-      document.getElementById('card-id-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('card-id-error').style.display = 'none';
-    }
-
-    if (!personalPassword) {
-      document.getElementById('personal-password-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('personal-password-error').style.display = 'none';
-    }
-
-    if (!salary) {
-      document.getElementById('salary-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('salary-error').style.display = 'none';
-    }
-
-    if (!locations) {
-      document.getElementById('locations-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('locations-error').style.display = 'none';
-    }
-
-    if (!shiftTiming) {
-      document.getElementById('shift-timing-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('shift-timing-error').style.display = 'none';
-    }
-
-    if (!isFingerAdded) {
-      document.getElementById('finger-added-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('finger-added-error').style.display = 'none';
-    }
-
-    if (!active) {
-      document.getElementById('active-error').style.display = 'block';
-      isValid = false;
-    } else {
-      document.getElementById('active-error').style.display = 'none';
-    }
-
-    return isValid;
+  if (!file) {
+    document.getElementById('file-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('file-error').style.display = 'none';
   }
+
+  if (!employeeID) {
+    document.getElementById('employeeID-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('employeeID-error').style.display = 'none';
+  }
+
+  // Check for unique employee ID
+  if (!isUniqueEmployeeID(employeeID)) {
+    document.getElementById('employeeID-error').innerText = '* Employee ID must be unique';
+    document.getElementById('employeeID-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('employeeID-error').innerText = '* Field Required';
+  }
+
+  if (!name) {
+    document.getElementById('name-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('name-error').style.display = 'none';
+  }
+
+  if (!mobileNumber) {
+    document.getElementById('phone-number-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('phone-number-error').style.display = 'none';
+  }
+
+  if (!/^\d{4}-\d{7}$/.test(mobileNumber)) {
+    document.getElementById('phone-number-format-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('phone-number-format-error').style.display = 'none';
+  }
+
+  if (!department) {
+    document.getElementById('department-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('department-error').style.display = 'none';
+  }
+
+  if (!designation) {
+    document.getElementById('designation-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('designation-error').style.display = 'none';
+  }
+
+  if (!email) {
+    document.getElementById('email-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('email-error').style.display = 'none';
+  }
+
+  if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
+    document.getElementById('email-format-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('email-format-error').style.display = 'none';
+  }
+
+  // Check for unique email
+  if (!isUniqueEmail(email)) {
+    document.getElementById('email-error').innerText = '* Email must be unique';
+    document.getElementById('email-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('email-error').innerText = '* Field Required';
+  }
+
+  if (!gender) {
+    document.getElementById('gender-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('gender-error').style.display = 'none';
+  }
+
+  if (!dateOfBirth) {
+    document.getElementById('date-of-birth-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('date-of-birth-error').style.display = 'none';
+  }
+
+  if (!address) {
+    document.getElementById('address-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('address-error').style.display = 'none';
+  }
+
+  if (!cardIdNumber) {
+    document.getElementById('card-id-error').style.display = 'block';
+    isValid = false;
+  } else if (cardIdNumber.length > 10) {
+    document.getElementById('card-id-error').innerText = '* Card ID must be 10 digits or less';
+    document.getElementById('card-id-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('card-id-error').style.display = 'none';
+  }
+
+  if (!personalPassword) {
+    document.getElementById('personal-password-error').style.display = 'block';
+    isValid = false;
+  } else if (personalPassword.length !== 6) {
+    document.getElementById('personal-password-error').innerText = '* Personal Password must be 6 digits';
+    document.getElementById('personal-password-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('personal-password-error').style.display = 'none';
+  }
+
+  if (!salary) {
+    document.getElementById('salary-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('salary-error').style.display = 'none';
+  }
+
+  if (!locations || locations.length === 0) {
+    document.getElementById('locations-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('locations-error').style.display = 'none';
+  }
+
+  if (!shiftTiming) {
+    document.getElementById('shift-timing-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('shift-timing-error').style.display = 'none';
+  }
+
+  if (!isFingerAdded) {
+    document.getElementById('finger-added-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('finger-added-error').style.display = 'none';
+  }
+
+  if (!active) {
+    document.getElementById('active-error').style.display = 'block';
+    isValid = false;
+  } else {
+    document.getElementById('active-error').style.display = 'none';
+  }
+
+  return isValid;
+}
+
+function isUniqueEmployeeID(employeeID) {
+  // Implement the logic to check for unique employee ID
+  return true;
+}
+
+function isUniqueEmail(email) {
+  // Implement the logic to check for unique email
+  return true;
+}
+
 
   let showPassword = false;
 
@@ -301,7 +340,7 @@
     <!-- svelte-ignore a11y-img-redundant-alt -->
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
-    <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
+    <label id="upload-label" for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
     <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
   </div>
 
@@ -315,7 +354,7 @@
         Employee ID:
       </label>
       <input type="text" id="employeeID" placeholder="Employee ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeID}>
-      <span id="id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <span id="employeeID-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
     <!-- Filter by Name -->
     <div class="relative mb-3">

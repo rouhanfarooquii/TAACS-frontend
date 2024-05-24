@@ -36,9 +36,6 @@
   let departments =[]
 
   let file = null
-
-  let currentPage = 1;
-  let itemsPerPage = 5;
   
   let confirmationModal = false;
   let empToDelete = null;
@@ -52,8 +49,6 @@
     confirmationModal = false;
     empToDelete = null;
   }
-
-  $: paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   onMount(async () => {
     await fetchEmployees();
@@ -99,25 +94,27 @@
   }
 
   function applyFilters() {
-    filteredEmployees = employees.filter(employee => {
-      const matchesSearch = filters.search === '' ||
-        employee.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        employee.department.toLowerCase().includes(filters.search.toLowerCase()) ||
-        employee.designation.toLowerCase().includes(filters.search.toLowerCase());
+  currentPage = 1;
+  filteredEmployees = employees.filter(employee => {
+    const matchesSearch = filters.search === '' ||
+      employee.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      employee.department.toLowerCase().includes(filters.search.toLowerCase()) ||
+      employee.designation.toLowerCase().includes(filters.search.toLowerCase());
 
-      const matchesActive = filters.active === '' ||
-        (filters.active === 'true' && employee.active) ||
-        (filters.active === 'false' && !employee.active);
+    const matchesActive = filters.active === '' ||
+      (filters.active === 'true' && employee.active) ||
+      (filters.active === 'false' && !employee.active);
 
-      return matchesSearch && matchesActive;
-    });
-  }
+    return matchesSearch && matchesActive;
+  });
+}
 
-  function clearFilters() {
-    filters.search = '';
-    filters.active = '';
-    filteredEmployees = employees;
-  }
+function clearFilters() {
+  filters.search = '';
+  filters.active = '';
+  currentPage = 1;
+  filteredEmployees = employees;
+}
 
   function navigateToAddEmployee() {
     navigate('/admin/addemployee');
@@ -236,9 +233,21 @@
 
   $: availableDesignations = selectedEmployee?.department ? (trueDepartments.find(d => d.title === selectedEmployee?.department)?.designations).map(o => o.title) || [] : [];
 
-  function handlePageChange(event) {
-    currentPage = event.detail.pageNumber;
-  }
+  // $: paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const itemsPerPage = 5;
+let currentPage = 1;
+
+$: startIndex = (currentPage - 1) * itemsPerPage;
+$: endIndex = Math.min(startIndex + itemsPerPage, filteredEmployees.length);
+$: displayedEmployees = filteredEmployees.slice(startIndex, endIndex);
+$: totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+
+function handlePageChange(event) {
+  currentPage = event.detail.pageNumber;
+}
+
+let searchQuery = '';
+
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -292,7 +301,7 @@
       </tr>
     </thead>
     <tbody>
-      {#each filteredEmployees as employee, index}
+      {#each displayedEmployees as employee, index}
         <tr>
           <td class="table-data ">{(currentPage - 1) * itemsPerPage + index + 1}</td>
           <td class="table-data font-bold text-blueGray-600">{employee.name}</td>
@@ -311,7 +320,8 @@
     </tbody>
   </table>
 
-  <Pagination {currentPage} {itemsPerPage} totalItems={filteredEmployees.length} on:pageChange={handlePageChange} />
+  <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} />
+  <!-- <Pagination {currentPage} {itemsPerPage} totalItems={filteredEmployees.length} on:pageChange={handlePageChange} /> -->
 
   {#if confirmationModal}
   <ConfirmationModal
@@ -629,5 +639,5 @@
       </div>
     </div>
   {/if}
-<!-- <Pagination {currentPage} {totalPages} on:pageChange={handlePageChange} /> -->
+
 </div>
