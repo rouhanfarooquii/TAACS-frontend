@@ -567,15 +567,18 @@ export async function deleteShiftTimingApi(id){
 };
 
 // Visitors API
-export async function getAllVisitorsApi(){
-    const response = await fetch(BACKEND + 'visitor/getall',{
-        method: 'GET',
-        headers: headers,
+export async function getAllVisitorsApi() {
+    const response = await fetch(BACKEND + 'visitor/getAll', {
+      method: 'GET',
+      headers: headers,
     });
+    if (!response.ok) {
+      throw new Error('Failed to fetch visitors');
+    }
     const responseObj = await response.json();
-    const visitors = await responseObj.visitors;
-    return await visitors;
-};
+    return responseObj.visitors;
+  }
+  
 
 export async function addVisitorApi(obj){
     const response = await fetch(BACKEND + 'visitor/add', {
@@ -587,20 +590,24 @@ export async function addVisitorApi(obj){
     return await msg;
 };
 
-export async function updateVisitorApi(obj){
-    const response = await fetch(BACKEND + 'visitor/update', {
+export async function updateVisitorApprovedApi(id, obj){
+    const response = await fetch(`${BACKEND}visitor/approved/${id}`, {
         method: 'POST',
-        body: obj
+        observe: 'body',
+        headers: headers,
+        body: JSON.stringify({leave: obj})
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;
 };
 
-export async function deleteVisitorApi(id){
-    const response = await fetch(BACKEND + 'visitor/delete/' + id, {
+export async function updateVisitorRejectedApi(id, obj){
+    const response = await fetch(`${BACKEND}visitor/rejected/${id}`, {
         method: 'POST',
+        observe: 'body',
         headers: headers,
+        body: JSON.stringify({leave: obj})
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
