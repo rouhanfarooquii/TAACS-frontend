@@ -102,14 +102,14 @@
 
     // const employeeID = document.getElementById('employeeID').value;
     // const name = document.getElementById('name').value;
-    // const mobileNumber = document.getElementById('phone-number').value;
+    const mobileNumber = document.getElementById('phone-number').value.trim();
     // const department = document.getElementById('department').value;
     // const designation = document.getElementById('designation').value;
     // const gender = document.getElementById('gender').value;
     // const email = document.getElementById('email').value;
     // const address = document.getElementById('address').value;
     // const dateOfBirth = document.getElementById('date-of-birth').value;
-    // const cardIdNumber = document.getElementById('card-id').value;
+    const cardIdNumber = document.getElementById('card-id').value.trim();
     // const personalPassword = document.getElementById('personal-password').value;
     // const salary = document.getElementById('salary').value;
     // const shiftTiming = document.getElementById('shiftTiming').value;
@@ -140,6 +140,7 @@
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
     } else if (!validatePhoneFormat(mobileNumber)) {
+      console.log("Mobile Number:", mobileNumber);
       document.getElementById('phone-number-error').innerText = '* Number must follow the format 03xxxxxxxxx';
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
