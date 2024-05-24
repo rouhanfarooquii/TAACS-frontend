@@ -1,11 +1,10 @@
 <script>
   import { onMount } from 'svelte';
-  import { getAllEmployeesApi } from '../../../services/api';
+  import { getAllEmployeesApi, deleteEmployeeApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Multiselect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { navigate } from 'svelte-routing';
-
-
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
   import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi } from '../../../services/api';
 
 
@@ -40,6 +39,19 @@
 
   let currentPage = 1;
   let itemsPerPage = 5;
+  
+  let confirmationModal = false;
+  let empToDelete = null;
+
+  function showDeleteConfirmation(selectedEmployee) {
+    editModal = false;
+    empToDelete = selectedEmployee;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    empToDelete = null;
+  }
 
   $: paginatedEmployees = filteredEmployees.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -110,6 +122,39 @@
   function navigateToAddEmployee() {
     navigate('/admin/addemployee');
   }
+
+  // async function deleteEmployee() {
+  //   try {
+  //     const msg = await deleteEmployeeApi(empToDelete._id);
+  //     console.log(msg);
+  //     // showToasterMessage('Employee deleted successfully!', 'success');
+  //     closeConfirmationModal();
+  //     filteredEmployees = await getAllEmployeesApi();
+  //   } catch (error) {
+  //     console.error('Failed to delete employee:', error);
+  //     // showToasterMessage('An error occurred while deleting employee. Please try again.', 'error');
+  //   }
+  // }
+
+  async function deleteEmployee() {
+  try {
+    if (empToDelete) {
+      await deleteEmployeeApi(empToDelete._id);
+      console.log('Employee deleted successfully!');
+      closeConfirmationModal();
+      employees = employees.filter(employee => employee._id !== empToDelete._id);
+      filteredEmployees = employees; // Update filtered employees
+
+      // Reset the deletion state
+      empToDelete = null;
+      // showToasterMessage('Employee deleted successfully!', 'success');
+    }
+  } catch (error) {
+    console.error('Failed to delete employee:', error);
+    // showToasterMessage('An error occurred while deleting employee. Please try again.', 'error');
+  }
+}
+
 
   async function editEmployee() {
 
@@ -290,6 +335,13 @@
 
   <Pagination {currentPage} {itemsPerPage} totalItems={filteredEmployees.length} on:pageChange={handlePageChange} />
 
+  {#if confirmationModal}
+  <ConfirmationModal
+    message="Are you sure you want to delete this employee"
+    onConfirm={deleteEmployee}
+    onCancel={closeConfirmationModal}
+  />
+  {/if}
   {#if showModal}
     <div class="modal">
       <div class="modal-content">
@@ -416,20 +468,25 @@
   {/if}
 
   {#if editModal}
-    <div class="modal">
-      <div class="modal-content">
-        <div class="rounded-t mb-0 px-4 py-10 border-0">
-          <div class="flex flex-wrap items-center">
-            <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-              <h3 class="font-semibold text-lg text-blueGray-700">
-                Edit Employee
-              </h3>
-            </div>
+  <div class="modal">
+    <div class="modal-content">
+      <div class="rounded-t mb-0 px-4 py-10 border-0">
+        <div class="flex flex-wrap items-center">
+          <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+            <h3 class="font-semibold text-lg text-blueGray-700">
+              Edit Employee
+            </h3>
+          </div>
+          <div class="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
+            <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150"  on:click={() => showDeleteConfirmation(selectedEmployee)}>
+              Delete
+            </button>
           </div>
         </div>
-        <div class="block w-full overflow-x-auto">
-          <div class="px-4 py-5 flex-auto">
-            <div class="flex">
+      </div>
+      <div class="block w-full overflow-x-auto">
+        <div class="px-4 py-5 flex-auto">
+          <div class="flex">
               <div class="w-full lg:w-6/12 px-4">
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
