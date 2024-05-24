@@ -5,6 +5,8 @@
   import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
 
   export let color = "light";
+  
+  let file = null;
 
   let visitor = {
     name: '',
@@ -18,13 +20,14 @@
     reasonOfVisiting: '',
     fingerIndex1: '',
     fingerIndex2: '',
-    isFingerAdded: false
+    isFingerAdded: false,
+    file: null // Add file to the visitor object
   };
 
   const image = "../assets/img/10.jpg";
 
   function handleFileInputChange(event) {
-    const file = event.target.files[0];
+    file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -44,6 +47,16 @@
   function validateEmail(email) {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(String(email).toLowerCase());
+  }
+
+  function appendFormData(formData, data, parentKey = '') {
+    if (data && typeof data === 'object' && !(data instanceof File)) {
+      Object.keys(data).forEach(key => {
+        appendFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
+      });
+    } else {
+      formData.append(parentKey, data);
+    }
   }
 
   async function handleSubmit() {
@@ -92,22 +105,22 @@
     }
 
     if (valid) {
-    // if (true) {
-
-
-      visitor.requestor = "Admin"
-      visitor.status = "pending"
+      visitor.requestor = "Admin";
+      visitor.status = "pending";
       let tempdtosend = [];
 
       for (let i = 0; i < visitor.locations.length; i++) {
         tempdtosend.push(trueAccessibleRooms.find(loc => loc.title === visitor.locations[i])._id);
       }
 
-      visitor.locations = tempdtosend
+      visitor.locations = tempdtosend;
 
-      console.log(visitor)
+      const formData = new FormData();
+      appendFormData(formData, visitor);
+
+      console.log(visitor);
       try {
-        const response = await addVisitorApi(visitor);
+        const response = await addVisitorApi(formData);
         console.log('Visitor added successfully', response);
         alert('Visitor added successfully!');
       } catch (error) {
@@ -121,15 +134,26 @@
   let accessibleRooms = [];
 
   onMount(async () => {
+    const fileInput = document.getElementById('profile-pic');
+    fileInput.addEventListener('change', handleFileInputChange);
+
+    await fetchLocations();
+
+    return () => {
+      fileInput.removeEventListener('change', handleFileInputChange);
+    };
+  });
+
+  async function fetchLocations() {
     try {
       const locations = await getAllLocationsApi();
       trueAccessibleRooms = locations;
-      accessibleRooms = trueAccessibleRooms.map(loc => loc.title)
+      accessibleRooms = trueAccessibleRooms.map(loc => loc.title);
       console.log(accessibleRooms);
     } catch (error) {
       console.error('Error fetching locations:', error);
     }
-  });
+  }
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
