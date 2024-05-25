@@ -137,7 +137,6 @@
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
     } else if (!validatePhoneFormat(mobileNumber)) {
-      console.log("Mobile Number:", mobileNumber);
       document.getElementById('phone-number-error').innerText = '* Number must follow the format 03xxxxxxxxx';
       document.getElementById('phone-number-error').style.display = 'block';
       isValid = false;
