@@ -294,7 +294,6 @@
   }
 
   function closeModal() {
-    showModal = false;
     parkingSlot = '';
     location = '';
     carId = '';
@@ -303,6 +302,7 @@
     cardRfidNo = '';
     employeeId = '';
     resetValidationErrors();
+    showModal = false;
   }
 
   function resetValidationErrors() {

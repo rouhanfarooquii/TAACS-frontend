@@ -60,7 +60,8 @@
         try {
             const msg = await addLeaveApi(leaveObj);
             console.log(msg); // Log the message or handle it as needed
-            navigate('/success'); // Navigate to a success page or handle differently
+    navigate('/user/profile');
+
         } catch (error) {
             console.error('Failed to submit leave request:', error);
             // Handle errors, e.g., show an error message to the user
@@ -109,7 +110,7 @@
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateFrom ? 'label-required' : ''}" for="dateFrom">
                 From:
             </label>
-            <input type="datetime-local" id="dateFrom" placeholder="Date & Time From" class="custom-filter-input {errors.dateFrom ? 'input-error' : ''}" bind:value={request.dateFrom}>
+            <input type="date" id="dateFrom" placeholder="Date & Time From" class="custom-filter-input {errors.dateFrom ? 'input-error' : ''}" bind:value={request.dateFrom}>
             {#if errors.dateFrom}<p class="text-red-500 text-xs italic">{errors.dateFrom}</p>{/if}
         </div>
 
@@ -117,7 +118,7 @@
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateTo ? 'label-required' : ''}" for="dateTo">
                 To:
             </label> <!-- Make sure this tag is properly closed -->
-            <input type="datetime-local" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
+            <input type="date" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
             {#if errors.dateTo}<p class="text-red-500 text-xs italic">{errors.dateTo}</p>{/if}
         </div>        
         

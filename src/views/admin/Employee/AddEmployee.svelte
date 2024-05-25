@@ -396,7 +396,8 @@
     <!-- Filter by Gender -->
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Gender:</label>
-      <select id="gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}" on:blur="{handleBlur}">
+      <select id="gender" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}" on:blur="{handleBlur}">
+        <option value="" disabled selected>Select Gender</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
       </select>
