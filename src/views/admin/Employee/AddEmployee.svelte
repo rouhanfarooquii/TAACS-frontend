@@ -87,6 +87,18 @@
     }
   }
 
+  function restrictInput(event) {
+    const input = event.target;
+    const value = input.value;
+    input.value = value.replace(/[^0-9]/g, '');
+  }
+
+  function restrictAlphabetInput(event) {
+    const input = event.target;
+    const value = input.value;
+    input.value = value.replace(/[^a-zA-Z\s]/g, '');
+  }
+
   function validateEmailFormat(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -98,22 +110,7 @@
   }
 
   function validateInputs() {
-  let isValid = true;
-
-    // const employeeID = document.getElementById('employeeID').value;
-    // const name = document.getElementById('name').value;
-    const mobileNumber = document.getElementById('phone-number').value.trim();
-    // const department = document.getElementById('department').value;
-    // const designation = document.getElementById('designation').value;
-    // const gender = document.getElementById('gender').value;
-    // const email = document.getElementById('email').value;
-    // const address = document.getElementById('address').value;
-    // const dateOfBirth = document.getElementById('date-of-birth').value;
-    const cardIdNumber = document.getElementById('card-id').value.trim();
-    // const personalPassword = document.getElementById('personal-password').value;
-    // const salary = document.getElementById('salary').value;
-    // const shiftTiming = document.getElementById('shiftTiming').value;
-    // const locations = document.getElementById('locations').value;
+    let isValid = true;
 
     if (!employeeID) {
       document.getElementById('id-error').innerText = '* Field Required';
@@ -244,14 +241,6 @@
       document.getElementById('salary-error').style.display = 'none';
     }
 
-    // if (!locations) {
-    //   document.getElementById('locations-error').innerText = '* Field Required';
-    //   document.getElementById('locations-error').style.display = 'block';
-    //   isValid = false;
-    // } else {
-    //   document.getElementById('locations-error').style.display = 'none';
-    // }
-
     if (locations.length === 0) {
       document.getElementById('locations-error').innerText = '* Please select at least one location';
       document.getElementById('locations-error').style.display = 'block';
@@ -260,9 +249,11 @@
       document.getElementById('locations-error').style.display = 'none';
     }
 
-    ///////////////locations
-
     return isValid;
+  }
+
+  function handleBlur(event) {
+    validateInputs();
   }
 
   async function handleSubmit() {
@@ -325,12 +316,6 @@
     navigate('/admin/employee');
   }
 
-  function restrictInput(event) {
-    const input = event.target;
-    const value = input.value;
-    input.value = value.replace(/[^0-9]/g, '');
-  }
-
   $: availableDesignations = department ? departments.find(d => d.title === department)?.designations || [] : [];
 </script>
 
@@ -351,7 +336,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="employeeID">
         Employee ID:
       </label>
-      <input type="number"  min="0" id="employeeID" placeholder="Employee ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeID}>
+      <input type="text" id="employeeID" maxlength="20" placeholder="Employee" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={employeeID} on:input="{restrictInput}" on:blur="{handleBlur}">
       <span id="id-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Name -->
@@ -359,7 +344,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="name">
         Name:
       </label>
-      <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={name}>
+      <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={name} on:input="{restrictAlphabetInput}" on:blur="{handleBlur}">
       <span id="name-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Phone Number -->
@@ -367,16 +352,15 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
         Phone Number:
       </label>
-      <input type="text" id="phone-number" maxlength="11" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={mobileNumber} on:input="{restrictInput}">
-      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
-      <span id="phone-number-format-error" class="text-red-600 text-xs" style="display: none;">Enter correct number - xxxx-xxxxxxx</span>
+      <input type="text" id="phone-number" maxlength="11" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={mobileNumber} on:input="{restrictInput}" on:blur="{handleBlur}">
+      <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Email -->
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="email">
         Email:
       </label>
-      <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={email}>
+      <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={email} on:blur="{handleBlur}">
       <span id="email-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
@@ -388,7 +372,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="department">
         Department:
       </label>
-      <select id="department" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={department} on:change={setDesignation}>
+      <select id="department" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={department} on:change={setDesignation} on:blur="{handleBlur}">
         <option value="" disabled selected>Select Department</option>
         {#each departments as dept}
           <option value={dept.title}>{dept.title}</option>
@@ -401,7 +385,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="designation">
         Designation:
       </label>
-      <select id="designation" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation} disabled={!department}>
+      <select id="designation" class="border-0 px-8 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={designation} disabled={!department} on:blur="{handleBlur}">
         <option value="" disabled selected>Select Designation</option>
         {#each availableDesignations as desig}
           <option value={desig.title}>{desig.title}</option>
@@ -412,7 +396,7 @@
     <!-- Filter by Gender -->
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Gender:</label>
-      <select id="gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}">
+      <select id="gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{gender}" on:blur="{handleBlur}">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
       </select>
@@ -423,7 +407,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
         Date of birth:
       </label>
-      <input type="date" id="date-of-birth" placeholder="Date of birth" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateOfBirth}>
+      <input type="date" id="date-of-birth" placeholder="Date of birth" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={dateOfBirth} on:blur="{handleBlur}">
       <span id="date-of-birth-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
@@ -435,7 +419,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="address">
         Address:
       </label>
-      <textarea id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={address}></textarea>
+      <textarea id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={address} on:blur="{handleBlur}"></textarea>
       <span id="address-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
@@ -447,7 +431,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="card-id">
         Card ID:
       </label>
-      <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber} on:input="{restrictInput}">
+      <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber} on:input="{restrictInput}" on:blur="{handleBlur}">
       <span id="card-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
     <!-- Filter by Personal Password -->
@@ -455,7 +439,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="personal-password">
         Personal Password:
       </label>
-      <input type="text" id="personal-password" maxlength="6" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword} on:input="{restrictInput}">
+      <input type="text" id="personal-password" maxlength="6" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword} on:input="{restrictInput}" on:blur="{handleBlur}">
       <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
     </div>
   </div>
@@ -467,14 +451,14 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-1">
         Finger Index 1:
       </label>
-      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex1}>
+      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex1} on:blur="{handleBlur}">
     </div>
     <!-- Filter by Finger Index 2 -->
     <div class="relative mb-3 w-4/10">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-2">
         Finger Index 2:
       </label>
-      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex2}>
+      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={fingerIndex2} on:blur="{handleBlur}">
     </div>
     <!-- Filter by Finger Added -->
     <div class="relative mb-3">
@@ -482,7 +466,7 @@
         Finger Added:
       </label>
       <label class="switch">
-        <input type="checkbox" id="finger-added" class="hidden" bind:checked={isFingerAdded}>
+        <input type="checkbox" id="finger-added" class="hidden" bind:checked={isFingerAdded} on:blur="{handleBlur}">
         <span class="slider round"></span> 
       </label>
       <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;"></span>
@@ -492,7 +476,7 @@
         Active:
       </label>
       <label class="switch">
-        <input type="checkbox" id="active" class="hidden" bind:checked={active}>
+        <input type="checkbox" id="active" class="hidden" bind:checked={active} on:blur="{handleBlur}">
         <span class="slider round"></span> 
       </label>
       <span id="active-error" class="text-red-600 text-xs" style="display: none;"></span>
@@ -504,7 +488,7 @@
     <!-- Filter by Shift Timing -->
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
-      <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftTiming}>
+      <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftTiming} on:blur="{handleBlur}">
         <option value="" disabled selected>Select Shift Timing</option>
         {#each shiftTimings as shift}
           <option value={shift}>{shift}</option>
@@ -515,7 +499,7 @@
     <!-- Filter by Accessible Locations -->
     <div class="relative mb-3 w-1/2">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleLocations">Accessible locations</label>
-      <Multiselect bind:selectedOptions={locations} options={locationsList} id="locations" placeholder="Select Location" />
+      <Multiselect bind:selectedOptions={locations} options={locationsList} id="locations" placeholder="Select Location" on:blur="{handleBlur}" />
       <span id="locations-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Salary -->
@@ -523,7 +507,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="salary">
         Salary:
       </label>
-      <input type="number" min="0" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={salary}>
+      <input type="text" id="salary" placeholder="Salary" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={salary} on:input="{restrictInput}" on:blur="{handleBlur}">
       <span id="salary-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
