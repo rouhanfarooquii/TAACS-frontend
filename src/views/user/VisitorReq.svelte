@@ -4,6 +4,8 @@
   import { addVisitorApi, getAllLocationsApi, getAllShiftTimingsApi} from '../../services/api.js';
   import MultiSelect from '../../components/Dropdowns/MultiSelect.svelte';
   import { navigate } from 'svelte-routing';
+  import Toast from '../../components/Confirmation/Toast.svelte';
+
 
   export let color = "light";
   
@@ -27,6 +29,19 @@
   };
 
   const image = "../assets/img/10.jpg";
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 
   function navigateToProfile() {
     navigate('/user/profile');
@@ -247,10 +262,12 @@
     try {
       const response = await addVisitorApi(formData);
       console.log('Visitor added successfully', response);
-      alert('Visitor added successfully!');
+      showToasterMessage('Visitor added successfully!', 'success');
+        // alert('Visitor added successfully!');
     } catch (error) {
       console.error('Error adding visitor:', error);
-      alert('An error occurred while adding the visitor. Please try again.');
+      showToasterMessage('An error occurred while adding the visitor. Please try again.', 'error');
+        // alert('An error occurred while adding the visitor. Please try again.');
     }
   }
 
@@ -297,6 +314,9 @@
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+{#if showToaster}
+  <Toast message={toasterMessage} type={toasterType} />
+{/if}
   <div class="relative w-full px-4 max-w-full flex-grow flex-1">
     <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
       Visitor Request
