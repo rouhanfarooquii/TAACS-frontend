@@ -46,7 +46,7 @@
     }));
     console.log(shifts);
   } catch (error) {
-    console.error("Error fetching shifts:", error);
+    console.error("Errorr fetching shifts:", error);
     shifts = []; // Fallback to an empty array in case of error
   }
 }
@@ -75,7 +75,14 @@
 
 function viewShift(shift) {
   shiftSelected = {
-    ...shift,
+    shiftName: shift.shiftName,
+    startTime: shift.startTime,
+    endTime: shift.endTime,
+    recurrence: shift.recurrence,
+    breakStartTime: shift.breakStartTime,
+    breakEndTime: shift.breakEndTime,
+    shiftType: shift.shiftType,
+    notes: shift.notes,
     dateFrom: formatDateString(shift.dateFrom),
     dateTo: formatDateString(shift.dateTo),
   };
@@ -184,29 +191,6 @@ function viewShift(shift) {
     : '';
   $: searchResultColor = filteredShifts.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 
-  // function addBreak() {
-  //   console.log('Add Break function called');
-  //   if (shiftSelected && shiftSelected.breakStart && shiftSelected.breakEnd) {
-  //     const newBreak = `${shiftSelected.breakStart} - ${shiftSelected.breakEnd}`;
-  //     shiftSelected.breakTimings = shiftSelected.breakTimings ? `${shiftSelected.breakTimings}, ${newBreak}` : newBreak;
-  //     shiftSelected.breakStart = '';
-  //     shiftSelected.breakEnd = '';
-  //     console.log('Break added:', shiftSelected.breakTimings);
-  //   } else {
-  //     console.log('Break start or end time not specified');
-  //   }
-  // }
-
-  // function removeBreak() {
-  //   if (shiftSelected && shiftSelected.breakTimings) {
-  //     const breakArray = shiftSelected.breakTimings.split(',').map(b => b.trim());
-  //     breakArray.pop();
-  //     shiftSelected.breakTimings = breakArray.join(', ');
-  //     console.log('Last break removed:', shiftSelected.breakTimings);
-  //   } else {
-  //     console.log('No breaks to remove');
-  //   }
-  // }
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
