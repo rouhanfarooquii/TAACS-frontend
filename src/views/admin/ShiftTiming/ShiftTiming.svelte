@@ -2,7 +2,7 @@
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { onMount } from 'svelte';
-  import { getAllShiftTimingsApi, addShiftTimingApi, updateShiftTimingApi, deleteShiftTimingApi, batchDeleteShiftTimingApi } from '../../../services/api';
+  import { getAllShiftTimingsApi,  updateShiftTimingApi, batchDeleteShiftTimingApi } from '../../../services/api';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
@@ -12,7 +12,7 @@
   let editModal = false;
 
   let shifts = [];
-  const shiftTypes = ["Morning", "Evening", "Night", "Half Day", "custom"];
+  const shiftTypes = ["Morning", "Evening", "Night", "Half Day", "Afternoon", "custom"];
 
   let selectedShifts = new Set();
   let searchQuery = '';
@@ -23,47 +23,32 @@
   onMount(async () => {
     await fetchShifts();
   });
-
   async function fetchShifts() {
-    try {
-      shifts = await getAllShiftTimingsApi();
-      console.log(shifts);
-    } catch (error) {
-      console.error("Error fetching shifts:", error);
-      shifts = []; // Fallback to an empty array in case of error
-    }
+  try {
+    const rawShifts = await getAllShiftTimingsApi();
+    shifts = rawShifts.map(shift => ({
+      ...shift,
+      shiftType: capitalizeFirstLetter(shift.shiftType)
+    }));
+    console.log(shifts);
+  } catch (error) {
+    console.error("Error fetching shifts:", error);
+    shifts = []; // Fallback to an empty array in case of error
   }
-
-  async function addShift(obj) {
-    try {
-      const msg = await addShiftTimingApi(obj);
-      console.log(msg);
-      await fetchShifts(); 
-    } catch (error) {
-      console.error("Error adding shift:", error);
-    }
-  }
+}
+ function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
   async function updateShift(obj) {
+    console.log(obj);
     try {
       const msg = await updateShiftTimingApi(obj);
       console.log(msg);
       await fetchShifts(); // Refresh the shift list
+      closeModal(); // Close the modal after saving changes
     } catch (error) {
       console.error("Error updating shift:", error);
-    }
-  }
-
-  async function deleteShift(id) {
-    try {
-      console.log(id)
-      return
-      const msg = await deleteShiftTimingApi(id);
-      console.log(msg);
-      // Update the shifts array to remove the deleted shift
-      shifts = shifts.filter(shift => shift._id !== id);
-    } catch (error) {
-      console.error("Error deleting shift:", error);
     }
   }
 
@@ -74,8 +59,13 @@
   }
 
   function openEditModal(shift) {
-    shiftSelected = { ...shift, breakStart: '', breakEnd: '' }; // Initialize break times
-    shiftSelected.breakTimings = formatBreakTimings(shift.breaks); // Format existing breaks
+    console.log(shift);
+    shiftSelected = { 
+      ...shift, 
+      dateFrom: formatDate(shift.dateFrom),
+      dateTo: formatDate(shift.dateTo),
+    }; 
+    // shiftSelected.breakTimings = formatBreakTimings(shift.breaks);
     editModal = true;
     console.log('Shift selected for edit:', shiftSelected);
   }
@@ -90,11 +80,7 @@
   }
 
   function saveEdit() {
-    const index = shifts.findIndex(shift => shift._id === shiftSelected._id);
-    if (index !== -1) {
-      shifts[index] = { ...shiftSelected, breaks: parseBreakTimings(shiftSelected.breakTimings) };
-      closeModal();
-    }
+    updateShift(shiftSelected);
   }
 
   function parseBreakTimings(breakTimings) {
@@ -107,6 +93,10 @@
   function formatBreakTimings(breaks) {
     if (!breaks || breaks.length === 0) return '';
     return breaks.map(b => `${b.start} - ${b.end}`).join(', ');
+  }
+
+  function formatDate(date) {
+    return new Date(date).toISOString().split('T')[0];
   }
 
   function toggleSelection(shiftId) {
@@ -128,18 +118,16 @@
   }
 
   async function deleteSelectedShifts() {
-
-    let ids = [...selectedShifts]
-    console.log(ids)
+    let ids = [...selectedShifts];
+    console.log(ids);
 
     try {
       const msg = await batchDeleteShiftTimingApi({ids: ids});
       console.log(msg);
       await fetchShifts(); 
     } catch (error) {
-      console.error("Error adding shift:", error);
+      console.error("Error deleting shifts:", error);
     }
-
   }
 
   $: startIndex = (currentPage - 1) * shiftsPerPage;
