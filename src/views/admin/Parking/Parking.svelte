@@ -4,6 +4,7 @@
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import QrCode from '../../../components/QR/QRCode.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
+  import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   export let color = "light";
 
@@ -45,6 +46,18 @@
     }, 3000); // Show toast for 3 seconds
   }
 
+  let confirmationModal = false;
+  let spaceToDelete = null;
+
+  function showDeleteConfirmation(space) {
+    spaceToDelete = space;
+    confirmationModal = true;
+  }
+  function closeConfirmationModal() {
+    confirmationModal = false;
+    spaceToDelete = null;
+  }
+
   async function fetchParkingData() {
     try {
       const response = await getAllParkingsApi();
@@ -82,11 +95,12 @@
     fetchEmployees();
   });
 
-  async function deleteSpace(space) {
+  async function deleteSpace() {
     try {
-      const response = await deleteParkingApi(space.id);
+      const response = await deleteParkingApi(spaceToDelete.id);
       console.log('Delete Response:', response);
       showToasterMessage('Space deleted successfully!', 'success');
+      closeConfirmationModal();
       await fetchParkingData();
     } catch (error) {
       console.error('Error deleting space:', error);
@@ -359,6 +373,13 @@
     </div>
     <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>Assign New Space</button>
   </div>
+  {#if confirmationModal}
+  <ConfirmationModal
+    message="Are you sure you want to delete this department"
+    onConfirm={deleteSpace}
+    onCancel={closeConfirmationModal}
+  />
+  {/if}
   {#if showModal}
     <div class="modal">
       <div class="modal-content">
@@ -607,7 +628,7 @@
                 <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(space)}></i>
                 {/if}
                 <div class="ml-2">
-                  <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => deleteSpace(space)}></i>
+                  <i class="fas fa-trash-alt mr-2 text-sm cursor-pointer" on:click={() => showDeleteConfirmation(space)}></i>
                 </div>
               </div>
             </td>

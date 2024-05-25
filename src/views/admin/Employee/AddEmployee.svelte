@@ -1,7 +1,7 @@
 <script>
   import { navigate } from 'svelte-routing';
   import { onMount } from 'svelte';
-  import Multiselect from '../../../components/Dropdowns/MultiSelect.svelte';
+  import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
   import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, addEmployeeApi } from '../../../services/api';
 
   let employeeID = '';
@@ -179,12 +179,28 @@
     } else {
       document.getElementById('gender-error').style.display = 'none';
     }
-
+    
+    const today = new Date();
+    const dob = new Date(dateOfBirth);
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    
     if (!dateOfBirth) {
       document.getElementById('date-of-birth-error').innerText = '* Field Required';
       document.getElementById('date-of-birth-error').style.display = 'block';
       isValid = false;
-    } else {
+    } else if (dob > today) {
+      document.getElementById('date-of-birth-error').innerText = '* Date of birth cannot be in the future';
+      document.getElementById('date-of-birth-error').style.display = 'block';
+      isValid = false;
+    } else if (age < 18) {
+      document.getElementById('date-of-birth-error').innerText = '* Employee must be at least 18 years old';
+        document.getElementById('date-of-birth-error').style.display = 'block';
+        isValid = false;
+      } else {
       document.getElementById('date-of-birth-error').style.display = 'none';
     }
 
@@ -323,7 +339,7 @@
     <!-- svelte-ignore a11y-img-redundant-alt -->
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
-    <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">{imageUploadLabel}</label>
+    <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
   </div>
 
   <div class="divider"></div>
@@ -471,7 +487,7 @@
       </label>
       <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
-    <div class="relative mb-3">
+    <!-- <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="status">
         Active:
       </label>
@@ -480,7 +496,7 @@
         <span class="slider round"></span> 
       </label>
       <span id="active-error" class="text-red-600 text-xs" style="display: none;"></span>
-    </div>
+    </div> -->
   </div>
 
   <!-- Filters Row 6 -->
@@ -499,7 +515,7 @@
     <!-- Filter by Accessible Locations -->
     <div class="relative mb-3 w-1/2">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleLocations">Accessible locations</label>
-      <Multiselect bind:selectedOptions={locations} options={locationsList} id="locations" placeholder="Select Location" on:blur="{handleBlur}" />
+      <MultiSelect bind:selectedOptions={locations} options={locationsList} id="locations" placeholder="Select Location" on:blur="{handleBlur}" />
       <span id="locations-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
     <!-- Filter by Salary -->
