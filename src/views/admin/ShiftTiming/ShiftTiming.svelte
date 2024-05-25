@@ -3,6 +3,7 @@
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { onMount } from 'svelte';
   import { getAllShiftTimingsApi,  updateShiftTimingApi, batchDeleteShiftTimingApi } from '../../../services/api';
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
@@ -19,6 +20,19 @@
 
   const shiftsPerPage = 5; 
   let currentPage = 1;
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 
   onMount(async () => {
     await fetchShifts();
@@ -46,17 +60,36 @@
       const msg = await updateShiftTimingApi(obj);
       console.log(msg);
       await fetchShifts(); // Refresh the shift list
+      showToasterMessage('Shift updated successfully!', 'success');
       closeModal(); // Close the modal after saving changes
     } catch (error) {
+      showToasterMessage('An error occurred while updating the shift. Please try again.', 'error');
       console.error("Error updating shift:", error);
     }
   }
 
-  function viewShift(shift) {
-    shiftSelected = shift;
-    showModal = true;
-    console.log('Shift selected for view:', shiftSelected);
-  }
+  function formatDateString(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(); // Customize locale as needed, e.g., 'en-US'
+}
+
+function viewShift(shift) {
+  shiftSelected = {
+    ...shift,
+    dateFrom: formatDateString(shift.dateFrom),
+    dateTo: formatDateString(shift.dateTo),
+  };
+  showModal = true;
+  console.log('Shift selected for view:', shiftSelected);
+}
+
+  // function viewShift(shift) {
+  //   shiftSelected = shift;
+  //   showModal = true;
+  //   console.log('Shift selected for view:', shiftSelected);
+  // }
+
+  
 
   function openEditModal(shift) {
     console.log(shift);
@@ -124,9 +157,11 @@
     try {
       const msg = await batchDeleteShiftTimingApi({ids: ids});
       console.log(msg);
-      await fetchShifts(); 
+      await fetchShifts();
+      showToasterMessage('Shift deleted successfully!', 'success'); 
     } catch (error) {
       console.error("Error deleting shifts:", error);
+      showToasterMessage('An error occurred while deleting the shift. Please try again.', 'error');
     }
   }
 
@@ -149,29 +184,29 @@
     : '';
   $: searchResultColor = filteredShifts.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
 
-  function addBreak() {
-    console.log('Add Break function called');
-    if (shiftSelected && shiftSelected.breakStart && shiftSelected.breakEnd) {
-      const newBreak = `${shiftSelected.breakStart} - ${shiftSelected.breakEnd}`;
-      shiftSelected.breakTimings = shiftSelected.breakTimings ? `${shiftSelected.breakTimings}, ${newBreak}` : newBreak;
-      shiftSelected.breakStart = '';
-      shiftSelected.breakEnd = '';
-      console.log('Break added:', shiftSelected.breakTimings);
-    } else {
-      console.log('Break start or end time not specified');
-    }
-  }
+  // function addBreak() {
+  //   console.log('Add Break function called');
+  //   if (shiftSelected && shiftSelected.breakStart && shiftSelected.breakEnd) {
+  //     const newBreak = `${shiftSelected.breakStart} - ${shiftSelected.breakEnd}`;
+  //     shiftSelected.breakTimings = shiftSelected.breakTimings ? `${shiftSelected.breakTimings}, ${newBreak}` : newBreak;
+  //     shiftSelected.breakStart = '';
+  //     shiftSelected.breakEnd = '';
+  //     console.log('Break added:', shiftSelected.breakTimings);
+  //   } else {
+  //     console.log('Break start or end time not specified');
+  //   }
+  // }
 
-  function removeBreak() {
-    if (shiftSelected && shiftSelected.breakTimings) {
-      const breakArray = shiftSelected.breakTimings.split(',').map(b => b.trim());
-      breakArray.pop();
-      shiftSelected.breakTimings = breakArray.join(', ');
-      console.log('Last break removed:', shiftSelected.breakTimings);
-    } else {
-      console.log('No breaks to remove');
-    }
-  }
+  // function removeBreak() {
+  //   if (shiftSelected && shiftSelected.breakTimings) {
+  //     const breakArray = shiftSelected.breakTimings.split(',').map(b => b.trim());
+  //     breakArray.pop();
+  //     shiftSelected.breakTimings = breakArray.join(', ');
+  //     console.log('Last break removed:', shiftSelected.breakTimings);
+  //   } else {
+  //     console.log('No breaks to remove');
+  //   }
+  // }
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
@@ -219,8 +254,8 @@
           <td class='table-data font-bold text-blueGray-600 wrap-text'>{shift.shiftName}</td>
           <td class='table-data'>{shift.startTime}</td>
           <td class='table-data'>{shift.endTime}</td>
-          <td class='table-data'>{shift.dateFrom}</td>
-          <td class='table-data'>{shift.dateTo}</td>
+          <td class='table-data'>{formatDateString(shift.dateFrom)}</td>
+          <td class='table-data'>{formatDateString(shift.dateTo)}</td>
           <td class='table-data'>{shift.shiftType === 'custom' ? shift.customShiftType : shift.shiftType}</td>
           <td class='table-data'>
             <div class="flex items-center">
@@ -297,6 +332,20 @@
                 </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="start-time">
+                    Break Start Time:
+                  </label>
+                  <p>{shiftSelected.breakStartTime}</p>
+                </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="end-time">
+                    Break End Time:
+                  </label>
+                  <p>{shiftSelected.breakEndTime}</p>
+                </div>
+              </div>
+              <!-- <div class="w-full lg:w-6/12 px-4">
                 {#each shiftSelected.breaks as breakTime}
                   <div class="relative mb-3">
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
@@ -311,7 +360,7 @@
                     <p>{breakTime.end}</p>
                   </div>
                 {/each}
-              </div>
+              </div> -->
             </div> 
             <div class="flex justify-end">
               <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
@@ -386,29 +435,31 @@
                   <input type="date" id="date-to" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.dateTo}>
                 </div>
                 <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="start-time">
+                    Start Time:
+                  </label>
+                  <input type="time" id="start-time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.startTime}>
+                </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="end-time">
+                    End Time:
+                  </label>
+                  <input type="time" id="end-time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.endTime}>
+                </div>
+              </div>
+              <div class="w-full lg:w-6/12 px-4">
+                <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-start">
                     Break Start Time:
                   </label>
-                  <input type="time" id="break-start" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakStart}>
+                  <input type="time" id="break-start" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakStartTime}>
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-end">
                     Break End Time:
                   </label>
-                  <input type="time" id="break-end" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakEnd}>
+                  <input type="time" id="break-end" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakEndTime}>
                 </div>
-              </div>
-            </div>
-            <div class="w-full lg:w-12/12 px-4">
-              <div class="relative mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="break-timings">
-                  Break Timings:
-                </label>
-                <input type="text" id="break-timings" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={shiftSelected.breakTimings} readonly>
-              </div>
-              <div class="flex">
-                <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mr-2" on:click={addBreak}>Add Break</button>
-                <button type="button" class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={removeBreak}>Remove Break</button>
               </div>
             </div>
             <div class="flex justify-end mt-4">

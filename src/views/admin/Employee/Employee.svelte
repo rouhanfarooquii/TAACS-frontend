@@ -6,7 +6,7 @@
   import { navigate } from 'svelte-routing';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
   import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi } from '../../../services/api';
-
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
@@ -39,6 +39,19 @@
   
   let confirmationModal = false;
   let empToDelete = null;
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 
   function showDeleteConfirmation(selectedEmployee) {
     editModal = false;
@@ -124,10 +137,12 @@ function clearFilters() {
     try {
         const msg = await deleteEmployeeApi(empToDelete._id);
         console.log(msg);
+        showToasterMessage('Employee deleted successfully!', 'success');
         closeConfirmationModal();  // Ensure the modal is closed after deletion
         filteredEmployees = await getAllEmployeesApi();
     } catch (error) {
         console.error('Failed to delete employee:', error);
+        showToasterMessage('An error occurred while deleting the employee. Please try again.', 'error');
     }
   }
 
@@ -178,8 +193,10 @@ function clearFilters() {
       await updateEmployeeApi(formData);
       closeModal()
       await fetchEmployees()
+      showToasterMessage('Employee updated successfully!', 'success');
     } catch (error) {
       console.error('Error updating employee:', error);
+      showToasterMessage('An error occurred while updating the employee. Please try again.', 'error');
     }
   }
 
@@ -251,6 +268,9 @@ let searchQuery = '';
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <!-- Add Employee Button -->
   <div class="flex justify-end mb-4">
     <div class="relative w-full px-4 max-w-full flex-grow flex-1">

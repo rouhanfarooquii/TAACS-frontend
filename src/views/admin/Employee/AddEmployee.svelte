@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
   import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, addEmployeeApi } from '../../../services/api';
+  import Toast from '../../../components/Confirmation/Toast.svelte';
 
   let employeeID = '';
   let name = '';
@@ -34,6 +35,19 @@
   let departments = [];
   let designations = [];
   let shiftTimings = [];
+
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
 
   const image = "../assets/img/10.jpg";
 
@@ -309,8 +323,10 @@
     try {
       await addEmployeeApi(formData);
       navigateToEmployee();
+      showToasterMessage('Employee added successfully!', 'success');
     } catch (error) {
       console.error('Error adding employee:', error);
+      showToasterMessage('An error occurred while adding employee. Please try again.', 'error');
     }
   }
 
@@ -335,6 +351,9 @@
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="left-section flex flex-col items-center">
     <!-- svelte-ignore a11y-img-redundant-alt -->
     <img id="profile-image" src="{image}" alt="Default Image" style="max-width: 200px; max-height: 200px;" />

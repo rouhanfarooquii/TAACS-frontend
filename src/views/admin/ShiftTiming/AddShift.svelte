@@ -13,7 +13,9 @@
     let dateFrom = '';
     let dateTo = '';
     let recurrence = '';
-    let breaks = [];
+    let breakStartTime = '';
+    let breakEndTime = '';
+    // let breaks = [];
     // let location = '';
     let shiftType = '';
     let customShiftType = '';
@@ -28,13 +30,13 @@
       shiftType = event.target.value;
     }
   
-    function addBreak() {
-      breaks = [...breaks, { start: '', end: '' }];
-    }
+    // function addBreak() {
+    //   breaks = [...breaks, { start: '', end: '' }];
+    // }
   
-    function removeBreak(index) {
-      breaks = breaks.filter((_, i) => i !== index);
-    }
+    // function removeBreak(index) {
+    //   breaks = breaks.filter((_, i) => i !== index);
+    // }
   
     function validateFields() {
       errors = {};
@@ -44,9 +46,27 @@
       if (!dateFrom) errors.dateFrom = "Date from is required.";
       if (!dateTo) errors.dateTo = "Date to is required.";
       if (new Date(dateTo) < new Date(dateFrom)) errors.dateTo = "Date to cannot be before Date from.";
+      if (!breakStartTime) errors.breakStartTime = "Break Start Time is required";
+      if (!breakEndTime) errors.breakEndTime = "Break End Time is required";
       // if (!location) errors.location = "Location is required.";
       if (!shiftType) errors.shiftType = "Shift type is required.";
       if (shiftType === 'custom' && !customShiftType) errors.customShiftType = "Custom shift type is required.";
+      // Additional validations
+    if (startTime && endTime && new Date(`1970-01-01T${endTime}`) < new Date(`1970-01-01T${startTime}`)) {
+        errors.endTime = "End time cannot be before start time.";
+    }
+    
+    if (startTime && endTime && breakStartTime && (new Date(`1970-01-01T${breakStartTime}`) < new Date(`1970-01-01T${startTime}`) || new Date(`1970-01-01T${breakStartTime}`) > new Date(`1970-01-01T${endTime}`))) {
+        errors.breakStartTime = "Break start time must be between start time and end time.";
+    }
+    
+    if (startTime && endTime && breakEndTime && (new Date(`1970-01-01T${breakEndTime}`) < new Date(`1970-01-01T${startTime}`) || new Date(`1970-01-01T${breakEndTime}`) > new Date(`1970-01-01T${endTime}`))) {
+        errors.breakEndTime = "Break end time must be between start time and end time.";
+    }
+    
+    if (breakStartTime && breakEndTime && new Date(`1970-01-01T${breakEndTime}`) < new Date(`1970-01-01T${breakStartTime}`)) {
+        errors.breakEndTime = "Break end time cannot be before break start time.";
+    }
       return Object.keys(errors).length === 0;
     }
 
@@ -63,7 +83,8 @@
           dateFrom,
           dateTo,
           recurrence,
-          breaks,
+          breakStartTime,
+          breakEndTime,
           // location,
           shiftType,
           customShiftType,
@@ -188,47 +209,28 @@
         </div>
     
         <div class="flex flex-wrap mb-4">
-          <div class="w-full px-4">
+          <div class="w-full lg:w-3/12 px-4">
             <div class="relative mb-3">
               <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="breaks">
-                Breaks
+                Break Start Time
               </label>
-              <button type="button" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" on:click={addBreak}>Add Break</button>
-              {#each breaks as breakTime, index}
-                <div class="flex items-center mb-2 w-full">
-                  <div class="w-full lg:w-4/12 px-4">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="breaks">
-                      Start Time:
-                    </label>
-                    <input type="time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Start Time" bind:value={breakTime.start}>
-                  </div>
-                  <div class="w-full lg:w-4/12 px-4">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="breaks">
-                      End Time:
-                    </label>
-                    <input type="time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="End Time" bind:value={breakTime.end}>
-                  </div>
-                  <button type="button" class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={() => removeBreak(index)}>Remove</button>
-                </div>
-              {/each}
-            </div>
-          </div>
-        </div>
-
-      <br>
-    
-        <div class="flex flex-wrap mb-4">
-          <!-- <div class="w-full lg:w-4/12 px-4">
-            <div class="relative mb-3">
-              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
-                Location
-              </label>
-              <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
-              {#if errors.location}
-                <div class="text-red-500 text-xs mt-1">{errors.location}</div>
+              <input type="time" id="startTime" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Break Start Time" bind:value={breakStartTime}>
+              {#if errors.breakStartTime}
+                <div class="text-red-500 text-xs mt-1">{errors.breakStartTime}</div>
               {/if}
             </div>
-          </div> -->
+          </div>
+          <div class="w-full lg:w-3/12 px-4">
+            <div class="relative mb-3">
+              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="breaks">
+                Break End Time
+              </label>
+              <input type="time" id="startTime" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Break End Time" bind:value={breakEndTime}>
+              {#if errors.breakEndTime}
+                <div class="text-red-500 text-xs mt-1">{errors.breakEndTime}</div>
+              {/if}
+            </div>
+          </div>
           <div class="w-full lg:w-4/12 px-4">
             <div class="relative mb-3">
               <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftType">
@@ -256,7 +258,20 @@
                 </div>
               {/if}
             </div>
-          </div>
+          </div>          
+        </div>    
+        <div class="flex flex-wrap mb-4">
+          <!-- <div class="w-full lg:w-4/12 px-4">
+            <div class="relative mb-3">
+              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="location">
+                Location
+              </label>
+              <input type="text" id="location" placeholder="Location" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={location}>
+              {#if errors.location}
+                <div class="text-red-500 text-xs mt-1">{errors.location}</div>
+              {/if}
+            </div>
+          </div> -->
           <div class="w-full lg:w-4/12 px-4">
             <div class="relative mb-3">
               <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="notes">

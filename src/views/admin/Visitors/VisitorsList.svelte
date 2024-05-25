@@ -19,6 +19,19 @@
 
   let visitorsList = [];
 
+  let showToaster = false;
+  let toasterMessage = '';
+  let toasterType = '';
+
+  function showToasterMessage(message, type) {
+    toasterMessage = message;
+    toasterType = type;
+    showToaster = true;
+    setTimeout(() => {
+      showToaster = false;
+    }, 3000); // Show toast for 3 seconds
+  }
+
   async function loadVisitors() {
     try {
       visitorsList = await getAllVisitorsApi();
@@ -63,19 +76,6 @@
 
   function handleReject(request) {
     updateVisitorStatus(request, 'Rejected');
-  }
-
-  let showToaster = false;
-  let toasterMessage = '';
-  let toasterType = '';
-
-  function showToasterMessage(message, type) {
-    toasterMessage = message;
-    toasterType = type;
-    showToaster = true;
-    setTimeout(() => {
-      showToaster = false;
-    }, 3000); // Show toast for 3 seconds
   }
 
   // Define pagination logic
