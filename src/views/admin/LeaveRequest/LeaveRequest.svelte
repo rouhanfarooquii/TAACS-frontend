@@ -5,9 +5,9 @@
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
   import { onMount } from 'svelte';
-  import { getAllLeavesApi, updateLeaveApprovedApi, updateLeaveRejectedApi } from '../../../services/api';
+  import { getAllLeavesApi, updateLeaveApprovedApi, updateLeaveRejectedApi,} from '../../../services/api';
 
-  export let location;
+  // export let location;
   export let color = "light";
   let selectedState = 'all'; // Initial state
 
@@ -53,7 +53,7 @@
       showToasterMessage('Leave rejected', 'success');
     }
     console.log('Update response:', responseMsg);
-    loadLeaveRequests(); // Refresh leave requests after update
+    loadLeaveRequests(); 
   } catch (error) {
     console.error('Error updating leave request:', error);
     showToasterMessage('An error occurred while updating leave request. Please try again.', 'error');
@@ -69,14 +69,14 @@
     updateLeaveStatus(request, 'rejected');
   }
 
-  let selectedTab = 'pending'; // Default selected tab
+  let selectedTab = 'pending'; 
 
   function selectTab(tab) {
     selectedTab = tab;
   }
 
   // Define pagination logic
-  const leaveRequestsPerPage = 6; // Adjust as needed
+  const leaveRequestsPerPage = 6; 
   let currentPage = 1;
 
   // Reactive statements to ensure proper updates
