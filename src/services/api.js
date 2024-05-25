@@ -557,7 +557,7 @@ export async function updateShiftTimingApi(obj){
 };
 
 export async function batchDeleteShiftTimingApi(obj){
-    const response = await fetch(BACKEND + 'shiftTiming/deleteAll', {
+    const response = await fetch(BACKEND + 'shiftTiming/update', {
         method: 'POST',
         observe: 'body',
         headers: headers,
