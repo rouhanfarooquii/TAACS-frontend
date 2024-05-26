@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import { navigate } from 'svelte-routing';
     export let color = "light";
     
@@ -81,7 +81,7 @@
     </div>
     <br>
 
-    <!-- Filters Row 1 -->
+    
     <div class="flex justify-between mb-4 ml-4 mr-4">
         <div class="relative mb-3">
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.id ? 'label-required' : ''}" for="filterEmployeeID">
@@ -104,7 +104,7 @@
         </div>
     </div>
     
-    <!-- Filters Row 2 -->
+    
     <div class="flex justify-between mb-4 ml-4 mr-4">
         <div class="relative mb-3">
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateFrom ? 'label-required' : ''}" for="dateFrom">
@@ -117,7 +117,7 @@
         <div class="relative mb-3">
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateTo ? 'label-required' : ''}" for="dateTo">
                 To:
-            </label> <!-- Make sure this tag is properly closed -->
+            </label>
             <input type="date" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
             {#if errors.dateTo}<p class="text-red-500 text-xs italic">{errors.dateTo}</p>{/if}
         </div>        
@@ -139,4 +139,4 @@
     <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToProfile}>
         Cancel
     </button>
-</div>
+</div> -->

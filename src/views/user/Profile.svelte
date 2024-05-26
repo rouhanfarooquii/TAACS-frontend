@@ -11,14 +11,14 @@
 
   let employee = {    
     id: 12,
-    name: 'Lisa Nguyen',
-    mobileNumber: '777-222-3333',
-    location: 'Phoenix',
-    department: 'Operations',
-    designation: 'Supervisor',
+    name: 'Arsalan Danyal',
+    mobileNumber: '0300-2572400',
+    location: 'SDH Street 5 AFOHS Falcon Complex 2',
+    department: 'IT',
+    designation: 'CTO',
     employeeType: 'Full-time',
-    gender: 'Female',
-    email: 'lisa@example.com',
+    gender: 'Male',
+    email: 'mad@gmail.com',
     address: '901 Maple St, Phoenix',
     dateOfBirth: '1986-09-10',
     cardIdNumber: 'L789012',
@@ -26,7 +26,7 @@
     fingerIndex1: '',
     fingerIndex2: '',
     isFingerAdded: false,
-    salary: 60000,
+    salary: 6969696969,
     active: false
   };
 
@@ -217,13 +217,7 @@
               <div class="flex flex-wrap justify-center">
                 <div class="w-full lg:w-9/12 px-4">
                   <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consectetur a nulla id ultricies. 
-                    Pellentesque ut turpis dui. Proin ac nisl hendrerit, imperdiet nulla at, volutpat velit. 
-                    Sed iaculis justo eu nulla aliquet scelerisque. Quisque a lorem eu orci molestie lobortis. 
-                    Mauris vel nulla pharetra, fringilla ante non, ultricies nulla. Nunc consequat euismod nunc, quis scelerisque risus venenatis id. 
-                    Vivamus egestas, odio a dictum auctor, dui nisi mattis risus, ut pharetra neque erat quis arcu. 
-                    Suspendisse posuere eget sapien sit amet lobortis. Curabitur dapibus facilisis nisi, 
-                    molestie ullamcorper tortor eleifend pharetra. Nam quis porttitor diam.
+                    I am a passionate and curious individual with a love for learning and exploring new ideas. My enthusiasm for understanding the world around me drives me to constantly seek knowledge and growth. I am a good listener, empathetic, and value meaningful connections with others. Whether it's through my hobbies, work, or personal interactions, I strive to bring positivity and creativity into everything I do. Adaptable and open-minded, I embrace challenges and view them as opportunities to develop and thrive.
                   </p>
                   <a
                     href="#pablo"
