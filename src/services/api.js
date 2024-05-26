@@ -618,7 +618,7 @@ export async function updateVisitorApprovedApi(id, obj){
         method: 'POST',
         observe: 'body',
         headers: headers,
-        body: JSON.stringify({leave: obj})
+        body: JSON.stringify({visitor: obj})
     })
     const responseObj = await response.json();
     const msg = await responseObj.msg;
