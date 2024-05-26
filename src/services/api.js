@@ -12,6 +12,16 @@ export async function batchUpdateAccessControlApi(obj){
     return await msg;
 };
 
+export async function getAllAttendances(start, end){
+    const response = await fetch(BACKEND + 'attendance/getAll/' + start + "/" + end ,{
+        method: 'GET',
+        headers: headers,
+    });
+    const responseObj = await response.json();
+    const attendances = await responseObj.attendances;
+    return await attendances;
+};
+
 // export async function updateAccessControlApi(obj){
 //     const response = await fetch(BACKEND + 'accessControl/update', {
 //         method: 'POST',
