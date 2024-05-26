@@ -1,7 +1,7 @@
 <script>
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
-  import { addVisitorApi, getAllLocationsApi } from '../../../services/api';
+  import { addVisitorApi, getAllLocationsApi, getAllShiftTimingsApi } from '../../../services/api';
   import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
 
@@ -10,6 +10,7 @@
   let file = null;
 
   let visitor = {
+    visitorID: '',
     name: '',
     mobileNumber: '',
     locations: [],
@@ -44,6 +45,16 @@
   function navigateToProfile() {
     navigate('/user/profile');
   }
+
+  function generateRandomNumber() {
+    const now = new Date();
+        const dateTimeString = now.toISOString(); // Example: '2024-05-26T15:00:00.000Z'
+        const numericString = dateTimeString.replace(/\D/g, ''); // Example: '20240526150000000'
+        console.log(numericString);
+      visitor.visitorID = numericString;
+}
+
+
 
   function handleFileInputChange(event) {
     file = event.target.files[0];
@@ -242,7 +253,7 @@
     if (!validateInputs()) {
       return;
     }
-    
+    await generateRandomNumber(),
     visitor.requestor = "Admin";
     visitor.status = "pending";
     let tempdtosend = [];
