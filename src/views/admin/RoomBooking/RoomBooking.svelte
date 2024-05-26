@@ -222,22 +222,24 @@
   }
 
   function closeModal() {
-    showModal = false;
-    editModal = false;
-    roombooking = {
-      employee: null,
-      numOfPeople: null,
-      dateTimeFrom: null,
-      dateTimeTo: null,
-      location: null,
-    };
+  showModal = false;
+  editModal = false;
+  roombooking = {
+    employee: null,
+    numOfPeople: null,
+    dateTimeFrom: null,
+    dateTimeTo: null,
+    location: null,
+  };
 
-    document.getElementById('empName-error').style.display = 'none';
-    document.getElementById('room-name-error').style.display = 'none';
-    document.getElementById('no-of-people-error').style.display = 'none';
-    document.getElementById('dateTime-from-error').style.display = 'none';
-    document.getElementById('dateTime-to-error').style.display = 'none';
-  }
+  searchQuery = ''; // Reset the search query field
+
+  document.getElementById('empName-error').style.display = 'none';
+  document.getElementById('room-name-error').style.display = 'none';
+  document.getElementById('no-of-people-error').style.display = 'none';
+  document.getElementById('dateTime-from-error').style.display = 'none';
+  document.getElementById('dateTime-to-error').style.display = 'none';
+}
 
   const bookingsPerPage = 5;
   let currentPage = 1;
@@ -293,20 +295,19 @@
     return () => window.removeEventListener('click', handleClickOutside);
   });
 
-  function handleEmployeeSelect(option) {
-    roombooking.employee = option;
-    searchQuery = option.displayText;
-    dropdownVisible = false;
-  }
-
   function toggleDropdownVisibility() {
-    dropdownVisible = !dropdownVisible;
-    if (dropdownVisible) {
-      filteredOptions = employeesList.filter(option =>
-        option.displayText.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-  }
+  dropdownVisible = true;
+  filteredOptions = employeesList.filter(employee =>
+    employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    employee.employeeID.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+}
+
+function handleEmployeeSelect(option) {
+  roombooking.employee = option;
+  searchQuery = `${option.name} (${option.employeeID})`;
+  dropdownVisible = false;
+}
 </script>
 
 <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
@@ -328,7 +329,7 @@
       </button>
       {#if showModal || editModal}
       <div class="modal">
-        <div class="modal-content">
+        <div class="modal-content1">
           <div class="rounded-t mb-0 px-4 py-10 border-0">
             <div class="flex flex-wrap items-center">
               <div class="relative w-full px-4 max-w-full flex-grow flex-1">
@@ -346,12 +347,16 @@
                     <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="empName">
                       Employee Name
                     </label>
-                    <select id="empName" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={roombooking.employee}>
-                      <option value={null}>Select Employee</option>
-                      {#each employeesList as employee}
-                        <option value={employee}>{employee.name} ({employee.employeeID})</option>
-                      {/each}
-                    </select>
+                    <input id="empName" type="text" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={searchQuery} on:input={toggleDropdownVisibility} placeholder="Search Employee" />
+                    {#if dropdownVisible}
+                      <ul class="dropdown max-h-40 overflow-y-auto">
+                        {#each filteredOptions as employee}
+                          <li class="cursor-pointer" on:click={() => handleEmployeeSelect(employee)}>
+                            {employee.name} ({employee.employeeID})
+                          </li>
+                        {/each}
+                      </ul>
+                    {/if}
                     <span id="empName-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                   </div>
                   <div class="relative mb-3">

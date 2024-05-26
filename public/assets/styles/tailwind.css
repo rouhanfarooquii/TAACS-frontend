@@ -4518,6 +4518,25 @@ canvas{
 .dropdown {
   position: relative;
   display: inline-block;
+  max-height: 10rem; /* Adjust as needed */
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+  max-height: 10rem;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  z-index: 10; /* Ensure dropdown is above other elements */
+    
+}
+
+.dropdown li {
+  padding: 0.5rem 1rem;
+}
+.dropdown li:hover {
+  background: #f5f5f5;
 }
 
 .dropdown-content {
