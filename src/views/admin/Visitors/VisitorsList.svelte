@@ -1,7 +1,4 @@
 <script>
-  // core components
-  import CardTable from "components/Cards/CardTable.svelte";
-  import TableDropdown from "../../../components/Dropdowns/TableDropdown.svelte";
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
   import { onMount } from 'svelte';
@@ -18,6 +15,10 @@
   };
 
   let visitorsList = [];
+  let showModal = false;
+  let selectedRequest = null;
+  let personalPassword = '';
+  let cardIdNumber = '';
 
   let showToaster = false;
   let toasterMessage = '';
@@ -51,7 +52,7 @@
   }
 
   async function updateVisitorStatus(request, status) {
-    const updateObj = { status: status };
+    const updateObj = { status: status, personalPassword: personalPassword, cardIdNumber: cardIdNumber};
 
     try {
       let responseMsg;
@@ -71,11 +72,28 @@
   }
 
   function handleApprove(request) {
-    updateVisitorStatus(request, 'Approved');
+    selectedRequest = request;
+    showModal = true;
+    // updateVisitorStatus(request, 'Approved');
   }
 
   function handleReject(request) {
     updateVisitorStatus(request, 'Rejected');
+  }
+
+  function closeModal() {
+    showModal = false;
+    personalPassword = '';
+    cardIdNumber = '';
+  }
+
+  function handleSubmit() {
+    if (personalPassword && cardIdNumber) {
+      updateVisitorStatus(selectedRequest, 'Approved');
+      closeModal();
+    } else {
+      showToasterMessage('Please fill in all fields', 'error');
+    }
   }
 
   // Define pagination logic
@@ -109,6 +127,51 @@
 <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
   {#if showToaster}
     <Toast message={toasterMessage} type={toasterType} />
+  {/if}
+  {#if showModal}
+  <div class="modal fixed inset-0 z-50 overflow-auto bg-smoke-light flex">
+    <div class="modal-content">
+      <div class="rounded-t mb-0 px-4 border-0">
+        <div class="flex items-center">
+          <div class="relative w-full px-4max-w-full flex-grow flex-1">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+              Approve Visitor
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="block w-full overflow-x-auto">
+        <div class="px-4 py-5 flex-auto">
+          <div class="flex flex-wrap">
+            <div class="w-full px-4">
+              <div class="relative mb-4">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="cardIdNumber">
+                  Card ID Number
+                </label>
+                <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber}>
+                <span id="card-id-error" class="text-red-600 text-xs" style="display: none;"></span>
+              </div>
+              <div class="relative mb-4">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="personalPassword">
+                  Personal Password
+                </label>
+                <input type="text" id="personal-password" maxlength="6" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
+                <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;"></span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={handleSubmit}>
+              Approve
+            </button>
+            <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   {/if}
   <div class="relative w-full px-4 max-w-full flex-grow flex-1">
     <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">

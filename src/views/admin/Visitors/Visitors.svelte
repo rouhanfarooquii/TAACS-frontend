@@ -1,30 +1,34 @@
 <script>
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
-  import { addVisitorApi, getAllLocationsApi, getAllShiftTimingsApi } from '../../../services/api';
+  import { addVisitorApi, getAllLocationsApi } from '../../../services/api';
   import { navigate } from 'svelte-routing';
   import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
+    import { end } from '@popperjs/core';
 
   export let color = "light";
   
   let file = null;
+  let vistorTosend = null;
 
   let visitor = {
     visitorID: '',
     name: '',
     mobileNumber: '',
     locations: [],
-    shiftTimings: '',
+    startTime: '',
+    endTime: '',
     gender: '',
     email: '',
     address: '', 
-    dateOfBirth: '',
-    cardIdNumber: '',
+    DateOfVisit: '',
     reasonOfVisiting: '',
     fingerIndex1: '',
     fingerIndex2: '',
     isFingerAdded: false,
+    cardIdNumber: '',
+    personalPassword: '',
     file: null // Add file to the visitor object
   };
 
@@ -46,16 +50,6 @@
   function navigateToVisitor() {
     navigate('/admin/visitorslist');
   }
-
-  function generateRandomNumber() {
-    const now = new Date();
-        const dateTimeString = now.toISOString(); // Example: '2024-05-26T15:00:00.000Z'
-        const numericString = dateTimeString.replace(/\D/g, ''); // Example: '20240526150000000'
-        console.log(numericString);
-      visitor.visitorID = numericString;
-}
-
-
 
   function handleFileInputChange(event) {
     file = event.target.files[0];
@@ -165,18 +159,18 @@
     }
     
     const today = new Date();
-    const dob = new Date(visitor.dateOfBirth);
+    const dov = new Date(visitor.DateOfVisit);
     
-    if (!visitor.dateOfBirth) {
-      document.getElementById('date-of-birth-error').innerText = '* Field Required';
-      document.getElementById('date-of-birth-error').style.display = 'block';
+    if (!visitor.DateOfVisit) {
+      document.getElementById('date-of-visit-error').innerText = '* Field Required';
+      document.getElementById('date-of-visit-error').style.display = 'block';
       isValid = false;
-    } else if (dob > today) {
-      document.getElementById('date-of-birth-error').innerText = '* Date of birth cannot be in the future';
-      document.getElementById('date-of-birth-error').style.display = 'block';
+    } else if (dov < today) {
+      document.getElementById('date-of-visit-error').innerText = '* Please enter a correct date';
+      document.getElementById('date-of-visit-error').style.display = 'block';
       isValid = false;
     } else {
-      document.getElementById('date-of-birth-error').style.display = 'none';
+      document.getElementById('date-of-visit-error').style.display = 'none';
     }
 
     if (!visitor.address) {
@@ -219,24 +213,36 @@
       document.getElementById('finger-added-error').style.display = 'none';
     }
 
-    if (!visitor.cardIdNumber) {
+    if (!visitor.visitorID) {
       document.getElementById('card-id-error').innerText = '* Field Required';
       document.getElementById('card-id-error').style.display = 'block';
       isValid = false;
-    } else if (visitor.cardIdNumber.length !== 10) {
-      document.getElementById('card-id-error').innerText = '* card ID must contain 10 digits';
+    } else if (visitor.visitorID.length !== 13) {
+      document.getElementById('card-id-error').innerText = '* card ID must contain 14 digits';
       document.getElementById('card-id-error').style.display = 'block';
       isValid = false;
     } else {
       document.getElementById('card-id-error').style.display = 'none';
     }
 
-    if (!visitor.shiftTiming) {
-      document.getElementById('shift-timing-error').innerText = '* Field Required';
-      document.getElementById('shift-timing-error').style.display = 'block';
+    if (!visitor.startTime) {
+      document.getElementById('start-time-error').innerText = '* Field Required';
+      document.getElementById('start-time-error').style.display = 'block';
       isValid = false;
     } else {
-      document.getElementById('shift-timing-error').style.display = 'none';
+      document.getElementById('start-time-error').style.display = 'none';
+    }
+
+    if (!visitor.endTime) {
+      document.getElementById('end-time-error').innerText = '* Field Required';
+      document.getElementById('end-time-error').style.display = 'block';
+      isValid = false;
+    } else if(visitor.startTime > visitor.endTime) {
+      document.getElementById('end-time-error').innerText = '* End time must come after start time';
+      document.getElementById('end-time-error').style.display = 'block';
+      isValid = false;
+    } else {
+      document.getElementById('end-time-error').style.display = 'none';
     }
 
     if (visitor.locations.length === 0) {
@@ -254,7 +260,7 @@
     if (!validateInputs()) {
       return;
     }
-    await generateRandomNumber(),
+    
     visitor.requestor = "Admin";
     visitor.status = "pending";
     let tempdtosend = [];
@@ -265,10 +271,32 @@
 
     visitor.locations = tempdtosend;
 
-    const formData = new FormData();
-    appendFormData(formData, visitor);
+    vistorTosend = {
+      visitorID: visitor.visitorID,
+      name: visitor.name,
+      mobileNumber: visitor.mobileNumber,
+      locations: visitor.locations,
+      startTime: visitor.startTime,
+      endTime: visitor.endTime,
+      requestor: visitor.requestor,
+      status: visitor.status,
+      DateOfVisit: visitor.DateOfVisit,
+      reasonOfVisiting: visitor.reasonOfVisiting,
+      fingerIndex1: visitor.fingerIndex1,
+      fingerIndex2: visitor.fingerIndex2,
+      cardIdNumber: visitor.cardIdNumber,
+      personalPassword: visitor.personalPassword,
+      email: visitor.email,
+      address: visitor.address,
+      gender: visitor.gender,
+      status: visitor.status,
+      file: visitor.file
+    };
 
-    console.log(visitor);
+    const formData = new FormData();
+    appendFormData(formData, vistorTosend);
+
+    console.log(vistorTosend);
     try {
       const response = await addVisitorApi(formData);
       navigateToVisitor();
@@ -284,8 +312,6 @@
   }
 
   
-  let trueShiftTimings = [];
-  let shiftTimings = [];
   let trueAccessibleRooms = [];
   let accessibleRooms = [];
 
@@ -294,7 +320,6 @@
     fileInput.addEventListener('change', handleFileInputChange);
 
     await fetchLocations();
-    await fetchShiftTimings();
 
     return () => {
       fileInput.removeEventListener('change', handleFileInputChange);
@@ -309,15 +334,6 @@
       console.log(accessibleRooms);
     } catch (error) {
       console.error('Error fetching locations:', error);
-    }
-  }
-
-  async function fetchShiftTimings() {
-    try {
-      trueShiftTimings = await getAllShiftTimingsApi();
-      shiftTimings = trueShiftTimings.map(shift => shift.shiftName);
-    } catch (error) {
-      console.error('Error fetching shift timings:', error);
     }
   }
 
@@ -357,7 +373,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
         Phone Number:
       </label>
-      <input type="text" id="phone-number" maxlength="11" placeholder="03xx-xxxxxxx" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.mobileNumber} on:input="{restrictInput}" on:blur="{handleBlur}">
+      <input type="text" id="phone-number" maxlength="11" placeholder="03XX XXXXXXX" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.mobileNumber} on:input="{restrictInput}" on:blur="{handleBlur}">
       <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -371,10 +387,10 @@
 
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
-        Date of birth:
+        Date of Visit:
       </label>
-      <input type="date" id="date-of-birth" placeholder="Date of birth" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.dateOfBirth} on:blur="{handleBlur}">
-      <span id="date-of-birth-error" class="text-red-600 text-xs" style="display: none;"></span>
+      <input type="date" id="date-of-visit" placeholder="Date of visit" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.DateOfVisit} on:blur="{handleBlur}">
+      <span id="date-of-visit-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
@@ -405,10 +421,10 @@
 
     <div class="relative mb-3 mr-6">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="card-id">
-        Card ID:
+        CNIC #:
       </label>
-      <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.cardIdNumber} on:input="{restrictInput}" on:blur="{handleBlur}">
-      <span id="card-id-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+      <input type="text" id="card-id" maxlength="13" placeholder="XXXXX XXXXXXX X" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.visitorID} on:input="{restrictInput}" on:blur="{handleBlur}">
+      <span id="card-id-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
     <div class="relative mb-3 w-10/12">
@@ -459,15 +475,20 @@
       <span id="location-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
+    <div class="relative mb-3 mr-4">
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
+        Visit start time:
+      </label>
+      <input type="time" id="start-time" placeholder="Start time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.startTime} on:blur="{handleBlur}">
+      <span id="start-time-error" class="text-red-600 text-xs" style="display: none;"></span>
+    </div>
+
     <div class="relative mb-3">
-      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="shiftTiming">Shift Timing:</label>
-      <select id="shiftTiming" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.shiftTiming} on:blur="{handleBlur}">
-        <option value="" disabled selected>Select Shift Timing</option>
-        {#each shiftTimings as shift}
-          <option value={shift}>{shift}</option>
-        {/each}
-      </select>
-      <span id="shift-timing-error" class="text-red-600 text-xs" style="display: none;"></span>
+      <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
+        Visit start time:
+      </label>
+      <input type="time" id="end-time" placeholder="End time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.endTime} on:blur="{handleBlur}">
+      <span id="end-time-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
   </div>
