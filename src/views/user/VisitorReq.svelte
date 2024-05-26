@@ -1,10 +1,10 @@
 <script>
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
-  import { addVisitorApi, getAllLocationsApi } from '../../../services/api';
+  import { addVisitorApi, getAllLocationsApi } from '../../services/api';
   import { navigate } from 'svelte-routing';
-  import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
-  import Toast from '../../../components/Confirmation/Toast.svelte';
+  import MultiSelect from '../../components/Dropdowns/MultiSelect.svelte';
+  import Toast from '../../components/Confirmation/Toast.svelte';
     import { end } from '@popperjs/core';
 
   export let color = "light";

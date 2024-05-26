@@ -53,13 +53,14 @@
 
   async function updateVisitorStatus(request, status) {
     const updateObj = { status: status, personalPassword: personalPassword, cardIdNumber: cardIdNumber};
+    console.log('Update object:', updateObj); // Log the update object for debugging
 
     try {
       let responseMsg;
-      if (status === 'Approved') {
+      if (status === 'approved') {
         responseMsg = await updateVisitorApprovedApi(request._id, updateObj);
         showToasterMessage('Visitor request approved', 'success');
-      } else if (status === 'Rejected') {
+      } else if (status === 'rejected') {
         responseMsg = await updateVisitorRejectedApi(request._id, updateObj);
         showToasterMessage('Visitor request rejected', 'success');
       }
@@ -88,12 +89,60 @@
   }
 
   function handleSubmit() {
-    if (personalPassword && cardIdNumber) {
-      updateVisitorStatus(selectedRequest, 'Approved');
+    if (validateInputs()) {
+      updateVisitorStatus(selectedRequest, 'approved');
       closeModal();
     } else {
-      showToasterMessage('Please fill in all fields', 'error');
+      showToasterMessage('Please fill in all fields correctly', 'error');
     }
+  }
+
+  function validateInputs() {
+    let valid = true;
+
+    if (!cardIdNumber) {
+      document.getElementById('card-id-error').innerText = '* Field is required';
+      document.getElementById('card-id-error').style.display = 'block';
+      valid = false;
+    } else if (cardIdNumber.length < 10) {
+      document.getElementById('card-id-error').innerText = 'Card ID Number must be 10 digits';
+      document.getElementById('card-id-error').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('card-id-error').style.display = 'none';
+    }
+
+    if (!personalPassword) {
+      document.getElementById('personal-password-error').innerText = '* Field is required';
+      document.getElementById('personal-password-error').style.display = 'block';
+      valid = false;
+    } else if (personalPassword.length < 6) {
+      document.getElementById('personal-password-error').innerText = 'Personal Password must be 6 digits';
+      document.getElementById('personal-password-error').style.display = 'block';
+      valid = false;
+    } else {
+      document.getElementById('personal-password-error').style.display = 'none';
+    }
+
+    return valid;
+  }
+
+  function handleInput(event) {
+    const { id, value } = event.target;
+
+    if (!/^\d*$/.test(value)) {
+      event.target.value = value.replace(/\D/g, '');
+    }
+
+    if (id === 'card-id') {
+      cardIdNumber = event.target.value;
+    } else if (id === 'personal-password') {
+      personalPassword = event.target.value;
+    }
+  }
+
+  function handleBlur(event) {
+    validateInputs();
   }
 
   // Define pagination logic
@@ -116,8 +165,12 @@
 
   $: historystartIndex = (currentPage - 1) * leaveRequestsPerPage;
   $: historyendIndex = Math.min(historystartIndex + leaveRequestsPerPage, visitorsList.length);
-  $: historydisplayedleaveRequests = visitorsList.slice(historystartIndex, historyendIndex);
-  $: historytotalPages = Math.ceil(visitorsList.length / leaveRequestsPerPage);
+  $: historydisplayedleaveRequests = visitorsList.filter(request => {
+  const dateToVisit = new Date(request.DateToVisit);
+  const hasDatePassed = dateToVisit < currentDate;
+  const isRejected = request.status === 'Rejected';
+  return hasDatePassed || isRejected;
+});  $: historytotalPages = Math.ceil(historydisplayedleaveRequests.length / leaveRequestsPerPage);
 
   function handlePageChange(event) {
     currentPage = event.detail.pageNumber;
@@ -148,14 +201,14 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="cardIdNumber">
                   Card ID Number
                 </label>
-                <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber}>
+                <input type="text" id="card-id" maxlength="10" placeholder="Card ID" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={cardIdNumber} on:input={handleInput} on:blur={handleBlur}>
                 <span id="card-id-error" class="text-red-600 text-xs" style="display: none;"></span>
               </div>
               <div class="relative mb-4">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="personalPassword">
                   Personal Password
                 </label>
-                <input type="text" id="personal-password" maxlength="6" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword}>
+                <input type="text" id="personal-password" maxlength="6" placeholder="Personal Password" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={personalPassword} on:input={handleInput} on:blur={handleBlur}>
                 <span id="personal-password-error" class="text-red-600 text-xs" style="display: none;"></span>
               </div>
             </div>
@@ -199,7 +252,7 @@
         <h3 class="text-4xl font-bold text-blueGray-800">{request.name}</h3>
         <p class="text-blueGray-400 pb-6">{request.email} <br/> {request.mobileNumber}</p>
         <div class="flex items-center mb-4">
-          <span class="mr-1">{new Date(request.dateOfBirth).toLocaleDateString()}</span>
+          <span class="mr-1">{new Date(request.DateOfVisit).toLocaleDateString()}</span>
         </div>
         <div class="bg-gray-100 p-4 rounded-lg shadow dark:bg-gray-700">
           <p>Reason to visit: {request.reasonOfVisiting}</p>
