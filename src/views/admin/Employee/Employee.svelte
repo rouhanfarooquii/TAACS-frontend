@@ -368,6 +368,12 @@ let searchQuery = '';
               <div class="w-full lg:w-6/12 px-4 mb-6">
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
+                    ID:
+                  </label>
+                  <p>{selectedEmployee.employeeID}</p>
+                </div>
+                <div class="relative mb-3">
+                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
                     Name:
                   </label>
                   <p>{selectedEmployee.name}</p>

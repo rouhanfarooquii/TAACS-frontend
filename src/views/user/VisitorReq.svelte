@@ -270,11 +270,13 @@
     console.log(visitor);
     try {
       const response = await addVisitorApi(formData);
+      navigateToProfile();
       console.log('Visitor added successfully', response);
       showToasterMessage('Visitor added successfully!', 'success');
         // alert('Visitor added successfully!');
     } catch (error) {
       console.error('Error adding visitor:', error);
+      navigateToProfile();
       showToasterMessage('An error occurred while adding the visitor. Please try again.', 'error');
         // alert('An error occurred while adding the visitor. Please try again.');
     }

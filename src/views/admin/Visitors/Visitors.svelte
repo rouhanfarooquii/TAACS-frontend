@@ -2,6 +2,7 @@
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
   import { addVisitorApi, getAllLocationsApi, getAllShiftTimingsApi } from '../../../services/api';
+  import { navigate } from 'svelte-routing';
   import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
 
@@ -42,8 +43,8 @@
     }, 3000); // Show toast for 3 seconds
   }
 
-  function navigateToProfile() {
-    navigate('/user/profile');
+  function navigateToVisitor() {
+    navigate('/admin/visitorslist');
   }
 
   function generateRandomNumber() {
@@ -270,11 +271,13 @@
     console.log(visitor);
     try {
       const response = await addVisitorApi(formData);
+      navigateToVisitor();
       console.log('Visitor added successfully', response);
       showToasterMessage('Visitor added successfully!', 'success');
         // alert('Visitor added successfully!');
     } catch (error) {
       console.error('Error adding visitor:', error);
+      navigateToVisitor();
       showToasterMessage('An error occurred while adding the visitor. Please try again.', 'error');
         // alert('An error occurred while adding the visitor. Please try again.');
     }
@@ -475,7 +478,7 @@
   <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
       Submit
   </button>
-  <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToProfile}>
+  <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToVisitor}>
       Cancel
   </button>
 </div>
