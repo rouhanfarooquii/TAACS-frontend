@@ -122,11 +122,10 @@
     </section>
     <section class="relative py-16 bg-blueGray-200">
       <div class="container mx-auto px-4">
-        <div
-          class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64"
-        >
+        <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
           <div class="px-6">
             <div class="flex flex-wrap justify-center">
+              <!-- Picture Section -->
               <div class="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                 <div class="relative">
                   <img
@@ -136,87 +135,86 @@
                   />
                 </div>
               </div>
-              <div
-                class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center"
-              >
+              <!-- Divider -->
+              <div class="w-0 lg:w-1/12 px-4 lg:order-1 flex justify-center items-center">
+                <div class="h-32 border-r border-blueGray-200"></div>
+              </div>
+              <!-- Attendance and Absence Section -->
+              <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center flex flex-col justify-between">
                 <div class="py-6 px-3 mt-32 sm:mt-0">
-                  <button
-                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={navigateToAttendance}>
-                    View Attendance
-                  </button>
-                  <button
-                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={navigateToVisitor}>
-                    File Visitor Request
-                  </button>
+                  <div class="flex justify-around mb-2">
+                    <div class="box p-3 text-center mr-5">
+                      <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        {totalAttendance}
+                      </span>
+                      <span class="text-sm text-blueGray-400">Attendance</span>
+                    </div>
+                    <div class="box p-3 text-center">
+                      <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        {totalAbsences}
+                      </span>
+                      <span class="text-sm text-blueGray-400">Absences</span>
+                    </div>
+                  </div>
+                  
+                  <div class="flex justify-center mt-12">
+                    <button
+                      class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 mb-2"
+                      type="button" on:click={navigateToAttendance}>
+                      View Attendance
+                    </button>
+                    <button
+                      class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 mb-2 ml-4"
+                      type="button" on:click={navigateToVisitor}>
+                      File Visitor Request
+                    </button>
+                  </div>
                 </div>
               </div>
+              <!-- Details Section -->
               <div class="w-full lg:w-4/12 px-4 lg:order-1">
-                <div class="flex justify-center py-4 lg:pt-4 pt-8">
-                  <div class="mr-4 p-3 text-center">
-                    <span
-                      class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
-                    >
-                      {totalAttendance}
-                    </span>
-                    <span class="text-sm text-blueGray-400">Attendance</span>
+                <div class="text-center mt-12">
+                  <h3 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
+                    {employee.name}
+                  </h3>
+                  <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                    <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
+                    {employee.location}
                   </div>
-                  <div class="mr-4 p-3 text-center">
-                    <span
-                      class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
+                  <div class="mb-2 text-blueGray-600 mt-10">
+                    <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
+                    {employee.designation} - {employee.department}
+                  </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-user-tag mr-2 text-lg text-blueGray-400"></i>
+                    {employee.employeeType}
+                  </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-envelope mr-2 text-lg text-blueGray-400"></i>
+                    {employee.email}
+                  </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
+                    {showSalary ? `$${employee.salary}` : '******'}
+                    <i
+                      class="ml-2 text-blueGray-600 cursor-pointer"
+                      on:click={toggleSalaryVisibility}
                     >
-                      {totalAbsences}
-                    </span>
-                    <span class="text-sm text-blueGray-400">Absences</span>
+                      {#if showSalary}
+                        <i class="fas fa-eye-slash"></i>
+                      {:else}
+                        <i class="fas fa-eye"></i>
+                      {/if}
+                    </i>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="text-center mt-12">
-              <h3
-                class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2"
-              >
-                {employee.name}
-              </h3>
-              <div
-                class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase"
-              >
-                <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-                {employee.location}
-              </div>
-              <div class="mb-2 text-blueGray-600 mt-10">
-                <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                {employee.designation} - {employee.department}
-              </div>
-              <div class="mb-2 text-blueGray-600">
-                <i class="fas fa-user-tag mr-2 text-lg text-blueGray-400"></i>
-                {employee.employeeType}
-              </div>
-              <div class="mb-2 text-blueGray-600">
-                <i class="fas fa-envelope mr-2 text-lg text-blueGray-400"></i>
-                {employee.email}
-              </div>
-              <div class="mb-2 text-blueGray-600">
-                <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
-                {showSalary ? `$${employee.salary}` : '******'}
-                <i
-                  class="ml-2 text-blueGray-600 cursor-pointer"
-                  on:click={toggleSalaryVisibility}
-                >
-                  {#if showSalary}
-                    <i class="fas fa-eye-slash"></i>
-                  {:else}
-                    <i class="fas fa-eye"></i>
-                  {/if}
-                </i>
-              </div>
-              
-            </div>
+            <!-- Description and QR Code Section -->
             <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
-              <div class="flex flex-wrap justify-center">
-                <div class="w-full lg:w-9/12 px-4">
-                  <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
+              <div class="flex flex-wrap justify-between items-center">
+                <div class="w-full lg:w-1/2 px-4 mb-4 lg:mb-0">
+                  <p class="mb-4 text-lg leading-relaxed text-blueGray-700 text-justify">
                     I am a passionate and curious individual with a love for learning and exploring new ideas. My enthusiasm for understanding the world around me drives me to constantly seek knowledge and growth. I am a good listener, empathetic, and value meaningful connections with others. Whether it's through my hobbies, work, or personal interactions, I strive to bring positivity and creativity into everything I do. Adaptable and open-minded, I embrace challenges and view them as opportunities to develop and thrive.
                   </p>
                   <a
@@ -227,16 +225,16 @@
                     Show more
                   </a>
                 </div>
-              </div>
-              <div class="flex justify-center mt-6">
-                <td>
-                  <QrCode data={employee.name.toString()} />
-                </td>
+                <div class="w-full lg:w-1/2 flex justify-end items-center">
+                  <QrCode data={employee.name.toString()} class="w-64 h-64" />
+                </div>
               </div>
             </div>
+            
           </div>
         </div>
       </div>
+      
     </section>
   </main>
 </div>

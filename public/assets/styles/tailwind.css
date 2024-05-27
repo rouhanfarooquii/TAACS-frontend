@@ -2307,6 +2307,11 @@ select {
   margin-right: 1rem;
 }
 
+.mr-5
+{
+  margin-right: 2rem;
+}
+
 .mr-6 {
   margin-right: 10rem;
 }
@@ -4925,4 +4930,12 @@ canvas{
 }
 .toast.hide {
   opacity: 0;
+}
+
+.box {
+  background-color: #f0f4f8; /* Light shaded background */
+  border-radius: 8px;       /* Rounded corners */
+  padding: 1rem;            /* Padding for content */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  width:500px;
 }
