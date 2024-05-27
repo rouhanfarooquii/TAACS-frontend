@@ -645,6 +645,8 @@ export async function signUpUserApi(obj){
         headers: headers,
         body: JSON.stringify({user: obj})
     })
+    console.log("obj: ", obj);
+    console.log("response: ", response);
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;

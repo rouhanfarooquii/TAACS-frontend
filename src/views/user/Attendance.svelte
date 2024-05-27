@@ -145,9 +145,6 @@
     fromDate = new Date(request.dateFrom);
     toDate = new Date(request.dateTo);
 
-    errors.id = request.id === '' ? 'Employee ID is required.' : '';
-    errors.name = request.name === '' ? 'Name is required.' : '';
-    errors.email = request.email === '' ? 'Email is required.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(request.email) ? 'Email format is wrong.' : '';
     errors.dateFrom = request.dateFrom === '' ? 'Start date is required.' : '';
     errors.dateTo = request.dateTo === '' ? 'End date is required.' : fromDate > toDate ? 'Date To is before Date From.' : '';
     errors.reason = request.reason === '' ? 'Reason is required.' : '';
@@ -156,6 +153,7 @@
   }
 
   async function handleSubmit() {
+    
     if (!validate()) {
       return;
     }
