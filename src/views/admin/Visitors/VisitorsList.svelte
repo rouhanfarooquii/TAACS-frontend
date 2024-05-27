@@ -52,9 +52,27 @@
   }
 
   async function updateVisitorStatus(request, status) {
-    const updateObj = { status: status, personalPassword: personalPassword, cardIdNumber: cardIdNumber};
-    console.log('Update object:', updateObj); // Log the update object for debugging
-
+    const updateObj = { 
+      status: status,
+      personalPassword: personalPassword,
+      cardIdNumber: cardIdNumber, 
+      name: request.name, 
+      email: request.email, 
+      startTime: request.startTime, 
+      endTime: request.endTime, 
+      DateOfVisit: request.DateOfVisit,
+      reasonOfVisiting: request.reasonOfVisiting, 
+      fingerIndex1:request.fingerIndex1,
+      fingerIndex2: request.fingerIndex2, 
+      locations:request.locations,
+      mobileNumber: request.mobileNumber,
+      address: request.address,
+      gender: request.gender,
+      visitorID: request.visitorID,
+      requestor: request.requestor,
+      file: request.imagePath
+};
+    console.log('Update object:', updateObj);
     try {
       let responseMsg;
       if (status === 'approved') {
