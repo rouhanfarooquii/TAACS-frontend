@@ -1,6 +1,6 @@
 <script>
-  import { link } from "svelte-routing";
   import { onMount } from "svelte";
+  import { logInUserApi } from "../../services/api.js";
 
   let email = "";
   let password = "";
@@ -14,9 +14,7 @@
   };
 
   const validatePassword = (password) => {
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    return password.length >= 8 && hasUppercase && hasNumber;
+    return password.length >= 8;
   };
 
   const handleEmailBlur = () => {
@@ -29,7 +27,7 @@
 
   const handlePasswordBlur = () => {
     if (!validatePassword(password)) {
-      passwordError = "Password must be at least 8 characters, contain 1 uppercase letter and 1 number";
+      passwordError = "Password must be at least 8 characters";
     } else {
       passwordError = "";
     }
@@ -39,10 +37,21 @@
     handleEmailBlur();
     handlePasswordBlur();
 
+    console.log("front: ", { email, password })
     if (!emailError && !passwordError) {
-      errorMessage = "";
-      // ... rest of your login logic here
+      try {
+        const response = await logInUserApi({ email, password });
+        localStorage.setItem('token', response.token); // Store the token in local storage
+        errorMessage = "";
+        // Optionally, redirect the user or show a success message
+        // window.location.href = '/dashboard'; // Redirect to dashboard
+      } catch (error) {
+        console.log("error: ", error);
+        console.log("error message: ", error.message);
+        errorMessage = `An error occurred while logging in: ${error.message}`;
+      }
     } else {
+      console.log(errror);
       errorMessage = "Please fix the errors above";
     }
   };
@@ -55,9 +64,15 @@
 
 <div class="container mx-auto px-4 h-full">
   <div class="flex content-center items-center justify-center h-full">
-    <div class="w-full lg:w-4/12 px-4">
+    <div class="w-full lg:w-6/12 px-4">
       <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">
         <div class="rounded-t mb-0 px-6 py-6">
+          <div class="text-center mb-3">
+            <h6 class="text-blueGray-500 text-sm font-bold">
+              Log In
+            </h6>
+          </div>
+          <hr class="mt-6 border-b-1 border-blueGray-300" />
         </div>
         <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
           <form on:submit|preventDefault={handleSubmit} novalidate>
@@ -117,18 +132,6 @@
               {/if}
             </div>
           </form>
-        </div>
-      </div>
-      <div class="flex flex-wrap mt-6 relative">
-        <div class="w-1/2">
-          <a href="#pablo" on:click={(e) => e.preventDefault()} class="text-blueGray-200 hover:text-blue-500">
-            <small>Forgot password?</small>
-          </a>
-        </div>
-        <div class="w-1/2 text-right">
-          <a use:link href="/auth/adminlogin" class="text-blueGray-200 hover:text-blue-500">
-            <small>Login as Admin</small>
-          </a>
         </div>
       </div>
     </div>

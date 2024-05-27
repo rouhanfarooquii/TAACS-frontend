@@ -62,7 +62,7 @@
           <div class="rounded-t mb-0 px-6 py-6">
             <div class="text-center mb-3">
               <h6 class="text-blueGray-500 text-sm font-bold">
-                Log In
+                Log In as Admin
               </h6>
             </div>
             <hr class="mt-6 border-b-1 border-blueGray-300" />
@@ -120,7 +120,7 @@
                   class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
                 >
-                  Login
+                  Admin Login
                 </button>
                 {#if errorMessage}
                   <div class="text-red-500 text-xs mt-4">{errorMessage}</div>
