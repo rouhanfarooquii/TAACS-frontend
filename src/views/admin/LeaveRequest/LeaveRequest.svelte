@@ -22,13 +22,27 @@
   let leaveRequests = [];
 
   async function loadLeaveRequests() {
-    try {
-      leaveRequests = await getAllLeavesApi();
-      console.log("Leave requests loaded:", leaveRequests);
-    } catch (error) {
-      console.error('Failed to load leave requests:', error);
+  try {
+    const response = await getAllLeavesApi();
+    let requests = response || [];  // Ensure requests is an array
+
+    const currentDate = new Date();
+
+    // Check each request if fromDate has passed and status is pending
+    for (let request of requests) {
+      if (request.status === 'pending' && new Date(request.fromDate) < currentDate) {
+        await updateLeaveStatus(request, 'rejected');
+      }
     }
+
+    // Reload the leave requests after updating statuses
+    leaveRequests = await getAllLeavesApi();
+    console.log("Leave requests loaded:", leaveRequests);
+  } catch (error) {
+    console.error('Failed to load leave requests:', error);
+    leaveRequests = [];  // Set to empty array on error
   }
+}
 
   onMount(() => {
     loadLeaveRequests();
