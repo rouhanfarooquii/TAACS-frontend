@@ -4,6 +4,8 @@
 
   let email = "";
   let password = "";
+  let emailError = "";
+  let passwordError = "";
   let errorMessage = "";
 
   const validateEmail = (email) => {
@@ -17,22 +19,31 @@
     return password.length >= 8 && hasUppercase && hasNumber;
   };
 
+  const handleEmailBlur = () => {
+    if (!validateEmail(email)) {
+      emailError = "Invalid email format";
+    } else {
+      emailError = "";
+    }
+  };
+
+  const handlePasswordBlur = () => {
+    if (!validatePassword(password)) {
+      passwordError = "Password must be at least 8 characters, contain 1 uppercase letter and 1 number";
+    } else {
+      passwordError = "";
+    }
+  };
 
   const handleSubmit = async () => {
-    if (validateEmail(email) && validatePassword(password)) {
+    handleEmailBlur();
+    handlePasswordBlur();
+
+    if (!emailError && !passwordError) {
       errorMessage = "";
       // ... rest of your login logic here
     } else {
-      let errorMessages = [];
-      if (!validateEmail(email)) {
-        errorMessages.push("Invalid email format");
-      }
-      if (!validatePassword(password)) {
-        errorMessages.push(
-          "Password must be at least 8 characters, contain 1 uppercase letter and 1 number"
-        );
-      }
-      errorMessage = errorMessages.join(", ");
+      errorMessage = "Please fix the errors above";
     }
   };
 
@@ -49,7 +60,7 @@
         <div class="rounded-t mb-0 px-6 py-6">
         </div>
         <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
-          <form on:submit|preventDefault={handleSubmit}>
+          <form on:submit|preventDefault={handleSubmit} novalidate>
             <div class="relative w-full mb-3">
               <label
                 class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -63,11 +74,14 @@
                 bind:value={email}
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 placeholder="Email"
+                on:blur={handleEmailBlur}
+                aria-describedby="email-error"
+                aria-invalid={emailError ? "true" : "false"}
               />
+              {#if emailError}
+                <div id="email-error" class="text-red-500 text-xs mt-1">{emailError}</div>
+              {/if}
             </div>
-            {#if errorMessage && !email.trim()}
-              <div class="text-red-500 text-xs">{errorMessage}</div>
-            {/if}
 
             <div class="relative w-full mb-3">
               <label
@@ -82,25 +96,14 @@
                 bind:value={password}
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                 placeholder="Password"
+                on:blur={handlePasswordBlur}
+                aria-describedby="password-error"
+                aria-invalid={passwordError ? "true" : "false"}
               />
+              {#if passwordError}
+                <div id="password-error" class="text-red-500 text-xs mt-1">{passwordError}</div>
+              {/if}
             </div>
-            {#if errorMessage && !password.trim()}
-              <div class="text-red-500 text-xs">{errorMessage}</div>
-            {/if}
-
-            <!-- <div>
-              <label class="inline-flex items-center cursor-pointer">
-                <input
-                  id="customCheckLogin"
-                  type="checkbox"
-                  bind:checked={rememberMe}
-                  class="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
-                />
-                <span class="ml-2 text-sm font-semibold text-blueGray-600">
-                  Remember me
-                </span>
-              </label>
-            </div> -->
 
             <div class="text-center mt-6">
               <button
@@ -109,13 +112,16 @@
               >
                 Login
               </button>
+              {#if errorMessage}
+                <div class="text-red-500 text-xs mt-4">{errorMessage}</div>
+              {/if}
             </div>
           </form>
         </div>
       </div>
       <div class="flex flex-wrap mt-6 relative">
         <div class="w-1/2">
-          <a href="#pablo" on:click={(e) => e.preventDefault()} class="text-blueGray-200">
+          <a href="#pablo" on:click={(e) => e.preventDefault()} class="text-blueGray-200 hover:text-blue-500">
             <small>Forgot password?</small>
           </a>
         </div>

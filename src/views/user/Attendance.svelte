@@ -1,51 +1,26 @@
 <script>
-  // Core components
   import { navigate } from 'svelte-routing';
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
   import Footer from "components/Footers/Footer.svelte";
   import Toast from '../../components/Confirmation/Toast.svelte';
   import { writable, get } from 'svelte/store';
-    export let color = "light";
-    
-    // Import the API function
-    import { addLeaveApi } from '../../services/api';  // Adjust the path as necessary
+  export let color = "light";
+  import { addLeaveApi } from '../../services/api';
 
   const team2 = "/assets/img/10.jpg";
-
-  let gradientBackground = `
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  `;
+  let gradientBackground = `background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);`;
 
   let editModal = false;
-
-  function openModal() {
-    editModal = true;
-  }
-
-  function closeModal() {
-    editModal = false;
-    dateFrom= '';
-        dateTo= '';
-        reason= '';
-        timeStamp= '';
-  }
-
+  function openModal() { editModal = true; }
+  function closeModal() { editModal = false; request.dateFrom = ''; request.dateTo = ''; request.reason = ''; request.timeStamp = ''; }
   let showToaster = false;
   let toasterMessage = '';
   let toasterType = '';
-
-  function showToasterMessage(message, type) {
-    toasterMessage = message;
-    toasterType = type;
-    showToaster = true;
-    setTimeout(() => {
-      showToaster = false;
-    }, 3000); // Show toast for 3 seconds
-  }
-
+  function showToasterMessage(message, type) { toasterMessage = message; toasterType = type; showToaster = true; setTimeout(() => { showToaster = false; }, 3000); }
+  
   let currentMonthDate = new Date();
   $: currentMonth = currentMonthDate.toLocaleString('default', { month: 'long', year: 'numeric' });
-
+  
   let attendanceData = writable([
     { date: '2024-05-01', status: 'Present' },
     { date: '2024-05-02', status: 'Present' },
@@ -112,24 +87,20 @@
     const numDays = new Date(year, month + 1, 0).getDate();
     const days = [];
 
-    // Adjusting the first day of the week to start from Monday
     const firstDayOfWeek = (new Date(year, month, 1).getDay() + 6) % 7;
 
-    // Adding empty slots for days before the first day of the current month
     for (let i = 0; i < firstDayOfWeek; i++) {
       days.push({ date: null, currentMonth: false });
     }
 
-    // Adding days of the current month
     for (let i = 1; i <= numDays; i++) {
       const currentDate = new Date(year, month, i);
       const attendance = get(attendanceData).find(
-        (att) => att.date === currentDate.toISOString().split('T')[0]
+        (att) => new Date(att.date).toDateString() === currentDate.toDateString()
       );
       days.push({ date: currentDate, currentMonth: true, attendance: attendance });
     }
 
-    // Adding empty slots for days after the last day of the current month
     const lastDayOfWeek = (new Date(year, month, numDays).getDay() + 6) % 7;
     for (let i = lastDayOfWeek + 1; i < 7; i++) {
       days.push({ date: null, currentMonth: false });
@@ -150,72 +121,69 @@
 
   let currentTime = new Date();
 
-    let request = {
-        id: '',
-        name: '',
-        email: '',
-        dateFrom: '',
-        dateTo: '',
-        reason: '',
-        timeStamp: ''
-    };
+  let request = {
+    id: '',
+    name: '',
+    email: '',
+    dateFrom: '',
+    dateTo: '',
+    reason: '',
+    timeStamp: ''
+  };
 
-    let fromDate, toDate;
-    let errors = {
-        id: '',
-        name: '',
-        email: '',
-        dateFrom: '',
-        dateTo: '',
-        reason: ''
-    };
+  let fromDate, toDate;
+  let errors = {
+    id: '',
+    name: '',
+    email: '',
+    dateFrom: '',
+    dateTo: '',
+    reason: ''
+  };
 
-    function validate() {
-        fromDate = new Date(request.dateFrom);
-        toDate = new Date(request.dateTo);
+  function validate() {
+    fromDate = new Date(request.dateFrom);
+    toDate = new Date(request.dateTo);
 
-        errors.id = request.id === '' ? 'Employee ID is required.' : '';
-        errors.name = request.name === '' ? 'Name is required.' : '';
-        errors.email = request.email === '' ? 'Email is required.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(request.email) ? 'Email format is wrong.' : '';
-        errors.dateFrom = request.dateFrom === '' ? 'Start date is required.' : '';
-        errors.dateTo = request.dateTo === '' ? 'End date is required.' : fromDate > toDate ? 'Date To is before Date From.' : '';
-        errors.reason = request.reason === '' ? 'Reason is required.' : '';
+    errors.id = request.id === '' ? 'Employee ID is required.' : '';
+    errors.name = request.name === '' ? 'Name is required.' : '';
+    errors.email = request.email === '' ? 'Email is required.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(request.email) ? 'Email format is wrong.' : '';
+    errors.dateFrom = request.dateFrom === '' ? 'Start date is required.' : '';
+    errors.dateTo = request.dateTo === '' ? 'End date is required.' : fromDate > toDate ? 'Date To is before Date From.' : '';
+    errors.reason = request.reason === '' ? 'Reason is required.' : '';
 
-        return !Object.values(errors).some(error => error !== '');
-    }
-
-    async function handleSubmit() {
-        if (!validate()) {
-            return;
-        }
-
-        // Prepare the data object for the API
-        const leaveObj = {
-            employee: "664902f9b3303091b8620e51", // hardcoded value
-            status: "pending", // hardcoded value
-            reason: request.reason,
-            fromDate: request.dateFrom,
-            toDate: request.dateTo
-        };
-
-        console.log(leaveObj);
-
-        try {
-            const msg = await addLeaveApi(leaveObj);
-            console.log(msg); // Log the message or handle it as needed
-            showToasterMessage('Leave request submitted successfully!', 'success');
-            closeModal();
-        } catch (error) {
-            console.error('Failed to submit leave request:', error);
-            showToasterMessage('An error occurred while submitting leave request. Please try again.', 'error');
-            // Handle errors, e.g., show an error message to the user
-        }
-    }
-
-    function navigateToProfile() {
-    navigate('/user/profile');
+    return !Object.values(errors).some(error => error !== '');
   }
 
+  async function handleSubmit() {
+    if (!validate()) {
+      return;
+    }
+
+    const leaveObj = {
+      employee: "664902f9b3303091b8620e51",
+      status: "pending",
+      reason: request.reason,
+      fromDate: request.dateFrom,
+      toDate: request.dateTo
+    };
+
+    console.log(leaveObj);
+
+    try {
+      const msg = await addLeaveApi(leaveObj);
+      console.log(msg);
+      showToasterMessage('Leave request submitted successfully!', 'success');
+      closeModal();
+    } catch (error) {
+      console.error('Failed to submit leave request:', error);
+      showToasterMessage('An error occurred while submitting leave request. Please try again.', 'error');
+    }
+  }
+
+  function navigateToProfile() {
+    navigate('/user/profile');
+  }
 </script>
 
 <div>
@@ -252,120 +220,103 @@
     </section>
     <section class="relative py-16 bg-blueGray-200">
       <div class="container mx-auto px-4">
-        <div
-          class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64"
-        >
+        <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
           <div class="px-6">
             <div class="flex flex-wrap justify-center">
               <div class="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                 <div class="relative">
-                  <img
-                    alt="..."
-                    src={team2}
-                    class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 max-w-150-px"
-                    style="left: 50%; transform: translateX(-50%);"
-                  />
+                  <img alt="..." src={team2} class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 max-w-150-px" style="left: 50%; transform: translateX(-50%);" />
                 </div>
               </div>
-              <div
-                class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center"
-              >
+              <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                 <div class="py-6 px-3 mt-32 sm:mt-0">
-                  <button
-                    class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={navigateToProfile}>
+                  <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={navigateToProfile}>
                     Back
                   </button>
-                  <button
-                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                    type="button" on:click={openModal}>
+                  <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={openModal}>
                     Request A Leave
                   </button>
                 </div>
               </div>
               {#if editModal}
-      <div class="modal">
-        <div class="modal-content">
-          <div class="rounded-t mb-0 px-4 py-10 border-0">
-            <div class="flex flex-wrap items-center">
-              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-                <h3 class="font-semibold text-lg text-blueGray-700">
-                  Leave Requests
-                </h3>
-              </div>
-            </div>
-            <div class="flex flex-wrap items-center">
-              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-                <!-- <p>{selectedEmployee.employeeID}</p> -->
-              </div>
-            </div>
-            <div class="flex flex-wrap items-center">
-              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-                <!-- <p>{selectedEmployee.employeeID}</p> -->
-              </div>
-            </div>
-            <div class="flex flex-wrap items-center">
-              <div class="relative w-full px-4 max-w-full flex-grow flex-1">
-                <!-- <p>{selectedEmployee.employeeID}</p> -->
-              </div>
-            </div>
-          </div>
-          <div class="block w-full overflow-x-auto">
-            <div class="px-4 py-5 flex-auto">
-              <div class="flex flex-wrap">
-                <div class="w-full lg:w-6/12 px-4">
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateFrom ? 'label-required' : ''}" for="dateFrom">
-                        From:
-                    </label>
-                    <input type="date" id="dateFrom" placeholder="Date & Time From" class="custom-filter-input {errors.dateFrom ? 'input-error' : ''}" bind:value={request.dateFrom}>
-                    {#if errors.dateFrom}<p class="text-red-500 text-xs italic">{errors.dateFrom}</p>{/if}
+                <div class="modal">
+                  <div class="modal-content">
+                    <div class="rounded-t mb-0 px-4 py-10 border-0">
+                      <div class="flex flex-wrap items-center">
+                        <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                          <h3 class="font-semibold text-lg text-blueGray-700">
+                            Leave Requests
+                          </h3>
+                        </div>
+                      </div>
+                      <div class="flex flex-wrap items-center">
+                        <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                          <!-- <p>{selectedEmployee.employeeID}</p> -->
+                        </div>
+                      </div>
+                      <div class="flex flex-wrap items-center">
+                        <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                          <!-- <p>{selectedEmployee.employeeID}</p> -->
+                        </div>
+                      </div>
+                      <div class="flex flex-wrap items-center">
+                        <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                          <!-- <p>{selectedEmployee.employeeID}</p> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="block w-full overflow-x-auto">
+                      <div class="px-4 py-5 flex-auto">
+                        <div class="flex flex-wrap">
+                          <div class="w-full lg:w-6/12 px-4">
+                            <div class="relative mb-3">
+                              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateFrom ? 'label-required' : ''}" for="dateFrom">
+                                  From:
+                              </label>
+                              <input type="date" id="dateFrom" placeholder="Date & Time From" class="custom-filter-input {errors.dateFrom ? 'input-error' : ''}" bind:value={request.dateFrom}>
+                              {#if errors.dateFrom}<p class="text-red-500 text-xs italic">{errors.dateFrom}</p>{/if}
+                          </div>
+                          <div class="relative mb-3">
+                            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateTo ? 'label-required' : ''}" for="dateTo">
+                                To:
+                            </label> <!-- Make sure this tag is properly closed -->
+                            <input type="date" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
+                            {#if errors.dateTo}<p class="text-red-500 text-xs italic">{errors.dateTo}</p>{/if}
+                        </div> 
+                          </div>
+                          <div class="w-full lg:w-6/12 px-4">
+                            <div class="relative mb-3">
+                              <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.reason ? 'label-required' : ''}" for="reason">
+                                  Reason:
+                              </label>
+                              <textarea id="reason" name="reason" class="custom-filter-input resize-none {errors.reason ? 'input-error' : ''}" placeholder="Reason:" bind:value={request.reason}></textarea>
+                              {#if errors.reason}<p class="text-red-500 text-xs italic">{errors.reason}</p>{/if}
+                          </div>
+                          </div>
+                        </div>
+                        <div class="flex justify-end mb-4">
+                          <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
+                              Submit
+                          </button>
+                          <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+                              Cancel
+                          </button>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="relative mb-3">
-                  <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.dateTo ? 'label-required' : ''}" for="dateTo">
-                      To:
-                  </label> <!-- Make sure this tag is properly closed -->
-                  <input type="date" id="dateTo" placeholder="Date & Time To" class="custom-filter-input {errors.dateTo ? 'input-error' : ''}" bind:value={request.dateTo}>
-                  {#if errors.dateTo}<p class="text-red-500 text-xs italic">{errors.dateTo}</p>{/if}
-              </div> 
-                </div>
-                <div class="w-full lg:w-6/12 px-4">
-                  <div class="relative mb-3">
-                    <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 {errors.reason ? 'label-required' : ''}" for="reason">
-                        Reason:
-                    </label>
-                    <textarea id="reason" name="reason" class="custom-filter-input resize-none {errors.reason ? 'input-error' : ''}" placeholder="Reason:" bind:value={request.reason}></textarea>
-                    {#if errors.reason}<p class="text-red-500 text-xs italic">{errors.reason}</p>{/if}
-                </div>
-                </div>
-              </div>
-              <div class="flex justify-end mb-4">
-                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
-                    Submit
-                </button>
-                <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
-                    Cancel
-                </button>
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/if}
+              {/if}
               <div class="w-full lg:w-4/12 px-4 lg:order-1">
                 <div class="flex justify-center py-4 lg:pt-4 pt-8">
                   <div class="mr-4 p-3 text-center">
-                    <span
-                      class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
-                    >
+                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                       {attendanceCount}
                     </span>
                     <span class="text-sm text-blueGray-400">Attendance</span>
                   </div>
                   <div class="mr-4 p-3 text-center">
-                    <span
-                      class="text-xl font-bold block uppercase tracking-wide text-blueGray-600"
-                    >
+                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                       {absenceCount}
                     </span>
                     <span class="text-sm text-blueGray-400">Absences</span>
@@ -414,4 +365,3 @@
     </section>
   </main>
 </div>
-

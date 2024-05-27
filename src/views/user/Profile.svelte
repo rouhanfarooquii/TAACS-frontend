@@ -100,27 +100,7 @@
           class="w-full h-full absolute opacity-50 bg-black"
         ></span>
       </div>
-      <div
-        class="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-70-px"
-        style="transform: translateZ(0);"
-      >
-        <svg
-          class="absolute bottom-0 overflow-hidden"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="none"
-          version="1.1"
-          viewBox="0 0 2560 100"
-          x="0"
-          y="0"
-        >
-          <polygon
-            class="text-blueGray-200 fill-current"
-            points="2560 0 2560 100 0 100"
-          ></polygon>
-        </svg>
-      </div>
     </section>
-    <section class="relative py-16 bg-blueGray-200">
       <div class="container mx-auto px-4">
         <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
           <div class="px-6">
@@ -141,6 +121,18 @@
               </div>
               <!-- Attendance and Absence Section -->
               <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center flex flex-col justify-between">
+                <div class="flex justify-center mt-12">
+                  <button
+                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 mb-2"
+                    type="button" on:click={navigateToAttendance}>
+                    View Attendance
+                  </button>
+                  <button
+                    class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 mb-2 ml-4"
+                    type="button" on:click={navigateToVisitor}>
+                    File Visitor Request
+                  </button>
+                </div>
                 <div class="py-6 px-3 mt-32 sm:mt-0">
                   <div class="flex justify-around mb-2">
                     <div class="box p-3 text-center mr-5">
@@ -157,18 +149,7 @@
                     </div>
                   </div>
                   
-                  <div class="flex justify-center mt-12">
-                    <button
-                      class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 mb-2"
-                      type="button" on:click={navigateToAttendance}>
-                      View Attendance
-                    </button>
-                    <button
-                      class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150 mb-2 ml-4"
-                      type="button" on:click={navigateToVisitor}>
-                      File Visitor Request
-                    </button>
-                  </div>
+                  
                 </div>
               </div>
               <!-- Details Section -->
@@ -226,6 +207,9 @@
                   </a>
                 </div>
                 <div class="w-full lg:w-1/2 flex justify-end items-center">
+                <h4 class="text-sm leading-normal mt-0 text-blueGray-400 font-bold uppercase">Parking QR</h4>
+                </div>
+                <div class="w-full lg:w-1/2 flex justify-end items-center">
                   <QrCode data={employee.name.toString()} class="w-64 h-64" />
                 </div>
               </div>
@@ -234,7 +218,5 @@
           </div>
         </div>
       </div>
-      
-    </section>
   </main>
 </div>

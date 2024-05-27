@@ -71,7 +71,7 @@
       visitorID: request.visitorID,
       requestor: request.requestor,
       file: request.imagePath
-};
+    };
     console.log('Update object:', updateObj);
     try {
       let responseMsg;
@@ -169,7 +169,6 @@
 
   // Reactive statements to ensure proper updates
   $: pendingLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'pending');
-  console.log("Pending requests: ", pendingLeaveRequests); // Log pending requests to verify
   $: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
   $: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
   $: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
@@ -329,7 +328,7 @@
               <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
               <td class="table-data" title={request.email}>{request.email}</td>
               <td class="table-data ml-12" title={request.mobileNumber}>{request.mobileNumber}</td>
-              <td class="table-data" title={new Date(request.dateOfBirth).toLocaleDateString()}>{new Date(request.dateOfBirth).toLocaleDateString()}</td>
+              <td class="table-data" title={new Date(request.DateOfVisith).toLocaleDateString()}>{new Date(request.DateOfVisith).toLocaleDateString()}</td>
               <td class="table-data" title={request.reasonOfVisiting}>{request.reasonOfVisiting}</td>
             </tr>
           {/each}
@@ -384,7 +383,7 @@
               <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
               <td class="table-data" title={request.email}>{request.email}</td>
               <td class="table-data" title={request.mobileNumber}>{request.mobileNumber}</td>
-              <td class="table-data" title={new Date(request.dateOfBirth).toLocaleDateString()}>{new Date(request.dateOfBirth).toLocaleDateString()}</td>
+              <td class="table-data" title={new Date(request.DateOfVisith).toLocaleDateString()}>{new Date(request.DateOfVisith).toLocaleDateString()}</td>
               <td class="table-data" title={request.reasonOfVisiting}>{request.reasonOfVisiting}</td>
               <td class="table-data" title={request.status}>{request.status}</td>
             </tr>

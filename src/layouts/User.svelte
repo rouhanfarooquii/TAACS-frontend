@@ -25,13 +25,9 @@
 
   <div>
       <AdminNavbar />
-      <HeaderStats />
-      <div class="px-4 md:px-10 mx-auto w-full -m-24">
         <Router url="user">
           <Route path="leaveform" component="{LeaveForm}" />
           <Route path="visitors" component="{VisitorReq}" />
         </Router>
-        <FooterAdmin />
-      </div>
   </div>
   

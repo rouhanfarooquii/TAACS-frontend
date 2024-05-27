@@ -12,15 +12,19 @@
   const registerBg2 = "../assets/img/register_bg_2.png";
   export let location;
   export let auth = "";
+
+  let gradientBackground = `
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  `;
+
 </script>
 
 <div>
-  <AuthNavbar />
   <main>
     <section class="relative w-full h-full py-40 min-h-screen">
       <div
         class="absolute top-0 w-full h-full bg-blueGray-800 bg-no-repeat bg-full"
-        style="background-image: url({registerBg2});"
+        style={gradientBackground}
       ></div>
       <Router url="auth">
         <Route path="login" component="{Login}" />
