@@ -219,16 +219,33 @@ export async function getAllEmployeesApi(){
     return await employees;
 };
 
+// export async function loginEmployeeApi(obj){
+//     const response = await fetch(BACKEND + 'employee/logIn',{
+//         method: 'POST',
+//         headers: headers,
+//         body: JSON.stringify({ employee: obj })
+//     });
+//     console.log('API Response Status:', response.status);
+//     const responseObj = await response.json();
+//     console.log('API Response JSON:', responseObj);
+//     return responseObj;
+// }
+
 export async function loginEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/logIn',{
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify({ user: obj })
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie('token')}` // Include token in header
+        },
+        body: JSON.stringify({ employee: obj })
     });
+    console.log('API Response Status:', response.status);
+    console.log("Cookie: ", getCookie('token'));
     const responseObj = await response.json();
-    const employees = await responseObj.employees;
-    return await employees;
-};
+    console.log('API Response JSON:', responseObj);
+    return responseObj;
+}
 
 export async function addEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/add', {
@@ -752,6 +769,40 @@ export async function logInAdminApi(obj) {
     }
   
     const responseObj = await response.json();
+    if(responseObj.token){
+        document.cookie = `adminToken=${response.token}; path=/;`;
+        console.log("Cookie: ", getCookie('adminToken'));
+    }
     console.log('Login request successful. Response:', responseObj);
     return responseObj;
   }
+
+//   export async function logInAdminApi(obj){
+//     const response = await fetch(BACKEND + 'admin/logIn',{
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Bearer ${getCookie('token')}` // Include token in header
+//         },
+//         body: JSON.stringify({ admin: obj })
+//     });
+//     console.log('API Response Status:', response.status);
+//     console.log("Cookie: ", getCookie('token'));
+//     const responseObj = await response.json();
+//     console.log('API Response JSON:', responseObj);
+//     return responseObj;
+// }
+
+// Function to get the token from cookies
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function getAuthHeader() {
+    let authHead = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getCookie('adminToken')}`
+    }
+}

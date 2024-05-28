@@ -7,7 +7,6 @@
 
   // pages for this layout
   import Login from "views/auth/Login.svelte";
-  import Signup from "../views/auth/Signup.svelte";
   import AdminLogin from "../views/auth/AdminLogin.svelte";
   import AdminSignup from "../views/auth/AdminSignup.svelte";
 
@@ -30,7 +29,6 @@
       ></div>
       <Router url="auth">
         <Route path="login" component="{Login}" />
-        <Route path="signup" component="{Signup}" />
         <Route path="adminlogin" component="{AdminLogin}" />
         <Route path="adminsignup" component="{AdminSignup}" />
       </Router>
