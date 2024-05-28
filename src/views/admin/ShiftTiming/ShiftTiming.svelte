@@ -180,15 +180,17 @@ function viewShift(shift) {
     // console.log(delLogicEmployees);
     try {
     let ids = [...selectedShifts];
-    console.log(ids);
+    // console.log(ids);
       for (let i = 0; i < delLogicEmployees.length; i++) {
         for (let j = 0; j < ids.length; j++) {
           if(delLogicEmployees[i].shiftTiming._id.toString() == ids[j].toString()){
+            // console.log("present")
             showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmployees[i].employeeID + ' Employee ID', 'error');
             return;
           }
         }
       }
+
       const msg = await batchDeleteShiftTimingApi({ids: ids});
       console.log(msg);
       await fetchShifts();
