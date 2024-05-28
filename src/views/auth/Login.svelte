@@ -37,21 +37,21 @@
     handleEmailBlur();
     handlePasswordBlur();
 
-    console.log("front: ", { email, password })
     if (!emailError && !passwordError) {
       try {
+        console.log('Submitting login form with email:', email);
         const response = await logInUserApi({ email, password });
+        console.log('Login successful. Token:', response.token);
         localStorage.setItem('token', response.token); // Store the token in local storage
         errorMessage = "";
         // Optionally, redirect the user or show a success message
         // window.location.href = '/dashboard'; // Redirect to dashboard
       } catch (error) {
-        console.log("error: ", error);
-        console.log("error message: ", error.message);
+        console.log('Login failed:', error.message);
         errorMessage = `An error occurred while logging in: ${error.message}`;
       }
     } else {
-      console.log(errror);
+      console.log('Validation errors. Email error:', emailError, 'Password error:', passwordError);
       errorMessage = "Please fix the errors above";
     }
   };

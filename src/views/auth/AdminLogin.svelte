@@ -1,6 +1,6 @@
 <script>
-    import { link } from "svelte-routing";
     import { onMount } from "svelte";
+    import { logInAdminApi } from "../../services/api";
   
     let email = "";
     let password = "";
@@ -14,9 +14,7 @@
     };
   
     const validatePassword = (password) => {
-      const hasUppercase = /[A-Z]/.test(password);
-      const hasNumber = /[0-9]/.test(password);
-      return password.length >= 8 && hasUppercase && hasNumber;
+      return password.length >= 8;
     };
   
     const handleEmailBlur = () => {
@@ -29,7 +27,7 @@
   
     const handlePasswordBlur = () => {
       if (!validatePassword(password)) {
-        passwordError = "Password must be at least 8 characters, contain 1 uppercase letter and 1 number";
+        passwordError = "Password must be at least 8 characters";
       } else {
         passwordError = "";
       }
@@ -40,9 +38,20 @@
       handlePasswordBlur();
   
       if (!emailError && !passwordError) {
-        errorMessage = "";
-        // ... rest of your login logic here
+        try {
+          console.log('Submitting login form with email:', email);
+          const response = await logInAdminApi({ email, password });
+          console.log('Login successful. Token:', response.token);
+          localStorage.setItem('token', response.token); // Store the token in local storage
+          errorMessage = "";
+          // Optionally, redirect the admin or show a success message
+          // window.location.href = '/dashboard'; // Redirect to dashboard
+        } catch (error) {
+          console.log('Login failed:', error.message);
+          errorMessage = `An error occurred while logging in: ${error.message}`;
+        }
       } else {
+        console.log('Validation errors. Email error:', emailError, 'Password error:', passwordError);
         errorMessage = "Please fix the errors above";
       }
     };
@@ -56,9 +65,7 @@
   <div class="container mx-auto px-4 h-full">
     <div class="flex content-center items-center justify-center h-full">
       <div class="w-full lg:w-6/12 px-4">
-        <div
-          class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0"
-        >
+        <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">
           <div class="rounded-t mb-0 px-6 py-6">
             <div class="text-center mb-3">
               <h6 class="text-blueGray-500 text-sm font-bold">
@@ -69,8 +76,6 @@
           </div>
           <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
             <form on:submit|preventDefault={handleSubmit} novalidate>
-              <div class="relative w-full mb-3">
-  
               <div class="relative w-full mb-3">
                 <label
                   class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -88,9 +93,9 @@
                   aria-describedby="email-error"
                   aria-invalid={emailError ? "true" : "false"}
                 />
-              {#if emailError}
-                <div id="email-error" class="text-red-500 text-xs mt-1">{emailError}</div>
-              {/if}
+                {#if emailError}
+                  <div id="email-error" class="text-red-500 text-xs mt-1">{emailError}</div>
+                {/if}
               </div>
   
               <div class="relative w-full mb-3">
@@ -132,4 +137,3 @@
       </div>
     </div>
   </div>
-  

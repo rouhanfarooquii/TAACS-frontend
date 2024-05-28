@@ -652,17 +652,26 @@ export async function signUpUserApi(obj){
     return await msg;
 };
 
-export async function logInUserApi(obj){
+export async function logInUserApi(obj) {
+    console.log('Sending login request for user:', obj.email);
+    
     const response = await fetch(BACKEND + 'user/logIn', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({user: obj})
-    })
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ user: obj })
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Login request failed:', errorText);
+      throw new Error(`Failed to log in: ${errorText}`);
+    }
+  
     const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+    console.log('Login request successful. Response:', responseObj);
+    return responseObj;
+  }
+  
 
 // Admins API
 export async function signUpAdminApi(obj){
@@ -677,14 +686,22 @@ export async function signUpAdminApi(obj){
     return await msg;
 };
 
-export async function logInAdminApi(obj){
+export async function logInAdminApi(obj) {
+    console.log('Sending login request for admin:', obj.email);
+  
     const response = await fetch(BACKEND + 'admin/logIn', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({admin: obj})
-    })
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ admin: obj })
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Login request failed:', errorText);
+      throw new Error(`Failed to log in: ${errorText}`);
+    }
+  
     const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+    console.log('Login request successful. Response:', responseObj);
+    return responseObj;
+  }
