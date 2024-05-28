@@ -2,7 +2,7 @@
   import { navigate } from 'svelte-routing';
   import Pagination from '../../../components/Pagination/Pagination.svelte';
   import { onMount } from 'svelte';
-  import { getAllShiftTimingsApi,  updateShiftTimingApi, batchDeleteShiftTimingApi } from '../../../services/api';
+  import { getAllShiftTimingsApi,  updateShiftTimingApi, batchDeleteShiftTimingApi, getAllEmployeesApi } from '../../../services/api';
   import Toast from '../../../components/Confirmation/Toast.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -36,7 +36,12 @@
 
   onMount(async () => {
     await fetchShifts();
+    await fetchDelLogicEmployees();
   });
+
+
+
+
   async function fetchShifts() {
   try {
     const rawShifts = await getAllShiftTimingsApi();
@@ -50,6 +55,19 @@
     shifts = []; // Fallback to an empty array in case of error
   }
 }
+
+
+let delLogicEmployees = [];
+
+async function fetchDelLogicEmployees() {
+    try {
+      delLogicEmployees = await getAllEmployeesApi();
+    } catch (error) {
+      console.error('Error fetching Employees:', error);
+    }
+  }
+
+
  function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -158,10 +176,19 @@ function viewShift(shift) {
   }
 
   async function deleteSelectedShifts() {
+
+    // console.log(delLogicEmployees);
+    try {
     let ids = [...selectedShifts];
     console.log(ids);
-
-    try {
+      for (let i = 0; i < delLogicEmployees.length; i++) {
+        for (let j = 0; j < ids.length; j++) {
+          if(delLogicEmployees[i].shiftTiming._id.toString() == ids[j].toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmployees[i].employeeID + ' Employee ID', 'error');
+            return;
+          }
+        }
+      }
       const msg = await batchDeleteShiftTimingApi({ids: ids});
       console.log(msg);
       await fetchShifts();

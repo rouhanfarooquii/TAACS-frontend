@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi, getAllLocationsApi, getAllEmergenciesApi } from '../../../services/api';
+  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi, getAllLocationsApi, } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
 
