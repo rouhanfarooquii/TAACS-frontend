@@ -41,8 +41,8 @@
       try {
         console.log('Submitting login form with email:', email);
         const response = await logInAdminApi({ email, password });
-        console.log('Login successful. Token:', response.token);
-        document.cookie = `token=${response.token}; path=/;`; // Store the token in a cookie
+        // console.log('Login successful. Token:', response.token);
+        // document.cookie = `token=${response.token}; path=/;`; // Store the token in a cookie
         errorMessage = "";
         // Optionally, redirect the admin or show a success message
         // window.location.href = '/dashboard'; // Redirect to dashboard

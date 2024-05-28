@@ -40,7 +40,7 @@
     if (!emailError && !passwordError) {
       try {
         const response = await loginEmployeeApi({ email, password });
-        console.log('Login successful. Token:', response.token);
+        // console.log('', response.token);
 
         // Store the token in a cookie
         // document.cookie = `token=${response.token}; path=/;`;

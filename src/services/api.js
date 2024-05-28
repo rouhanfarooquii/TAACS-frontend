@@ -1,4 +1,5 @@
 let headers = {'Content-Type': 'application/json'}
+import { navigate } from 'svelte-routing';
 
 export async function batchUpdateAccessControlApi(obj){
     const response = await fetch(BACKEND + 'accessControl/batchUpdate', {
@@ -212,8 +213,11 @@ export async function deleteEmergencyApi(id) {
 export async function getAllEmployeesApi(){
     const response = await fetch(BACKEND + 'employee/getall',{
         method: 'GET',
-        headers: headers,
+        headers: getAuthHeader(),
     });
+    if(response.status == 401){
+        navigate('/auth/adminlogin');
+    }
     const responseObj = await response.json();
     const employees = await responseObj.employees;
     return await employees;
@@ -241,7 +245,7 @@ export async function loginEmployeeApi(obj){
         body: JSON.stringify({ employee: obj })
     });
     console.log('API Response Status:', response.status);
-    console.log("Cookie: ", getCookie('token'));
+    console.log("Cookie: ", getCookie('adminToken'));
     const responseObj = await response.json();
     console.log('API Response JSON:', responseObj);
     return responseObj;
@@ -770,12 +774,12 @@ export async function logInAdminApi(obj) {
   
     const responseObj = await response.json();
     if(responseObj.token){
-        document.cookie = `adminToken=${response.token}; path=/;`;
+        document.cookie = `adminToken=${responseObj.token}; path=/;`;
         console.log("Cookie: ", getCookie('adminToken'));
     }
     console.log('Login request successful. Response:', responseObj);
     return responseObj;
-  }
+}
 
 //   export async function logInAdminApi(obj){
 //     const response = await fetch(BACKEND + 'admin/logIn',{
@@ -801,8 +805,8 @@ function getCookie(name) {
 }
 
 function getAuthHeader() {
-    let authHead = {
+    return {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getCookie('adminToken')}`
+        'authorization': `${getCookie('adminToken')}`
     }
 }
