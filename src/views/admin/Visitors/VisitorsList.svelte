@@ -70,7 +70,7 @@
       gender: request.gender,
       visitorID: request.visitorID,
       requestor: request.requestor,
-      file: request.imagePath
+      file: request.imagePath,
     };
     console.log('Update object:', updateObj);
     try {
@@ -185,7 +185,7 @@
   $: historydisplayedleaveRequests = visitorsList.filter(request => {
   const dateToVisit = new Date(request.DateToVisit);
   const hasDatePassed = dateToVisit < currentDate;
-  const isRejected = request.status === 'Rejected';
+  const isRejected = request.status === 'rejected';
   return hasDatePassed || isRejected;
 });  $: historytotalPages = Math.ceil(historydisplayedleaveRequests.length / leaveRequestsPerPage);
 
@@ -328,7 +328,7 @@
               <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
               <td class="table-data" title={request.email}>{request.email}</td>
               <td class="table-data ml-12" title={request.mobileNumber}>{request.mobileNumber}</td>
-              <td class="table-data" title={new Date(request.DateOfVisith).toLocaleDateString()}>{new Date(request.DateOfVisith).toLocaleDateString()}</td>
+              <td class="table-data" title={new Date(request.DateOfVisit).toLocaleDateString()}>{new Date(request.DateOfVisit).toLocaleDateString()}</td>
               <td class="table-data" title={request.reasonOfVisiting}>{request.reasonOfVisiting}</td>
             </tr>
           {/each}
