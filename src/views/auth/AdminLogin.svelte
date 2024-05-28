@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { logInAdminApi } from "../../services/api.js";
+    import { navigate } from "svelte-routing";
 
   let email = "";
   let password = "";
@@ -45,6 +46,7 @@
         // document.cookie = `token=${response.token}; path=/;`; // Store the token in a cookie
         errorMessage = "";
         // Optionally, redirect the admin or show a success message
+        navigate('/admin/dashboard');
         // window.location.href = '/dashboard'; // Redirect to dashboard
       } catch (error) {
         console.log('Login failed:', error.message);
