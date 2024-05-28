@@ -3,7 +3,7 @@
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import MultiSelect from "../../../components/Dropdowns/MultiSelect.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
-  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi, getAllDevicesApi } from '../../../services/api';
+  import { getAllLocationsApi, addLocationApi, updateLocationApi, deleteLocationApi, getAllDevicesApi, getAllVisitorsApi,getAllRoomBookingsApi,getAllEmployeesApi,getAllEmergenciesApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -38,6 +38,10 @@
   onMount(async () => {
     await fetchLocations();
     await fetchDevices();
+    await fetchDelLogicVisitors();
+    await fetchDelLogicRooms();
+    await fetchDelLogicEmployees();
+    await fetchDelLogicEmergency();
   });
 
   async function fetchLocations() {
@@ -54,6 +58,42 @@
       }));
     } catch (error) {
       console.error("Error fetching locations:", error);
+    }
+  }
+
+  let delLogicVisitors = []
+  async function fetchDelLogicVisitors() {
+    try {
+      delLogicVisitors = await getAllVisitorsApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  let delLogicRooms = []
+  async function fetchDelLogicRooms() {
+    try {
+      delLogicRooms = await getAllRoomBookingsApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  let delLogicEmployees = []
+  async function fetchDelLogicEmployees() {
+    try {
+      delLogicEmployees = await getAllEmployeesApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  let delLogicEmergency = []
+  async function fetchDelLogicEmergency() {
+    try {
+      delLogicEmergency = await getAllEmergenciesApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
     }
   }
 
@@ -176,6 +216,41 @@
 
   async function deleteSpace() {
     try {
+
+      for (let i = 0; i < delLogicVisitors.length; i++) {
+        for (let j = 0; j < delLogicVisitors[i].locations.length; j++) {
+          if(delLogicVisitors[i].locations[j]._id.toString() == locToDelete.id.toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicVisitors[i].visitorID + ' visitor ID', 'error');
+            return;
+          }
+        }
+      }
+
+      for (let i = 0; i < delLogicEmployees.length; i++) {
+        for (let j = 0; j < delLogicEmployees[i].locations.length; j++) {
+          if(delLogicEmployees[i].locations[j]._id.toString() == locToDelete.id.toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmployees[i].employeeID + ' visitor ID', 'error');
+            return;
+          }
+        }
+      }
+
+      for (let i = 0; i < delLogicRooms.length; i++) {
+          if(delLogicRooms[i].locations._id.toString() == locToDelete.id.toString()){
+            showToasterMessage('Cannot delete. Department is bind to a Room ', 'error');
+            return;
+          }
+      }
+
+      for (let i = 0; i < delLogicEmergency.length; i++) {
+        for (let j = 0; j < delLogicEmergency[i].locations.length; j++) {
+          if(delLogicEmergency[i].locations[j]._id.toString() == locToDelete.id.toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmergency[i].name + ' Emergency ID', 'error');
+            return;
+          }
+        }
+      }
+
       const response = await deleteLocationApi(locToDelete.id);
       console.log('Delete Response:', response);
       showToasterMessage('Location deleted successfully!', 'success');

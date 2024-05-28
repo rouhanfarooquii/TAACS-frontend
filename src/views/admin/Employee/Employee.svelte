@@ -5,7 +5,7 @@
   import Multiselect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { navigate } from 'svelte-routing';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
-  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi } from '../../../services/api';
+  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi, getAllLeavesApi,getAllParkingsApi,getAllRoomBookingsApi,getAllVisitorsApi } from '../../../services/api';
   import Toast from '../../../components/Confirmation/Toast.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -72,9 +72,40 @@
   onMount(async () => {
     await fetchEmployees();
     await fetchLocations();
-    await fetchDepartments()
-    await fetchShiftTimings()
+    await fetchDepartments();
+    await fetchShiftTimings();
+    await fetchDelLogicleaves();
+    await fetchDelLogicRooms();
+    await fetchDelLogicParkings();
   });
+
+
+  let delLogicLeaves = []
+  async function fetchDelLogicleaves() {
+    try {
+      delLogicLeaves = await getAllLeavesApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  let delLogicRooms = []
+  async function fetchDelLogicRooms() {
+    try {
+      delLogicRooms = await getAllRoomBookingsApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  let delLogicParkings = []
+  async function fetchDelLogicParkings() {
+    try {
+      delLogicParkings = await getAllParkingsApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
 
   async function fetchEmployees() {
     try {
@@ -141,6 +172,30 @@ function clearFilters() {
 
   async function deleteEmployee() {
     try {
+
+      for (let i = 0; i < delLogicParkings.length; i++) {
+          if(delLogicParkings[i].employee._id.toString() == empToDelete._id.toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicParkings[i].employeeID + ' visitor ID', 'error');
+            return;
+          }
+      }
+
+      for (let i = 0; i < delLogicRooms.length; i++) {
+          if(delLogicRooms[i].employee._id.toString() == empToDelete._id.toString()){
+            showToasterMessage('Cannot delete. Department is bind to a Room ', 'error');
+            return;
+          }
+      }
+
+      for (let i = 0; i < delLogicLeaves.length; i++) {
+          if(delLogicLeaves[i].employee._id.toString() == empToDelete._id.toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicLeaves[i] + ' Emergency ID', 'error');
+            return;
+          }
+      }
+
+
+
         const msg = await deleteEmployeeApi(empToDelete._id);
         console.log(msg);
         showToasterMessage('Employee deleted successfully!', 'success');

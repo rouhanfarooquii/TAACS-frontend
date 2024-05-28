@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
-  import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi,getAllEmployeesApi, getAllPayrollsApi, getAllRoomBookingsApi } from '../../../services/api';
+  import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi,getAllEmployeesApi, } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -99,7 +99,6 @@
 
   async function deleteDepartment() {
     try {
-
       for (let i = 0; i < delLogicEmployees.length; i++) {
           if(delLogicEmployees[i].department._id.toString() == deptToDelete._id.toString()){
             showToasterMessage('Cannot delete. Department is bind to a ' + delLogicEmployees[i].employeeID + ' Employee ID', 'error');
