@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
-  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi } from '../../../services/api';
+  import { getAllDevicesApi, updateDeviceApi, deleteDeviceApi, addDeviceApi, getAllLocationsApi, getAllEmergenciesApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
 
@@ -41,8 +41,18 @@
     }
   }
 
-  onMount(() => {
-    fetchAllDevices();
+  let delLogicLocations = []
+  async function fetchDelLogicLocations() {
+    try {
+      delLogicLocations = await getAllLocationsApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  onMount(async () => {
+    await fetchAllDevices();
+    await fetchDelLogicLocations()
   });
 
   async function addDevice() {
@@ -161,6 +171,15 @@
 
   async function confirmDeleteDevice() {
     try {
+      for (let i = 0; i < delLogicLocations.length; i++) {
+        for (let j = 0; j < delLogicLocations[i].devices.length; j++) {
+          if(delLogicLocations[i].devices[j]._id.toString() == deviceToDelete._id.toString()){
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicLocations[i].title + ' Location', 'error');
+            return;
+          }
+        }
+      }
+
       await deleteDeviceApi(deviceToDelete._id);
       await fetchAllDevices();
       showToasterMessage('Device deleted successfully!', 'success');
