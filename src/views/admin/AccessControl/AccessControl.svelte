@@ -33,7 +33,7 @@
   });
 
   async function getAllRooms(){
-    trueAccessibleRooms = await getAllLocationsApi();
+    trueAccessibleRooms = await getAllLocationsApi(true);
     accessibleRooms = JSON.parse(JSON.stringify(trueAccessibleRooms));
     accessibleRooms = accessibleRooms.map(loc => loc.title)
   }

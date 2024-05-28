@@ -298,7 +298,7 @@
 
     console.log(vistorTosend);
     try {
-      const response = await addVisitorApi(formData);
+      const response = await addVisitorApi(formData, true);
       navigateToVisitor();
       console.log('Visitor added successfully', response);
       showToasterMessage('Visitor added successfully!', 'success');
@@ -328,7 +328,7 @@
 
   async function fetchLocations() {
     try {
-      const locations = await getAllLocationsApi();
+      const locations = await getAllLocationsApi(true);
       trueAccessibleRooms = locations;
       accessibleRooms = trueAccessibleRooms.map(loc => loc.title);
       console.log(accessibleRooms);

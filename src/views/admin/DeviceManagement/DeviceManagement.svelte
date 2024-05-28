@@ -44,7 +44,7 @@
   let delLogicLocations = []
   async function fetchDelLogicLocations() {
     try {
-      delLogicLocations = await getAllLocationsApi();
+      delLogicLocations = await getAllLocationsApi(true);
     } catch (error) {
       console.error('Error fetching devices:', error);
     }

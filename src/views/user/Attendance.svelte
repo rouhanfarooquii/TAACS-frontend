@@ -169,7 +169,7 @@
     console.log(leaveObj);
 
     try {
-      const msg = await addLeaveApi(leaveObj);
+      const msg = await addLeaveApi(leaveObj, false);
       console.log(msg);
       showToasterMessage('Leave request submitted successfully!', 'success');
       closeModal();

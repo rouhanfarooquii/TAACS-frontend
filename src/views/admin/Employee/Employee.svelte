@@ -118,7 +118,7 @@
 
   async function fetchLocations() {
     try {
-      trueLocations = await getAllLocationsApi();
+      trueLocations = await getAllLocationsApi(true);
       accessibleLocations = trueLocations.map(loc => loc.title);
     } catch (error) {
       console.error('Error fetching locations:', error);

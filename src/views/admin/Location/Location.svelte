@@ -46,7 +46,7 @@
 
   async function fetchLocations() {
     try {
-      const locations = await getAllLocationsApi();
+      const locations = await getAllLocationsApi(true);
       console.log('Fetched Locations:', locations);
       spaces = locations.map(loc => ({
         id: loc._id,
