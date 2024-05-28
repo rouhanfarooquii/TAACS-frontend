@@ -13,6 +13,7 @@
   let selectedEmployee = null;
   let showModal = false;
   let editModal = false;
+  let reportModal = false;
   export let color = "light";
 
   let filters = {
@@ -39,6 +40,9 @@
   
   let confirmationModal = false;
   let empToDelete = null;
+
+  let dateFrom = '';
+  let dateTo = '';
 
   let showToaster = false;
   let toasterMessage = '';
@@ -205,6 +209,12 @@ function clearFilters() {
     showModal = true;
   }
 
+  function viewAttendance(employee)
+  {
+    selectedEmployee = employee
+    reportModal = true;
+  }
+
   function openEditModal(emp) {
     let employee = JSON.parse(JSON.stringify(emp))
     employee.dateOfBirth = new Date(employee.dateOfBirth).toISOString().slice(0, 10)
@@ -235,6 +245,7 @@ function clearFilters() {
   function closeModal() {
     showModal = false;
     editModal = false;
+    reportModal = false;
   }
 
   function validateInputs() {
@@ -333,6 +344,7 @@ let searchQuery = '';
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(employee)}></i>
               <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewEmployee(employee)}></i>
+              <i class="fas fa-table mr-2 text-sm cursor-pointer" on:click={() => viewAttendance(employee)}></i>
             </div>
           </td>
         </tr>
@@ -665,5 +677,65 @@ let searchQuery = '';
       </div>
     </div>
   {/if}
-
+  {#if reportModal}
+  <div class="modal">
+    <div class="modal-content">
+      <div class="rounded-t mb-0 px-4 py-10 border-0">
+        <div class="flex flex-wrap items-center">
+          <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+            <h3 class="font-semibold text-lg text-blueGray-700">
+              View Attendance
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="block w-full overflow-x-auto">
+        <div class="px-4 py-5 flex-auto">
+          <div class="flex">
+            <div class="w-full lg:w-6/12 px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-from">
+                  Date From:
+                </label>
+                <input type="date" id="date-from" bind:value={dateFrom} class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                <span id="date-from-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+              </div>
+            </div>
+            <div class="w-full lg:w-6/12 px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-to">
+                  Date To:
+                </label>
+                <input type="date" id="date-to" bind:value={dateTo} class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end mb-4">
+            <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+              Back
+            </button>
+          </div>
+          <div class="block w-full overflow-x-auto">
+            <table id="attendance-table" class="items-center w-full bg-transparent border-collapse">
+              <thead>
+                <tr>
+                  <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Date</th>
+                  <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Example row -->
+                <tr>
+                  <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">2024-05-01</td>
+                  <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">Present</td>
+                </tr>
+                <!-- Additional rows will be added dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
 </div>

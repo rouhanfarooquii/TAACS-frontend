@@ -53,18 +53,19 @@
 
     if (!emailError && !passwordError && !confirmPasswordError) {
       try {
-        // console.log({ email, password })
-        // return;
-        await signUpUserApi({ email, password });
-        // console.log(email, password);
+        console.log('Submitting signup form with email:', email);
+        const response = await signUpUserApi({ email, password });
+        console.log('Signup successful. Response:', response);
         successMessage = "Account created successfully!";
         errorMessage = "";
         // Optionally, redirect the user or clear the form fields
       } catch (error) {
-        errorMessage = "An error occurred while creating the account.";
+        console.log('Signup failed:', error.message);
+        errorMessage = `An error occurred while creating the account: ${error.message}`;
         successMessage = "";
       }
     } else {
+      console.log('Validation errors. Email error:', emailError, 'Password error:', passwordError, 'Confirm password error:', confirmPasswordError);
       errorMessage = "Please fix the errors above";
       successMessage = "";
     }

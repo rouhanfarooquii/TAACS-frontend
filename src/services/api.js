@@ -638,19 +638,25 @@ export async function updateVisitorRejectedApi(id, obj){
 };
 
 // Users API
-export async function signUpUserApi(obj){
+export async function signUpUserApi(obj) {
+    console.log('Sending signup request for user:', obj);
+  
     const response = await fetch(BACKEND + 'user/signUp', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({user: obj})
-    })
-    console.log("obj: ", obj);
-    console.log("response: ", response);
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ user: obj })
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Signup request failed:', errorText);
+      throw new Error(`Failed to sign up: ${errorText}`);
+    }
+  
     const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+    console.log('Signup request successful. Response:', responseObj);
+    return responseObj;
+  }
 
 export async function logInUserApi(obj) {
     console.log('Sending login request for user:', obj.email);
@@ -674,17 +680,38 @@ export async function logInUserApi(obj) {
   
 
 // Admins API
-export async function signUpAdminApi(obj){
+// export async function signUpAdminApi(obj){
+//     const response = await fetch(BACKEND + 'admin/signUp', {
+//         method: 'POST',
+//         observe: 'body',
+//         headers: headers,
+//         body: JSON.stringify({admin: obj})
+//     })
+//     const responseObj = await response.json();
+//     const msg = await responseObj.msg;
+//     return await msg;
+// };
+
+export async function signUpAdminApi(obj) {
+    console.log('Sending signup request for user:', obj);
+  
     const response = await fetch(BACKEND + 'admin/signUp', {
-        method: 'POST',
-        observe: 'body',
-        headers: headers,
-        body: JSON.stringify({admin: obj})
-    })
+      method: 'POST',
+      observe: 'body',
+      headers: headers,
+      body: JSON.stringify({ admin: obj })
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Signup request failed:', errorText);
+      throw new Error(`Failed to sign up: ${errorText}`);
+    }
+  
     const responseObj = await response.json();
-    const msg = await responseObj.msg;
-    return await msg;
-};
+    console.log('Signup request successful. Response:', responseObj);
+    return responseObj;
+  }
 
 export async function logInAdminApi(obj) {
     console.log('Sending login request for admin:', obj.email);

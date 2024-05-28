@@ -45,30 +45,31 @@
         confirmPasswordError = "";
       }
     };
-  
+
     const handleSubmit = async () => {
-      handleEmailBlur();
-      handlePasswordBlur();
-      handleConfirmPasswordBlur();
-  
-      if (!emailError && !passwordError && !confirmPasswordError) {
-        try {
-          console.log({ email, password })
-          // return;
-          await signUpAdminApi({ email, password });
-          // console.log(email, password);
-          successMessage = "Account created successfully!";
-          errorMessage = "";
-          // Optionally, redirect the user or clear the form fields
-        } catch (error) {
-          errorMessage = "An error occurred while creating the account.";
-          successMessage = "";
-        }
-      } else {
-        errorMessage = "Please fix the errors above";
+    handleEmailBlur();
+    handlePasswordBlur();
+    handleConfirmPasswordBlur();
+
+    if (!emailError && !passwordError && !confirmPasswordError) {
+      try {
+        console.log('Submitting signup form with email:', email);
+        const response = await signUpAdminApi({ email, password });
+        console.log('Signup successful. Response:', response);
+        successMessage = "Account created successfully!";
+        errorMessage = "";
+        // Optionally, redirect the user or clear the form fields
+      } catch (error) {
+        console.log('Signup failed:', error.message);
+        errorMessage = `An error occurred while creating the account: ${error.message}`;
         successMessage = "";
       }
-    };
+    } else {
+      console.log('Validation errors. Email error:', emailError, 'Password error:', passwordError, 'Confirm password error:', confirmPasswordError);
+      errorMessage = "Please fix the errors above";
+      successMessage = "";
+    }
+  };
   
     onMount(() => {
       // Reset error message on mount
