@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Toast from '../../../components/Confirmation/Toast.svelte';
-  import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi } from '../../../services/api';
+  import { getAllDepartmentsApi, addDepartmentApi, updateDepartmentApi, deleteDepartmentApi,getAllEmployeesApi, getAllPayrollsApi, getAllRoomBookingsApi } from '../../../services/api';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
 
   const edit1 = "../assets/img/icons8-edit-24.png";
@@ -49,10 +49,30 @@
   onMount(async () => {
     try {
       departments = await getAllDepartmentsApi();
+      await fetchDelLogicLocations();
+      await fetchDelLogicRoom();
     } catch (error) {
       console.error('Failed to fetch departments:', error);
     }
   });
+
+  let delLogicEmployees = []
+  async function fetchDelLogicLocations() {
+    try {
+      delLogicEmployees = await getAllEmployeesApi();
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  // let delLogicRoom = []
+  // async function fetchDelLogicRoom() {
+  //   try {
+  //     delLogicRoom = await getAllRoomBookingsApi();
+  //   } catch (error) {
+  //     console.error('Error fetching devices:', error);
+  //   }
+  // }
 
   function toggleEditingMode(departmentId) {
     editingModes[departmentId] = !editingModes[departmentId];
@@ -79,6 +99,14 @@
 
   async function deleteDepartment() {
     try {
+
+      for (let i = 0; i < delLogicEmployees.length; i++) {
+          if(delLogicEmployees[i].department._id.toString() == deptToDelete._id.toString()){
+            showToasterMessage('Cannot delete. Department is bind to a ' + delLogicEmployees[i].employeeID + ' Employee ID', 'error');
+            return;
+          }
+      }
+
       const msg = await deleteDepartmentApi(deptToDelete._id);
       console.log(msg);
       showToasterMessage('Department deleted successfully!', 'success');
