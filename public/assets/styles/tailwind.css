@@ -4513,12 +4513,12 @@ input:checked + .slider:before {
   border-right: 1px solid lightblue; /* Add border to the right side */
 }
 
-canvas{
+/* canvas{
   width: 100%;
   max-width: 80px;
   height: auto;
   display: block;
-}
+} */
 
 .dropdown {
   position: relative;
@@ -4938,4 +4938,23 @@ canvas{
   padding: 1rem;            /* Padding for content */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   width:500px;
+}
+
+.chart-container {
+  position: relative;
+  height: 400px;
+}
+
+.date-filter {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+label {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  border-left-width: 4px;
 }
