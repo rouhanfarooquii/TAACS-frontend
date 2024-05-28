@@ -24,25 +24,14 @@
   async function loadLeaveRequests() {
   try {
     const response = await getAllLeavesApi();
-    let requests = response || [];  // Ensure requests is an array
-
-    const currentDate = new Date();
-
-    // Check each request if fromDate has passed and status is pending
-    for (let request of requests) {
-      if (request.status === 'pending' && new Date(request.fromDate) < currentDate) {
-        await updateLeaveStatus(request, 'rejected');
-      }
-    }
-
-    // Reload the leave requests after updating statuses
-    leaveRequests = await getAllLeavesApi();
+    leaveRequests = response || [];  // Ensure leaveRequests is an array
     console.log("Leave requests loaded:", leaveRequests);
   } catch (error) {
     console.error('Failed to load leave requests:', error);
     leaveRequests = [];  // Set to empty array on error
   }
 }
+
 
   onMount(() => {
     loadLeaveRequests();
@@ -87,32 +76,42 @@
 
   function selectTab(tab) {
     selectedTab = tab;
+    currentPage = 1; // Reset to first page on tab change
   }
 
   // Define pagination logic
-  const leaveRequestsPerPage = 6; 
+  const leaveRequestsPerPage = 5; 
   let currentPage = 1;
 
   // Reactive statements to ensure proper updates
-  $: pendingLeaveRequests = leaveRequests.filter(request => request.status === 'pending');
-  $: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
-  $: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
-  $: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
-  $: pendingtotalPages = Math.ceil(pendingLeaveRequests.length / leaveRequestsPerPage);
+$: currentDate = new Date();
 
-  // Reactive statements to ensure proper updates
-  $: approvedLeaveRequests = leaveRequests.filter(request => request.status === 'approved');
-  $: approvedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
-  $: approvedendIndex = Math.min(approvedstartIndex + leaveRequestsPerPage, approvedLeaveRequests.length);
-  $: approveddisplayedleaveRequests = approvedLeaveRequests.slice(approvedstartIndex, approvedendIndex);
-  $: approvedtotalPages = Math.ceil(approvedLeaveRequests.length / leaveRequestsPerPage);
+$: pendingLeaveRequests = leaveRequests.filter(request => request.status === 'pending' && new Date(request.fromDate) >= currentDate);
+$: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
+$: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
+$: pendingtotalPages = Math.ceil(pendingLeaveRequests.length / leaveRequestsPerPage);
 
-  // Reactive statements to ensure proper updates
-  $: rejectedLeaveRequests = leaveRequests.filter(request => request.status === 'rejected');
-  $: rejectedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
-  $: rejectedendIndex = Math.min(rejectedstartIndex + leaveRequestsPerPage, rejectedLeaveRequests.length);
-  $: rejecteddisplayedleaveRequests = rejectedLeaveRequests.slice(rejectedstartIndex, rejectedendIndex);
-  $: rejectedtotalPages = Math.ceil(rejectedLeaveRequests.length / leaveRequestsPerPage);
+// Filter pending requests with expired fromDate to be displayed in the Rejected tab
+$: expiredPendingLeaveRequests = leaveRequests.filter(request => request.status === 'pending' && new Date(request.fromDate) < currentDate);
+$: expiredPendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: expiredPendingendIndex = Math.min(expiredPendingstartIndex + leaveRequestsPerPage, expiredPendingLeaveRequests.length);
+$: expiredPendingdisplayedleaveRequests = expiredPendingLeaveRequests.slice(expiredPendingstartIndex, expiredPendingendIndex);
+$: expiredPendingtotalPages = Math.ceil(expiredPendingLeaveRequests.length / leaveRequestsPerPage);
+
+// Reactive statements to ensure proper updates
+$: approvedLeaveRequests = leaveRequests.filter(request => request.status === 'approved');
+$: approvedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: approvedendIndex = Math.min(approvedstartIndex + leaveRequestsPerPage, approvedLeaveRequests.length);
+$: approveddisplayedleaveRequests = approvedLeaveRequests.slice(approvedstartIndex, approvedendIndex);
+$: approvedtotalPages = Math.ceil(approvedLeaveRequests.length / leaveRequestsPerPage);
+
+// Reactive statements to ensure proper updates
+$: rejectedLeaveRequests = leaveRequests.filter(request => request.status === 'rejected');
+$: rejectedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+$: rejectedendIndex = Math.min(rejectedstartIndex + leaveRequestsPerPage, rejectedLeaveRequests.length);
+$: rejecteddisplayedleaveRequests = rejectedLeaveRequests.slice(rejectedstartIndex, rejectedendIndex);
+$: rejectedtotalPages = Math.ceil(rejectedLeaveRequests.length / leaveRequestsPerPage);
 
   function handlePageChange(event) {
     console.log("Received page change:", event.detail.pageNumber);  // Confirm event reception
@@ -232,52 +231,62 @@
   {/if}
 
   {#if selectedTab === 'rejected'}
-  <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
-    <div class="block w-full overflow-x-auto">
-      <table class="items-center w-full bg-transparent border-collapse">
-        <thead>
+<div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-xl rounded-lg {color === 'light' ? 'bg-white' : 'bg-red-800 text-white'}">
+  <div class="block w-full overflow-x-auto">
+    <table class="items-center w-full bg-transparent border-collapse">
+      <thead>
+        <tr>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Employee Name
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Position
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            From 
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            To 
+          </th>
+          <th
+            class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
+          >
+            Reason 
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each expiredPendingdisplayedleaveRequests as request}
           <tr>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
-            >
-              Employee Name
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
-            >
-              Position
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
-            >
-              From 
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
-            >
-              To 
-            </th>
-            <th
-              class="px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left {color === 'light' ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100' : 'bg-red-700 custom-text border-red-600'}"
-            >
-              Reason 
-            </th>
+            <td class="table-data font-bold text-blueGray-600" title={request.employee.name}>{request.employee.name}</td>
+            <td class="table-data" title={request.employee.department.title}>{request.employee.department.title}</td>
+            <td class="table-data" title={request.fromDate.split('T')[0]}>{request.fromDate.split('T')[0]}</td>
+            <td class="table-data" title={request.toDate.split('T')[0]}>{request.toDate.split('T')[0]}</td>
+            <td class="table-data" title={request.reason}>{request.reason}</td>
           </tr>
-        </thead>
-        <tbody>
-          {#each rejecteddisplayedleaveRequests as request}
-            <tr>
-              <td class="table-data font-bold text-blueGray-600" title={request.employee.name}>{request.employee.name}</td>
-              <td class="table-data" title={request.employee.department.title}>{request.employee.department.title}</td>
-              <td class="table-data" title={request.fromDate.split('T')[0]}>{request.fromDate.split('T')[0]}</td>
-              <td class="table-data" title={request.toDate.split('T')[0]}>{request.toDate.split('T')[0]}</td>
-              <td class="table-data" title={request.reason}>{request.reason}</td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-      <Pagination currentPage={currentPage} totalPages={rejectedtotalPages} on:pageChange={handlePageChange} />
-    </div>
+        {/each}
+        {#each rejecteddisplayedleaveRequests as request}
+          <tr>
+            <td class="table-data font-bold text-blueGray-600" title={request.employee.name}>{request.employee.name}</td>
+            <td class="table-data" title={request.employee.department.title}>{request.employee.department.title}</td>
+            <td class="table-data" title={request.fromDate.split('T')[0]}>{request.fromDate.split('T')[0]}</td>
+            <td class="table-data" title={request.toDate.split('T')[0]}>{request.toDate.split('T')[0]}</td>
+            <td class="table-data" title={request.reason}>{request.reason}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+    <Pagination currentPage={currentPage} totalPages={rejectedtotalPages} on:pageChange={handlePageChange} />
   </div>
-  {/if}
+</div>
+{/if}
+
 </div>

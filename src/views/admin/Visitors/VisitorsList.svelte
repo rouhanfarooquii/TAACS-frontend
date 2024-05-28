@@ -168,7 +168,7 @@
   let currentPage = 1;
 
   // Reactive statements to ensure proper updates
-  $: pendingLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'pending');
+  $: pendingLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'pending' && new Date(request.DateOfVisit) >= currentDate);
   $: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
   $: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
   $: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
@@ -180,14 +180,41 @@
   $: approveddisplayedleaveRequests = approvedLeaveRequests.slice(approvedstartIndex, approvedendIndex);
   $: approvedtotalPages = Math.ceil(approvedLeaveRequests.length / leaveRequestsPerPage);
 
-  $: historystartIndex = (currentPage - 1) * leaveRequestsPerPage;
-  $: historyendIndex = Math.min(historystartIndex + leaveRequestsPerPage, visitorsList.length);
-  $: historydisplayedleaveRequests = visitorsList.filter(request => {
-  const dateToVisit = new Date(request.DateToVisit);
-  const hasDatePassed = dateToVisit < currentDate;
-  const isRejected = request.status === 'rejected';
-  return hasDatePassed || isRejected;
-});  $: historytotalPages = Math.ceil(historydisplayedleaveRequests.length / leaveRequestsPerPage);
+  // Reactive statements to ensure proper updates
+  $: expiredPendingLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'pending' && new Date(request.DateOfVisit) < currentDate);
+  $: expiredPendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+  $: expiredPendingendIndex = Math.min(expiredPendingstartIndex + leaveRequestsPerPage, expiredPendingLeaveRequests.length);
+  $: expiredPendingdisplayedleaveRequests = expiredPendingLeaveRequests.slice(expiredPendingstartIndex, expiredPendingendIndex);
+  $: expiredPendingtotalPages = Math.ceil(expiredPendingLeaveRequests.length / leaveRequestsPerPage);
+
+  // Reactive statements to ensure proper updates
+  $: rejectedLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'rejected');
+  $: rejectedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+  $: rejectedendIndex = Math.min(rejectedstartIndex + leaveRequestsPerPage, rejectedLeaveRequests.length);
+  $: rejecteddisplayedleaveRequests = rejectedLeaveRequests.slice(rejectedstartIndex, rejectedendIndex);
+  $: rejectedtotalPages = Math.ceil(rejectedLeaveRequests.length / leaveRequestsPerPage);
+
+//   // Reactive statements to ensure proper updates
+//   $: pendingLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'pending');
+//   $: pendingstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+//   $: pendingendIndex = Math.min(pendingstartIndex + leaveRequestsPerPage, pendingLeaveRequests.length);
+//   $: pendingdisplayedleaveRequests = pendingLeaveRequests.slice(pendingstartIndex, pendingendIndex);
+//   $: pendingtotalPages = Math.ceil(pendingLeaveRequests.length / leaveRequestsPerPage);
+
+//   $: approvedLeaveRequests = visitorsList.filter(request => request.status.toLowerCase() === 'approved');
+//   $: approvedstartIndex = (currentPage - 1) * leaveRequestsPerPage;
+//   $: approvedendIndex = Math.min(approvedstartIndex + leaveRequestsPerPage, approvedLeaveRequests.length);
+//   $: approveddisplayedleaveRequests = approvedLeaveRequests.slice(approvedstartIndex, approvedendIndex);
+//   $: approvedtotalPages = Math.ceil(approvedLeaveRequests.length / leaveRequestsPerPage);
+
+//   $: historystartIndex = (currentPage - 1) * leaveRequestsPerPage;
+//   $: historyendIndex = Math.min(historystartIndex + leaveRequestsPerPage, visitorsList.length);
+//   $: historydisplayedleaveRequests = visitorsList.filter(request => {
+//   const dateToVisit = new Date(request.DateToVisit);
+//   const hasDatePassed = dateToVisit < currentDate;
+//   const isRejected = request.status === 'rejected';
+//   return hasDatePassed || isRejected;
+// });  $: historytotalPages = Math.ceil(historydisplayedleaveRequests.length / leaveRequestsPerPage);
 
   function handlePageChange(event) {
     currentPage = event.detail.pageNumber;
@@ -378,7 +405,17 @@
           </tr>
         </thead>
         <tbody>
-          {#each historydisplayedleaveRequests as request}
+          {#each rejecteddisplayedleaveRequests as request}
+            <tr>
+              <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
+              <td class="table-data" title={request.email}>{request.email}</td>
+              <td class="table-data" title={request.mobileNumber}>{request.mobileNumber}</td>
+              <td class="table-data" title={new Date(request.DateOfVisith).toLocaleDateString()}>{new Date(request.DateOfVisith).toLocaleDateString()}</td>
+              <td class="table-data" title={request.reasonOfVisiting}>{request.reasonOfVisiting}</td>
+              <td class="table-data" title={request.status}>{request.status}</td>
+            </tr>
+          {/each}
+          {#each expiredPendingdisplayedleaveRequests as request}
             <tr>
               <td class="table-data font-bold text-blueGray-600" title={request.name}>{request.name}</td>
               <td class="table-data" title={request.email}>{request.email}</td>
@@ -390,7 +427,7 @@
           {/each}
         </tbody>
       </table>
-      <Pagination currentPage={currentPage} totalPages={historytotalPages} on:pageChange={handlePageChange} />
+      <Pagination currentPage={currentPage} totalPages={rejectedtotalPages} on:pageChange={handlePageChange} />
     </div>
   </div>
   {/if}
