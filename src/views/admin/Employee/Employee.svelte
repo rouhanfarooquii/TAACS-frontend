@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { getAllEmployeesApi, deleteEmployeeApi } from '../../../services/api';
+  import { getAllEmployeesApi, deleteEmployeeApi, updateEmployeePasswordApi } from '../../../services/api';
   import Pagination from "../../../components/Pagination/Pagination.svelte";
   import Multiselect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { navigate } from 'svelte-routing';
@@ -14,6 +14,8 @@
   let showModal = false;
   let editModal = false;
   let reportModal = false;
+  let passwordModal = false;
+  let pass = '';
   export let color = "light";
 
   let filters = {
@@ -204,6 +206,46 @@ function clearFilters() {
     }
   }
 
+  // async function updatePassword() {
+  //   const formData = new FormData();
+  //   formData.append('_id', selectedEmployee._id);
+  //   formData.append('password', selectedEmployee.password);
+
+  //   console.log(formData);
+
+  //   try {
+  //     await updateEmployeeApi(formData);
+  //     closeModal()
+  //     await fetchEmployees()
+  //     showToasterMessage('Password updated successfully!', 'success');
+  //   } catch (error) {
+  //     console.error('Error updating password:', error);
+  //     showToasterMessage('An error occurred while updating the password. Please try again.', 'error');
+  //   }
+  // }
+
+  async function updatePassword() {
+    selectedEmployee.password = pass;
+
+    const updateData = {
+      _id: selectedEmployee._id,
+      password: selectedEmployee.password
+    };
+
+    console.log(updateData);
+
+    try {
+      await updateEmployeePasswordApi(updateData);
+      closeModal();
+      await fetchEmployees();
+      showToasterMessage('Password updated successfully!', 'success');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      showToasterMessage('An error occurred while updating the password. Please try again.', 'error');
+    }
+  }
+
+
   function viewEmployee(employee) {
     selectedEmployee = employee
     showModal = true;
@@ -213,6 +255,13 @@ function clearFilters() {
   {
     selectedEmployee = employee
     reportModal = true;
+  }
+
+  function setPassword(employee)
+  {
+    pass = '';
+    selectedEmployee = employee
+    passwordModal = true;
   }
 
   function openEditModal(emp) {
@@ -227,14 +276,6 @@ function clearFilters() {
     employee.designation = employee.designation.title
     employee.shiftTiming = employee.shiftTiming.shiftName
 
-
-    
-
-    // console.log(employee)
-
-    // return;
-
-    // return
     selectedEmployee = employee
     
 
@@ -246,6 +287,7 @@ function clearFilters() {
     showModal = false;
     editModal = false;
     reportModal = false;
+    passwordModal = false;
   }
 
   function validateInputs() {
@@ -345,6 +387,11 @@ let searchQuery = '';
               <i class="fas fa-edit mr-2 text-sm cursor-pointer" on:click={() => openEditModal(employee)}></i>
               <i class="fas fa-eye mr-2 text-sm cursor-pointer" on:click={() => viewEmployee(employee)}></i>
               <i class="fas fa-table mr-2 text-sm cursor-pointer" on:click={() => viewAttendance(employee)}></i>
+              {#if employee.password == null}
+              <i class="fas fa-lock-open mr-2 text-sm cursor-pointer" on:click={() => setPassword(employee)}></i>
+              {:else}
+              <i class="fas fa-lock mr-2 text-sm cursor-pointer" on:click={() => setPassword(employee)}></i>
+              {/if}
             </div>
           </td>
         </tr>
@@ -710,11 +757,6 @@ let searchQuery = '';
               </div>
             </div>
           </div>
-          <div class="flex justify-end mb-4">
-            <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
-              Back
-            </button>
-          </div>
           <div class="block w-full overflow-x-auto">
             <table id="attendance-table" class="items-center w-full bg-transparent border-collapse">
               <thead>
@@ -732,6 +774,64 @@ let searchQuery = '';
                 <!-- Additional rows will be added dynamically -->
               </tbody>
             </table>
+          </div>
+        </div>
+        <div class="flex justify-end mb-4">
+          <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+            Back
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
+{#if passwordModal}
+  <div class="modal">
+    <div class="modal-content w-4/10">
+      <div class="rounded-t mb-0 px-4 py-10 border-0">
+        <div class="flex flex-wrap items-center">
+          <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+            <h3 class="font-semibold text-lg text-blueGray-700">
+              {#if selectedEmployee.password == null}
+                Set Password
+              {:else}
+                Change Password
+              {/if}
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="block w-full overflow-x-auto">
+        <div class="px-4 py-5 flex-auto">
+          <div class="flex">
+            <div class="w-full px-4">
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
+                  Name:
+                </label>
+                <input type="text" id="name" placeholder="Name" class="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" disabled bind:value={selectedEmployee.name}>
+                <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+              </div>
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
+                  Password
+                </label>
+                <input type="password" id="password" placeholder="Password" class="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" bind:value={pass} style="width: 100%;">
+                <span id="password-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={updatePassword}>
+              {#if selectedEmployee.password == null}
+                Set Password
+              {:else}
+                Change Password
+              {/if}
+            </button>
+            <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
+              Back
+            </button>
           </div>
         </div>
       </div>

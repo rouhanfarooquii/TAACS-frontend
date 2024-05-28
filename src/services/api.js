@@ -239,6 +239,18 @@ export async function updateEmployeeApi(obj){
     return await msg;
 };
 
+export async function updateEmployeePasswordApi(obj){
+    const response = await fetch(BACKEND + 'employee/updatePassword', {
+        method: 'POST',
+        observe: 'body',
+        headers: headers,
+        body: JSON.stringify({employee: obj})
+    })
+    const responseObj = await response.json();
+    const msg = await responseObj.msg;
+    return await msg;
+};
+
 export async function updateEmployeeJSONApi(obj){
     const response = await fetch(BACKEND + 'employee/updateJSON', {
         method: 'POST',
