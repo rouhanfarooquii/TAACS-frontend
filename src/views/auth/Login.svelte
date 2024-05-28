@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { logInUserApi } from "../../services/api.js";
+  import { loginEmployeeApi } from "../../services/api.js";
 
   let email = "";
   let password = "";
@@ -40,7 +40,7 @@
     if (!emailError && !passwordError) {
       try {
         console.log('Submitting login form with email:', email);
-        const response = await logInUserApi({ email, password });
+        const response = await loginEmployeeApi({ email, password });
         console.log('Login successful. Token:', response.token);
         localStorage.setItem('token', response.token); // Store the token in local storage
         errorMessage = "";

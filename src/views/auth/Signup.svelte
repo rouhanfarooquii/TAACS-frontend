@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { signUpUserApi } from "../../services/api.js"; // Adjust the path as necessary
+  // import { signUpUserApi } from "../../services/api.js"; // Adjust the path as necessary
 
   let email = "";
   let password = "";
@@ -54,7 +54,7 @@
     if (!emailError && !passwordError && !confirmPasswordError) {
       try {
         console.log('Submitting signup form with email:', email);
-        const response = await signUpUserApi({ email, password });
+        // const response = await signUpUserApi({ email, password });
         console.log('Signup successful. Response:', response);
         successMessage = "Account created successfully!";
         errorMessage = "";
