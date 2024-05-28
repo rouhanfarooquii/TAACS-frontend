@@ -384,13 +384,24 @@
           <a
             use:link
             class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-            href="/auth/signup"
+            href="/auth/adminsignup"
           >
-            <i class="fas fa-clipboard-list text-blueGray-300 mr-2 text-sm"></i>
-            Signup
+            <i class="fas fa-fingerprint text-blueGray-300 mr-2 text-sm"></i>
+            Admin Signup
           </a>
         </li>
-      </ul>
+
+      <li class="items-center">
+        <a
+          use:link
+          class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
+          href="/auth/adminlogin"
+        >
+          <i class="fas fa-fingerprint text-blueGray-300 mr-2 text-sm"></i>
+          Admin Login
+        </a>
+      </li>
+    </ul>
 
       <!-- Divider -->
       <hr class="my-4 md:min-w-full" />
