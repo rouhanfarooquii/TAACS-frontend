@@ -29,6 +29,19 @@ export async function getAllAttendances(start, end){
     return await attendances;
 };
 
+export async function getOneAttendance(start, end){
+    const response = await fetch(BACKEND + 'attendance/getOne/' + start + "/" + end ,{
+        method: 'GET',
+        headers: getAuthHeader(),
+    });
+    if(response.status == 401){
+        navigate('/auth/login');
+    }
+    const responseObj = await response.json();
+    const attendances = await responseObj.attendances;
+    return await attendances;
+};
+
 // export async function updateAccessControlApi(obj){
 //     const response = await fetch(BACKEND + 'accessControl/update', {
 //         method: 'POST',
@@ -267,6 +280,19 @@ export async function getAllEmployeesApi(){
     const responseObj = await response.json();
     const employees = await responseObj.employees;
     return await employees;
+};
+
+export async function getOneEmployeeApi(){
+    const response = await fetch(BACKEND + 'employee/getOne',{
+        method: 'GET',
+        headers: getAuthHeader(),
+    });
+    if(response.status == 401){
+        navigate('/auth/login');
+    }
+    const responseObj = await response.json();
+    const employee = await responseObj.employee;
+    return await employee;
 };
 
 // export async function loginEmployeeApi(obj){
@@ -802,9 +828,8 @@ export async function getAllVisitorsApi() {
     }
     const responseObj = await response.json();
     return responseObj.visitors;
-  }
+}
   
-
 export async function addVisitorApi(obj, isAdmin){
     const response = await fetch(BACKEND + 'visitor/add', {
         method: 'POST',
