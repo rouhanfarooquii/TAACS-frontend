@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import Chart from 'chart.js';
-  import { getAllAttendances, getAllEmployeesApi } from '../../services/api'; // Adjust the import according to your project structure
+  import { getAllAttendances } from '../../services/api'; // Adjust the import according to your project structure
 
   let chart;
 
@@ -11,55 +11,34 @@
 
     try {
       const attendances = await getAllAttendances(startDate, endDate);
-      const employees = await getAllEmployeesApi();
-      console.log('Attendance Data:', attendances);
-      console.log('Employee Data:', employees);
-      processAbsenteeismData(attendances, employees);
+      processAbsenteeismData(attendances);
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
   }
 
-  function processAbsenteeismData(attendances, employees) {
-    // Create a map for employee details
-    const employeeMap = employees.reduce((map, emp) => {
-      if (emp.department && emp.department.title) {
-        map[emp.employeeId] = emp.department.title; // Assuming emp.department contains the department name of the employee
-      }
-      return map;
-    }, {});
+  function processAbsenteeismData(attendances) {
 
-    console.log('Employee Map:', employeeMap);
-
-    // Aggregate attendance data by department
+    // Aggregate attendance data by department, filtering for absences
     const departmentData = attendances.reduce((map, att) => {
-      const department = employeeMap[att.employeeId] || 'Unknown';
+      
+      const department = att.employee.department.title || 'Unknown';
+
       if (!map[department]) {
-        map[department] = { daysAbsent: 0, totalWorkingDays: 0, employeeCount: 0 };
+        map[department] = { daysAbsent: 0 };
       }
-      map[department].daysAbsent += att.daysAbsent;
-      map[department].totalWorkingDays += att.totalWorkingDays;
-      map[department].employeeCount += 1;
+
+      if (att.attendance === 'Absent') { // Correctly check the attendance status
+        map[department].daysAbsent += 1;
+      }
+
       return map;
     }, {});
 
-    console.log('Department Data:', departmentData);
+    const labels = Object.keys(departmentData);
+    const absentsData = Object.values(departmentData).map(d => d.daysAbsent);
 
-    // Calculate absenteeism rate for each department
-    const absenteeismData = Object.keys(departmentData).map(department => {
-      const { daysAbsent, totalWorkingDays, employeeCount } = departmentData[department];
-      return {
-        department,
-        absenteeismRate: (daysAbsent / (totalWorkingDays * employeeCount)) * 100
-      };
-    });
-
-    console.log('Absenteeism Data:', absenteeismData);
-
-    const labels = absenteeismData.map(d => d.department);
-    const absenteeismRates = absenteeismData.map(d => parseFloat(d.absenteeismRate.toFixed(2))); // Ensuring the rate is correctly formatted
-
-    renderChart(labels, absenteeismRates);
+    renderChart(labels, absentsData);
   }
 
   function renderChart(labels, data) {
@@ -67,12 +46,13 @@
     if (chart) {
       chart.destroy();
     }
+    
     chart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Absenteeism Rate (%)',
+          label: 'Number of Absents',
           backgroundColor: '#4c51bf',
           borderColor: '#4c51bf',
           data: data,
@@ -84,7 +64,7 @@
         responsive: true,
         title: {
           display: false,
-          text: 'Absenteeism Rate',
+          text: 'Number of Absents',
           fontColor: 'white',
         },
         legend: {
@@ -127,12 +107,12 @@
             ticks: {
               fontColor: 'rgba(0,0,0,.7)',
               beginAtZero: true,
-              callback: function(value) { return value + '%' }
+              callback: function(value) { return Math.floor(value); } // Ensure whole numbers
             },
             display: true,
             scaleLabel: {
               display: false,
-              labelString: 'Absenteeism Rate',
+              labelString: 'Number of Absents',
               fontColor: 'white',
             },
             gridLines: {
@@ -163,7 +143,7 @@
           Overview
         </h6>
         <h2 class="text-blueGray-700 text-xl font-semibold">
-          Absenteeism Rate
+          Number of Absentees
         </h2>
       </div>
     </div>

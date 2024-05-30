@@ -28,7 +28,7 @@
 
       totalAttendance = attendances.filter(record => record.attendance === 'Present').length;
       totalLeaves = leaves.filter(request => request.status === 'approved').length;
-      totalAbsentees = attendances.filter(record => record.status === 'Absent').length;
+      totalAbsentees = attendances.filter(record => record.attendance === 'Absent').length;
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
@@ -73,20 +73,17 @@
       <CardMetric title="Total Absentees" value={totalAbsentees} color="#f44336" />
     </div>
   </div>
-  <div class="flex flex-wrap">
-    <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-      <CardLineChart {startDate} {endDate} />
-    </div>
-    <div class="w-full xl:w-4/12 px-4">
-      <CardStackedBarChart {startDate} {endDate} />
-    </div>
-  </div>
-  <div class="flex flex-wrap">
-    <div class="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
-      <CardBarChart />
-    </div>
-    <div class="w-full xl:w-4/12 px-4">
+  <div class="flex flex-wrap mt-4">
+    <div class="w-full lg:w-6/12 xl:w-4/12 px-4 mb-12 xl:mb-0">
       <CardPieChart />
+    </div>
+    <div class="w-full lg:w-6/12 xl:w-8/12 px-4">
+      <div class="mb-12">
+        <CardLineChart {startDate} {endDate} />
+      </div>
+      <div>
+        <CardBarChart {startDate} {endDate} />
+      </div>
     </div>
   </div>
 </div>

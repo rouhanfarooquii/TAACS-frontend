@@ -16,7 +16,8 @@
     try {
       const attendances = await getAllAttendances(startDate, endDate);
       console.log('Attendance Data:', attendances);
-      attendanceData = attendances;
+      attendanceData = attendances.filter(record => record.attendance !== 'N/A'); // Filter out 'N/A' entries
+      console.log('Filtered Attendance Data:', attendanceData);
       processAttendanceData(attendanceData);
     } catch (error) {
       console.error('Failed to fetch attendance data:', error);
@@ -25,6 +26,7 @@
 
   function processAttendanceData(data) {
     const dailyAttendance = {};
+
     data.forEach(record => {
       const date = record.date.split('T')[0]; // Assuming the date is in ISO format
       if (!dailyAttendance[date]) {
@@ -36,11 +38,20 @@
       }
     });
 
-    const labels = Object.keys(dailyAttendance).sort();
-    const attendanceRates = labels.map(date => {
+    console.log('Daily Attendance Data:', dailyAttendance);
+
+    const allLabels = Object.keys(dailyAttendance).sort();
+    const attendanceRates = allLabels.map(date => {
       const { present, total } = dailyAttendance[date];
       return (present / total) * 100;
     });
+
+    console.log('All Chart Labels:', allLabels);
+    console.log('Attendance Rates:', attendanceRates);
+
+    // Filter labels to show a limited number of dates on the x-axis
+    const step = Math.ceil(allLabels.length / 10); // Adjust the step to control the number of labels displayed
+    const labels = allLabels.filter((label, index) => index % step === 0);
 
     renderChart(labels, attendanceRates);
   }
@@ -68,9 +79,9 @@
         maintainAspectRatio: false,
         responsive: true,
         title: {
-          display: false,
+          display: true,
           text: 'Attendance Rate Over Time',
-          fontColor: 'white',
+          fontColor: 'black',
         },
         legend: {
           labels: {
@@ -97,7 +108,7 @@
               scaleLabel: {
                 display: false,
                 labelString: 'Date',
-                fontColor: 'white',
+                fontColor: 'black',
               },
               gridLines: {
                 display: false,
@@ -121,7 +132,7 @@
               scaleLabel: {
                 display: false,
                 labelString: 'Attendance Rate',
-                fontColor: 'white',
+                fontColor: 'black',
               },
               gridLines: {
                 borderDash: [3],
@@ -140,7 +151,9 @@
   }
 
   onMount(() => {
-    fetchAttendanceData();
+    if (startDate && endDate) {
+      fetchAttendanceData();
+    }
   });
 </script>
 
