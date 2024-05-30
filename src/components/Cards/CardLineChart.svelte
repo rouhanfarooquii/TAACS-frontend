@@ -25,16 +25,13 @@
 
   function processAttendanceData(data) {
     const dailyAttendance = {};
-    const totalEmployees = new Set();
-
     data.forEach(record => {
       const date = record.date.split('T')[0]; // Assuming the date is in ISO format
       if (!dailyAttendance[date]) {
         dailyAttendance[date] = { present: 0, total: 0 };
       }
       dailyAttendance[date].total += 1;
-      totalEmployees.add(record.employeeId); // Assuming employeeId is unique for each employee
-      if (record.status === 'Present') {
+      if (record.attendance === 'Present') {
         dailyAttendance[date].present += 1;
       }
     });

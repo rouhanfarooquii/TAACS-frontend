@@ -7,6 +7,8 @@
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
   import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi, getAllLeavesApi,getAllParkingsApi,getAllRoomBookingsApi,getAllVisitorsApi } from '../../../services/api';
   import Toast from '../../../components/Confirmation/Toast.svelte';
+  import { getAllAttendances } from '../../../services/api';
+
 
   const edit1 = "../assets/img/icons8-edit-24.png";
   const view1 = "../assets/img/icons8-eye-24.png";
@@ -42,9 +44,6 @@
   
   let confirmationModal = false;
   let empToDelete = null;
-
-  let dateFrom = '';
-  let dateTo = '';
 
   let showToaster = false;
   let toasterMessage = '';
@@ -306,11 +305,53 @@ function clearFilters() {
     showModal = true;
   }
 
-  function viewAttendance(employee)
-  {
-    selectedEmployee = employee
-    reportModal = true;
+  let attendanceData = [];
+let dateFrom = '';
+let dateTo = '';
+
+async function fetchAttendanceData() {
+  try {
+    const attendances = await getAllAttendances(dateFrom, dateTo, selectedEmployee._id);
+    console.log('Attendance Data:', attendances);
+    attendanceData = attendances.filter(att => att.employee._id === selectedEmployee._id);
+    processAttendanceData(attendanceData);
+  } catch (error) {
+    console.error('Failed to fetch attendance data:', error);
   }
+}
+
+function processAttendanceData(data) {
+  const tableBody = document.querySelector('#attendance-table tbody');
+  tableBody.innerHTML = ''; // Clear previous rows
+
+  data.forEach(attendance => {
+    const row = document.createElement('tr');
+    const dateCell = document.createElement('td');
+    dateCell.className = 'border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4';
+    dateCell.textContent = attendance.date;
+
+    const statusCell = document.createElement('td');
+    statusCell.className = 'border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4';
+    statusCell.textContent = attendance.attendance; // Correctly use the attendance property
+
+    row.appendChild(dateCell);
+    row.appendChild(statusCell);
+    tableBody.appendChild(row);
+  });
+}
+
+$: if (reportModal && dateFrom && dateTo) {
+  fetchAttendanceData();
+}
+
+function viewAttendance(employee) {
+  selectedEmployee = employee;
+  reportModal = true;
+}
+
+function applyDateFilter() {
+  fetchAttendanceData();
+}
 
   function setPassword(employee)
   {
@@ -343,6 +384,8 @@ function clearFilters() {
     editModal = false;
     reportModal = false;
     passwordModal = false;
+    dateFrom = '';
+  dateTo = '';
   }
 
   function validateInputs() {
@@ -502,13 +545,13 @@ let searchQuery = '';
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-id">
                     Department:
                   </label>
-                  <p>{selectedEmployee.department}</p>
+                  <p>{selectedEmployee.department.title}</p>
                 </div>
                 <div class="relative mb-3">
                   <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">
                     Designation:
                   </label>
-                  <p>{selectedEmployee.designation}</p>
+                  <p>{selectedEmployee.designation.title}</p>
                 </div>
               </div>
               <div class="w-full lg:w-6/12 px-4">
@@ -780,8 +823,8 @@ let searchQuery = '';
     </div>
   {/if}
   {#if reportModal}
-  <div class="modal">
-    <div class="modal-content">
+  <div class="modal2">
+    <div class="modal-content2">
       <div class="rounded-t mb-0 px-4 py-10 border-0">
         <div class="flex flex-wrap items-center">
           <div class="relative w-full px-4 max-w-full flex-grow flex-1">
@@ -812,6 +855,11 @@ let searchQuery = '';
               </div>
             </div>
           </div>
+          <div class="flex justify-end mb-4">
+            <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={applyDateFilter}>
+              Apply
+            </button>
+          </div>
           <div class="block w-full overflow-x-auto">
             <table id="attendance-table" class="items-center w-full bg-transparent border-collapse">
               <thead>
@@ -821,12 +869,6 @@ let searchQuery = '';
                 </tr>
               </thead>
               <tbody>
-                <!-- Example row -->
-                <tr>
-                  <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">2024-05-01</td>
-                  <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">Present</td>
-                </tr>
-                <!-- Additional rows will be added dynamically -->
               </tbody>
             </table>
           </div>
@@ -840,6 +882,7 @@ let searchQuery = '';
     </div>
   </div>
 {/if}
+
 {#if passwordModal}
   <div class="modal">
     <div class="modal-content w-4/10">
