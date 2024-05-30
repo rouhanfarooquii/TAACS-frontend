@@ -1,62 +1,25 @@
 <script>
+  import { onMount } from 'svelte';
   import { navigate } from 'svelte-routing';
   import AuthNavbar from "components/Navbars/AuthNavbar.svelte";
   import QrCode from 'components/QR/QRCode.svelte';
   import Footer from "components/Footers/Footer.svelte";
   import { writable } from 'svelte/store';
+  import { getOneEmployeeApi, getOneAttendance } from '../../services/api';
+  import moment from 'moment';
 
   const team2 = "/assets/img/10.jpg";
-  const qrCode = "/assets/img/sample-qr.png";
   export let location;
 
-  let employee = {    
-    id: 12,
-    name: 'Arsalan Danyal',
-    mobileNumber: '0300-2572400',
-    location: 'SDH Street 5 AFOHS Falcon Complex 2',
-    department: 'IT',
-    designation: 'CTO',
-    employeeType: 'Full-time',
-    gender: 'Male',
-    email: 'mad@gmail.com',
-    address: '901 Maple St, Phoenix',
-    dateOfBirth: '1986-09-10',
-    cardIdNumber: 'L789012',
-    personalPassword: 'mypassword5678',
-    fingerIndex1: '',
-    fingerIndex2: '',
-    isFingerAdded: false,
-    salary: 6969696969,
-    active: false
-  };
-
-  let attendanceData = writable([
-    { date: '2024-05-01', status: 'Present' },
-    { date: '2024-05-02', status: 'Present' },
-    { date: '2024-05-03', status: 'Absent' },
-    { date: '2024-05-06', status: 'Present' },
-    { date: '2024-05-07', status: 'Present' },
-    { date: '2024-05-08', status: 'Absent' },
-    { date: '2024-05-09', status: 'Present' },
-    { date: '2024-05-10', status: 'Present' },
-    { date: '2024-05-13', status: 'Absent' },
-    { date: '2024-05-14', status: 'Present' },
-    { date: '2024-05-15', status: 'Present' },
-    { date: '2024-05-16', status: 'Absent' },
-    { date: '2024-05-17', status: 'Present' },
-    { date: '2024-05-20', status: 'Present' },
-    { date: '2024-05-21', status: 'Absent' },
-    { date: '2024-05-22', status: 'Present' },
-    { date: '2024-05-23', status: 'Present' },
-    { date: '2024-05-24', status: 'Absent' },
-    { date: '2024-05-27', status: 'Present' },
-    { date: '2024-05-28', status: 'Present' },
-    { date: '2024-05-29', status: 'Absent' },
-    { date: '2024-05-30', status: 'Present' },
-    { date: '2024-05-31', status: 'Absent' }
-  ]);
-
+  let employee = writable(null);
+  let attendanceData = writable([]);
+  let totalAttendance = 0;
+  let totalAbsences = 0;
+  let totalLate = 0;
   let showSalary = false;
+  let carId = '';
+
+  let processedImagePath = '';
 
   let gradientBackground = `
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -64,10 +27,6 @@
 
   function toggleSalaryVisibility() {
     showSalary = !showSalary;
-  }
-
-  function navigateToLeave() {
-    navigate('/user/leaveform');
   }
 
   function navigateToVisitor() {
@@ -78,15 +37,52 @@
     navigate('/user/attendance');
   }
 
-  // Calculate attendance and absence counts
-  let totalAttendance = 0;
-  let totalAbsences = 0;
-
-  $: {
-    totalAttendance = $attendanceData.filter(record => record.status === 'Present').length;
-    totalAbsences = $attendanceData.filter(record => record.status === 'Absent').length;
+  async function fetchEmployeeData() {
+    try {
+      const fetchedEmployee = await getOneEmployeeApi();
+      employee.set(fetchedEmployee);
+      console.log('Fetched employee data:', fetchedEmployee);
+      processImagePath(fetchedEmployee.imagePath);
+      carId = fetchedEmployee._id;
+    } catch (error) {
+      console.error('Error fetching employee data:', error);
+    }
   }
+
+  async function fetchAttendanceData() {
+    const start = moment().startOf('month').format('YYYY-MM-DD');
+    const end = moment().format('YYYY-MM-DD');
+    try {
+      const attendances = await getOneAttendance(start, end);
+      attendanceData.set(attendances);
+      console.log('Fetched attendance data:', attendances);
+
+      totalAttendance = attendances.filter(record => record.attendance === 'Present').length;
+      totalAbsences = attendances.filter(record => record.attendance === 'Absent').length;
+      totalLate = attendances.filter(record => record.attendance === 'Late').length;
+    } catch (error) {
+      console.error('Error fetching attendance data:', error);
+    }
+  }
+
+  // Function to process the image path
+  function processImagePath(imagePath) {
+    if (imagePath) {
+      processedImagePath = imagePath.replace(/\\/g, '/');
+    } else {
+      processedImagePath = team2;
+    }
+  }
+
+  // Fetch data on component mount
+  onMount(() => {
+    fetchEmployeeData();
+    fetchAttendanceData();
+  });
+
+
 </script>
+
 
 <div>
   <main class="profile-page">
@@ -101,16 +97,17 @@
         ></span>
       </div>
     </section>
-      <div class="container mx-auto px-4">
-        <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
-          <div class="px-6">
-            <div class="flex flex-wrap justify-center">
-              <!-- Picture Section -->
+    <div class="container mx-auto px-4">
+      <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+        <div class="px-6">
+          <div class="flex flex-wrap justify-center">
+            <!-- Picture Section -->
+            {#if $employee}
               <div class="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                 <div class="relative">
                   <img
                     alt="..."
-                    src={team2}
+                    src={processedImagePath}
                     class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                   />
                 </div>
@@ -119,7 +116,7 @@
               <div class="w-0 lg:w-1/12 px-4 lg:order-1 flex justify-center items-center">
                 <div class="h-32 border-r border-blueGray-200"></div>
               </div>
-              <!-- Attendance and Absence Section -->
+              <!-- Attendance, Absences, and Late Section -->
               <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center flex flex-col justify-between">
                 <div class="flex justify-center mt-12">
                   <button
@@ -147,36 +144,36 @@
                       </span>
                       <span class="text-sm text-blueGray-400">Absences</span>
                     </div>
+                    <div class="box p-3 text-center ml-5">
+                      <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        {totalLate}
+                      </span>
+                      <span class="text-sm text-blueGray-400">Late</span>
+                    </div>
                   </div>
-                  
-                  
                 </div>
               </div>
               <!-- Details Section -->
               <div class="w-full lg:w-4/12 px-4 lg:order-1">
                 <div class="text-center mt-12">
                   <h3 class="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                    {employee.name}
+                    {$employee.name}
                   </h3>
                   <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                    <i class="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
-                    {employee.location}
+                    <i class="fas fa-envelope mr-2 text-lg text-blueGray-400"></i>
+                    {$employee.email}
                   </div>
                   <div class="mb-2 text-blueGray-600 mt-10">
-                    <i class="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                    {employee.designation} - {employee.department}
-                  </div>
-                  <div class="mb-2 text-blueGray-600">
-                    <i class="fas fa-user-tag mr-2 text-lg text-blueGray-400"></i>
-                    {employee.employeeType}
+                    <i class="fas fa-id-card mr-2 text-lg text-blueGray-400"></i>
+                    {$employee.employeeID}
                   </div>
                   <div class="mb-2 text-blueGray-600">
                     <i class="fas fa-envelope mr-2 text-lg text-blueGray-400"></i>
-                    {employee.email}
+                    {$employee.designation.title} - {$employee.department.title}
                   </div>
                   <div class="mb-2 text-blueGray-600">
                     <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
-                    {showSalary ? `$${employee.salary}` : '******'}
+                    {showSalary ? `$${$employee.salary}` : '******'}
                     <i
                       class="ml-2 text-blueGray-600 cursor-pointer"
                       on:click={toggleSalaryVisibility}
@@ -188,33 +185,40 @@
                       {/if}
                     </i>
                   </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-fingerprint mr-2 text-lg text-blueGray-400"></i>
+                    {showSalary ? $employee.cardIdNumber : '******'}
+                  </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-lock mr-2 text-lg text-blueGray-400"></i>
+                    {showSalary ? $employee.personalPassword : '******'}
+                  </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-clock mr-2 text-lg text-blueGray-400"></i>
+                    {$employee.shiftTiming.shiftName} ({$employee.shiftTiming.startTime} - {$employee.shiftTiming.endTime})
+                  </div>
+                  <div class="mb-2 text-blueGray-600">
+                    <i class="fas fa-location-arrow mr-2 text-lg text-blueGray-400"></i>
+                    {#if $employee.locations.length > 0} Accessible Locations: 
+                      {#each $employee.locations as location, index}
+                        {location.title}{#if index < $employee.locations.length - 1}, {/if}
+                      {/each}
+                    {:else}
+                      No Locations
+                    {/if}
+                  </div>
                 </div>
               </div>
-            </div>
-            <!-- Description and QR Code Section -->
-            <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
-              <div class="flex flex-wrap justify-between items-center">
-                <div class="w-full lg:w-1/2 px-4 mb-4 lg:mb-0">
-                  <p class="mb-4 text-lg leading-relaxed text-blueGray-700 text-justify">
-                    I am a passionate and curious individual with a love for learning and exploring new ideas. My enthusiasm for understanding the world around me drives me to constantly seek knowledge and growth. I am a good listener, empathetic, and value meaningful connections with others. Whether it's through my hobbies, work, or personal interactions, I strive to bring positivity and creativity into everything I do. Adaptable and open-minded, I embrace challenges and view them as opportunities to develop and thrive.
-                  </p>
-                  <a
-                    href="#pablo"
-                    on:click={(e) => e.preventDefault()}
-                    class="font-normal custom-text"
-                  >
-                    Show more
-                  </a>
-                </div>
-                <div class="w-full lg:w-1/2 flex justify-end items-center">
+            {/if}
+          </div>
+          <!-- Description and QR Code Section -->
+          <div class="mt-10 py-10 border-t border-blueGray-200 text-center">
+            <div class="flex flex-wrap justify-between items-center">
+              <div class="w-full lg:w-1/2 flex flex-col items-end">
                 <h4 class="text-sm leading-normal mt-0 text-blueGray-400 font-bold uppercase">Parking QR</h4>
-                </div>
-                <div class="w-full lg:w-1/2 flex justify-end items-center">
-                  <QrCode data={employee.name.toString()} class="w-64 h-64" />
-                </div>
+                <QrCode data={carId} class="w-64 h-64" />
               </div>
             </div>
-            
           </div>
         </div>
       </div>

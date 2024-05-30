@@ -24,10 +24,6 @@
     showModal = true;
   }
 
-  const edit1 = "../assets/img/icons8-edit-24.png";
-  const edit2 = "../assets/img/icons8-tick-24.png";
-  export let color = "light";
-
   let departments = [];
   let trueDepartments = [];
   let designations = [];
@@ -340,7 +336,9 @@
                 </div> 
               </div>
               <div class="flex justify-end">
-                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={update}>Update</button>
+                <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" on:click={update}>
+                  Update
+                </button>
                 <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={closeModal}>
                   Cancel
                 </button>

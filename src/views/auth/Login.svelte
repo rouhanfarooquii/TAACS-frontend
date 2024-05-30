@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { loginEmployeeApi } from "../../services/api.js";
+  import { navigate } from "svelte-routing";
 
   let email = "";
   let password = "";
@@ -39,16 +40,11 @@
 
     if (!emailError && !passwordError) {
       try {
+        console.log('Submitting login form with email:', email);
         const response = await loginEmployeeApi({ email, password });
-        // console.log('', response.token);
-
-        // Store the token in a cookie
-        // document.cookie = `token=${response.token}; path=/;`;
-
-
+        console.log('Login successful. Token:', response.token);
         errorMessage = "";
-        // Optionally, redirect the user or show a success message
-        // window.location.href = '/dashboard'; // Redirect to dashboard
+        navigate('/user/profile');
       } catch (error) {
         console.log('Login failed:', error.message);
         errorMessage = `An error occurred while logging in: ${error.message}`;
@@ -60,7 +56,6 @@
   };
 
   onMount(() => {
-    // Reset error message on mount
     errorMessage = "";
   });
 </script>
@@ -74,6 +69,14 @@
             <h6 class="text-blueGray-500 text-sm font-bold">
               Log In
             </h6>
+          </div>
+          <div class="flex justify-between">
+            <div></div> <!-- Placeholder for alignment -->
+            <div class="text-right">
+              <a href="/auth/adminlogin" class="text-blue-500 text-sm font-bold">
+                Login as Admin
+              </a>
+            </div>
           </div>
           <hr class="mt-6 border-b-1 border-blueGray-300" />
         </div>
@@ -135,6 +138,11 @@
               {/if}
             </div>
           </form>
+          <div class="text-left mt-6">
+            <a class="text-blue-500 text-sm">
+              Forgot Password?
+            </a>
+          </div>
         </div>
       </div>
     </div>

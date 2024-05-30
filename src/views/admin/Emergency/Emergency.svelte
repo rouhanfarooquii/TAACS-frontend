@@ -314,7 +314,7 @@
   {/if}
   <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     {#each emergencies as emergency}
-      <div style="border-color: {emergency.active ? 'green' : 'rgba(228, 228, 231, var(--tw-border-opacity))'};" class="w-full max-w-sm p-4 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+      <div style="border-color: {emergency.active ? 'green' : 'rgba(228, 228, 231, var(--tw-border-opacity))'};" class="w-full max-w-sm p-4 borderrounded-lg shadow sm:p-8">
         <button class="right top-2 transparent-button" on:click={() => showDeleteConfirmation(emergency)}>
           <i class="fas fa-trash-alt text-blueGray-800"></i>
         </button>

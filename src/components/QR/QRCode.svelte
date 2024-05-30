@@ -14,7 +14,6 @@
   $: data, generateQRCode();
 
   async function generateQRCode() {
-    console.log("Generating QR for:", data);
     if (canvas && data) {
       try {
         await QRCode.toCanvas(canvas, data.toString(), {

@@ -5,7 +5,7 @@ export async function batchUpdateAccessControlApi(obj){
     const response = await fetch(BACKEND + 'accessControl/batchUpdate', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({accessControl: obj})
     })
     if(response.status == 401){
@@ -19,7 +19,7 @@ export async function batchUpdateAccessControlApi(obj){
 export async function getAllAttendances(start, end){
     const response = await fetch(BACKEND + 'attendance/getAll/' + start + "/" + end ,{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -29,18 +29,106 @@ export async function getAllAttendances(start, end){
     return await attendances;
 };
 
-export async function getOneAttendance(start, end){
-    const response = await fetch(BACKEND + 'attendance/getOne/' + start + "/" + end ,{
-        method: 'GET',
-        headers: getAuthHeader(),
-    });
-    if(response.status == 401){
-        navigate('/auth/login');
+// export async function getOneAttendance(start, end) {
+//     try {
+//         const apiUrl = `${BACKEND}attendance/getOne/${start}/${end}`;
+//         console.log('API URL:', apiUrl);
+//         console.log('Requesting attendance data from:', start, 'to', end);
+
+//         const response = await fetch(apiUrl, {
+//             method: 'GET',
+//             headers: getUserAuthHeader(),
+//         });
+
+//         if (response.status == 401) {
+//             console.log('Unauthorized access, navigating to login');
+//             navigate('/auth/login');
+//             return;
+//         }
+
+//         const responseObj = await response.json();
+//         console.log('Response data:', responseObj);
+
+//         const attendances = responseObj.attendances;
+//         console.log('Parsed attendances:', attendances);
+
+//         return attendances;
+//     } catch (error) {
+//         console.error('Error fetching attendance data:', error);
+//         return null;
+//     }
+// }
+
+// export async function getOneAttendance(start, end) {
+//     try {
+//         const apiUrl = `${BACKEND}attendance/getOne/${start}/${end}`;
+//         console.log('API URL:', apiUrl);
+//         console.log('Requesting attendance data from:', start, 'to', end);
+
+//         const response = await fetch(apiUrl, {
+//             method: 'GET',
+//             headers: getUserAuthHeader(),
+//         });
+
+//         if (response.status == 401) {
+//             console.log('Unauthorized access, navigating to login');
+//             navigate('/auth/login');
+//             return;
+//         }
+
+//         const responseObj = await response.json();
+//         console.log('Response data:', responseObj);
+
+//         if (responseObj && responseObj.attendance) {
+//             const attendances = responseObj.attendance;
+//             console.log('Parsed attendances:', attendances);
+//             return attendances;
+//         } else {
+//             console.log('Attendance data not found in response:', responseObj);
+//             return [];
+//         }
+//     } catch (error) {
+//         console.error('Error fetching attendance data:', error);
+//         return [];
+//     }
+// }
+
+export async function getOneAttendance(start, end) {
+    try {
+        const apiUrl = `${BACKEND}attendance/getOne/${start}/${end}`;
+        console.log('API URL:', apiUrl);
+        console.log('Requesting attendance data from:', start, 'to', end);
+
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: getUserAuthHeader(),
+        });
+
+        if (response.status == 401) {
+            console.log('Unauthorized access, navigating to login');
+            navigate('/auth/login');
+            return;
+        }
+
+        const responseObj = await response.json();
+        console.log('Response data:', responseObj);
+
+        if (responseObj && responseObj.attendance) {
+            const attendances = responseObj.attendance;
+            console.log('Parsed attendances:', attendances);
+            return attendances;
+        } else {
+            console.log('Attendance data not found in response:', responseObj);
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching attendance data:', error);
+        return [];
     }
-    const responseObj = await response.json();
-    const attendances = await responseObj.attendances;
-    return await attendances;
-};
+}
+
+
+
 
 // export async function updateAccessControlApi(obj){
 //     const response = await fetch(BACKEND + 'accessControl/update', {
@@ -68,7 +156,7 @@ export async function getOneAttendance(start, end){
 export async function getAllDepartmentsApi(){
     const response = await fetch(BACKEND + 'department/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -82,7 +170,7 @@ export async function addDepartmentApi(obj){
     const response = await fetch(BACKEND + 'department/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({department: obj})
     })
     if(response.status == 401){
@@ -97,7 +185,7 @@ export async function updateDepartmentApi(obj){
     const response = await fetch(BACKEND + 'department/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({department: obj})
     })
     if(response.status == 401){
@@ -111,7 +199,7 @@ export async function updateDepartmentApi(obj){
 export async function deleteDepartmentApi(id){
     const response = await fetch(BACKEND + 'department/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -125,7 +213,7 @@ export async function deleteDepartmentApi(id){
 export async function getAllDevicesApi(){
     const response = await fetch(BACKEND + 'device/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -139,7 +227,7 @@ export async function addDeviceApi(obj){
     const response = await fetch(BACKEND + 'device/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({device: obj})
     })
     if(response.status == 401){
@@ -154,7 +242,7 @@ export async function updateDeviceApi(obj){
     const response = await fetch(BACKEND + 'device/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({device: obj})
     })
     if(response.status == 401){
@@ -168,7 +256,7 @@ export async function updateDeviceApi(obj){
 export async function deleteDeviceApi(id){
     const response = await fetch(BACKEND + 'device/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -182,7 +270,7 @@ export async function deleteDeviceApi(id){
 export async function getAllEmergenciesApi(){
     const response = await fetch(BACKEND + 'emergency/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -196,7 +284,7 @@ export async function addEmergencyApi(obj){
     const response = await fetch(BACKEND + 'emergency/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({emergency: obj})
     })
     if(response.status == 401){
@@ -211,7 +299,7 @@ export async function updateEmergencyApi(obj){
     const response = await fetch(BACKEND + 'emergency/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({emergency: obj})
     })
     if(response.status == 401){
@@ -225,7 +313,7 @@ export async function updateEmergencyApi(obj){
 export async function activateEmergencyApi(id){
     const response = await fetch(BACKEND + 'emergency/activate/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -238,7 +326,7 @@ export async function activateEmergencyApi(id){
 export async function deactivateEmergencyApi(id){
     const response = await fetch(BACKEND + 'emergency/deactivate/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -252,7 +340,7 @@ export async function deleteEmergencyApi(id) {
     try {
         const response = await fetch(BACKEND + 'emergency/delete/' + id, {
             method: 'DELETE',
-            headers: getAuthHeader(),
+            headers: getAdminAuthHeader(),
         });
         if(response.status == 401){
             navigate('/auth/adminlogin');
@@ -272,7 +360,7 @@ export async function deleteEmergencyApi(id) {
 export async function getAllEmployeesApi(){
     const response = await fetch(BACKEND + 'employee/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -285,7 +373,7 @@ export async function getAllEmployeesApi(){
 export async function getOneEmployeeApi(){
     const response = await fetch(BACKEND + 'employee/getOne',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getUserAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/login');
@@ -298,28 +386,40 @@ export async function getOneEmployeeApi(){
 // export async function loginEmployeeApi(obj){
 //     const response = await fetch(BACKEND + 'employee/logIn',{
 //         method: 'POST',
-//         headers: headers,
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Bearer ${getCookie('token')}` // Include token in header
+//         },
 //         body: JSON.stringify({ employee: obj })
 //     });
 //     console.log('API Response Status:', response.status);
+//     console.log("Cookie: ", getCookie('token'));
 //     const responseObj = await response.json();
 //     console.log('API Response JSON:', responseObj);
 //     return responseObj;
 // }
 
-export async function loginEmployeeApi(obj){
-    const response = await fetch(BACKEND + 'employee/logIn',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getCookie('token')}` // Include token in header
-        },
-        body: JSON.stringify({ employee: obj })
+export async function loginEmployeeApi(obj) {
+    console.log('Sending login request for admin:', obj);
+  
+    const response = await fetch(BACKEND + 'employee/logIn', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ employee: obj })
     });
-    console.log('API Response Status:', response.status);
-    console.log("Cookie: ", getCookie('adminToken'));
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Login request failed:', errorText);
+      throw new Error(`Failed to log in: ${errorText}`);
+    }
+  
     const responseObj = await response.json();
-    console.log('API Response JSON:', responseObj);
+    if(responseObj.token){
+        document.cookie = `userToken=${responseObj.token}; path=/;`;
+        console.log("Cookie: ", getCookie('userToken'));
+    }
+    console.log('Login request successful. Response:', responseObj);
     return responseObj;
 }
 
@@ -327,7 +427,7 @@ export async function addEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/add', {
         method: 'POST',
         body: obj,
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -341,7 +441,7 @@ export async function updateEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/update', {
         method: 'POST',
         body: obj,
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -355,7 +455,7 @@ export async function updateEmployeePasswordApi(obj){
     const response = await fetch(BACKEND + 'employee/updatePassword', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({employee: obj})
     })
     if(response.status == 401){
@@ -370,7 +470,7 @@ export async function updateEmployeeJSONApi(obj){
     const response = await fetch(BACKEND + 'employee/updateJSON', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({employee: obj})
     })
     if(response.status == 401){
@@ -384,7 +484,7 @@ export async function updateEmployeeJSONApi(obj){
 export async function deleteEmployeeApi(id){
     const response = await fetch(BACKEND + 'employee/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -399,7 +499,7 @@ export async function deleteEmployeeApi(id){
 export async function getAllLeavesApi(){
     const response = await fetch(BACKEND + 'leave/getAll',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -410,10 +510,11 @@ export async function getAllLeavesApi(){
 };
 
 export async function addLeaveApi(obj, isAdmin){
+    const headers = isAdmin ? getAdminAuthHeader() : getUserAuthHeader();
     const response = await fetch(BACKEND + 'leave/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: headers(),
         body: JSON.stringify({leave: obj})
     })
     if(response.status == 401){
@@ -433,7 +534,7 @@ export async function updateLeaveApprovedApi(id, obj){
     const response = await fetch(`${BACKEND}leave/approved/${id}`, {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({leave: obj})
     })
     if(response.status == 401){
@@ -448,7 +549,7 @@ export async function updateLeaveRejectedApi(id, obj){
     const response = await fetch(`${BACKEND}leave/rejected/${id}`, {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({leave: obj})
     })
     if(response.status == 401){
@@ -461,9 +562,10 @@ export async function updateLeaveRejectedApi(id, obj){
 
 // Locations API
 export async function getAllLocationsApi(isAdmin){
+    const headers = isAdmin ? getAdminAuthHeader() : getUserAuthHeader();
     const response = await fetch(BACKEND + 'location/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: headers(),
     });
     if(response.status == 401){
         if(isAdmin){
@@ -481,7 +583,7 @@ export async function getAllLocationsApi(isAdmin){
 export async function getAllBookableLocationsApi() {
     const response = await fetch(BACKEND + 'location/getall', {
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -496,7 +598,7 @@ export async function addLocationApi(obj){
     const response = await fetch(BACKEND + 'location/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({location: obj})
     })
     if(response.status == 401){
@@ -511,7 +613,7 @@ export async function updateLocationApi(obj){
     const response = await fetch(BACKEND + 'location/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({location: obj})
     })
     if(response.status == 401){
@@ -525,7 +627,7 @@ export async function updateLocationApi(obj){
 export async function deleteLocationApi(id){
     const response = await fetch(BACKEND + 'location/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -539,7 +641,7 @@ export async function deleteLocationApi(id){
 export async function getAllParkingsApi(){
     const response = await fetch(BACKEND + 'parking/getAll',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -552,7 +654,7 @@ export async function addParkingApi(obj){
     const response = await fetch(BACKEND + 'parking/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({parking: obj})
     })
     if(response.status == 401){
@@ -567,7 +669,7 @@ export async function updateParkingApi(obj){
     const response = await fetch(BACKEND + 'parking/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({parking: obj})
     })
     if(response.status == 401){
@@ -581,7 +683,7 @@ export async function updateParkingApi(obj){
 export async function deleteParkingApi(id){
     const response = await fetch(BACKEND + 'parking/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -595,7 +697,7 @@ export async function deleteParkingApi(id){
 export async function getAllPayrollsApi(){
     const response = await fetch(BACKEND + 'payroll/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -609,7 +711,7 @@ export async function addPayrollApi(obj){
     const response = await fetch(BACKEND + 'payroll/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({payroll: obj})
     })
     if(response.status == 401){
@@ -624,7 +726,7 @@ export async function updatePayrollApi(obj){
     const response = await fetch(BACKEND + 'payroll/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({payroll: obj})
     })
     if(response.status == 401){
@@ -639,7 +741,7 @@ export async function batchUpdatePayrollApi(obj){
     const response = await fetch(BACKEND + 'payroll/batchUpdate', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({payroll: obj})
     })
     if(response.status == 401){
@@ -653,7 +755,7 @@ export async function batchUpdatePayrollApi(obj){
 export async function deletePayrollApi(id){
     const response = await fetch(BACKEND + 'payroll/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -688,7 +790,7 @@ export async function deletePayrollApi(id){
 export async function getAllRoomBookingsApi(){
     const response = await fetch(BACKEND + 'roomBooking/getall',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -702,7 +804,7 @@ export async function addRoomBookingApi(obj){
     const response = await fetch(BACKEND + 'roomBooking/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({roomBooking: obj})
     })
     if(response.status == 401){
@@ -717,7 +819,7 @@ export async function updateRoomBookingApi(obj){
     const response = await fetch(BACKEND + 'roomBooking/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({roomBooking: obj})
     })
     if(response.status == 401){
@@ -731,7 +833,7 @@ export async function updateRoomBookingApi(obj){
 export async function deleteRoomBookingApi(id){
     const response = await fetch(BACKEND + 'roomBooking/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -745,7 +847,7 @@ export async function deleteRoomBookingApi(id){
 export async function getAllShiftTimingsApi(){
     const response = await fetch(BACKEND + 'shiftTiming/getAll',{
         method: 'GET',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -759,7 +861,7 @@ export async function addShiftTimingApi(obj){
     const response = await fetch(BACKEND + 'shiftTiming/add', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({shiftTiming: obj})
     })
     if(response.status == 401){
@@ -774,7 +876,7 @@ export async function updateShiftTimingApi(obj){
     const response = await fetch(BACKEND + 'shiftTiming/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({shiftTiming: obj})
     })
     if(response.status == 401){
@@ -789,7 +891,7 @@ export async function batchDeleteShiftTimingApi(obj){
     const response = await fetch(BACKEND + 'shiftTiming/update', {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({shiftTiming: obj})
     })
     if(response.status == 401){
@@ -803,7 +905,7 @@ export async function batchDeleteShiftTimingApi(obj){
 export async function deleteShiftTimingApi(id){
     const response = await fetch(BACKEND + 'shiftTiming/delete/' + id, {
         method: 'POST',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -818,7 +920,7 @@ export async function deleteShiftTimingApi(id){
 export async function getAllVisitorsApi() {
     const response = await fetch(BACKEND + 'visitor/getAll', {
       method: 'GET',
-      headers: getAuthHeader(),
+      headers: getAdminAuthHeader(),
     });
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -831,10 +933,11 @@ export async function getAllVisitorsApi() {
 }
   
 export async function addVisitorApi(obj, isAdmin){
+    const headers = isAdmin ? getAdminAuthHeader() : getUserAuthHeader();
     const response = await fetch(BACKEND + 'visitor/add', {
         method: 'POST',
         body: obj,
-        headers: getAuthHeader(),
+        headers: headers,
     })
     if(response.status == 401){
         if(isAdmin){
@@ -853,7 +956,7 @@ export async function updateVisitorApprovedApi(id, obj){
     const response = await fetch(`${BACKEND}visitor/approved/${id}`, {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({visitor: obj})
     })
     if(response.status == 401){
@@ -868,7 +971,7 @@ export async function updateVisitorRejectedApi(id, obj){
     const response = await fetch(`${BACKEND}visitor/rejected/${id}`, {
         method: 'POST',
         observe: 'body',
-        headers: getAuthHeader(),
+        headers: getAdminAuthHeader(),
         body: JSON.stringify({leave: obj})
     })
     if(response.status == 401){
@@ -1002,9 +1105,16 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-function getAuthHeader() {
+function getAdminAuthHeader() {
     return {
         'Content-Type': 'application/json',
         'authorization': `${getCookie('adminToken')}`
+    }
+}
+
+function getUserAuthHeader() {
+    return {
+        'Content-Type': 'application/json',
+        'authorization': `${getCookie('userToken')}`
     }
 }

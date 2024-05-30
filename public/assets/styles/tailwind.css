@@ -4693,59 +4693,85 @@ input:checked + .slider:before {
   background-color: #e2e3e5;
   margin-right: 5px;
 }
-
 .attendance-calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 10px;
 }
+
 .attendance-header {
-  font-weight: bold;
   text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
+
 .attendance-day {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 40px;
+  border-radius: 5px;
+  background-color: #f0f0f0;
   border: 1px solid #ddd;
 }
-.attendance-day.weekend {
-  background-color: #f0f0f0;
-}
+
 .attendance-day.present {
-  background-color: #c8e6c9;
+  background-color: #d4edda;
 }
+
 .attendance-day.absent {
-  background-color: #ffcdd2;
+  background-color: #f8d7da;
 }
+
+.attendance-day.late {
+  background-color: #f8f6d7;
+}
+
+.attendance-day.weekend {
+  background-color: #e2e3e5;
+}
+
 .attendance-day.not-current-month {
-  background-color: #f5f5f5;
+  background-color: #f9f9f9;
+  color: #ccc;
 }
+
 .attendance-day.empty {
-  visibility: hidden;
+  background-color: transparent;
+  border: none;
 }
+
 .attendance-legend {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-end;
   align-items: center;
 }
+
 .attendance-legend-item {
-  width: 20px;
-  height: 20px;
   display: inline-block;
-  margin-right: 8px;
-  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  border-radius: 3px;
 }
+
 .attendance-legend-item.present {
-  background-color: #c8e6c9;
+  background-color: #d4edda;
 }
+
 .attendance-legend-item.absent {
-  background-color: #ffcdd2;
+  background-color: #f8d7da;
 }
+
+.attendance-legend-item.late {
+  background-color: #f8f6d7;
+}
+
 .attendance-legend-item.weekend {
-  background-color: #f0f0f0;
+  background-color: #e2e3e5;
 }
+
+
 
 .input-style {
   width: 100%;
