@@ -105,19 +105,6 @@
 
   let dropdownOpen = false;
 
-  function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
-  }
-
-  function handleCheckboxChange(event) {
-    const value = event.target.value;
-    if (event.target.checked) {
-      selectedRooms = [...selectedRooms, value];
-    } else {
-      selectedRooms = selectedRooms.filter(room => room !== value);
-    }  
-  }
-
   // Close the dropdown if the user clicks outside of it
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn') && !event.target.closest('.dropdown-content')) {
@@ -306,7 +293,6 @@
   <table class="w-full bg-transparent border-collapse">
     <thead>
       <tr>
-        <th class="bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left"><input type="checkbox" on:click={toggleSelectAll} /></th>
         <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">User ID</th>
         <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Name</th>
         <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Department</th>
@@ -317,7 +303,6 @@
     <tbody>
       {#each displayedUsers as user}
       <tr>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4"><input type="checkbox" checked={selectedUsers.has(user._id)} on:click={() => toggleSelection(user._id)} /></td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.employeeID}</td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.name}</td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.department.title}</td>
