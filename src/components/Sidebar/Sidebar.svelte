@@ -428,7 +428,7 @@
       <!-- Navigation -->
 
       <ul class="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
-        <li class="items-center">
+        <!-- <li class="items-center">
           <a
             use:link
             class="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
@@ -437,7 +437,7 @@
             <i class="fas fa-newspaper text-blueGray-300 mr-2 text-sm"></i>
             Landing Page
           </a>
-        </li>
+        </li> -->
 
         <li class="items-center">
           <a

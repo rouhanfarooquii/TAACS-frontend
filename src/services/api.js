@@ -514,7 +514,7 @@ export async function addLeaveApi(obj, isAdmin){
     const response = await fetch(BACKEND + 'leave/add', {
         method: 'POST',
         observe: 'body',
-        headers: headers(),
+        headers: headers,
         body: JSON.stringify({leave: obj})
     })
     if(response.status == 401){
@@ -565,7 +565,7 @@ export async function getAllLocationsApi(isAdmin){
     const headers = isAdmin ? getAdminAuthHeader() : getUserAuthHeader();
     const response = await fetch(BACKEND + 'location/getall',{
         method: 'GET',
-        headers: headers(),
+        headers: headers,
     });
     if(response.status == 401){
         if(isAdmin){

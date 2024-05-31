@@ -5,6 +5,7 @@
   import { getAllDepartmentsApi, getAllEmployeesApi, updateEmployeeJSONApi, batchUpdatePayrollApi } from '../../../services/api';
   import Toast from '../../../components/Confirmation/Toast.svelte';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
+  export let color = "light";
 
   let showModal = false;
 
