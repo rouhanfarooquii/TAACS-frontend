@@ -23,7 +23,7 @@
     try {
       const [attendances, leaves] = await Promise.all([
         getAllAttendances(startDate, endDate),
-        getAllLeavesApi(startDate, endDate)
+        getAllLeavesApi()
       ]);
 
       totalAttendance = attendances.filter(record => record.attendance === 'Present').length;
