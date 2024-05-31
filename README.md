@@ -1,14 +1,14 @@
-# Notus Svelte <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fdemos.creative-tim.com%2Fnotus-svelte%2F&text=Start%20your%20development%20with%20a%20Free%20Tailwind%20CSS%20and%20Svelte%20UI%20Kit%20and%20Admin.%20Let%20Notus%20Svelte%20amaze%20you%20with%20its%20cool%20features%20and%20build%20tools%20and%20get%20your%20project%20to%20a%20whole%20new%20level." target="_blank">![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)</a>
+# TAACS <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fdemos.creative-tim.com%2Fnotus-svelte%2F&text=Start%20your%20development%20with%20a%20Free%20Tailwind%20CSS%20and%20Svelte%20UI%20Kit%20and%20Admin.%20Let%20Notus%20Svelte%20amaze%20you%20with%20its%20cool%20features%20and%20build%20tools%20and%20get%20your%20project%20to%20a%20whole%20new%20level." target="_blank">![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)</a>
 
 ![version](https://img.shields.io/badge/version-1.1.0-blue.svg) ![license](https://img.shields.io/badge/license-MIT-blue.svg) <a href="https://github.com/creativetimofficial/notus-svelte/issues?q=is%3Aopen+is%3Aissue" target="_blank">![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/notus-svelte.svg)</a> <a href="https://github.com/creativetimofficial/notus-svelte/issues?q=is%3Aissue+is%3Aclosed" target="_blank">![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/notus-svelte.svg)</a> <a href="https://gitter.im/creative-tim-general/Lobby" target="_blank">![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)</a> <a href="https://discord.gg/E4aHAQy" target="_blank">![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)</a>
 
-![Notus Svelte](https://github.com/creativetimofficial/public-assets/blob/master/notus-svelte/notus-svelte.jpg?raw=true)
+![TAACS](https://github.com/creativetimofficial/public-assets/blob/master/notus-svelte/notus-svelte.jpg?raw=true)
 
 ### A beautiful UI Kit and Admin for Tailwind CSS and Svelte.
 
-Start your development with a Free Tailwind CSS and Svelte UI Kit and Admin. Let Notus Svelte amaze you with its cool features and build tools and get your project to a whole new level.
+Start your development with a Free Tailwind CSS and Svelte UI Kit and Admin. Let TAACS amaze you with its cool features and build tools and get your project to a whole new level.
 
-Notus Svelte is Free and Open Source. It features multiple HTML and Svelte elements and it comes with dynamic components for Svelte.
+TAACS is Free and Open Source. It features multiple HTML and Svelte elements and it comes with dynamic components for Svelte.
 
 It is based on [Tailwind Starter Kit](https://www.creative-tim.com/learning-lab/tailwind-starter-kit/presentation?ref=ns-github-readme) by Creative Tim, and it is build with both presentation pages, and pages for an admin dashboard.
 
@@ -53,7 +53,7 @@ Here are all the page from the project:
 
 ### Fully Coded Components
 
-Notus Svelte is built with over frontend 120 components, giving you the freedom of choosing and combining. All components can take variations in colors, that you can easily modify using Tailwind CSS classes (NOTE: each time you add a new class, a class that does not exist in `assets/styles/tailwind.css`, you will need to compile again tailwind).
+TAACS is built with over frontend 120 components, giving you the freedom of choosing and combining. All components can take variations in colors, that you can easily modify using Tailwind CSS classes (NOTE: each time you add a new class, a class that does not exist in `assets/styles/tailwind.css`, you will need to compile again tailwind).
 
 You will save a lot of time going from prototyping to full-functional code, because all elements are implemented.
 This Free Tailwind CSS Template is coming with prebuilt examples, so the development process is seamless, switching from our pages to the real website is very easy to be done.
@@ -63,7 +63,7 @@ Every element has multiple states for colors, styles, hover, focus, that you can
 
 ### CSS Components
 
-Notus Svelte comes with 120 Fully Coded CSS elements, such as [Alerts](https://www.creative-tim.com/learning-lab/tailwind/svelte/alerts/notus?ref=ns-github-readme), [Buttons](https://www.creative-tim.com/learning-lab/tailwind/svelte/buttons/notus?ref=ns-github-readme), [Inputs](https://www.creative-tim.com/learning-lab/tailwind/svelte/inputs/notus?ref=ns-github-readme) and many more.
+TAACS comes with 120 Fully Coded CSS elements, such as [Alerts](https://www.creative-tim.com/learning-lab/tailwind/svelte/alerts/notus?ref=ns-github-readme), [Buttons](https://www.creative-tim.com/learning-lab/tailwind/svelte/buttons/notus?ref=ns-github-readme), [Inputs](https://www.creative-tim.com/learning-lab/tailwind/svelte/inputs/notus?ref=ns-github-readme) and many more.
 
 Please [check all of them here](https://www.creative-tim.com/learning-lab/tailwind/svelte/alerts/notus?ref=ns-github-readme).
 
@@ -99,10 +99,10 @@ We also feature the following 18 dynamic components:
 
 | Angular | JavaScript / HTML | NextJS | React | Svelte | VueJS |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| [![Notus Angular](https://github.com/creativetimofficial/public-assets/blob/master/notus-angular/notus-angular.jpg?raw=true)](https://www.creative-tim.com/product/notus-angular?ref=ns-github-readme)  | [![Notus JS](https://github.com/creativetimofficial/public-assets/blob/master/notus-js/notus-js.jpg?raw=true)](https://www.creative-tim.com/product/notus-js?ref=ns-github-readme)  | [![Notus NextJS](https://github.com/creativetimofficial/public-assets/blob/master/notus-nextjs/notus-nextjs.jpg?raw=true)](https://www.creative-tim.com/product/notus-nextjs?ref=ns-github-readme)  | [![Notus React](https://github.com/creativetimofficial/public-assets/blob/master/notus-react/notus-react.jpg?raw=true)](https://www.creative-tim.com/product/notus-react?ref=ns-github-readme)  | [![Notus Svelte](https://github.com/creativetimofficial/public-assets/blob/master/notus-svelte/notus-svelte.jpg?raw=true)](https://www.creative-tim.com/product/notus-svelte?ref=ns-github-readme)  | [![Vue Notus](https://github.com/creativetimofficial/public-assets/blob/master/vue-notus/vue-notus.jpg?raw=true)](https://www.creative-tim.com/product/vue-notus?ref=ns-github-readme)
+| [![Notus Angular](https://github.com/creativetimofficial/public-assets/blob/master/notus-angular/notus-angular.jpg?raw=true)](https://www.creative-tim.com/product/notus-angular?ref=ns-github-readme)  | [![Notus JS](https://github.com/creativetimofficial/public-assets/blob/master/notus-js/notus-js.jpg?raw=true)](https://www.creative-tim.com/product/notus-js?ref=ns-github-readme)  | [![Notus NextJS](https://github.com/creativetimofficial/public-assets/blob/master/notus-nextjs/notus-nextjs.jpg?raw=true)](https://www.creative-tim.com/product/notus-nextjs?ref=ns-github-readme)  | [![Notus React](https://github.com/creativetimofficial/public-assets/blob/master/notus-react/notus-react.jpg?raw=true)](https://www.creative-tim.com/product/notus-react?ref=ns-github-readme)  | [![TAACS](https://github.com/creativetimofficial/public-assets/blob/master/notus-svelte/notus-svelte.jpg?raw=true)](https://www.creative-tim.com/product/notus-svelte?ref=ns-github-readme)  | [![Vue Notus](https://github.com/creativetimofficial/public-assets/blob/master/vue-notus/vue-notus.jpg?raw=true)](https://www.creative-tim.com/product/vue-notus?ref=ns-github-readme)
 
 ## Documentation
-The documentation for the Notus Svelte is hosted at our <a href="https://www.creative-tim.com/learning-lab/tailwind/svelte/overview/notus?ref=ns-readme" target="_blank">website</a>.
+The documentation for the TAACS is hosted at our <a href="https://www.creative-tim.com/learning-lab/tailwind/svelte/overview/notus?ref=ns-readme" target="_blank">website</a>.
 
 ## Quick start
 
@@ -128,9 +128,9 @@ At present, we officially aim to support the last two versions of the following 
 
 ## Reporting Issues
 
-We use GitHub Issues as the official bug tracker for the Notus Svelte. Here are some advices for our users that want to report an issue:
+We use GitHub Issues as the official bug tracker for the TAACS. Here are some advices for our users that want to report an issue:
 
-1. Make sure that you are using the latest version of the Notus Svelte. Check the CHANGELOG from your dashboard on our <a href="https://www.creative-tim.com/?ref=ns-readme" target="_blank">website</a>.
+1. Make sure that you are using the latest version of the TAACS. Check the CHANGELOG from your dashboard on our <a href="https://www.creative-tim.com/?ref=ns-readme" target="_blank">website</a>.
 2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
 3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
 
