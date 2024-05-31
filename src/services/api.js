@@ -1082,6 +1082,22 @@ export async function logInAdminApi(obj) {
     return responseObj;
 }
 
+export async function signOut() {
+    const userToken = `${getCookie('userToken')}`
+    const adminToken = `${getCookie('adminToken')}`
+
+    console.log('User Token:', userToken);
+    console.log('Admin Token:', adminToken);
+
+    if (userToken) {
+        localStorage.removeItem('userToken');
+        navigate('/auth/login');
+    } else if (adminToken) {
+        localStorage.removeItem('adminToken');
+        navigate('/auth/adminlogin');
+    }
+}
+
 //   export async function logInAdminApi(obj){
 //     const response = await fetch(BACKEND + 'admin/logIn',{
 //         method: 'POST',

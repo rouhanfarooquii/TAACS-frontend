@@ -1,13 +1,12 @@
 <script>
-  // library for creating dropdown menu appear on click
   import { createPopper } from "@popperjs/core";
   import { onMount, onDestroy } from 'svelte';
   import { navigate } from 'svelte-routing';
+  import { signOut } from "../../services/api";
 
   const image = "../assets/img/10.jpg";
 
   let dropdownPopoverShow = false;
-
   let btnDropdownRef;
   let popoverDropdownRef;
 
@@ -29,10 +28,6 @@
     navigate('/user/profile');
   }
 
-  function signOut() {
-    // Implement sign out logic here
-    console.log('Sign out');
-  }
 
   function handleClickOutside(event) {
     if (popoverDropdownRef && !popoverDropdownRef.contains(event.target) && btnDropdownRef && !btnDropdownRef.contains(event.target)) {
@@ -73,23 +68,17 @@
     class="bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48 {dropdownPopoverShow ? 'block':'hidden'}"
   >
     <a
-    href="#pablo" on:click={(e) => e.preventDefault()}
-    on:click="{navigateToProfile}"
-    class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700" 
+      href="#pablo" on:click={(e) => e.preventDefault()}
+      on:click="{navigateToProfile}"
+      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700" 
     >
       Profile
     </a>
-    <a
-      href="#pablo" on:click={(e) => e.preventDefault()}
-      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-    >
-      Another action
-    </a>
     <div class="h-0 my-2 border border-solid border-blueGray-100" />
     <a
-    href="#pablo" on:click={(e) => e.preventDefault()}
-    on:click="{signOut}"
-    class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+      href="#pablo" on:click={(e) => e.preventDefault()}
+      on:click="{signOut}"
+      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
     >
       Sign Out
     </a>
