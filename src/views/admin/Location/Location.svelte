@@ -16,7 +16,7 @@
 
   let devicesList = [];
   let selectedDevices = [];
-  let featuresList = ["Projector", "AC", "Internet"];
+  let featuresList = ["Workstation", "Adjustable desks", "Ergonomic office chairs", "Guest chairs", "Desktops", "Filing cabinets", "Shelves", "Locker", "Conference table", "Whiteboard", "Projector", "TV screen", "AC", "Telephone", "Printer", "Internet connection"];
   let selectedFeatures = [];
 
   let showToaster = false;
@@ -488,7 +488,7 @@
                     Features
                   </label>
                   <MultiSelect bind:selectedOptions={selectedFeatures} options={featuresList} placeholder="Select Features" />
-                  <span id="features-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                  <span id="features-error" class="text-red-600 text-xs overflow-x-auto" style="display: none;">* Field Required</span>
                 </div>
               </div>
             </div>
