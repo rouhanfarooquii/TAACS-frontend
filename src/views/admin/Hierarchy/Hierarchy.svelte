@@ -65,15 +65,6 @@
     }
   }
 
-  // let delLogicRoom = []
-  // async function fetchDelLogicRoom() {
-  //   try {
-  //     delLogicRoom = await getAllRoomBookingsApi();
-  //   } catch (error) {
-  //     console.error('Error fetching devices:', error);
-  //   }
-  // }
-
   function toggleEditingMode(departmentId) {
     editingModes[departmentId] = !editingModes[departmentId];
   }
@@ -166,9 +157,13 @@
     document.getElementById('designations-error').style.display = 'none';
   }
 
-  function isDepartmentNameUnique(name) {
-  return !departments.some(department => department.title.toLowerCase() === name.toLowerCase());
+  function isDepartmentNameUnique(name, currentId = null) {
+  return !departments.some(department => 
+    department.title.toLowerCase() === name.toLowerCase() &&
+    department._id !== currentId
+  );
 }
+
 
 function validateAddInputs() {
     let isValid = true;
@@ -197,48 +192,48 @@ function validateAddInputs() {
   }
 
   async function addDepartment() {
-    if (!isDepartmentNameUnique(departmentName)) {
+  if (!isDepartmentNameUnique(departmentName)) {
     showToasterMessage('Department name must be unique!', 'error');
     return;
   }
-    if (validateAddInputs()) {
-      const newDepartment = { title: departmentName, designations: designations.map(d => ({ title: d })) };
-      try {
-        const msg = await addDepartmentApi(newDepartment);
-        console.log(msg);
-        departments = await getAllDepartmentsApi();
-        showToasterMessage('Department added successfully!', 'success');
-        closeModal();
-      } catch (error) {
-        console.error('Failed to add department:', error);
-        showToasterMessage('An error occurred while adding department. Please try again.', 'error');
-      }
+  if (validateAddInputs()) {
+    const newDepartment = { title: departmentName, designations: designations.map(d => ({ title: d })) };
+    try {
+      const msg = await addDepartmentApi(newDepartment);
+      console.log(msg);
+      departments = await getAllDepartmentsApi();
+      showToasterMessage('Department added successfully!', 'success');
+      closeModal();
+    } catch (error) {
+      console.error('Failed to add department:', error);
+      showToasterMessage('An error occurred while adding department. Please try again.', 'error');
     }
   }
+}
 
   async function saveDepartmentEdits() { 
-    if (!isDepartmentNameUnique(departmentName)) {
+  if (!isDepartmentNameUnique(departmentName, currentEditDepartment._id)) {
     showToasterMessage('Department name must be unique!', 'error');
     return;
   }
-    if (validateAddInputs()) {
-      const updatedDepartment = {
-        ...currentEditDepartment,
-        title: departmentName,
-        designations: designations.map(d => ({ title: d }))
-      };
-      try {
-        const msg = await updateDepartmentApi(updatedDepartment);
-        console.log(msg);
-        departments = await getAllDepartmentsApi();
-        showToasterMessage('Department updated successfully!', 'success');
-        closeModal();
-      } catch (error) {
-        console.error('Failed to update department:', error);
-        showToasterMessage('An error occurred while updating department. Please try again.', 'error');
-      }
+  if (validateAddInputs()) {
+    const updatedDepartment = {
+      ...currentEditDepartment,
+      title: departmentName,
+      designations: designations.map(d => ({ title: d }))
+    };
+    try {
+      const msg = await updateDepartmentApi(updatedDepartment);
+      console.log(msg);
+      departments = await getAllDepartmentsApi();
+      showToasterMessage('Department updated successfully!', 'success');
+      closeModal();
+    } catch (error) {
+      console.error('Failed to update department:', error);
+      showToasterMessage('An error occurred while updating department. Please try again.', 'error');
     }
   }
+}
 
   function addDesignation() {
     if (newDesignation.trim()) {

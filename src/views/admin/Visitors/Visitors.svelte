@@ -5,12 +5,11 @@
   import { navigate } from 'svelte-routing';
   import MultiSelect from '../../../components/Dropdowns/MultiSelect.svelte';
   import Toast from '../../../components/Confirmation/Toast.svelte';
-    import { end } from '@popperjs/core';
 
   export let color = "light";
-  
+
   let file = null;
-  let vistorTosend = null;
+  let visitorToSend = null;
 
   let visitor = {
     visitorID: '',
@@ -21,7 +20,7 @@
     endTime: '',
     gender: '',
     email: '',
-    address: '', 
+    address: '',
     DateOfVisit: '',
     reasonOfVisiting: '',
     fingerIndex1: '',
@@ -37,6 +36,7 @@
   let showToaster = false;
   let toasterMessage = '';
   let toasterType = '';
+  let isProfilePictureUploaded = false; // New flag for profile picture upload
 
   function showToasterMessage(message, type) {
     toasterMessage = message;
@@ -61,6 +61,7 @@
       };
       reader.readAsDataURL(file);
       visitor.file = file; // Add the file to the visitor object
+      isProfilePictureUploaded = true; // Set flag to true
     }
   }
 
@@ -84,7 +85,6 @@
     }
   }
 
-  
   function restrictInput(event) {
     const input = event.target;
     const value = input.value;
@@ -157,10 +157,10 @@
     } else {
       document.getElementById('gender-error').style.display = 'none';
     }
-    
+
     const today = new Date();
     const dov = new Date(visitor.DateOfVisit);
-    
+
     if (!visitor.DateOfVisit) {
       document.getElementById('date-of-visit-error').innerText = '* Field Required';
       document.getElementById('date-of-visit-error').style.display = 'block';
@@ -253,6 +253,11 @@
       document.getElementById('location-error').style.display = 'none';
     }
 
+    if (!isProfilePictureUploaded) {
+      showToasterMessage('Profile picture is required!', 'error');
+      isValid = false;
+    }
+
     return isValid;
   }
 
@@ -260,7 +265,7 @@
     if (!validateInputs()) {
       return;
     }
-    
+
     visitor.requestor = "Admin";
     visitor.status = "pending";
     let tempdtosend = [];
@@ -271,7 +276,7 @@
 
     visitor.locations = tempdtosend;
 
-    vistorTosend = {
+    visitorToSend = {
       visitorID: visitor.visitorID,
       name: visitor.name,
       mobileNumber: visitor.mobileNumber,
@@ -294,24 +299,23 @@
     };
 
     const formData = new FormData();
-    appendFormData(formData, vistorTosend);
+    appendFormData(formData, visitorToSend);
 
-    console.log(vistorTosend);
+    console.log(visitorToSend);
     try {
       const response = await addVisitorApi(formData, true);
       navigateToVisitor();
       console.log('Visitor added successfully', response);
       showToasterMessage('Visitor added successfully!', 'success');
-        // alert('Visitor added successfully!');
+      // alert('Visitor added successfully!');
     } catch (error) {
       console.error('Error adding visitor:', error);
       navigateToVisitor();
       showToasterMessage('An error occurred while adding the visitor. Please try again.', 'error');
-        // alert('An error occurred while adding the visitor. Please try again.');
+      // alert('An error occurred while adding the visitor. Please try again.');
     }
   }
 
-  
   let trueAccessibleRooms = [];
   let accessibleRooms = [];
 
@@ -336,15 +340,12 @@
       console.error('Error fetching locations:', error);
     }
   }
-
-
-
 </script>
 
 <div class="relative min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg px-4 py-10">
-{#if showToaster}
-  <Toast message={toasterMessage} type={toasterType} />
-{/if}
+  {#if showToaster}
+    <Toast message={toasterMessage} type={toasterType} />
+  {/if}
   <div class="relative w-full px-4 max-w-full flex-grow flex-1">
     <h3 class="font-semibold text-lg {color === 'light' ? 'text-blueGray-700' : 'text-white'}">
       Visitor Request
@@ -352,20 +353,19 @@
   </div>
 
   <div class="left-section flex flex-col items-center">
-    <img id="profile-image" src="{image}"  alt="Your Profile Picture" style="max-width: 200px; max-height: 200px;" />
+    <img id="profile-image" src="{image}" alt="Your Profile Picture" style="max-width: 200px; max-height: 200px;" />
     <input type="file" accept="image/*" id="profile-pic" style="display: none" />
     <label for="profile-pic" class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150 mt-4 mb-8 cursor-pointer">Upload</label>
   </div>
 
   <div class="divider"></div>
 
-   <div class="flex justify-between mb-4">
-
+  <div class="flex justify-between mb-4">
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="name">
         Name:
       </label>
-      <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.name} on:input="{restrictAlphabetInput}" on:blur="{handleBlur}">
+      <input type="text" id="name" placeholder="Name" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.name} on:input="{restrictAlphabetInput}">
       <span id="name-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -373,7 +373,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="phone-number">
         Phone Number:
       </label>
-      <input type="text" id="phone-number" maxlength="11" placeholder="03XX XXXXXXX" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.mobileNumber} on:input="{restrictInput}" on:blur="{handleBlur}">
+      <input type="text" id="phone-number" maxlength="11" placeholder="03XX XXXXXXX" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.mobileNumber} on:input="{restrictInput}">
       <span id="phone-number-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -381,7 +381,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="email">
         Email:
       </label>
-      <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.email} on:blur="{handleBlur}">
+      <input type="text" id="email" placeholder="Email" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.email}>
       <span id="email-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -389,61 +389,55 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
         Date of Visit:
       </label>
-      <input type="date" id="date-of-visit" placeholder="Date of visit" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.DateOfVisit} on:blur="{handleBlur}">
+      <input type="date" id="date-of-visit" placeholder="Date of visit" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.DateOfVisit}>
       <span id="date-of-visit-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
-
   <div class="flex justify-between mb-4">
-
     <div class="relative mb-3 w-10/12 mr-auto">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="address">
         Address:
       </label>
-      <textarea id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.address} on:blur="{handleBlur}"></textarea>
+      <textarea id="address" placeholder="Address" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.address}></textarea>
       <span id="address-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
     <div class="relative mb-3">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="filterActive">Gender:</label>
-      <select id="gender" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{visitor.gender}" on:blur="{handleBlur}">
+      <select id="gender" class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value="{visitor.gender}">
         <option value="" disabled selected>Select Gender</option>
         <option value="Male">Male</option>
         <option value="Female">Female</option>
       </select>
       <span id="gender-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
-
   </div>
 
   <div class="flex justify-between mb-4">
-
     <div class="relative mb-3 mr-6">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="card-id">
         CNIC #:
       </label>
-      <input type="text" id="card-id" maxlength="13" placeholder="XXXXX XXXXXXX X" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.visitorID} on:input="{restrictInput}" on:blur="{handleBlur}">
+      <input type="text" id="card-id" maxlength="13" placeholder="XXXXX XXXXXXX X" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.visitorID} on:input="{restrictInput}">
       <span id="card-id-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
     <div class="relative mb-3 w-10/12">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="address">
-        Reason for visiting:        
+        Reason for visiting:
       </label>
-      <input type="text" id="reason" placeholder="Reason for visiting" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.reasonOfVisiting} on:blur="{handleBlur}">
+      <input type="text" id="reason" placeholder="Reason for visiting" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.reasonOfVisiting}>
       <span id="reason-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
-
   </div>
 
   <div class="flex justify-between mb-4">
-
     <div class="relative mb-3 w-4/10">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-1">
         Finger Index 1:
       </label>
-      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.fingerIndex1} on:blur="{handleBlur}">
+      <input type="number" min="0" id="finger-index-1" placeholder="Finger Index 1" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.fingerIndex1}>
       <span id="finger-index-1-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -451,7 +445,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="finger-index-2">
         Finger Index 2:
       </label>
-      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.fingerIndex2} on:blur="{handleBlur}">
+      <input type="number" min="0" id="finger-index-2" placeholder="Finger Index 2" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.fingerIndex2}>
       <span id="finger-index-2-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -460,18 +454,17 @@
         Finger Added:
       </label>
       <label class="switch">
-        <input type="checkbox" id="finger-added" class="hidden" bind:checked={visitor.isFingerAdded} on:blur="{handleBlur}">
-        <span class="slider round"></span> 
+        <input type="checkbox" id="finger-added" class="hidden" bind:checked={visitor.isFingerAdded}>
+        <span class="slider round"></span>
       </label>
       <span id="finger-added-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
   </div>
 
   <div class="flex justify-start mb-4">
-
     <div class="relative mb-3 w-4/10 mr-6">
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="accessibleLocations">Accessible locations</label>
-      <MultiSelect bind:selectedOptions="{visitor.locations}" options="{accessibleRooms}" placeholder="Select Location" on:blur="{handleBlur}" />
+      <MultiSelect bind:selectedOptions="{visitor.locations}" options="{accessibleRooms}" placeholder="Select Location" />
       <span id="location-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -479,7 +472,7 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
         Visit start time:
       </label>
-      <input type="time" id="start-time" placeholder="Start time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.startTime} on:blur="{handleBlur}">
+      <input type="time" id="start-time" placeholder="Start time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.startTime}>
       <span id="start-time-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
 
@@ -487,19 +480,17 @@
       <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="date-of-birth">
         Visit end time:
       </label>
-      <input type="time" id="end-time" placeholder="End time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.endTime} on:blur="{handleBlur}">
+      <input type="time" id="end-time" placeholder="End time" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={visitor.endTime}>
       <span id="end-time-error" class="text-red-600 text-xs" style="display: none;"></span>
     </div>
-
   </div>
-
 </div>
 
 <div class="flex justify-end mb-4">
   <button class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none mr-1 focus:outline-none ease-linear transition-all duration-150" on:click={handleSubmit}>
-      Submit
+    Submit
   </button>
   <button class="bg-red-600 text-white active:bg-red-800 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" on:click={navigateToVisitor}>
-      Cancel
+    Cancel
   </button>
 </div>

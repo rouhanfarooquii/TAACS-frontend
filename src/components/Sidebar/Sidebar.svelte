@@ -105,6 +105,7 @@
           <div class="w-6/12 flex justify-end">
             <button
               type="button"
+              style="background-color: transparent !important;"
               class="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
               on:click={() => toggleCollapseShow('hidden')}
             >

@@ -156,28 +156,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <div class="py-6 px-3 mt-32 sm:mt-0">
-                <div class="flex justify-around mb-2">
-                  <div class="box p-3 text-center mr-5">
-                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                      {totalAttendance}
-                    </span>
-                    <span class="text-sm text-blueGray-400">Attendance</span>
-                  </div>
-                  <div class="box p-3 text-center mr-5">
-                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                      {totalAbsences}
-                    </span>
-                    <span class="text-sm text-blueGray-400">Absences</span>
-                  </div>
-                  <div class="box p-3 text-center">
-                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                      {totalLate}
-                    </span>
-                    <span class="text-sm text-blueGray-400">Late</span>
-                  </div>
-                </div>
-              </div> -->
             </div>
             
             <!-- Details Section -->
@@ -200,7 +178,7 @@
                 </div>
                 <div class="mb-2 text-blueGray-600">
                   <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
-                  {showSalary ? `$${$employee.salary}` : '••••••'}
+                  {showSalary ? `PKR ${$employee.salary}` : '••••••'}
                 </div>
                 <div class="mb-2 text-blueGray-600">
                   <i class="fas fa-fingerprint mr-2 text-lg text-blueGray-400"></i>

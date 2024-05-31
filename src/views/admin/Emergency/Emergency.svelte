@@ -20,7 +20,7 @@
   let trueLocations = [];
   let locations = [];
   let showModal = false;
-  let dropdownOpen = false;  // Define the variable
+  let dropdownOpen = false;
 
   let emergencies = [];
 
@@ -43,19 +43,12 @@
   async function loadEmergencies() {
     try {
       const emergenciesData = await getAllEmergenciesApi();
-
-      // console.log(emergenciesData)
-      // return;
       emergencies = JSON.parse(JSON.stringify(emergenciesData));
-
       for (let i = 0; i < emergencies.length; i++) {
-        console.log(emergencies[i].locations)
         for (let j = 0; j < emergencies[i].locations.length; j++) {
-          emergencies[i].locations[j] = emergencies[i].locations[j].title
+          emergencies[i].locations[j] = emergencies[i].locations[j].title;
         }
       }
-      // console.log(emergencies);
-
     } catch (error) {
       console.error('Failed to load emergencies:', error);
     }
@@ -63,14 +56,13 @@
 
   onMount(async () => {
     await loadEmergencies();
-    await fetchLocations()
+    await fetchLocations();
   });
 
   async function fetchLocations() {
     try {
       trueLocations = await getAllLocationsApi(true);
-      locations = trueLocations.map(loc => loc.title)
-      // console.log(locations)
+      locations = trueLocations.map(loc => loc.title);
     } catch (error) {
       console.error("Error fetching room bookings:", error);
       locations = [];
@@ -104,8 +96,8 @@
 
   async function handleActivate(id) {
     try {
-      await activateEmergencyApi(id)
-      await loadEmergencies()
+      await activateEmergencyApi(id);
+      await loadEmergencies();
       showToasterMessage('Protocol activated', 'success');
     } catch (error) {
       console.error('Failed to activate emergency:', error);
@@ -115,8 +107,8 @@
 
   async function handleDeactivate(id) {
     try {
-      await deactivateEmergencyApi(id)
-      await loadEmergencies()
+      await deactivateEmergencyApi(id);
+      await loadEmergencies();
       showToasterMessage('Protocol deactivated', 'success');
     } catch (error) {
       console.error('Failed to deactivate emergency:', error);
@@ -126,9 +118,9 @@
 
   async function addProtocol() {
     if (!isNameUnique(name)) {
-    showToasterMessage('Protocol name must be unique!', 'error');
-    return;
-  }
+      showToasterMessage('Protocol name must be unique!', 'error');
+      return;
+    }
     if (validateInputs()) {
       const newProtocol = {
         name,
@@ -139,7 +131,7 @@
       };
 
       for (let index = 0; index < selectedLocations.length; index++) {
-        newProtocol.locations.push(trueLocations.find(l => l.title === selectedLocations[index])._id)
+        newProtocol.locations.push(trueLocations.find(l => l.title === selectedLocations[index])._id);
       }
 
       try {
@@ -157,10 +149,9 @@
   async function deleteProtocol() {
     try {
       const responseMsg = await deleteEmergencyApi(protocolToDelete._id);
-      console.log('Delete response:', responseMsg);
       showToasterMessage('Protocol deleted successfully!', 'success');
       closeConfirmationModal();
-      loadEmergencies(); // Refresh emergencies after deletion
+      loadEmergencies();
     } catch (error) {
       console.error('Error deleting emergency:', error);
       showToasterMessage('An error occurred while deleting protocol. Please try again.', 'error');
@@ -173,12 +164,12 @@
     showToaster = true;
     setTimeout(() => {
       showToaster = false;
-    }, 3000); // Show toast for 3 seconds
+    }, 3000);
   }
 
   function isNameUnique(name) {
-  return !emergencies.some(emergency => emergency.name.toLowerCase() === name.toLowerCase());
-}
+    return !emergencies.some(emergency => emergency.name.toLowerCase() === name.toLowerCase());
+  }
 
   function validateInputs() {
     let isValid = true;
@@ -212,6 +203,10 @@
     }
 
     return isValid;
+  }
+
+  function canActivate(emergency) {
+    return !emergencies.some(e => e.active && e.locations.some(loc => emergency.locations.includes(loc)));
   }
 
   window.onclick = function(event) {
@@ -314,7 +309,7 @@
   {/if}
   <div class="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
     {#each emergencies as emergency}
-      <div style="border-color: {emergency.active ? 'green' : 'rgba(228, 228, 231, var(--tw-border-opacity))'};" class="w-full max-w-sm p-4 borderrounded-lg shadow sm:p-8">
+      <div style="border-color: {emergency.active ? 'green' : 'rgba(228, 228, 231, var(--tw-border-opacity))'};" class="w-full max-w-sm p-4 border rounded-lg shadow sm:p-8">
         <button class="right top-2 transparent-button" on:click={() => showDeleteConfirmation(emergency)}>
           <i class="fas fa-trash-alt text-blueGray-800"></i>
         </button>
@@ -330,8 +325,8 @@
           <button
           on:click={() => handleActivate(emergency._id)}
           class="bg-green-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150 mr-2 active:bg-green-700"
-          disabled={emergency.active}
-          style="opacity: {emergency.active ? 0.6 : 1}; cursor: {emergency.active ? 'not-allowed' : 'pointer'}"
+          disabled={emergency.active || !canActivate(emergency)}
+          style="opacity: {emergency.active || !canActivate(emergency) ? 0.6 : 1}; cursor: {emergency.active || !canActivate(emergency) ? 'not-allowed' : 'pointer'}"
         >
           Activate
         </button>

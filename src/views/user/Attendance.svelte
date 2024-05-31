@@ -354,7 +354,6 @@
                     <span class="attendance-legend-item present ml-2"></span> Present
                     <span class="attendance-legend-item absent ml-2"></span> Absent
                     <span class="attendance-legend-item late ml-2"></span> Late
-                    <span class="attendance-legend-item weekend ml-2"></span> Weekend
                   </div>
                   {/if}
                 </div>
