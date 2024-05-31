@@ -137,7 +137,7 @@
             use:link
             href="/admin/liveattendance"
             class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/liveattendance') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-            on:click|preventDefault={() => toggleNestedMenu('dashboard')}
+            on:click|preventDefault={() => toggleNestedMenu('/')}
             >
             <i
               class="fas fa-laptop mr-2 text-sm {location.href.indexOf('/admin/liveattendance') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
@@ -149,12 +149,12 @@
         <li class="items-center">
           <a
             use:link
-            href="/admin/dashboard"
-            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/dashboard') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
-            on:click|preventDefault={() => toggleNestedMenu('dashboard')}
+            href="/admin/"
+            class="text-xs uppercase py-3 font-bold block {location.href.indexOf('/admin/') !== -1 ? 'custom-text hover:custom-text':'text-blueGray-700 hover:text-blueGray-500'}"
+            on:click|preventDefault={() => toggleNestedMenu('/')}
             >
             <i
-              class="fas fa-users mr-2 text-sm {location.href.indexOf('/admin/dashboard') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-users mr-2 text-sm {location.href.indexOf('/admin/') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Dashboard
           </a>

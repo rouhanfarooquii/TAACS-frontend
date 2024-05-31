@@ -41,7 +41,7 @@
     <div class="px-4 md:px-10 mx-auto w-full -m-24">
       <Router url="admin">
         <Route path="liveattendance" component="{LiveAttendance}" />
-        <Route path="dashboard" component="{Dashboard}" />
+        <Route path="/" component="{Dashboard}" />
         <Route path="accesscontrol" component="{AccessControl}" />
         <Route path="payroll" component="{Payroll}" />
         <Route path="roombooking" component="{RoomBooking}" />

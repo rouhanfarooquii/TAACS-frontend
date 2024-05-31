@@ -43,7 +43,7 @@
     </span>
     <a
       use:link
-      href="/admin/dashboard"
+      href="/admin/"
       class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
     >
       Dashboard

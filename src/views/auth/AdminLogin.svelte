@@ -46,7 +46,7 @@
         // document.cookie = `token=${response.token}; path=/;`; // Store the token in a cookie
         errorMessage = "";
         // Optionally, redirect the admin or show a success message
-        navigate('/admin/dashboard');
+        navigate('/admin/');
         // window.location.href = '/dashboard'; // Redirect to dashboard
       } catch (error) {
         console.log('Login failed:', error.message);
