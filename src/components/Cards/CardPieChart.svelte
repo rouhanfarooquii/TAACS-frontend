@@ -5,11 +5,14 @@
 
   let attendanceData = [];
   let mainChart, drillDownChart;
+  export let startDate;
+  export let endDate;
+
+  $: if (startDate && endDate) {
+    fetchData();
+  }
 
   async function fetchData() {
-    const startDate = '2024-05-01';
-    const endDate = '2024-05-31';
-
     try {
       attendanceData = await getAllAttendances(startDate, endDate);
       processMainChartData(attendanceData);
@@ -115,7 +118,9 @@
   }
 
   onMount(() => {
-    fetchData();
+    if (startDate && endDate) {
+      fetchData();
+    }
   });
 </script>
 

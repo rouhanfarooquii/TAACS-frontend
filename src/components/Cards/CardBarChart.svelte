@@ -4,11 +4,14 @@
   import { getAllAttendances } from '../../services/api'; // Adjust the import according to your project structure
 
   let chart;
+  export let startDate;
+  export let endDate;
+
+  $: if (startDate && endDate) {
+    fetchAttendanceData();
+  }
 
   async function fetchAttendanceData() {
-    const startDate = '2024-05-01'; // Example start date
-    const endDate = '2024-05-31';   // Example end date
-
     try {
       const attendances = await getAllAttendances(startDate, endDate);
       processAbsenteeismData(attendances);
@@ -131,7 +134,9 @@
   }
 
   onMount(() => {
-    fetchAttendanceData();
+    if (startDate && endDate) {
+      fetchAttendanceData();
+    }
   });
 </script>
 

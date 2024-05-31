@@ -75,7 +75,7 @@
   </div>
   <div class="flex flex-wrap mt-4">
     <div class="w-full lg:w-6/12 xl:w-4/12 px-4 mb-12 xl:mb-0">
-      <CardPieChart />
+      <CardPieChart {startDate} {endDate} />
     </div>
     <div class="w-full lg:w-6/12 xl:w-8/12 px-4">
       <div class="mb-12">

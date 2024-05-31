@@ -139,7 +139,7 @@
             on:click|preventDefault={() => toggleNestedMenu('dashboard')}
             >
             <i
-              class="fas fa-users mr-2 text-sm {location.href.indexOf('/admin/liveattendance') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
+              class="fas fa-laptop mr-2 text-sm {location.href.indexOf('/admin/liveattendance') !== -1 ? 'opacity-75' : 'text-blueGray-300'}"
             ></i>
             Live Attendance
           </a>

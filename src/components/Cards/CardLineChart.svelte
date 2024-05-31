@@ -40,18 +40,18 @@
 
     console.log('Daily Attendance Data:', dailyAttendance);
 
-    const allLabels = Object.keys(dailyAttendance).sort();
-    const attendanceRates = allLabels.map(date => {
+    const labels = Object.keys(dailyAttendance).sort();
+    const attendanceRates = labels.map(date => {
       const { present, total } = dailyAttendance[date];
       return (present / total) * 100;
     });
 
-    console.log('All Chart Labels:', allLabels);
-    console.log('Attendance Rates:', attendanceRates);
+    // console.log('All Chart Labels:', allLabels);
+    // console.log('Attendance Rates:', attendanceRates);
 
-    // Filter labels to show a limited number of dates on the x-axis
-    const step = Math.ceil(allLabels.length / 10); // Adjust the step to control the number of labels displayed
-    const labels = allLabels.filter((label, index) => index % step === 0);
+    // // Filter labels to show a limited number of dates on the x-axis
+    // const step = Math.ceil(allLabels.length / 10); // Adjust the step to control the number of labels displayed
+    // const labels = allLabels.filter((label, index) => index % step === 0);
 
     renderChart(labels, attendanceRates);
   }

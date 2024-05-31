@@ -266,7 +266,7 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Department:
                 </label>
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment} on:change={setDesignation}>
+                <select class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDepartment} on:change={setDesignation}>
                   <option value="" disabled selected>Select Department</option>
                   {#each departments as department}
                     <option value={department.title}>{department.title}</option>
@@ -278,7 +278,7 @@
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="grid-password">
                   Designation:
                 </label>                  
-                <select class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
+                <select class="border-0 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedDesignation}>
                   <option value="" disabled selected>Select Designation</option>
                   {#each designations as designation}
                     <option value={designation.title}>{designation.title}</option>
