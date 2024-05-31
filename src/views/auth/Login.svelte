@@ -34,6 +34,10 @@
     }
   };
 
+  function navigatetoAdminLogin(){
+    navigate('/auth/adminlogin');
+  }
+
   const handleSubmit = async () => {
     handleEmailBlur();
     handlePasswordBlur();
@@ -73,7 +77,7 @@
           <div class="flex justify-between">
             <div></div> <!-- Placeholder for alignment -->
             <div class="text-right">
-              <a href="/auth/adminlogin" class="text-blue-500 text-sm font-bold">
+              <a on:click={navigatetoAdminLogin} class="text-blue-500 text-sm font-bold" style="cursor: pointer;">
                 Login as Admin
               </a>
             </div>
