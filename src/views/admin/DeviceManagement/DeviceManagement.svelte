@@ -174,7 +174,7 @@
       for (let i = 0; i < delLogicLocations.length; i++) {
         for (let j = 0; j < delLogicLocations[i].devices.length; j++) {
           if(delLogicLocations[i].devices[j]._id.toString() == deviceToDelete._id.toString()){
-            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicLocations[i].title + ' Location', 'error');
+            showToasterMessage('Cannot delete. Device is bind to a ' + delLogicLocations[i].title + '', 'error');
             return;
           }
         }
