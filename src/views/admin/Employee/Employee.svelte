@@ -707,7 +707,6 @@ let searchQuery = '';
                   <select id="gender" class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" bind:value={selectedEmployee.gender}>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
-                    <option value="Other">Prefer Not To Say</option>
                   </select>
                   <span id="gender-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
@@ -907,8 +906,13 @@ let searchQuery = '';
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
                   Name:
                 </label>
-                <input type="text" id="name" placeholder="Name" class="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" disabled bind:value={selectedEmployee.name}>
-                <span id="name-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
+                <input type="text" id="name" placeholder="Name" class="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" disabled bind:value={selectedEmployee.name}>
+              </div>
+              <div class="relative mb-3">
+                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-name">
+                  Email:
+                </label>
+                <input type="text" id="email" placeholder="Email" class="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150" disabled bind:value={selectedEmployee.email}>
               </div>
               <div class="relative mb-3">
                 <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" for="device-ip">

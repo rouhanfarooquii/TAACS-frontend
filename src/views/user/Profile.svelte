@@ -185,7 +185,7 @@
                 <h3 class="text-4xl font-semibold leading-normal text-blueGray-700 mb-2">
                   {$employee.name}
                 </h3>
-                <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                <div class="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold lowercase">
                   <i class="fas fa-envelope mr-2 text-lg text-blueGray-400"></i>
                   {$employee.email}
                 </div>
@@ -200,6 +200,10 @@
                 <div class="mb-2 text-blueGray-600">
                   <i class="fas fa-money-bill-wave mr-2 text-lg text-blueGray-400"></i>
                   {showSalary ? `$${$employee.salary}` : '••••••'}
+                </div>
+                <div class="mb-2 text-blueGray-600">
+                  <i class="fas fa-fingerprint mr-2 text-lg text-blueGray-400"></i>
+                  {showSalary ? $employee.cardIdNumber : '••••••'}
                   <i
                     class="ml-2 text-blueGray-600 cursor-pointer"
                     on:click={toggleSalaryVisibility}
@@ -210,10 +214,6 @@
                       <i class="fas fa-eye"></i>
                     {/if}
                   </i>
-                </div>
-                <div class="mb-2 text-blueGray-600">
-                  <i class="fas fa-fingerprint mr-2 text-lg text-blueGray-400"></i>
-                  {showSalary ? $employee.cardIdNumber : '••••••'}
                 </div>
                 <div class="mb-2 text-blueGray-600">
                   <i class="fas fa-lock mr-2 text-lg text-blueGray-400"></i>

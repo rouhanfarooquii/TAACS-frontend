@@ -31,7 +31,7 @@
   let editEmployeeId = '';
   let editSpaceId = '';
 
-  let locations = ['Location 1', 'Location 2', 'Location 3', 'Location 4']; // Dummy data for locations
+  let locations = ['Parking 1', 'Parking 2', 'Parking 3', 'Parking 4']; // Dummy data for locations
 
   let showToaster = false;
   let toasterMessage = '';
@@ -105,7 +105,6 @@
     } catch (error) {
       console.error('Error deleting space:', error);
       showToasterMessage('An error occurred while deleting the space. Please try again.', 'error');
-      // alert('An error occurred while deleting the space. Please try again.');
     }
   }
 
@@ -136,7 +135,6 @@
 
     if (!selectedEmployee) {
       showToasterMessage('Selected employee not found', 'error');
-      // alert('Selected employee not found.');
       return;
     }
 
@@ -187,7 +185,6 @@
 
     if (!selectedEmployee) {
       showToasterMessage('Selected employee not found', 'error');
-      // alert('Selected employee not found.');
       return;
     }
 
@@ -222,59 +219,100 @@
 
     // Validate Parking Slot
     if (!parkingSlot) {
-        document.getElementById(isEdit ? 'editParkingSlot-error' : 'parkingSlot-error').style.display = 'block';
+        const errorElement = document.getElementById(isEdit ? 'editParkingSlot-error' : 'parkingSlot-error');
+        if (errorElement) {
+            errorElement.style.display = 'block';
+        }
         isValid = false;
     } else {
-        document.getElementById(isEdit ? 'editParkingSlot-error' : 'parkingSlot-error').style.display = 'none';
+        const errorElement = document.getElementById(isEdit ? 'editParkingSlot-error' : 'parkingSlot-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
 
     // Validate Location
     if (!location) {
-        document.getElementById(isEdit ? 'editLocation-error' : 'location-error').style.display = 'block';
+        const errorElement = document.getElementById(isEdit ? 'editLocation-error' : 'location-error');
+        if (errorElement) {
+            errorElement.style.display = 'block';
+        }
         isValid = false;
     } else {
-        document.getElementById(isEdit ? 'editLocation-error' : 'location-error').style.display = 'none';
+        const errorElement = document.getElementById(isEdit ? 'editLocation-error' : 'location-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
 
     if (!carId) {
-        document.getElementById(isEdit ? 'editCarId-error' : 'carId-error').innerText = '* Field Required';
-        document.getElementById(isEdit ? 'editCarId-error' : 'carId-error').style.display = 'block';
+        const errorElement = document.getElementById(isEdit ? 'editCarId-error' : 'carId-error');
+        if (errorElement) {
+            errorElement.innerText = '* Field Required';
+            errorElement.style.display = 'block';
+        }
         isValid = false;
     } else {
-        document.getElementById(isEdit ? 'editCarId-error' : 'carId-error').style.display = 'none';
+        const errorElement = document.getElementById(isEdit ? 'editCarId-error' : 'carId-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
 
         const carIdFormat = /^([A-Z]{2,3}-\d{3,4})$/; // Example formats: ABC-123 or AB-1234
+        const errorFormatElement = document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error');
         if (!carIdFormat.test(carId)) {
-            document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error').innerText = 'Invalid Car ID format. Please use the format: ABC-123 or AB-1234';
-            document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error').style.display = 'block';
+            if (errorFormatElement) {
+                errorFormatElement.innerText = 'Invalid Car ID format. Please use the format: ABC-123 or AB-1234';
+                errorFormatElement.style.display = 'block';
+            }
             isValid = false;
         } else {
-            document.getElementById(isEdit ? 'editCarIdNum-error' : 'carIdNum-error').style.display = 'none';
+            if (errorFormatElement) {
+                errorFormatElement.style.display = 'none';
+            }
         }
     }
 
     // Validate Employee Name
     if (!empName) {
-        document.getElementById(isEdit ? 'editEmpName-error' : 'empName-error').style.display = 'block';
+        const errorElement = document.getElementById(isEdit ? 'editEmpName-error' : 'empName-error');
+        if (errorElement) {
+            errorElement.style.display = 'block';
+        }
         isValid = false;
     } else {
-        document.getElementById(isEdit ? 'editEmpName-error' : 'empName-error').style.display = 'none';
+        const errorElement = document.getElementById(isEdit ? 'editEmpName-error' : 'empName-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
 
     // Validate Car Make
     if (!carMake) {
-        document.getElementById(isEdit ? 'editCarMake-error' : 'carMake-error').style.display = 'block';
+        const errorElement = document.getElementById(isEdit ? 'editCarMake-error' : 'carMake-error');
+        if (errorElement) {
+            errorElement.style.display = 'block';
+        }
         isValid = false;
     } else {
-        document.getElementById(isEdit ? 'editCarMake-error' : 'carMake-error').style.display = 'none';
+        const errorElement = document.getElementById(isEdit ? 'editCarMake-error' : 'carMake-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
 
     // Validate Card RFID No
     if (!cardRfidNo) {
-        document.getElementById(isEdit ? 'editCardRfidNo-error' : 'cardRfidNo-error').style.display = 'block';
+        const errorElement = document.getElementById(isEdit ? 'editCardRfidNo-error' : 'cardRfidNo-error');
+        if (errorElement) {
+            errorElement.style.display = 'block';
+        }
         isValid = false;
     } else {
-        document.getElementById(isEdit ? 'editCardRfidNo-error' : 'cardRfidNo-error').style.display = 'none';
+        const errorElement = document.getElementById(isEdit ? 'editCardRfidNo-error' : 'cardRfidNo-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
 
     return isValid;
@@ -320,13 +358,35 @@
   }
 
   function resetValidationErrors() {
-    document.getElementById('parkingSlot-error').style.display = 'none';
-    document.getElementById('location-error').style.display = 'none';
-    document.getElementById('carId-error').style.display = 'none';
-    document.getElementById('empName-error').style.display = 'none';
-    document.getElementById('carMake-error').style.display = 'none';
-    document.getElementById('cardRfidNo-error').style.display = 'none';
-    document.getElementById('employeeId-error').style.display = 'none';
+    const parkingSlotError = document.getElementById('parkingSlot-error');
+    const locationError = document.getElementById('location-error');
+    const carIdError = document.getElementById('carId-error');
+    const empNameError = document.getElementById('empName-error');
+    const carMakeError = document.getElementById('carMake-error');
+    const cardRfidNoError = document.getElementById('cardRfidNo-error');
+    const editParkingSlotError = document.getElementById('editParkingSlot-error');
+    const editLocationError = document.getElementById('editLocation-error');
+    const editCarIdError = document.getElementById('editCarId-error');
+    const editEmpNameError = document.getElementById('editEmpName-error');
+    const editCarMakeError = document.getElementById('editCarMake-error');
+    const editCardRfidNoError = document.getElementById('editCardRfidNo-error');
+    const editCarIdNumError = document.getElementById('editCarIdNum-error');
+    const carIdNumError = document.getElementById('carIdNum-error');
+
+    if (parkingSlotError) parkingSlotError.style.display = 'none';
+    if (locationError) locationError.style.display = 'none';
+    if (carIdError) carIdError.style.display = 'none';
+    if (empNameError) empNameError.style.display = 'none';
+    if (carMakeError) carMakeError.style.display = 'none';
+    if (cardRfidNoError) cardRfidNoError.style.display = 'none';
+    if (editParkingSlotError) editParkingSlotError.style.display = 'none';
+    if (editLocationError) editLocationError.style.display = 'none';
+    if (editCarIdError) editCarIdError.style.display = 'none';
+    if (editEmpNameError) editEmpNameError.style.display = 'none';
+    if (editCarMakeError) editCarMakeError.style.display = 'none';
+    if (editCardRfidNoError) editCardRfidNoError.style.display = 'none';
+    if (editCarIdNumError) editCarIdNumError.style.display = 'none';
+    if (carIdNumError) carIdNumError.style.display = 'none';
   }
 
   const spacesPerPage = 5;

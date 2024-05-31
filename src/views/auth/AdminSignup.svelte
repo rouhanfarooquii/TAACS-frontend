@@ -1,6 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import { signUpAdminApi } from "../../services/api.js"; // Adjust the path as necessary
+    import { navigate } from "svelte-routing";
   
     let email = "";
     let password = "";
@@ -76,6 +77,10 @@
       errorMessage = "";
       successMessage = "";
     });
+
+    function navigatetoLogin() {
+      navigate('/auth/adminlogin');
+    }
   </script>
   
   <div class="container mx-auto px-4 h-full">
@@ -174,6 +179,11 @@
                 <div class="text-red-500 text-xs mt-4">{errorMessage}</div>
               {/if}
             </form>
+            <div class="text-left mt-6">
+              <a class="text-blue-500 text-sm cursor-pointer" on:click={navigatetoLogin}>
+                Already have an account ?
+              </a>
+            </div>
           </div>
         </div>
       </div>

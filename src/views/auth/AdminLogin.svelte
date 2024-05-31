@@ -63,6 +63,10 @@
     errorMessage = "";
   });
 
+  function navigatetoSignup(){
+    navigate('/auth/adminsignup');
+  }
+
 </script>
 
 <div class="container mx-auto px-4 h-full">
@@ -135,6 +139,11 @@
               {/if}
             </div>
           </form>
+          <div class="text-left mt-6">
+            <a class="text-blue-500 text-sm cursor-pointer" on:click={navigatetoSignup}>
+              Don't have an account ?
+            </a>
+          </div>
         </div>
       </div>
     </div>

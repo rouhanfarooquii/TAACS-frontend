@@ -299,26 +299,26 @@
               {/if}
               <div class="w-full lg:w-4/12 px-4 lg:order-1">
                 {#if $dataFetched}
-                  <div class="flex justify-center py-4 lg:pt-4 pt-8">
-                    <div class="mr-4 p-3 text-center bg-green-100 rounded-lg shadow-md">
-                      <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        {attendanceCount}
-                      </span>
-                      <span class="text-sm text-blueGray-400">Attendance</span>
-                    </div>
-                    <div class="mr-4 p-3 text-center bg-red-100 rounded-lg shadow-md">
-                      <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        {absenceCount}
-                      </span>
-                      <span class="text-sm text-blueGray-400">Absences</span>
-                    </div>
-                    <div class="mr-4 p-3 text-center bg-yellow-100 rounded-lg shadow-md">
-                      <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        {lateAttendanceCount}
-                      </span>
-                      <span class="text-sm text-blueGray-400">Late</span>
-                    </div>
+                <div class="flex justify-end space-x-4 mt-4">
+                  <div class="box p-3 text-center bg-white shadow rounded" style="width: 110px;">
+                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                      {attendanceCount}
+                    </span>
+                    <span class="text-sm text-blueGray-400">Attendance</span>
                   </div>
+                  <div class="box p-3 text-center bg-white shadow rounded" style="width: 110px;">
+                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                      {absenceCount}
+                    </span>
+                    <span class="text-sm text-blueGray-400">Absences</span>
+                  </div>
+                  <div class="box p-3 text-center bg-white shadow rounded" style="width: 110px;">
+                    <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                      {lateAttendanceCount}
+                    </span>
+                    <span class="text-sm text-blueGray-400">Late</span>
+                  </div>
+                </div>
                 {/if}
               </div>
             </div>
