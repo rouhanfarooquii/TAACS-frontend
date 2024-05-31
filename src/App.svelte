@@ -14,6 +14,8 @@
   import Attendance from "./views/user/Attendance.svelte";
 
   export let url = "auth/login";
+  // export let url = "";
+
 </script>
 
 <Router url="{url}">

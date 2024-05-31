@@ -69,6 +69,7 @@
   function processImagePath(imagePath) {
     if (imagePath) {
       processedImagePath = imagePath.replace(/\\/g, '/');
+      processedImagePath = "http://localhost:3000/" + processedImagePath
     } else {
       processedImagePath = team2;
     }
@@ -108,7 +109,7 @@
               <div class="relative">
                 <img
                   alt="..."
-                  src={`http://localhost:3000/${$employee.employeeID}`}
+                  src={processedImagePath}
                   class="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                 />
               </div>
