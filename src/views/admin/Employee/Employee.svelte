@@ -107,13 +107,18 @@
   }
 
   async function fetchEmployees() {
-    try {
-      const fetchedEmployees = await getAllEmployeesApi();
-      filteredEmployees = fetchedEmployees;
-    } catch (error) {
-      console.error('Error fetching employees:', error);
-    }
+  try {
+    const fetchedEmployees = await getAllEmployeesApi();
+    employees = fetchedEmployees; // Assign fetched data to employees
+    applyFilters(); // Reapply filters after fetching employees
+  } catch (error) {
+    console.error('Error fetching employees:', error);
   }
+}
+
+$: if (employees.length) {
+  applyFilters();
+}
 
   async function fetchLocations() {
     try {
@@ -144,11 +149,14 @@
 
   function applyFilters() {
   currentPage = 1;
+  console.log("Filters applied:", filters);
+
   filteredEmployees = employees.filter(employee => {
     const matchesSearch = filters.search === '' ||
-      employee.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-      employee.department.toLowerCase().includes(filters.search.toLowerCase()) ||
-      employee.designation.toLowerCase().includes(filters.search.toLowerCase());
+      (employee.employeeID && employee.employeeID.toLowerCase().includes(filters.search.toLowerCase())) ||
+      (employee.name && employee.name.toLowerCase().includes(filters.search.toLowerCase())) ||
+      (employee.department.title && employee.department.title.toLowerCase().includes(filters.search.toLowerCase())) ||
+      (employee.designation.title && employee.designation.title.toLowerCase().includes(filters.search.toLowerCase()));
 
     const matchesActive = filters.active === '' ||
       (filters.active === 'true' && employee.active) ||
@@ -156,6 +164,8 @@
 
     return matchesSearch && matchesActive;
   });
+
+  console.log("Filtered Employees after applying filters:", filteredEmployees);
 }
 
 function clearFilters() {
@@ -164,6 +174,8 @@ function clearFilters() {
   currentPage = 1;
   filteredEmployees = employees;
 }
+
+$: applyFilters(); // Call applyFilters whenever a relevant variable changes
 
   function navigateToAddEmployee() {
     navigate('/admin/addemployee');
