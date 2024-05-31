@@ -13,7 +13,7 @@
   import Landing from "./views/Landing.svelte";
   import Attendance from "./views/user/Attendance.svelte";
 
-  export let url = "";
+  export let url = "auth/login";
 </script>
 
 <Router url="{url}">
