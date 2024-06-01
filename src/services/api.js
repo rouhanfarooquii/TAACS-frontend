@@ -426,12 +426,11 @@ export async function loginEmployeeApi(obj) {
 export async function addEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/add', {
         method: 'POST',
-        body: obj,
-        headers: getAdminAuthHeader(),
+        body: obj
     })
-    if(response.status == 401){
-        navigate('/auth/adminlogin');
-    }
+    // if(response.status == 401){
+    //     navigate('/auth/adminlogin');
+    // }
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;
@@ -440,12 +439,11 @@ export async function addEmployeeApi(obj){
 export async function updateEmployeeApi(obj){
     const response = await fetch(BACKEND + 'employee/update', {
         method: 'POST',
-        body: obj,
-        headers: getAdminAuthHeader(),
+        body: obj
     })
-    if(response.status == 401){
-        navigate('/auth/adminlogin');
-    }
+    // if(response.status == 401){
+    //     navigate('/auth/adminlogin');
+    // }
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;
@@ -470,8 +468,6 @@ export async function updateEmployeeJSONApi(obj){
     const response = await fetch(BACKEND + 'employee/updateJSON', {
         method: 'POST',
         observe: 'body',
-        headers: getAdminAuthHeader(),
-        body: JSON.stringify({employee: obj})
     })
     if(response.status == 401){
         navigate('/auth/adminlogin');
@@ -888,7 +884,7 @@ export async function updateShiftTimingApi(obj){
 };
 
 export async function batchDeleteShiftTimingApi(obj){
-    const response = await fetch(BACKEND + 'shiftTiming/update', {
+    const response = await fetch(BACKEND + 'shiftTiming/deleteAll', {
         method: 'POST',
         observe: 'body',
         headers: getAdminAuthHeader(),
@@ -937,16 +933,15 @@ export async function addVisitorApi(obj, isAdmin){
     const response = await fetch(BACKEND + 'visitor/add', {
         method: 'POST',
         body: obj,
-        headers: headers,
     })
-    if(response.status == 401){
-        if(isAdmin){
-            navigate('/auth/adminlogin');
-        }
-        else{
-            navigate('/auth/login');
-        }
-    }
+    // if(response.status == 401){
+    //     if(isAdmin){
+    //         navigate('/auth/adminlogin');
+    //     }
+    //     else{
+    //         navigate('/auth/login');
+    //     }
+    // }
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;
@@ -956,12 +951,10 @@ export async function updateVisitorApprovedApi(id, obj){
     const response = await fetch(`${BACKEND}visitor/approved/${id}`, {
         method: 'POST',
         observe: 'body',
-        headers: getAdminAuthHeader(),
-        body: JSON.stringify({visitor: obj})
     })
-    if(response.status == 401){
-        navigate('/auth/adminlogin');
-    }
+    // if(response.status == 401){
+    //     navigate('/auth/adminlogin');
+    // }
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;
@@ -971,12 +964,10 @@ export async function updateVisitorRejectedApi(id, obj){
     const response = await fetch(`${BACKEND}visitor/rejected/${id}`, {
         method: 'POST',
         observe: 'body',
-        headers: getAdminAuthHeader(),
-        body: JSON.stringify({leave: obj})
     })
-    if(response.status == 401){
-        navigate('/auth/adminlogin');
-    }
+    // if(response.status == 401){
+    //     navigate('/auth/adminlogin');
+    // }
     const responseObj = await response.json();
     const msg = await responseObj.msg;
     return await msg;
