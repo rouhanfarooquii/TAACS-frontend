@@ -304,7 +304,7 @@
       {#each displayedUsers as user}
       <tr>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.employeeID}</td>
-        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.name}</td>
+        <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 font-bold">{user.name}</td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.department.title}</td>
         <td class="align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">{user.designation.title}</td>
         <td class="table-data2">{user.locations}</td>
