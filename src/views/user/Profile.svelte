@@ -121,7 +121,7 @@
             <!-- Attendance, Absences, and Late Section -->
             <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center flex flex-col justify-between">
               <div class="flex justify-center mt-12">
-                <div class="absolute top-0 right-0 mt-4 mr-4">
+                <div class="absolute top-0 right-0 mt-33 mr-4">
                   <div class="flex justify-end space-x-4">
                     <button
                       class="bg-blueGray-600 text-white active:bg-blueGray-800 font-bold uppercase text-xs px-2 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150"
