@@ -948,7 +948,7 @@ export async function addVisitorApi(obj, isAdmin){
 };
 
 export async function updateVisitorApprovedApi(id, obj){
-    const response = await fetch(`${BACKEND}visitor/approved/${id}`, {
+    const response = await fetch(BACKEND + 'visitor/approved/' + id + "/" + obj.personalPassword + "/" + obj.cardIdNumber, {
         method: 'POST',
         observe: 'body',
     })
@@ -961,7 +961,7 @@ export async function updateVisitorApprovedApi(id, obj){
 };
 
 export async function updateVisitorRejectedApi(id, obj){
-    const response = await fetch(`${BACKEND}visitor/rejected/${id}`, {
+    const response = await fetch(BACKEND + 'visitor/rejected/' + id + "/" + obj.personalPassword + "/" + obj.cardIdNumber, {
         method: 'POST',
         observe: 'body',
     })
