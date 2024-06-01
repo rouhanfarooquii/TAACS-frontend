@@ -178,12 +178,12 @@ function viewShift(shift) {
   async function deleteSelectedShifts() {
 
     // console.log(delLogicEmployees);
-    try {
+    // try {
     let ids = [...selectedShifts];
     // console.log(ids);
       for (let i = 0; i < delLogicEmployees.length; i++) {
         for (let j = 0; j < ids.length; j++) {
-          if(delLogicEmployees[i].shiftTiming._id.toString() == ids[j].toString()){
+          if(delLogicEmployees[i].shiftTiming._id == ids[j]){
             // console.log("present")
             showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmployees[i].employeeID + ' Employee ID', 'error');
             return;
@@ -191,14 +191,17 @@ function viewShift(shift) {
         }
       }
 
+      console.log(ids)
+      return;
+
       const msg = await batchDeleteShiftTimingApi({ids: ids});
       console.log(msg);
       await fetchShifts();
       showToasterMessage('Shift deleted successfully!', 'success'); 
-    } catch (error) {
-      console.error("Error deleting shifts:", error);
-      showToasterMessage('An error occurred while deleting the shift. Please try again.', 'error');
-    }
+    // } catch (error) {
+    //   console.error("Error deleting shifts:", error);
+    //   showToasterMessage('An error occurred while deleting the shift. Please try again.', 'error');
+    // }
   }
 
   $: startIndex = (currentPage - 1) * shiftsPerPage;

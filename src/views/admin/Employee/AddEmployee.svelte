@@ -231,8 +231,8 @@
       document.getElementById('card-id-error').innerText = '* Field Required';
       document.getElementById('card-id-error').style.display = 'block';
       isValid = false;
-    } else if (cardIdNumber.length !== 10) {
-      document.getElementById('card-id-error').innerText = '* card ID must contain 10 digits';
+    } else if (cardIdNumber.length > 10) {
+      document.getElementById('card-id-error').innerText = '* card ID must contain less than 10 digits';
       document.getElementById('card-id-error').style.display = 'block';
       isValid = false;
     } else {
@@ -328,14 +328,14 @@
     formData.append('shiftTiming', sif);
     formData.append('file', file);
 
-    try {
+    // try {
       await addEmployeeApi(formData);
       navigateToEmployee();
       showToasterMessage('Employee added successfully!', 'success');
-    } catch (error) {
-      console.error('Error adding employee:', error);
-      showToasterMessage('An error occurred while adding employee. Please try again.', 'error');
-    }
+    // } catch (error) {
+    //   console.error('Error adding employee:', error);
+    //   showToasterMessage('An error occurred while adding employee. Please try again.', 'error');
+    // }
   }
 
   function handleFileInputChange(event) {

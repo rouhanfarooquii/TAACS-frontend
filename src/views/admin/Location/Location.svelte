@@ -16,8 +16,7 @@
 
   let devicesList = [];
   let selectedDevices = [];
-  let featuresList = ["Workstation", "Adjustable desks", "Ergonomic office chairs", "Guest chairs", "Desktops", "Filing cabinets", "Shelves", "Locker", "Conference table", "Whiteboard", "Projector", "TV screen", "AC", "Telephone", "Printer", "Internet connection"];
-  let selectedFeatures = [];
+  let featuresList = ["Workstation", "Adjustable desks", "Ergonomic office chairs", "Guest chairs", "Desktops", "Filing cabinets", "Shelves", "Locker", "Conference table", "Whiteboard", "Projector", "TV screen", "AC", "Telephone", "Printer", "Internet connection"];  let selectedFeatures = [];
 
   let showToaster = false;
   let toasterMessage = '';
@@ -49,7 +48,7 @@
       const locations = await getAllLocationsApi(true);
       console.log('Fetched Locations:', locations);
       spaces = locations.map(loc => ({
-        _id: loc._id,
+        id: loc._id,
         locationName: loc.title,
         devices: loc.devices.map(device => device.deviceName).join(', '),
         bookable: loc.bookable ? 'Yes' : 'No',
@@ -131,7 +130,7 @@
 
         // console.log(bookable)
         // console.log({
-        //   _id: editingSpace.id,
+        //   _id: editingSpace._id,
         //   title: locationName,
         //   devices: tempdtosend,
         //   bookable: bookable,
@@ -140,14 +139,18 @@
         // })
         // return;
 
-        const response = await updateLocationApi({
+        let templocsend = {
           _id: editingSpace.id,
           title: locationName,
           devices: tempdtosend,
           bookable: bookable,
           capacity: Number(capacity),
           features: selectedFeatures
-        });
+        }
+
+        console.log(templocsend)
+
+        const response = await updateLocationApi(templocsend);
         console.log('Update Response:', response);
 
         // Update the corresponding space in the spaces array
@@ -218,7 +221,7 @@
     try {
       for (let i = 0; i < delLogicVisitors.length; i++) {
         for (let j = 0; j < delLogicVisitors[i].locations.length; j++) {
-          if(delLogicVisitors[i].locations[j].toString() == locToDelete._id.toString()){
+          if(delLogicVisitors[i].locations[j].toString() == locToDelete.id.toString()){
             showToasterMessage('Cannot delete. Device is bind to a ' + delLogicVisitors[i].visitorID + ' visitor ID', 'error');
             return;
           }
@@ -227,7 +230,7 @@
 
       for (let i = 0; i < delLogicEmployees.length; i++) {
         for (let j = 0; j < delLogicEmployees[i].locations.length; j++) {
-          if(delLogicEmployees[i].locations[j]._id.toString() == locToDelete._id.toString()){
+          if(delLogicEmployees[i].locations[j]._id.toString() == locToDelete.id.toString()){
             showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmployees[i].employeeID + ' visitor ID', 'error');
             return;
           }
@@ -235,7 +238,7 @@
       }
 
       for (let i = 0; i < delLogicRooms.length; i++) {
-        if(delLogicRooms[i].location._id.toString() == locToDelete._id.toString()){
+        if(delLogicRooms[i].location._id.toString() == locToDelete.id.toString()){
           showToasterMessage('Cannot delete. Department is bind to a Room ', 'error');
           return;
         }
@@ -243,14 +246,14 @@
 
       for (let i = 0; i < delLogicEmergency.length; i++) {
         for (let j = 0; j < delLogicEmergency[i].locations.length; j++) {
-          if(delLogicEmergency[i].locations[j]._id.toString() == locToDelete._id.toString()){
+          if(delLogicEmergency[i].locations[j]._id.toString() == locToDelete.id.toString()){
             showToasterMessage('Cannot delete. Device is bind to a ' + delLogicEmergency[i].name + ' Emergency ID', 'error');
             return;
           }
         }
       }
 
-      const response = await deleteLocationApi(locToDelete._id);
+      const response = await deleteLocationApi(locToDelete.id);
       console.log('Delete Response:', response);
       showToasterMessage('Location deleted successfully!', 'success');
       closeConfirmationModal();
@@ -321,14 +324,14 @@
   }
 
   function closeModal() {
-    showModal = false;
-    showEditModal = false;
     locationName = '';
     selectedDevices = [];
     selectedFeatures = [];
     bookable = true;
     capacity = '';
-    resetValidationErrors();
+    // resetValidationErrors();
+    showModal = false;
+    showEditModal = false;
   }
 
   function resetValidationErrors() {
@@ -488,7 +491,7 @@
                     Features
                   </label>
                   <MultiSelect bind:selectedOptions={selectedFeatures} options={featuresList} placeholder="Select Features" />
-                  <span id="features-error" class="text-red-600 text-xs overflow-x-auto" style="display: none;">* Field Required</span>
+                  <span id="features-error" class="text-red-600 text-xs" style="display: none;">* Field Required</span>
                 </div>
               </div>
             </div>

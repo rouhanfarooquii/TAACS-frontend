@@ -31,7 +31,7 @@
   let editEmployeeId = '';
   let editSpaceId = '';
 
-  let locations = ['Parking 1', 'Parking 2', 'Parking 3', 'Parking 4']; // Dummy data for locations
+  let locations = [ 'SC Parking', 'Tabba Parking', 'Library Parking', 'Ground Parking']; 
 
   let showToaster = false;
   let toasterMessage = '';

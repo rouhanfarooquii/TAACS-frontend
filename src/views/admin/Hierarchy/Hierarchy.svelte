@@ -49,15 +49,24 @@
   onMount(async () => {
     try {
       departments = await getAllDepartmentsApi();
-      await fetchDelLogicLocations();
+      await fetchDelLogicEmployees();
       await fetchDelLogicRoom();
     } catch (error) {
       console.error('Failed to fetch departments:', error);
     }
   });
 
-  let delLogicEmployees = []
+  let delLogicLocations = []
   async function fetchDelLogicLocations() {
+    try {
+      delLogicLocations = await getAllLocationsApi(true);
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+
+  let delLogicEmployees = []
+  async function fetchDelLogicEmployees() {
     try {
       delLogicEmployees = await getAllEmployeesApi();
     } catch (error) {
