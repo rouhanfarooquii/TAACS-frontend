@@ -23,6 +23,7 @@
   let salary = '';
   let shiftTiming = '';
   let locations = [];
+  let isProfilePictureUploaded = false; // New flag for profile picture upload
 
   let trueLocations = [];
   let trueDepartments = [];
@@ -278,6 +279,8 @@
       document.getElementById('locations-error').style.display = 'none';
     }
 
+    
+
     return isValid;
   }
 
@@ -287,8 +290,13 @@
 
   async function handleSubmit() {
     if (!validateInputs()) {
+      if (!isProfilePictureUploaded) {
+      showToasterMessage('Profile picture is required!', 'error');
+      isValid = false;
+    }
       return;
     }
+    
 
     let loc = [];
     for (let index = 0; index < locations.length; index++) {
@@ -340,8 +348,14 @@
         imageUploadLabel = 'Edit';
       };
       reader.readAsDataURL(file);
+      isProfilePictureUploaded = true; // Set flag to true
     }
   }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const fileInput = document.getElementById('profile-pic');
+    fileInput.addEventListener('change', handleFileInputChange);
+  });
 
   function navigateToEmployee() {
     navigate('/admin/employee');
