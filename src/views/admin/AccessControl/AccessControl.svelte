@@ -209,7 +209,7 @@
 
   $: searchResultText = searchQuery
     ? filteredUsers.length > 0
-      ? 'Rows Found: ${filteredUsers.length}'
+      ? ''
       : "No Result Found"
     : '';
   $: searchResultColor = filteredUsers.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";

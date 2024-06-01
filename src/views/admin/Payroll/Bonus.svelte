@@ -102,6 +102,7 @@
 
   async function fetchBonuses() {
     const bonusesFromApi = await getAllPayrollsApi();
+    console.log('Bonuses from API:', bonusesFromApi);
     bonuses = bonusesFromApi.map(bonus => {
       const department = trueDepartments.find(dept => dept._id === bonus.department._id);
       const designation = department ? department.designations.find(des => des._id === bonus.designation._id) : { title: 'N/A' };
@@ -247,7 +248,7 @@
 
   $: searchResultText = searchQuery
     ? filteredBonuses.length > 0
-      ? `Rows Found: ${filteredBonuses.length}`
+      ? ``
       : "No Result Found"
     : '';
   $: searchResultColor = filteredBonuses.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";

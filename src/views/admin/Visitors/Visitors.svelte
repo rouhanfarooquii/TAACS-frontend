@@ -262,59 +262,62 @@
   }
 
   async function handleSubmit() {
-    if (!validateInputs()) {
-      return;
-    }
 
-    visitor.requestor = "Admin";
-    visitor.status = "pending";
-    let tempdtosend = [];
+  if (!validateInputs()) {
+    return;
+  }
 
-    for (let i = 0; i < visitor.locations.length; i++) {
-      tempdtosend.push(trueAccessibleRooms.find(loc => loc.title === visitor.locations[i])._id);
-    }
+  visitor.requestor = "Admin";
+  visitor.status = "pending";
+  let tempdtosend = [];
 
-    visitor.locations = tempdtosend;
+  for (let i = 0; i < visitor.locations.length; i++) {
+    const location = trueAccessibleRooms.find(loc => loc.title === visitor.locations[i]);
+    tempdtosend.push(location._id);
+  }
 
-    visitorToSend = {
-      visitorID: visitor.visitorID,
-      name: visitor.name,
-      mobileNumber: visitor.mobileNumber,
-      locations: visitor.locations,
-      startTime: visitor.startTime,
-      endTime: visitor.endTime,
-      requestor: visitor.requestor,
-      status: visitor.status,
-      DateOfVisit: visitor.DateOfVisit,
-      reasonOfVisiting: visitor.reasonOfVisiting,
-      fingerIndex1: visitor.fingerIndex1,
-      fingerIndex2: visitor.fingerIndex2,
-      cardIdNumber: 'null',
-      personalPassword: 'null',
-      email: visitor.email,
-      address: visitor.address,
-      gender: visitor.gender,
-      status: visitor.status,
-      file: visitor.file
-    };
+  visitor.locations = tempdtosend;
 
-    const formData = new FormData();
-    appendFormData(formData, visitorToSend);
+  const visitorToSend = {
+    requestor: "Admin",
+    visitorID: visitor.visitorID,
+    name: visitor.name,
+    mobileNumber: visitor.mobileNumber,
+    locations: visitor.locations,
+    startTime: visitor.startTime,
+    endTime: visitor.endTime,
+    requestor: visitor.requestor,
+    status: visitor.status,
+    DateOfVisit: visitor.DateOfVisit,
+    reasonOfVisiting: visitor.reasonOfVisiting,
+    fingerIndex1: visitor.fingerIndex1,
+    fingerIndex2: visitor.fingerIndex2,
+    cardIdNumber: 'null',
+    personalPassword: 'null',
+    email: visitor.email,
+    address: visitor.address,
+    gender: visitor.gender,
+    file: visitor.file
+  };
 
-    console.log(visitorToSend);
-    try {
-      const response = await addVisitorApi(formData, true);
-      navigateToVisitor();
-      console.log('Visitor added successfully', response);
-      showToasterMessage('Visitor added successfully!', 'success');
-      // alert('Visitor added successfully!');
-    } catch (error) {
-      console.error('Error adding visitor:', error);
-      navigateToVisitor();
-      showToasterMessage('An error occurred while adding the visitor. Please try again.', 'error');
-      // alert('An error occurred while adding the visitor. Please try again.');
+  const formData = new FormData();
+
+  for (const key in visitorToSend) {
+    if (visitorToSend.hasOwnProperty(key)) {
+      formData.append(key, visitorToSend[key]);
     }
   }
+
+  try {
+    const response = await addVisitorApi(formData, true);
+    navigateToVisitor();
+    showToasterMessage('Visitor added successfully!', 'success');
+  } catch (error) {
+    navigateToVisitor();
+    showToasterMessage('An error occurred while adding the visitor. Please try again.', 'error');
+  }
+}
+
 
   let trueAccessibleRooms = [];
   let accessibleRooms = [];

@@ -409,7 +409,7 @@
 
   $: searchResultText = searchQuery
     ? filteredSpaces.length > 0
-      ? `Rows Found: ${filteredSpaces.length}`
+      ? ``
       : "No Result Found"
     : '';
   $: searchResultColor = filteredSpaces.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";

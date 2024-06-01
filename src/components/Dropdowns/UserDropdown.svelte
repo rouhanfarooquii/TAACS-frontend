@@ -69,14 +69,6 @@
   >
     <a
       href="#pablo" on:click={(e) => e.preventDefault()}
-      on:click="{navigateToProfile}"
-      class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700" 
-    >
-      Profile
-    </a>
-    <div class="h-0 my-2 border border-solid border-blueGray-100" />
-    <a
-      href="#pablo" on:click={(e) => e.preventDefault()}
       on:click="{signOut}"
       class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
     >

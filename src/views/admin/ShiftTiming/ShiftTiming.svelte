@@ -215,7 +215,7 @@ function viewShift(shift) {
 
   $: searchResultText = searchQuery
     ? filteredShifts.length > 0
-      ? `Rows Found: ${filteredShifts.length}`
+      ? ``
       : "No Result Found"
     : '';
   $: searchResultColor = filteredShifts.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";

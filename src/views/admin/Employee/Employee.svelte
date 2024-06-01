@@ -5,7 +5,7 @@
   import Multiselect from "../../../components/Dropdowns/MultiSelect.svelte";
   import { navigate } from 'svelte-routing';
   import ConfirmationModal from '../../../components/Confirmation/ConfirmationModal.svelte';
-  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi, getAllLeavesApi,getAllParkingsApi,getAllRoomBookingsApi,getAllVisitorsApi } from '../../../services/api';
+  import { getAllDepartmentsApi, getAllLocationsApi, getAllShiftTimingsApi, updateEmployeeApi, getAllLeavesApi,getAllParkingsApi,getAllRoomBookingsApi, getAllVisitorsApi } from '../../../services/api';
   import Toast from '../../../components/Confirmation/Toast.svelte';
   import { getAllAttendances } from '../../../services/api';
 

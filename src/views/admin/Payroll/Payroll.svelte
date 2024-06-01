@@ -226,7 +226,7 @@
 
   $: searchResultText = searchQuery
     ? filteredEmployees.length > 0
-      ? `Rows Found: ${filteredEmployees.length}`
+      ? ``
       : "No Result Found"
     : '';
   $: searchResultColor = filteredEmployees.length > 0 ? "text-blue-600 font-bold" : "text-red-600 font-bold";
