@@ -6,6 +6,7 @@
   export let color = "light";
   let attendanceData = [];
   let pollInterval;
+  const image = "../assets/img/10.jpg";
 
   function fixImagePath(imagePath) {
     return imagePath.replace(/\\/g, '/'); // Replace all backslashes with forward slashes
@@ -99,7 +100,7 @@
         {#each attendanceData as record}
           <tr>
             <td class="table-data text-blueGray-600 text-xs">
-              <img src={record.photo || 'placeholder.jpg'} alt="Employee Photo" class="w-8 h-8 rounded-full"/>
+              <img src={record.photo || image} alt="Employee Photo" class="w-8 h-8 rounded-full"/>
             </td>
             <td class="table-data text-blueGray-600 text-xs" title={record.employee.employeeID}>{record.employee.employeeID}</td>
             <td class="table-data font-bold text-blueGray-600 text-xs" title={record.employee.name}>{record.employee.name}</td>
